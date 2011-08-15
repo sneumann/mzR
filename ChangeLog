@@ -1,0 +1,89 @@
+2011-08-10  Steffen Neumann  <sneumann@ipb-halle.de>
+	* Temporary Fix for "unable to find ... for function "peaks"
+	  by explicitely specifying mzR:: namespace
+	* Bump version for resubmission to BioC
+	
+2011-08-09  Steffen Neumann  <sneumann@ipb-halle.de>
+	* Minor fixes in documentation
+	* Bump version for resubmission to BioC
+
+2011-08-01  Steffen Neumann  <sneumann@ipb-halle.de>
+	* Added header(), peaks(), length()
+	and show() for netCDF. This passes all unit tests 
+	for a modified version of xcms, closing Issue #15
+
+2011-07-22  Steffen Neumann  <sneumann@ipb-halle.de>
+	* Non-functional support for CDF
+
+2011-07-11 Laurent Gatto <lg390@cam.ac.uk>
+	* simplified show method
+	* rewrote runInfo in R
+	* Misc changes in doc and vignette
+	* bumped version to 0.5.5
+	
+2011-07-08 Steffen Neumann <sneumann@ipb-halle.de>
+	* fixed Windows, checked for x64
+	* bumped version to 0.5.4
+	
+2011-07-05 Laurent Gatto <lg390@cam.ac.uk>
+	* small doc and vignette updates
+	* peaks("mzRramp","missing") always returns a list 
+	(possibly of length 1) of matrices.
+	* bumped version to 0.5.2
+	
+2011-06-16  Laurent Gatto  <lg390@cam.ac.uk>
+	* updated header("mzRamp","numeric") when 
+	length(numeric) > 1 to return 'flat' data.frame
+	* bumped verison to 0.5.1
+	
+2011-06-10  Laurent Gatto  <lg390@cam.ac.uk>
+	* bumped version to 0.5.0
+	* implementing backend design and related changes
+	
+2011-06-09  Laurent Gatto  <lg390@cam.ac.uk>
+	* bumped version to 0.4.4
+	* created format specific classes and methods
+	* added (optional) format argument to openMSfile
+	* updated documentation
+	
+2011-06-01  Laurent Gatto <lg390@cam.ac.uk>
+	* added fileName slot to mzR class (now version 0.1.3)
+	* updated openMSfile, fileName and mzR validity to 
+	reflect new mzR@fileName slot.
+	* update get3Dmap and initializeRamp generics - added 
+	explicit non-dispatching elements.
+	* added mzR.bib bibtex and Makefile files
+	* updated docs and vignette
+
+2011-06-01  Steffen Neumann <sneumann@ipb-halle.de>
+	* fix call to fileName() in instrumentInfo()
+	* added Makefile for a simple "make" in unitTests
+	* added man pages
+	
+2011-05-31  Laurent Gatto <lg390@cam.ac.uk>
+	* file extension is checked to avoid retrieving 
+	instrument info for mzdata files (see 
+	https://github.com/sneumann/mzR/issues/5)
+	* update Rcpp version dependency
+	* updated unit test
+	
+2011-05-27  Laurent Gatto  <lg390@cam.ac.uk>
+	* bumped verssion to 0.4.3
+	* added further refinements and dummy documenation
+	* builds, checks and installs fine 
+
+2011-05-25  Laurent Gatto  <lg390@cam.ac.uk>
+	* bumped verion to 0.4.1
+	* cleaned up code and file names, to fit with 
+	Bioconductor's naming schemes.
+	* created S4 classes and methods 
+	
+2011-05-01  Laurent Gatto  <lg390@cam.ac.uk>
+	* added cleanup script to version 0.4
+
+2010-12-16  Steffen Neumann  <sneumann@ipb-halle.de>
+
+	* push 0.3 which adds mzML support, and has (a few) 
+	unit tests. R CMD check finishes mostly clean, with 
+	some problems with Rcpp/methods
+	

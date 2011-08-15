@@ -1,0 +1,170 @@
+Hi,
+
+after beeing busy in the past weeks, we have now 
+overhauled most of the package. To me the most important 
+change is the possibility to have multiple backends, 
+such as netCDF, Ramp and pwiz to do the actual I/O work.
+
+We also have a patch for XCMS to do the I/O work 
+through mzR, and Laurent also has patches to msnbase 
+to switch to mzR. Both will be applied to BioC SVN
+if we have a few weeks of debugging before the release.
+
+Could you guys please add the Roundup user "lgatto" 
+to the nosy list of this issue ? Thanks in advance.
+
+Yours,
+Steffen
+
+On Mon, 2011-03-07 at 22:27 +0000, herve BioC-Submit wrote:
+herve <hpages@fhcrc.org> added the comment:
+...
+> Detailed review:
+> 
+> 1. Please use a BioC-style version number i.e. x.y.z
+>    Note that if you use 0.99.z now, your package will be released as 1.0.0
+>    in BioC 2.8 (to be released in April).
+Done.
+ 
+> 2. The source tarball you provided is not clean: it contains a lot of object
+>    files (i.e. *.o files) in src/boost and src/pwiz. A source
+I've added an mzR/cleanup file
+
+> 3. Please add a biocViews field to your DESCRIPTION file.
+Done. Taken from xcms and affyIO
+
+> 4. It doesn't make sense to have 2 SystemRequirements fields. Please merge
+>    them.
+Done. Copy&Paste error :-(
+ 
+> 5. Please put the Rcpp package in the Imports field of the DESCRIPTION
+>    file. In your NAMESPACE file you import things from Rcpp so you
+>    definitely want to reflect this in the Imports field. Keeping
+Done. 
+
+>    in the Depends field is up to you but it could be that you don't need
+>    this. (Do you want Rcpp to end up in the search path of the user when
+>    s/he does library(mzR)? Are there symbols or man pages defined in Rcpp
+>    that the end-user of the mzR package might need to access directly?)
+I have placed Rcpp in the dependency (v 0.5.0) and removed import(Rcpp)
+from the NAMESPACE file, to supress a warning about missing '"C++Object"
+unavailable and created in local env' when loading the package.
+ 
+> 6. msdata needs to be put in the Suggests field: it's used in the vignette
+>    and the unit tests.
+Done.
+ 
+> 7. Same thing for RUnit and faahKO: they are used in the unit tests.
+Done.
+ 
+> 8. Why call those files AllClass.R and rampMethods.R if the former
+>  doesn't
+All of that was more/less rewritten by Laurent, 
+I guess it'll be cleaner now.
+
+> 9. In man/Ramp-class.Rd:
+> 
+>      Objects can be created by calls of the form \code{new(Ramp)}
+> 
+>    Will the user really create object like this? If yes, then please provide
+>    an example on the \examples{} section of the man page.
+There is now a proper constructor (openMSfile, see below) that will read 
+an mass spec file, initialise the Rcpp module and return a proper S4 class.
+ 
+> 10. The rampOpenFile() function itself (which is more likely to be *the* way
+>     people will create Ramp objects) is not documented. In particular, the
+>     documentation is not saying what the supported formats are (only
+>     mzXML is used in the example and vignette).
+Done. rampOpenFile() is now called openMSfile() and documented 
+with its own manpage.
+ 
+> 11. Overall the documentation is insufficient: there are only 2 small man
+>     pages and none of them contains *real* examples. Note that man pages
+>     should contain an \examples{} section, not an \section{Example}{} section
+>     like you did in man/Ramp-class.Rd, so they are evaluated by 'R CMD check'.
+>     The list of C++-style methods provided in man/Ramp-class.Rd gives very
+>     little details about what those methods do exactly and it uses some
+>     technical jargon that probably only experts in the field will understand:
+> 
+>       "suppress RAMP's behavior of creating sparse tables to accomodate
+>        unlisted scans"
+> 
+>       "obtains minimal info on the msRun contained in the file"
+> 
+>       "msLevel", "retentionTime"
+> 
+>     If the man page cannot contain a full explanation of those terms, maybe
+>     at least it should provide some reference to a document describing them.
+Done.
+
+ 
+> 12. One more problem with man/Ramp-class.Rd: the get3DMap method doesn't
+>     seem to exist:
+> 
+>       > ramp$get3DMap(1)
+>       Error in ramp$get3DMap(1) : could not find valid method
+> 
+>     But maybe this is just a documentation problem: according to the man
+>     page, it takes only 1 argument, when, in fact, 4 args seem to be required.
+all these methods that were called through the Rcpp module are now 
+encapsulated in S4 methods, all of which are documented.
+
+
+> 13. The vignette too is insufficient. It doesn't provide any context, and,
+>     in particular, it doesn't provide any explanation about the special nature
+>     of the classes that are used here (and the special syntax used to call
+>     their methods). Providing some background information about the very
+>     special nature of those classes/methods would be more than welcome.
+Done.
+
+ 
+> 14. The .onLoad hook contains a setMethod() statement. This is the only
+>     explicit use that I see of the S4 class system. That means mzR should
+>     import the methods package i.e. have it in the Imports field, and have
+>     import(methods) in the NAMESPACE file (generally right after the
+>     useDynLib directive).
+Done.
+ 
+> 15. I get the 2 following warnings when running 'R CMD check mzR_0.4.tar.gz':
+> 
+>       * checking if this is a source package ... WARNING
+>       Subdirectory ‘src’ contains:
+>         README RcppRamp.hpp cramp.hpp
+>       These are unlikely file names for src files.
+README went into inst/doc, and about *.hpp:
+
+Page 14 of http://cran.r-project.org/doc/manuals/R-exts.pdf 
+says "We recommend using ‘.h’ for headers, also for C++",
+with a note about potential not-guaranteed-portability.
+
+However, the *.hpp are valid C++ header files, 
+and it is also used throughout the boost libraries, 
+which is a high quality C++ project, some of which 
+will go into the next C++ standards. 
+
+So complaints about *.hpp is definitely a false positive.
+
+Nevertheless we have changed src/*hpp to src/*h for now.   
+
+>     probably something you want to complain about on the R-devel mailing list,
+Will do.
+
+>     and
+> 
+>       * checking whether the name space can be loaded with stated dependencies
+> ... WARNING
+>       Error: .onLoad failed in loadNamespace() for 'mzR', details:
+>         call: MS$Ramp
+>         error: could not find function "loadMethod"
+>       Execution halted
+> 
+>       A namespace must be able to be loaded with just the base namespace
+>       loaded: otherwise if the namespace gets loaded by a saved object, the
+>       session will be unable to start.
+> 
+>       Probably some imports need to be declared in the NAMESPACE file.
+> 
+>     probably something that will go away by importing the methods package (as
+>     mentioned previously).
+Done. Rcpp stuff has been overhauled by Laurent.
+
