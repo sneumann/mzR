@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <netcdf.h>
 #include <string.h>
-#include "netCDF.h"
+#include "rnetCDF.h"
 
 void NetCDFStrError(const int *ncerr, const int *len, char *errortext[]) {
 
