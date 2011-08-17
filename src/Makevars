@@ -76,6 +76,8 @@ PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)
 PKG_LIBS = $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -lnetcdf -lz
 
+clean:
+	rm -f $(OBJECTS)
 
 ## As an alternative, one can also add this code in a file 'configure'
 ##
