@@ -68,7 +68,7 @@ PWIZOBJECTS=\
 
 #./boost/thread/src/pthread/once.o \
 
-MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o netCDF.o
+MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o
 
 OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) 
 
@@ -76,9 +76,11 @@ PWIZ_LDFLAGS=
 PWIZ_CPPFLAGS=-I./boost_aux/ -I. -I. -DHAVE_PWIZ_MZML_LIB # -DWINDOWS_NATIVE
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS=$(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lz
-PKG_CPPFLAGS=-I./win/$(R_ARCH) -D_MSC_VER -DWIN32_LEAN_AND_MEAN
+PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)
 PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -D_MSC_VER -DWIN32_LEAN_AND_MEAN -fgnu89-inline
+
+PKG_LIBS = $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lz
+
 
 ## As an alternative, one can also add this code in a file 'configure'
 ##
@@ -102,5 +104,4 @@ PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -D_MSC_VER -DWIN32_LEAN_AND_MEA
 ## Of course, autoconf can also be used to write configure files. This is
 ## done by a number of packages, but recommended only for more advanced users
 ## comfortable with autoconf and its related tools.
-
 
