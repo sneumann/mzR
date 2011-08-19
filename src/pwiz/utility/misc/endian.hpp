@@ -52,7 +52,7 @@ namespace util {
 #endif
 
 
-#if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__BIG_ENDIAN)
+#if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__BIG_ENDIAN || defined(__ppc__) || defined(__POWERPC__) || defined(_M_PPC) )
 #define PWIZ_BIG_ENDIAN
 #endif
 
