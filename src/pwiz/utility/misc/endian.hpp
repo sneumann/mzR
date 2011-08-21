@@ -26,7 +26,7 @@
 
 
 #include "boost/static_assert.hpp"
-
+#include <endian.h>
 
 namespace pwiz {
 namespace util {
@@ -41,6 +41,13 @@ namespace util {
 #define PWIZ_MSVC
 #endif
 
+#ifdef __BYTE_ORDER
+#if __BYTE_ORDER == __BIG_ENDIAN //if both are not defined it is TRUE!
+#define PWIZ_BIG_ENDIAN
+#elif __BYTE_ORDER == __LITTLE_ENDIAN
+#define PWIZ_LITTLE_ENDIAN
+#endif
+#endif
 
 #if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__LITTLE_ENDIAN) || \
     (defined(__DARWIN_BYTE_ORDER) && __DARWIN_BYTE_ORDER==__DARWIN_LITTLE_ENDIAN) || \
@@ -52,7 +59,7 @@ namespace util {
 #endif
 
 
-#if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__BIG_ENDIAN || defined(__ppc__) || defined(__POWERPC__) || defined(_M_PPC) )
+#if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__BIG_ENDIAN)
 #define PWIZ_BIG_ENDIAN
 #endif
 
