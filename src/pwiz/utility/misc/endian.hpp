@@ -26,7 +26,11 @@
 
 
 #include "boost/static_assert.hpp"
+#if defined(__MACH__) && !defined(__APPLE_CC__) 
+#include <machine/endian.h>
+#else
 #include <endian.h>
+#endif
 
 namespace pwiz {
 namespace util {
