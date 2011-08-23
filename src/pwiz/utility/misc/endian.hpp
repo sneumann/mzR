@@ -28,9 +28,6 @@
 #include "boost/static_assert.hpp"
 #if defined(__MACH__) && !defined(__APPLE_CC__) 
 #include <machine/endian.h>
-#else
-#include <endian.h>
-#endif
 
 namespace pwiz {
 namespace util {
@@ -39,7 +36,6 @@ namespace util {
 #if defined(__GLIBC__) || defined(__GLIBCXX__)
 #define PWIZ_GCC
 #endif
-
 
 #if defined(_MSC_VER)
 #define PWIZ_MSVC
