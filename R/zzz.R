@@ -1,3 +1,3 @@
-.onLoad <- function(pkgname, libname){
-    Rcpp::loadRcppModules()
+.onLoad <- function(libname, pkgname){
+    loadRcppModules()
 }
