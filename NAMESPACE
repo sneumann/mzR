@@ -2,10 +2,7 @@ useDynLib(mzR)
 
 importClassesFrom(Biobase, "Versioned")
 importFrom(Biobase, validMsg)
-importFrom(methods, "getClass")
 importFrom(Rcpp, "loadRcppModules")
-
-##exportPattern("^[[:alpha:]]+")
 
 export(openMSfile)
 

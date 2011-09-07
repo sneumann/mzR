@@ -1,3 +1,13 @@
+2011-09-07 Laurent Gatto <lg390@cam.ac.uk>
+	* temporary fixed the 'could not find function "getClass"' warning 
+	  adding require("methods", ... ) to .onLoad 
+	  (see http://comments.gmane.org/gmane.comp.lang.r.rcpp/2140)
+	  but this produces a note about 'Package startup functions should 
+	  not change the search path.' But adding methods to the depends 
+  	  fiels, as advertised in .onAttach, does not fix the original 
+	  warning.
+	* Bump version number to 0.99.2 to track changes.
+
 2011-08-10  Steffen Neumann  <sneumann@ipb-halle.de>
 	* Temporary Fix for "unable to find ... for function "peaks"
 	  by explicitely specifying mzR:: namespace
