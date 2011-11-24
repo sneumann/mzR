@@ -74,7 +74,7 @@ PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ` $(PWIZ_LDFLAGS) `nc-config --libs` -lz
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ` $(PWIZ_LDFLAGS) `nc-config --libs || echo "-lnetcdf"` -lz
 
 all: clean $(SHLIB)
 
