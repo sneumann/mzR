@@ -1,5 +1,10 @@
+2011-11-24  Steffen Neumann  <sneumann@ipb-halle.de>
+	* Fixed linking of NetCDF with previous help from 
+	  Dan Tenenbaum and Martin Morgan.
+	
 2011-09-16 Laurent Gatto <lg390@cam.ac.uk>
 	* Changed é to \'e in mzR.bib.
+
 2011-09-07 Laurent Gatto <lg390@cam.ac.uk>
 	* temporary fixed the 'could not find function "getClass"' warning 
 	  adding require("methods", ... ) to .onLoad 
