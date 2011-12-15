@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/proteowizard/!svn/ver/2514/trunk/pwiz/libraries/boost_aux/boost/lockfree
+END
+ringbuffer.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/proteowizard/!svn/ver/2514/trunk/pwiz/libraries/boost_aux/boost/lockfree/ringbuffer.hpp
+END
+fifo.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/proteowizard/!svn/ver/2514/trunk/pwiz/libraries/boost_aux/boost/lockfree/fifo.hpp
+END
+stack.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/proteowizard/!svn/ver/2514/trunk/pwiz/libraries/boost_aux/boost/lockfree/stack.hpp
+END

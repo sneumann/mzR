@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/functional/generation
+END
+make_fused_procedure.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/functional/generation/make_fused_procedure.hpp
+END
+make_fused_function_object.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/functional/generation/make_fused_function_object.hpp
+END
+make_fused.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/functional/generation/make_fused.hpp
+END
+make_unfused.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/functional/generation/make_unfused.hpp
+END

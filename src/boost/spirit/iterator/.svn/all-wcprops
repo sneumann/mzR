@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/iterator
+END
+fixed_size_queue.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/iterator/fixed_size_queue.hpp
+END
+position_iterator.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/iterator/position_iterator.hpp
+END
+position_iterator_fwd.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/iterator/position_iterator_fwd.hpp
+END
+multi_pass.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/iterator/multi_pass.hpp
+END
+multi_pass_fwd.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/iterator/multi_pass_fwd.hpp
+END
+typeof.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/iterator/typeof.hpp
+END
+file_iterator.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/iterator/file_iterator.hpp
+END
+file_iterator_fwd.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/iterator/file_iterator_fwd.hpp
+END

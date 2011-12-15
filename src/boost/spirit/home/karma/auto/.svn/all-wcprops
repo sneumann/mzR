@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/auto
+END
+create_generator.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/auto/create_generator.hpp
+END
+meta_create.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/auto/meta_create.hpp
+END
+auto.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/auto/auto.hpp
+END

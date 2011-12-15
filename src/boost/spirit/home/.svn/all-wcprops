@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home
+END
+qi.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi.hpp
+END
+phoenix.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/phoenix.hpp
+END
+karma.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma.hpp
+END
+support.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support.hpp
+END
+classic.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic.hpp
+END
+lex.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/lex.hpp
+END

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/lexer/parser/tokeniser
+END
+re_tokeniser.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/lexer/parser/tokeniser/re_tokeniser.hpp
+END
+re_tokeniser_state.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/lexer/parser/tokeniser/re_tokeniser_state.hpp
+END
+num_token.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/lexer/parser/tokeniser/num_token.hpp
+END
+re_tokeniser_helper.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/lexer/parser/tokeniser/re_tokeniser_helper.hpp
+END

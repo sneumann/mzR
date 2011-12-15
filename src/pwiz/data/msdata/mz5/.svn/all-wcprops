@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/proteowizard/!svn/ver/3138/trunk/pwiz/pwiz/data/msdata/mz5
+END
+Connection_mz5.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/proteowizard/!svn/ver/2819/trunk/pwiz/pwiz/data/msdata/mz5/Connection_mz5.hpp
+END
+Configuration_mz5.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/proteowizard/!svn/ver/3138/trunk/pwiz/pwiz/data/msdata/mz5/Configuration_mz5.cpp
+END
+ReferenceWrite_mz5.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/proteowizard/!svn/ver/2811/trunk/pwiz/pwiz/data/msdata/mz5/ReferenceWrite_mz5.cpp
+END
+Translator_mz5.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/proteowizard/!svn/ver/2811/trunk/pwiz/pwiz/data/msdata/mz5/Translator_mz5.cpp
+END
+ReferenceRead_mz5.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/proteowizard/!svn/ver/2895/trunk/pwiz/pwiz/data/msdata/mz5/ReferenceRead_mz5.cpp
+END
+Configuration_mz5.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/proteowizard/!svn/ver/2811/trunk/pwiz/pwiz/data/msdata/mz5/Configuration_mz5.hpp
+END
+Datastructures_mz5.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/proteowizard/!svn/ver/2970/trunk/pwiz/pwiz/data/msdata/mz5/Datastructures_mz5.cpp
+END
+ReferenceWrite_mz5.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/proteowizard/!svn/ver/2811/trunk/pwiz/pwiz/data/msdata/mz5/ReferenceWrite_mz5.hpp
+END
+Translator_mz5.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/proteowizard/!svn/ver/2811/trunk/pwiz/pwiz/data/msdata/mz5/Translator_mz5.hpp
+END
+Connection_mz5.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/proteowizard/!svn/ver/2819/trunk/pwiz/pwiz/data/msdata/mz5/Connection_mz5.cpp
+END
+ReferenceRead_mz5.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/proteowizard/!svn/ver/2811/trunk/pwiz/pwiz/data/msdata/mz5/ReferenceRead_mz5.hpp
+END
+Jamfile.jam
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/proteowizard/!svn/ver/2982/trunk/pwiz/pwiz/data/msdata/mz5/Jamfile.jam
+END
+Datastructures_mz5.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/proteowizard/!svn/ver/2811/trunk/pwiz/pwiz/data/msdata/mz5/Datastructures_mz5.hpp
+END

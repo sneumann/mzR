@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/class
+END
+adapt_assoc_class_named.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/class/adapt_assoc_class_named.hpp
+END
+extension.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/class/extension.hpp
+END
+adapt_class.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/class/adapt_class.hpp
+END
+class_iterator.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/class/class_iterator.hpp
+END
+adapt_class_named.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/class/adapt_class_named.hpp
+END
+adapt_assoc_class.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/class/adapt_assoc_class.hpp
+END

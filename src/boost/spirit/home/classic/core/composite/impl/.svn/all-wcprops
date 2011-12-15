@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl
+END
+sequence.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/sequence.ipp
+END
+difference.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/difference.ipp
+END
+sequential_or.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/sequential_or.ipp
+END
+list.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/list.ipp
+END
+kleene_star.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/kleene_star.ipp
+END
+sequential_and.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/sequential_and.ipp
+END
+alternative.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/alternative.ipp
+END
+directives.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/directives.ipp
+END
+positive.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/positive.ipp
+END
+optional.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/optional.ipp
+END
+intersection.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/intersection.ipp
+END
+exclusive_or.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/composite/impl/exclusive_or.ipp
+END
