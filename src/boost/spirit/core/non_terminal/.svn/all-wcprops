@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/core/non_terminal
+END
+parser_context.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/core/non_terminal/parser_context.hpp
+END
+subrule.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/core/non_terminal/subrule.hpp
+END
+subrule_fwd.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/core/non_terminal/subrule_fwd.hpp
+END
+grammar.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/core/non_terminal/grammar.hpp
+END
+rule.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/core/non_terminal/rule.hpp
+END
+parser_id.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/core/non_terminal/parser_id.hpp
+END

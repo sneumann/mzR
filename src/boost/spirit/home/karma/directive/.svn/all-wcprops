@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive
+END
+buffer.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/buffer.hpp
+END
+verbatim.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/verbatim.hpp
+END
+right_alignment.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/right_alignment.hpp
+END
+center_alignment.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/center_alignment.hpp
+END
+upper_lower_case.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/upper_lower_case.hpp
+END
+columns.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/columns.hpp
+END
+repeat.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/repeat.hpp
+END
+no_delimit.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/no_delimit.hpp
+END
+maxwidth.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/maxwidth.hpp
+END
+encoding.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/encoding.hpp
+END
+delimit.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/delimit.hpp
+END
+left_alignment.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/left_alignment.hpp
+END
+omit.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/directive/omit.hpp
+END

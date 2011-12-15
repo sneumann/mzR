@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted
+END
+array.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/array.hpp
+END
+boost_tuple.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/boost_tuple.hpp
+END
+boost_array.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/boost_array.hpp
+END
+struct.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/struct.hpp
+END
+class.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/class.hpp
+END
+std_pair.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/std_pair.hpp
+END
+mpl.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/mpl.hpp
+END

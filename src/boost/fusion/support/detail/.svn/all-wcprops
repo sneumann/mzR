@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/support/detail
+END
+is_mpl_sequence.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/support/detail/is_mpl_sequence.hpp
+END
+mpl_iterator_category.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/support/detail/mpl_iterator_category.hpp
+END
+as_fusion_element.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/support/detail/as_fusion_element.hpp
+END
+access.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/support/detail/access.hpp
+END
+category_of.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/support/detail/category_of.hpp
+END
+is_view.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/support/detail/is_view.hpp
+END
+unknown_key.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/support/detail/unknown_key.hpp
+END

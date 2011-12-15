@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/iterator/impl
+END
+file_iterator.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/iterator/impl/file_iterator.ipp
+END
+position_iterator.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/iterator/impl/position_iterator.ipp
+END

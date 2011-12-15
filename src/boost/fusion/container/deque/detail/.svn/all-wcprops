@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail
+END
+keyed_element.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/keyed_element.hpp
+END
+deque_forward_ctor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/deque_forward_ctor.hpp
+END
+deque_keyed_values_call.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/deque_keyed_values_call.hpp
+END
+convert_impl.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/convert_impl.hpp
+END
+value_at_impl.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/value_at_impl.hpp
+END
+deque_keyed_values.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/deque_keyed_values.hpp
+END
+at_impl.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/at_impl.hpp
+END
+begin_impl.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/begin_impl.hpp
+END
+as_deque.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/as_deque.hpp
+END
+deque_initial_size.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/deque_initial_size.hpp
+END
+end_impl.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/container/deque/detail/end_impl.hpp
+END

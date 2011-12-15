@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/symbols
+END
+typeof.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/symbols/typeof.hpp
+END
+symbols.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/symbols/symbols.hpp
+END
+symbols_fwd.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/symbols/symbols_fwd.hpp
+END

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/auxiliary
+END
+attr.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/auxiliary/attr.hpp
+END
+eoi.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/auxiliary/eoi.hpp
+END
+eol.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/auxiliary/eol.hpp
+END
+lazy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/auxiliary/lazy.hpp
+END
+attr_cast.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/auxiliary/attr_cast.hpp
+END
+eps.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/auxiliary/eps.hpp
+END

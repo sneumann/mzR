@@ -1,0 +1,263 @@
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions
+END
+expm1.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/expm1.hpp
+END
+binomial.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/binomial.hpp
+END
+cbrt.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/cbrt.hpp
+END
+atanh.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/atanh.hpp
+END
+sinc.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/sinc.hpp
+END
+acosh.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/acosh.hpp
+END
+fpclassify.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/fpclassify.hpp
+END
+laguerre.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/laguerre.hpp
+END
+ellint_1.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/ellint_1.hpp
+END
+ellint_2.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/ellint_2.hpp
+END
+lanczos.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/lanczos.hpp
+END
+ellint_3.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/ellint_3.hpp
+END
+beta.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/beta.hpp
+END
+ellint_rc.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/ellint_rc.hpp
+END
+ellint_rd.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/ellint_rd.hpp
+END
+ellint_rf.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/ellint_rf.hpp
+END
+sin_pi.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/sin_pi.hpp
+END
+log1p.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/log1p.hpp
+END
+ellint_rj.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/ellint_rj.hpp
+END
+legendre.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/legendre.hpp
+END
+sqrt1pm1.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/sqrt1pm1.hpp
+END
+math_fwd.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/math_fwd.hpp
+END
+spherical_harmonic.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/spherical_harmonic.hpp
+END
+trunc.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/trunc.hpp
+END
+hermite.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/hermite.hpp
+END
+digamma.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/digamma.hpp
+END
+sign.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/sign.hpp
+END
+asinh.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/asinh.hpp
+END
+hypot.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/hypot.hpp
+END
+powm1.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/powm1.hpp
+END
+zeta.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/zeta.hpp
+END
+sinhc.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/sinhc.hpp
+END
+pow.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/pow.hpp
+END
+expint.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/expint.hpp
+END
+erf.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/erf.hpp
+END
+cos_pi.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/cos_pi.hpp
+END
+prime.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/prime.hpp
+END
+bessel.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/bessel.hpp
+END
+next.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/next.hpp
+END
+gamma.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/gamma.hpp
+END
+modf.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/modf.hpp
+END
+factorials.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/factorials.hpp
+END
+round.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/special_functions/round.hpp
+END

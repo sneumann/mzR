@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail
+END
+hold_any.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/hold_any.hpp
+END
+endian.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/endian.hpp
+END
+scoped_enum_emulation.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/scoped_enum_emulation.hpp
+END
+make_cons.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/make_cons.hpp
+END
+make_vector.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/make_vector.hpp
+END
+sign.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/sign.hpp
+END
+get_encoding.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/get_encoding.hpp
+END
+pow10.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/pow10.hpp
+END
+as_variant.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/as_variant.hpp
+END
+what_function.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/detail/what_function.hpp
+END

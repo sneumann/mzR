@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/utility/impl
+END
+regex.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/utility/impl/regex.ipp
+END
+escape_char.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/utility/impl/escape_char.ipp
+END
+lists.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/utility/impl/lists.ipp
+END
+chset_operators.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/utility/impl/chset_operators.ipp
+END
+chset.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/utility/impl/chset.ipp
+END
+confix.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/utility/impl/confix.ipp
+END

@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive
+END
+raw.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive/raw.hpp
+END
+lexeme.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive/lexeme.hpp
+END
+repeat.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive/repeat.hpp
+END
+no_skip.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive/no_skip.hpp
+END
+matches.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive/matches.hpp
+END
+encoding.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive/encoding.hpp
+END
+hold.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive/hold.hpp
+END
+skip.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive/skip.hpp
+END
+no_case.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive/no_case.hpp
+END
+omit.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/directive/omit.hpp
+END

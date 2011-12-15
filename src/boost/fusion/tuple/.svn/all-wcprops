@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/tuple
+END
+tuple.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/tuple/tuple.hpp
+END
+tuple_fwd.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/tuple/tuple_fwd.hpp
+END
+tuple_tie.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/tuple/tuple_tie.hpp
+END
+make_tuple.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/tuple/make_tuple.hpp
+END

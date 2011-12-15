@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/operator
+END
+list.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/operator/list.hpp
+END
+alternative.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/operator/alternative.hpp
+END
+not_predicate.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/operator/not_predicate.hpp
+END
+and_predicate.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/operator/and_predicate.hpp
+END
+kleene.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/operator/kleene.hpp
+END
+plus.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/operator/plus.hpp
+END
+optional.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/operator/optional.hpp
+END
+sequence.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/operator/sequence.hpp
+END

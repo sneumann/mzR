@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include
+END
+karma_directive.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/karma_directive.hpp
+END
+qi.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/qi.hpp
+END
+qi_distinct.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/qi_distinct.hpp
+END
+qi_flush_multi_pass.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/qi_flush_multi_pass.hpp
+END
+qi_subrule.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/qi_subrule.hpp
+END
+karma.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/karma.hpp
+END
+karma_subrule.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/karma_subrule.hpp
+END
+qi_iter_pos.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/qi_iter_pos.hpp
+END
+qi_confix.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/qi_confix.hpp
+END
+qi_nonterminal.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/qi_nonterminal.hpp
+END
+karma_confix.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/karma_confix.hpp
+END
+karma_nonterminal.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/karma_nonterminal.hpp
+END
+qi_primitive.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/qi_primitive.hpp
+END
+qi_directive.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/repository/include/qi_directive.hpp
+END

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/auxiliary
+END
+eol.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/auxiliary/eol.hpp
+END
+lazy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/auxiliary/lazy.hpp
+END
+attr_cast.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/auxiliary/attr_cast.hpp
+END
+eps.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/auxiliary/eps.hpp
+END

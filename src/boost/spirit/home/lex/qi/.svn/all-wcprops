@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/lex/qi
+END
+plain_token.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/lex/qi/plain_token.hpp
+END
+in_state.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/lex/qi/in_state.hpp
+END
+state_switcher.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/lex/qi/state_switcher.hpp
+END

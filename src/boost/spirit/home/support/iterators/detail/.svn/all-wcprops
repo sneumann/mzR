@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail
+END
+split_functor_input_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/split_functor_input_policy.hpp
+END
+fixed_size_queue.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/fixed_size_queue.hpp
+END
+combine_policies.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/combine_policies.hpp
+END
+buf_id_check_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/buf_id_check_policy.hpp
+END
+split_std_deque_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/split_std_deque_policy.hpp
+END
+ref_counted_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/ref_counted_policy.hpp
+END
+fixed_size_queue_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/fixed_size_queue_policy.hpp
+END
+functor_input_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/functor_input_policy.hpp
+END
+buffering_input_iterator_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/buffering_input_iterator_policy.hpp
+END
+multi_pass.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/multi_pass.hpp
+END
+first_owner_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/first_owner_policy.hpp
+END
+istream_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/istream_policy.hpp
+END
+lex_input_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/lex_input_policy.hpp
+END
+input_iterator_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/input_iterator_policy.hpp
+END
+no_check_policy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/support/iterators/detail/no_check_policy.hpp
+END

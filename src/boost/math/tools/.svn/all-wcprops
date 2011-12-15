@@ -1,0 +1,119 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools
+END
+series.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/series.hpp
+END
+precision.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/precision.hpp
+END
+workaround.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/workaround.hpp
+END
+real_cast.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/real_cast.hpp
+END
+toms748_solve.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/toms748_solve.hpp
+END
+stats.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/stats.hpp
+END
+fraction.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/fraction.hpp
+END
+config.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/config.hpp
+END
+roots.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/roots.hpp
+END
+traits.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/traits.hpp
+END
+test_data.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/test_data.hpp
+END
+rational.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/rational.hpp
+END
+minima.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/minima.hpp
+END
+user.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/user.hpp
+END
+test.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/test.hpp
+END
+remez.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/remez.hpp
+END
+polynomial.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/polynomial.hpp
+END
+promotion.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/promotion.hpp
+END
+solve.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/math/tools/solve.hpp
+END

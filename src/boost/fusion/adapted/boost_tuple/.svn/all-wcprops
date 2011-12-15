@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/boost_tuple
+END
+tag_of.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/boost_tuple/tag_of.hpp
+END
+boost_tuple_iterator.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/fusion/adapted/boost_tuple/boost_tuple_iterator.hpp
+END

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/meta/impl
+END
+traverse.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/meta/impl/traverse.ipp
+END
+fundamental.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/meta/impl/fundamental.ipp
+END
+parser_traits.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/meta/impl/parser_traits.ipp
+END
+refactoring.ipp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/meta/impl/refactoring.ipp
+END

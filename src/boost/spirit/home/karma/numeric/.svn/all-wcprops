@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/numeric
+END
+int.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/numeric/int.hpp
+END
+real_policies.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/numeric/real_policies.hpp
+END
+bool.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/numeric/bool.hpp
+END
+uint.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/numeric/uint.hpp
+END
+bool_policies.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/numeric/bool_policies.hpp
+END
+real.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/karma/numeric/real.hpp
+END

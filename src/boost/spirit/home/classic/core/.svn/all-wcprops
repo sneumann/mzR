@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core
+END
+safe_bool.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/safe_bool.hpp
+END
+match.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/match.hpp
+END
+parser.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/parser.hpp
+END
+assert.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/assert.hpp
+END
+nil.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/nil.hpp
+END
+config.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/config.hpp
+END
+typeof.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/classic/core/typeof.hpp
+END

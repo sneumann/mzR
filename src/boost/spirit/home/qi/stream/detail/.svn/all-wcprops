@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/stream/detail
+END
+iterator_source.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/stream/detail/iterator_source.hpp
+END
+match_manip.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/stream/detail/match_manip.hpp
+END
+match_manip_auto.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/boost/!svn/ver/61817/tags/release/Boost_1_43_0/boost/spirit/home/qi/stream/detail/match_manip_auto.hpp
+END
