@@ -1,3 +1,7 @@
+2011-12-14  Steffen Neumann  <sneumann@ipb-halle.de>
+
+	* Updated to pwiz r3148
+
 2011-11-24  Steffen Neumann  <sneumann@ipb-halle.de>
 	* Fixed linking of NetCDF with previous help from 
 	  Dan Tenenbaum and Martin Morgan.
