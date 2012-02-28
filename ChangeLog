@@ -1,3 +1,8 @@
+2012-02-28  Steffen Neumann  <sneumann@ipb-halle.de>	
+
+	* src/RcppRamp.cpp: Change the (temporary) Vectors from STL
+	to Rcpp::*Vector for reduced memory footprint
+	
 2011-12-14  Steffen Neumann  <sneumann@ipb-halle.de>
 
 	* Updated to pwiz r3148

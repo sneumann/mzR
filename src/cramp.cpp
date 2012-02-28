@@ -117,12 +117,19 @@ rampInfo* cRamp::do_ramp( ramp_fileoffset_t arg , eWhatToRead	what )
    if ((RAMP_RUNINFO != what) && (RAMP_INSTRUMENT != what) && !m_scanOffsets) {
       int iLastScan = 0; 
      // we need the index to get anything besides the header
+      //      std::cerr << "in: getIndexOffset(m_handle);!\n";
       ramp_fileoffset_t indexOffset = getIndexOffset(m_handle);
+      //      std::cerr << "out: getIndexOffset(m_handle);!\n";
+
+      // std::cerr << "in: readIndex();!\n";
       m_scanOffsets = readIndex(m_handle, indexOffset, &iLastScan);
+      //std::cerr << "out: readIndex();!\n";
       if (iLastScan >= m_runInfo->m_data.scanCount) {
 		 if (!m_declaredScansOnly) {
            m_runInfo->m_data.scanCount = iLastScan;
 		 } else { // get rid of all the fake entries created
+
+		   //  std::cerr << "get rid of all the fake entries created\n";
 			 for (int n=1;n<=iLastScan;n++) { // ramp is 1 based
 				 if (m_scanOffsets[n]==-1) {
 					// find a run of fakes
@@ -167,10 +174,14 @@ rampInfo* cRamp::do_ramp( ramp_fileoffset_t arg , eWhatToRead	what )
          switch( what )
          {
          case RAMP_RUNINFO:
+	   //	   std::cerr << "in: rampRunInfo( m_handle )\n";
             returnPtr = new rampRunInfo( m_handle );
+	    //  std::cerr << "out: rampRunInfo( m_handle )\n";
             break;
          case RAMP_HEADER:
+	   //  std::cerr <<  "in: rampScanInfo( m_handle, scanOffset, (int)arg )\n" ;
             returnPtr = new rampScanInfo( m_handle, scanOffset, (int)arg );
+	    //std::cerr <<  "out: rampScanInfo( m_handle, scanOffset, (int)arg )\n" ;
             if (returnPtr) {
 #ifdef HAVE_PWIZ_MZML_LIB
 			   if (!m_handle->mzML) // rampadapter already set this for us
@@ -198,7 +209,9 @@ rampInfo* cRamp::do_ramp( ramp_fileoffset_t arg , eWhatToRead	what )
             
          // HENRY -- add the instrument info reading functionality (present in RAMP, but not provided in cRAMP before)
          case RAMP_INSTRUMENT:
+	   //	   std::cerr <<  "in: rampInstrumentInfo(m_handle)\n" ;
             returnPtr = new rampInstrumentInfo(m_handle);
+	    //std::cerr <<  "out: rampInstrumentInfo(m_handle)\n" ;
             if (((rampInstrumentInfo*)returnPtr)->m_instrumentStructPtr == NULL) {
               delete ((rampInstrumentInfo*)returnPtr);
               returnPtr = NULL;
