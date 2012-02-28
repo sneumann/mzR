@@ -169,31 +169,31 @@ RcppRamp::getAllScanHeaderInfo ( ) {
       int N = ramp->getLastScan();
       rampScanInfo *info = ramp->getScanHeaderInfo( 1 );
       ScanHeaderStruct scanHeader;
-      std::vector<int> seqNum(N); // number in sequence observed file (1-based)
-      std::vector<int> acquisitionNum(N); // scan number as declared in File (may be gaps)
-      std::vector<int>  msLevel(N);
-      std::vector<int>  peaksCount(N);
-      std::vector<double> totIonCurrent(N);
-      std::vector<double> retentionTime(N);        /* in seconds */
-      std::vector<double> basePeakMZ(N);
-      std::vector<double> basePeakIntensity(N);
-      std::vector<double> collisionEnergy(N);
-      std::vector<double> ionisationEnergy(N);
-      std::vector<double> lowMZ(N);
-      std::vector<double> highMZ(N);
-      std::vector<int> precursorScanNum(N); /* only if MS level > 1 */
-      std::vector<double> precursorMZ(N);  /* only if MS level > 1 */
-      std::vector<int> precursorCharge(N);  /* only if MS level > 1 */
-      std::vector<double> precursorIntensity(N);  /* only if MS level > 1 */
+      Rcpp::IntegerVector seqNum(N); // number in sequence observed file (1-based)
+      Rcpp::IntegerVector acquisitionNum(N); // scan number as declared in File (may be gaps)
+      Rcpp::IntegerVector  msLevel(N);
+      Rcpp::IntegerVector  peaksCount(N);
+      Rcpp::NumericVector totIonCurrent(N);
+      Rcpp::NumericVector retentionTime(N);        /* in seconds */
+      Rcpp::NumericVector basePeakMZ(N);
+      Rcpp::NumericVector basePeakIntensity(N);
+      Rcpp::NumericVector collisionEnergy(N);
+      Rcpp::NumericVector ionisationEnergy(N);
+      Rcpp::NumericVector lowMZ(N);
+      Rcpp::NumericVector highMZ(N);
+      Rcpp::IntegerVector precursorScanNum(N); /* only if MS level > 1 */
+      Rcpp::NumericVector precursorMZ(N);  /* only if MS level > 1 */
+      Rcpp::IntegerVector precursorCharge(N);  /* only if MS level > 1 */
+      Rcpp::NumericVector precursorIntensity(N);  /* only if MS level > 1 */
       // char scanType[SCANTYPE_LENGTH];
       // char activationMethod[SCANTYPE_LENGTH];
       // char possibleCharges[SCANTYPE_LENGTH];
       // int numPossibleCharges;
       // bool possibleChargesArray[CHARGEARRAY_LENGTH]; /* NOTE: does NOT include "precursorCharge" information; only from "possibleCharges" */
-      std::vector<int> mergedScan(N);  /* only if MS level > 1 */
-      std::vector<int> mergedResultScanNum(N); /* scan number of the resultant merged scan */
-      std::vector<int> mergedResultStartScanNum(N); /* smallest scan number of the scanOrigin for merged scan */
-      std::vector<int> mergedResultEndScanNum(N); /* largest scan number of the scanOrigin for merged scan */
+      Rcpp::IntegerVector mergedScan(N);  /* only if MS level > 1 */
+      Rcpp::IntegerVector mergedResultScanNum(N); /* scan number of the resultant merged scan */
+      Rcpp::IntegerVector mergedResultStartScanNum(N); /* smallest scan number of the scanOrigin for merged scan */
+      Rcpp::IntegerVector mergedResultEndScanNum(N); /* largest scan number of the scanOrigin for merged scan */
       
       for (int whichScan=1; whichScan <= N; whichScan++) {
 	readHeader(ramp->m_handle, ramp->m_scanOffsets[whichScan], &scanHeader);
