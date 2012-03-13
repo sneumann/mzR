@@ -10,3 +10,7 @@
 
 # SVN stuff
 .svn
+
+# RUnit generated stuff
+inst/unitTests/report*
+
