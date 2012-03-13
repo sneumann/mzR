@@ -70,7 +70,7 @@ PWIZOBJECTS=\
 
 MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o
 
-OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) 
+OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 
 PWIZ_LDFLAGS=
 PWIZ_CPPFLAGS=-I./boost_aux/ -I. -I. -DHAVE_PWIZ_MZML_LIB # -DWINDOWS_NATIVE
