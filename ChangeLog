@@ -1,3 +1,8 @@
+2012-03-13  Steffen Neumann  <sneumann@paddy>
+
+	* R/ramp.R, src/rampR.cpp: back-ported the old XCMS rampR
+	interface, which is much faster than cramp
+
 2012-02-28  Steffen Neumann  <sneumann@ipb-halle.de>	
 
 	* src/RcppRamp.cpp: Change the (temporary) Vectors from STL
