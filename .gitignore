@@ -1,0 +1,12 @@
+# editor backup files
+*~
+\#*\#
+
+# compiled code
+*.o
+*.so
+*.dll
+*.a
+
+# SVN stuff
+.svn
