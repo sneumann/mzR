@@ -286,8 +286,7 @@ SEXP RampRScanHeaders(SEXP rampid) {
         precursorScanNum[i] = scanHeader.precursorScanNum;
         precursorMZ[i] = scanHeader.precursorMZ;
         precursorIntensity[i] = scanHeader.precursorIntensity;
-	// STN: temporary disabled
-	//        polarity[i] = scanHeader.polarity;
+	polarity[i] = scanHeader.polarity;
         precursorCharge[i] = scanHeader.precursorCharge;
         for (j = 0; j < ntypes; j++)
             if (!strcmp(scanHeader.scanType, scanTypes+j*SCANTYPE_LENGTH)) {
