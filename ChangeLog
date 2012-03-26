@@ -1,4 +1,9 @@
-2012-03-13  Steffen Neumann  <sneumann@paddy>
+2012-03-26  Steffen Neumann  <sneumann@ipb-halle.de>
+
+	* RAMPAdapter.cpp: fix reading the first spectrum 
+	if it has an index==0
+
+2012-03-13  Steffen Neumann  <sneumann@ipb-halle.de>
 
 	* R/ramp.R, src/rampR.cpp: back-ported the old XCMS rampR
 	interface, which is much faster than cramp
