@@ -141,7 +141,7 @@ int RAMPAdapter::Impl::getScanNumber(size_t index) const
 void RAMPAdapter::Impl::getScanHeader(size_t index, ScanHeaderStruct& result, bool reservePeaks /*= true*/) const
 {
     // use previous spectrum if possible
-    if (!lastSpectrum.get() || lastSpectrum->index != index)
+    if (index==0 || !lastSpectrum.get() || lastSpectrum->index != index)
         lastSpectrum = msd_.run.spectrumListPtr->spectrum(index, reservePeaks);
 
     SpectrumPtr spectrum = lastSpectrum;
