@@ -104,37 +104,48 @@ typedef struct {
 #ifdef HAVE_PWIZ_MZML_LIB
    pwiz::msdata::RAMPAdapter *mzML; // if nonNULL, then we're reading mzML 
 #endif
+#ifdef RAMP_HAVE_GZ_INPUT
+   int bIsGzData; // if true, need random_access_gzgets() and friends.
+#endif
+
    int bIsMzData; // if not mzML, then is it mzXML or mzData?
 } RAMPFILE;
 
 #ifdef RAMP_HAVE_GZ_INPUT
+#define ramp_fread(buf,len,handle) random_access_gzread((handle)->fileHandle,buf,len)
 #define ramp_fgets(buf,len,handle) random_access_gzgets((handle)->fileHandle, buf, len )
 #define ramp_feof(a) random_access_gzeof((a)->fileHandle)
 #define ramp_fseek(a,b,c) random_access_gzseek((a)->fileHandle,b,c)
-#define ramp_fread(buf,len,handle) random_access_gzread((handle)->fileHandle,buf,len)
 #define ramp_ftell(a) random_access_gztell((a)->fileHandle)
 typedef pwiz::util::random_access_compressed_ifstream_off_t ramp_fileoffset_t;
+
 #elif defined(RAMP_NONNATIVE_LONGFILE) // use MSFT API for 64 bit file pointers
+
 typedef __int64 ramp_fileoffset_t;
-#define ramp_fseek(a,b,c) _lseeki64((a)->fileHandle,b,c)
-#define ramp_ftell(a) _lseeki64((a)->fileHandle,0,SEEK_CUR)
 #define ramp_fread(buf,len,handle) read((handle)->fileHandle,buf,len)
 char *ramp_fgets(char *buf,int len,RAMPFILE *handle);
 #define ramp_feof(handle) eof((handle)->fileHandle)
+#define ramp_fseek(a,b,c) _lseeki64((a)->fileHandle,b,c)
+#define ramp_ftell(a) _lseeki64((a)->fileHandle,0,SEEK_CUR)
+
 #else // can use fopen for long files
+
 #define ramp_fread(buf,len,handle) fread(buf,1,len,(handle)->fileHandle)
 #define ramp_fgets(buf,len,handle) fgets(buf, len, (handle)->fileHandle)
 #define ramp_feof(handle) feof((handle)->fileHandle)
+
 #ifdef __MINGW32__
 typedef off64_t ramp_fileoffset_t;
 #define ramp_fseek(a,b,c) fseeko64((a)->fileHandle,b,c)
 #define ramp_ftell(a) ftello64((a)->fileHandle)
+
 #else // a real OS with real file handling
 typedef off_t ramp_fileoffset_t;
 #define ramp_fseek(a,b,c) fseeko((a)->fileHandle,b,c)
 #define ramp_ftell(a) ftello((a)->fileHandle)
-#endif
-#endif 
+#endif //  __MINGW32__
+
+#endif // RAMP_HAVE_GZ_INPUT
 
 
 #include <string.h>
