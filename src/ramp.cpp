@@ -183,11 +183,8 @@ RAMPFILE *rampOpenFile(const char *filename) {
       int bOK;
 #ifdef RAMP_HAVE_GZ_INPUT
       //printf("3: >%s\n", filename);
-
-
-      strncasecmp(filename + strlen(filename) - 3, ".gz", 3);
-
-      if (strncasecmp(filename + strlen(filename) - 3, ".gz", 3)) { 
+      //fprintf(stderr, "Extension is <%s>\n", filename + strlen(filename) - 3);
+      if (strncasecmp(filename + strlen(filename) - 3, ".gz", 3)==0) { 
 	result->bIsGzData = true;
 	result->fileHandle = random_access_gzopen(filename);
 	bOK = (result->fileHandle != NULL);
