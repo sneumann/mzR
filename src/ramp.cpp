@@ -35,6 +35,8 @@ and gzipped versions of all of these if you have pwiz
 #define SIZE_BUF 512
 
 #include <vector>
+#include <algorithm> // for max()
+
 #ifdef HAVE_PWIZ_MZML_LIB
 #include <iostream>
 #include <exception>
@@ -175,13 +177,26 @@ RAMPFILE *rampOpenFile(const char *filename) {
 	   return NULL;
 	}
 
-   RAMPFILE *result = (RAMPFILE *)calloc(1,sizeof(RAMPFILE));
+	RAMPFILE *result = (RAMPFILE *)calloc(1,std::max(sizeof(RAMPFILE),
+						    sizeof(FILE)));
    if (result) {
       int bOK;
 #ifdef RAMP_HAVE_GZ_INPUT
-	 result->fileHandle = random_access_gzopen(filename);
-	 printf("3: >%s\n", filename);
-     bOK = (result->fileHandle != NULL);
+      //printf("3: >%s\n", filename);
+
+
+      strncasecmp(filename + strlen(filename) - 3, ".gz", 3);
+
+      if (strncasecmp(filename + strlen(filename) - 3, ".gz", 3)) { 
+	result->bIsGzData = true;
+	result->fileHandle = random_access_gzopen(filename);
+	bOK = (result->fileHandle != NULL);
+      } else {
+	result->bIsGzData = false;
+	result->fileHandle = (random_access_gzFile*)(void*)fopen(filename,"rb");
+	bOK = (result->fileHandle != NULL);
+      }
+
 #elif defined(RAMP_NONNATIVE_LONGFILE)
      result->fileHandle = open(filename,_O_BINARY|_O_RDONLY);
      bOK = (result->fileHandle >= 0);
@@ -219,7 +234,10 @@ RAMPFILE *rampOpenFile(const char *filename) {
 			   ) {
 			  bRecognizedFormat = 1;
 #ifdef RAMP_HAVE_GZ_INPUT
-			  random_access_gzclose(result->fileHandle); // don't confuse pwiz by holding onto handle
+			   // don't confuse pwiz by holding onto handle
+			  (result->bIsGzData\
+			   ? random_access_gzclose(result->fileHandle)\
+			   : fclose((FILE*)result->fileHandle));
 			  result->fileHandle = NULL;
 #elif defined(RAMP_NONNATIVE_LONGFILE)
 			  close(result->fileHandle); // don't confuse pwiz by holding onto handle
@@ -279,7 +297,10 @@ void rampCloseFile(RAMPFILE *pFI) {
 	   } else
 #endif
 #ifdef RAMP_HAVE_GZ_INPUT
-	  random_access_gzclose(pFI->fileHandle); // don't confuse pwiz by holding onto handle
+	     // don't confuse pwiz by holding onto handle
+	     (pFI->bIsGzData						\
+	      ? random_access_gzclose(pFI->fileHandle)			\
+	      : fclose((FILE*)pFI->fileHandle));
 #elif defined(RAMP_NONNATIVE_LONGFILE)
       close(pFI->fileHandle);
 #else
