@@ -17,7 +17,7 @@ License: Artistic-2.0
 LazyLoad: yes
 Depends: Rcpp (>= 0.9.4), methods
 Imports: Biobase
-Suggests: msdata, RUnit, faahKO
+Suggests: msdata (>= 0.1.9), RUnit, faahKO
 LinkingTo: Rcpp
 RcppModules: Ramp
 SystemRequirements: GNU make, NetCDF, zlib
