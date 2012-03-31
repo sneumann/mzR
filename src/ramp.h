@@ -112,11 +112,22 @@ typedef struct {
 } RAMPFILE;
 
 #ifdef RAMP_HAVE_GZ_INPUT
-#define ramp_fread(buf,len,handle) random_access_gzread((handle)->fileHandle,buf,len)
-#define ramp_fgets(buf,len,handle) random_access_gzgets((handle)->fileHandle, buf, len )
-#define ramp_feof(a) random_access_gzeof((a)->fileHandle)
-#define ramp_fseek(a,b,c) random_access_gzseek((a)->fileHandle,b,c)
-#define ramp_ftell(a) random_access_gztell((a)->fileHandle)
+#define ramp_fread(buf,len,handle) ((handle)->bIsGzData\
+				    ?random_access_gzread((handle)->fileHandle,buf,len)\
+				    :fread(buf,1,len,(FILE *)(handle)->fileHandle))
+#define ramp_fgets(buf,len,handle)  ((handle)->bIsGzData\
+				     ?random_access_gzgets((handle)->fileHandle, buf, len ) \
+				     :fgets(buf, len, (FILE *)(handle)->fileHandle))
+#define ramp_feof(handle) ((handle)->bIsGzData \
+			   ?random_access_gzeof((handle)->fileHandle) \
+			   :feof((FILE *)(handle)->fileHandle))
+#define ramp_fseek(handle,b,c) ((handle)->bIsGzData \
+				?random_access_gzseek((handle)->fileHandle,b,c)	\
+				:fseeko((FILE *)(handle)->fileHandle,b,c))
+#define ramp_ftell(handle) ((handle)->bIsGzData \
+			    ?random_access_gztell((handle)->fileHandle)	\
+			    :ftello((FILE *)(handle)->fileHandle))
+
 typedef pwiz::util::random_access_compressed_ifstream_off_t ramp_fileoffset_t;
 
 #elif defined(RAMP_NONNATIVE_LONGFILE) // use MSFT API for 64 bit file pointers
