@@ -52,7 +52,7 @@ and mzML, if you have the PWIZ library from Spielberg Family Proteomics Center
 #ifdef TPPLIB
 #define HAVE_PWIZ_MZML_LIB 1 // define this to enable use of Spielberg Proteomics Center's pwiz mzML reader
 #endif
-#ifdef HAVE_PWIZ_MZML_LIB
+#ifdef HAVE_PWIZ_MZML_LIB && !defined(__MINGW32__) && !defined(__MINGW64__)
 #define RAMP_HAVE_GZ_INPUT 1 // can read mzxml.gz, mzdata.gz - depends on pwiz lib
 #endif
 
@@ -66,6 +66,9 @@ and mzML, if you have the PWIZ library from Spielberg Family Proteomics Center
 #include <netinet/in.h>
 #endif
 #include <sys/stat.h>
+
+// needed for compile of ramp.cpp on windows, regardless of RAMP_HAVE_GZ_INPUT 
+#include "random_access_gzFile.h" // for reading .mzxml.gz
 
 #ifdef RAMP_HAVE_GZ_INPUT
 #include "random_access_gzFile.h" // for reading .mzxml.gz
