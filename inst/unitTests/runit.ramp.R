@@ -48,7 +48,7 @@ test.mzData <- function() {
     library(msdata)
     library(mzR)
     cdfpath <- system.file("microtofq", package = "msdata")
-    file <- list.files(cdfpath, pattern="MM14.mzdata",
+    file <- list.files(cdfpath, pattern="MM14.mzdata$",
                        full.names=TRUE, recursive = TRUE)
     mzdata <- openMSfile(file)
     checkTrue(class(mzdata)=="mzRramp")
