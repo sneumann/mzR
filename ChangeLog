@@ -1,3 +1,8 @@
+2012-03-31  Steffen Neumann  <sneumann@ipb-halle.de>
+
+	* src/ramp.h: disable new I/O on windows, should compile, 
+	but will fail unit test with *.gz file
+
 2012-03-26  Steffen Neumann  <sneumann@ipb-halle.de>
 
 	* Added unit tests for *.mzdata.gz
