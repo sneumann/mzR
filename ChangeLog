@@ -1,5 +1,11 @@
 2012-04-04  Steffen Neumann  <sneumann@ipb-halle.de>
 
+	* src/pwiz/data/msdata/RAMPAdapter.cpp (pwiz): Revert hack from 2012-03-26  
+	* src/pwiz/data/msdata/MSData.hpp (pwiz): Add Patch suggested by Brian Pratt, 
+	for a better fix of problem if first spectrum if it has an index==0
+	
+2012-04-04  Steffen Neumann  <sneumann@ipb-halle.de>
+
 	* src/ramp.h: enable new I/O on windows
 
 	2012-03-31  Steffen Neumann  <sneumann@ipb-halle.de>
