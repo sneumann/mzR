@@ -478,7 +478,7 @@ struct PWIZ_API_DECL SpectrumIdentity
     /// for file-based MSData implementations, this attribute may refer to the spectrum's position in the file
 	boost::iostreams::stream_offset sourceFilePosition;
 
-    SpectrumIdentity() : index(0), sourceFilePosition(-1) {}
+    SpectrumIdentity() : index((size_t)-1), sourceFilePosition(-1) {}
 };
 
 
