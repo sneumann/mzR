@@ -52,7 +52,7 @@ and mzML, if you have the PWIZ library from Spielberg Family Proteomics Center
 #ifdef TPPLIB
 #define HAVE_PWIZ_MZML_LIB 1 // define this to enable use of Spielberg Proteomics Center's pwiz mzML reader
 #endif
-#if defined(HAVE_PWIZ_MZML_LIB) && !defined(__MINGW32__) && !defined(__MINGW64__)
+#if defined(HAVE_PWIZ_MZML_LIB) 
 #define RAMP_HAVE_GZ_INPUT 1 // can read mzxml.gz, mzdata.gz - depends on pwiz lib
 #endif
 
@@ -114,7 +114,7 @@ typedef struct {
    int bIsMzData; // if not mzML, then is it mzXML or mzData?
 } RAMPFILE;
 
-#ifdef RAMP_HAVE_GZ_INPUT
+#if (defined RAMP_HAVE_GZ_INPUT) && !defined(__MINGW32__) //&& !defined(__MINGW64__)
 #define ramp_fread(buf,len,handle) ((handle)->bIsGzData\
 				    ?random_access_gzread((handle)->fileHandle,buf,len)\
 				    :fread(buf,1,len,(FILE *)(handle)->fileHandle))
@@ -133,6 +133,27 @@ typedef struct {
 
 typedef pwiz::util::random_access_compressed_ifstream_off_t ramp_fileoffset_t;
 
+#elif (defined RAMP_HAVE_GZ_INPUT) && defined(__MINGW32__) //&& !defined(__MINGW64__)
+
+#define ramp_fread(buf,len,handle) ((handle)->bIsGzData\
+				    ?random_access_gzread((handle)->fileHandle,buf,len)\
+				    :fread(buf,1,len,(FILE *)(handle)->fileHandle))
+#define ramp_fgets(buf,len,handle)  ((handle)->bIsGzData\
+				     ?random_access_gzgets((handle)->fileHandle, buf, len ) \
+				     :fgets(buf, len, (FILE *)(handle)->fileHandle))
+#define ramp_feof(handle) ((handle)->bIsGzData \
+			   ?random_access_gzeof((handle)->fileHandle) \
+			   :feof((FILE *)(handle)->fileHandle))
+#define ramp_fseek(handle,b,c) ((handle)->bIsGzData \
+				?random_access_gzseek((handle)->fileHandle,b,c)	\
+				:fseek((FILE *)(handle)->fileHandle,b,c))
+#define ramp_ftell(handle) ((handle)->bIsGzData \
+			    ?random_access_gztell((handle)->fileHandle)	\
+			    :ftell((FILE *)(handle)->fileHandle))
+
+typedef pwiz::util::random_access_compressed_ifstream_off_t ramp_fileoffset_t;
+
+
 #elif defined(RAMP_NONNATIVE_LONGFILE) // use MSFT API for 64 bit file pointers
 
 typedef __int64 ramp_fileoffset_t;
@@ -150,11 +171,13 @@ char *ramp_fgets(char *buf,int len,RAMPFILE *handle);
 
 #ifdef __MINGW32__
 typedef off64_t ramp_fileoffset_t;
+
 #define ramp_fseek(a,b,c) fseeko64((a)->fileHandle,b,c)
 #define ramp_ftell(a) ftello64((a)->fileHandle)
 
 #else // a real OS with real file handling
 typedef off_t ramp_fileoffset_t;
+
 #define ramp_fseek(a,b,c) fseeko((a)->fileHandle,b,c)
 #define ramp_ftell(a) ftello((a)->fileHandle)
 #endif //  __MINGW32__

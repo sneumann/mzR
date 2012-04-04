@@ -1,4 +1,8 @@
-2012-03-31  Steffen Neumann  <sneumann@ipb-halle.de>
+2012-04-04  Steffen Neumann  <sneumann@ipb-halle.de>
+
+	* src/ramp.h: enable new I/O on windows
+
+	2012-03-31  Steffen Neumann  <sneumann@ipb-halle.de>
 
 	* src/ramp.h: disable new I/O on windows, should compile, 
 	but will fail unit test with *.gz file
