@@ -1,9 +1,7 @@
 test.mzXML <- function() {
     library(msdata)
     library(mzR)
-    cdfpath <- system.file("threonine", package = "msdata")
-    file <- list.files(cdfpath, pattern="threonine_i2_e35_pH_tree.mzXML",
-                       full.names=TRUE, recursive = TRUE)
+    file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML", package = "msdata")
     mzxml <- openMSfile(file)
     checkTrue(class(mzxml)=="mzRramp")
     show(mzxml)
@@ -24,9 +22,7 @@ test.mzXML <- function() {
 test.mzML <- function() {
     library(msdata)
     library(mzR)
-    cdfpath <- system.file("microtofq", package = "msdata")
-    file <- list.files(cdfpath, pattern="MM14.mzML",
-                       full.names=TRUE, recursive = TRUE)
+    file <- system.file("microtofq", "MM14.mzML", package = "msdata")
     mzml <- openMSfile(file)
     checkTrue(class(mzml)=="mzRramp")
     show(mzml)
@@ -47,9 +43,27 @@ test.mzML <- function() {
 test.mzData <- function() {
     library(msdata)
     library(mzR)
-    cdfpath <- system.file("microtofq", package = "msdata")
-    file <- list.files(cdfpath, pattern="MM14.mzdata$",
-                       full.names=TRUE, recursive = TRUE)
+    file <- system.file("microtofq", "MM14.mzdata", package = "msdata")
+    mzdata <- openMSfile(file)
+    checkTrue(class(mzdata)=="mzRramp")
+    show(mzdata)
+    length(mzdata)
+    runInfo(mzdata)
+    checkTrue(all(instrumentInfo(mzdata)==""))
+    peaks(mzdata)
+    peaks(mzdata,1)
+    peaks(mzdata,2:3)
+    peaksCount(mzdata)
+    header(mzdata,1)
+    header(mzdata,2:3)
+    fileName(mzdata)
+    close(mzdata)    
+}
+
+test.mzData.gz <- function() {
+    library(msdata)
+    library(mzR)
+    file <- system.file("microtofq", "MM14.mzdata.gz", package = "msdata")
     mzdata <- openMSfile(file)
     checkTrue(class(mzdata)=="mzRramp")
     show(mzdata)
