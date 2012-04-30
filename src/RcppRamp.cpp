@@ -85,7 +85,7 @@ Rcpp::List
 RcppRamp::getInstrumentInfo ( ) {
   if (ramp != NULL) {
     if (!isInCacheInstrumentInfo) {
-      printf("Read from disk.\n ");
+      // printf("Read from disk.\n ");
       rampInstrumentInfo *info = ramp->getInstrumentInfo(); // NULL for mzData
 
       if (info != NULL) { 
@@ -110,7 +110,7 @@ RcppRamp::getInstrumentInfo ( ) {
       }
       isInCacheInstrumentInfo = TRUE;
     } else {
-      printf("Read from cache.\n ");
+      // printf("Read from cache.\n ");
     }
     return(instrumentInfo);
   }
