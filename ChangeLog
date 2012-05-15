@@ -1,3 +1,8 @@
+2012-05-15  Steffen Neumann  <sneumann@ipb-halle.de>
+
+	* libstdcpp3.hpp: applied patch by Alvaro Cuadros Inostroza
+	for gcc-4.7 compatibility in boost
+
 2012-04-04  Steffen Neumann  <sneumann@ipb-halle.de>
 
 	* src/pwiz/data/msdata/RAMPAdapter.cpp (pwiz): Revert hack from 2012-03-26  
