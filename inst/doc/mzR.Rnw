@@ -47,7 +47,7 @@
 
 \section{Introduction}
 
-The \Rpackage{mzR} package aims at providing a common interface to
+The \Rpackage{mzR} \citep{Chambers2012} package aims at providing a common interface to
 several mass spectrometry data formats, namely \texttt{mzData}
 \citep{Orchard2007}, \texttt{mzXML} \citep{Pedrioli2004} and the
 latest \texttt{mzML} \citep{Martens2010}, somewhat similar to the
