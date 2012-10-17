@@ -3,7 +3,7 @@ openMSfile <- function(filename,
                        verbose = FALSE) {
   if (!file.exists(filename))
     stop("File ",filename," not found.\n")
-  
+  filename <- path.expand(filename)
   if (missing(backend)) {
     ## Guess from file extension
     if (grepl('\\.cdf$', filename,

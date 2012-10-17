@@ -28,7 +28,17 @@ Maintainers: Bernd Fischer <bernd.fischer@embl.de>,
 Steffen Neumann <sneumann@ipb-halle.de>,
 Laurent Gatto <lg390@cam.ac.uk>
 }
+
 \references{
-  http://dx.doi.org/10.1074/mcp.R110.000133
+  Nat Biotechnol. 2012 Oct 10;30(10):918-20. doi: 10.1038/nbt.2377.
+  A cross-platform toolkit for mass spectrometry and proteomics.
+  Chambers MC, Maclean B, Burke R, Amodei D, Ruderman DL, Neumann S,
+  Gatto L, Fischer B, Pratt B, Egertson J, Hoff K, Kessner D, Tasman N,
+  Shulman N, Frewen B, Baker TA, Brusniak MY, Paulse C, Creasy D,
+  Flashner L, Kani K, Moulding C, Seymour SL, Nuwaysir LM, Lefebvre B,
+  Kuhlmann F, Roark J, Rainer P, Detlev S, Hemenway T, Huhmer A,
+  Langridge J, Connolly B, Chadick T, Holly K, Eckels J, Deutsch EW,
+  Moritz RL, Katz JE, Agus DB, Maccoss M, Tabb DL, Mallick P.
+  http://www.ncbi.nlm.nih.gov/pubmed/23051804
 }
 \keyword{package, file}
