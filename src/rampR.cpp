@@ -40,7 +40,7 @@ void RampRPrintFiles(void) {
     
     for (i = 0; i < MAX_RAMP_FILES; i++)
         if (rampStructs[i].file)
-            printf("File %i (%i scans)\n", i, rampStructs[i].numscans);
+            Rprintf("File %i (%i scans)\n", i, rampStructs[i].numscans);
 }
 
 int RampRFreeHandle(void) {

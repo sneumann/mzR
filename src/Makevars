@@ -69,8 +69,12 @@ MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o
 
 OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 
+##
+## R complains about assert(), hence -D_NODEBUG
+##  http://www.gamedev.net/topic/555511-is-there-a-way-to-only-disable-boost-debug-checks/
+##
 PWIZ_LDFLAGS=-lpthread 
-PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB
+PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)

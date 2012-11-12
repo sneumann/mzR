@@ -25,7 +25,7 @@ RcppRamp::open( const char* fileName, bool declaredScansOnly ) {
     filename = Rcpp::StringVector::create( fileName );
   } else {
     RcppRamp::close();
-    printf("Failed to open file.\n ");
+    Rprintf("Failed to open file.\n ");
   }
 }
 
@@ -50,7 +50,7 @@ RcppRamp::getFilename (  ) {
   if (ramp != NULL) {
     return filename;
   }
-  printf("Warning: Ramp not yet initialized.\n ");
+  Rprintf("Warning: Ramp not yet initialized.\n ");
   return filename;
 }
 
@@ -58,7 +58,7 @@ Rcpp::List
 RcppRamp::getRunInfo (  ) {
   if (ramp != NULL) {
     if (!isInCacheRunInfo) {
-      // printf("Read from disk.\n ");
+      // Rprintf("Read from disk.\n ");
       rampRunInfo *info = ramp->getRunInfo();
       RunHeaderStruct data = info->m_data;
       delete info;
@@ -73,11 +73,11 @@ RcppRamp::getRunInfo (  ) {
 				   );
       isInCacheRunInfo = TRUE;
     } else {
-      // printf("Read from cache.\n ");
+      // Rprintf("Read from cache.\n ");
     }
     return runInfo;
   }
-  printf("Warning: Ramp not yet initialized.\n");
+  Rprintf("Warning: Ramp not yet initialized.\n");
   return runInfo;
 }
 
@@ -85,7 +85,7 @@ Rcpp::List
 RcppRamp::getInstrumentInfo ( ) {
   if (ramp != NULL) {
     if (!isInCacheInstrumentInfo) {
-      // printf("Read from disk.\n ");
+      // Rprintf("Read from disk.\n ");
       rampInstrumentInfo *info = ramp->getInstrumentInfo(); // NULL for mzData
 
       if (info != NULL) { 
@@ -110,11 +110,11 @@ RcppRamp::getInstrumentInfo ( ) {
       }
       isInCacheInstrumentInfo = TRUE;
     } else {
-      // printf("Read from cache.\n ");
+      // Rprintf("Read from cache.\n ");
     }
     return(instrumentInfo);
   }
-  printf("Warning: Ramp not yet initialized.\n ");
+  Rprintf("Warning: Ramp not yet initialized.\n ");
   return instrumentInfo;
 }
 
@@ -122,7 +122,7 @@ Rcpp::List
 RcppRamp::getScanHeaderInfo ( int whichScan  ) {
   if (ramp != NULL) {
     if ((whichScan <= 0) || (whichScan > ramp->getLastScan())) {
-      printf("Index whichScan out of bounds [1 ... %d].\n", ramp->getLastScan());
+      Rprintf("Index whichScan out of bounds [1 ... %d].\n", ramp->getLastScan());
       return Rcpp::List::create( );
     }
     rampScanInfo *info = ramp->getScanHeaderInfo( whichScan );
@@ -157,7 +157,7 @@ RcppRamp::getScanHeaderInfo ( int whichScan  ) {
 			     //			     Rcpp::_["filePosition"]      = data.filePosition
 			     ) ;
   }
-  printf("Warning: Ramp not yet initialized.\n ");
+  Rprintf("Warning: Ramp not yet initialized.\n ");
   return Rcpp::List::create( );
 }
 
@@ -165,7 +165,7 @@ Rcpp::DataFrame
 RcppRamp::getAllScanHeaderInfo ( ) {
   if (ramp != NULL) {
     if (!isInCacheAllScanHeaderInfo) {
-      // printf("Read from disk.\n ");
+      // Rprintf("Read from disk.\n ");
       int N = ramp->getLastScan();
       rampScanInfo *info = ramp->getScanHeaderInfo( 1 );
       ScanHeaderStruct scanHeader;
@@ -247,11 +247,11 @@ RcppRamp::getAllScanHeaderInfo ( ) {
 						   );
       isInCacheAllScanHeaderInfo = TRUE;
     } else {
-      // printf("Read from cache.\n ");
+      // Rprintf("Read from cache.\n ");
     }
     return(allScanHeaderInfo);
   }
-  printf("Warning: Ramp not yet initialized.\n ");
+  Rprintf("Warning: Ramp not yet initialized.\n ");
   return Rcpp::DataFrame::create( );
 }
 
@@ -259,7 +259,7 @@ Rcpp::List
 RcppRamp::getPeakList ( int whichScan ) {
   if (ramp != NULL) {
     if ((whichScan <= 0) || (whichScan > ramp->getLastScan())) {
-      printf("Index whichScan out of bounds [1 ... %d].\n", ramp->getLastScan());
+      Rprintf("Index whichScan out of bounds [1 ... %d].\n", ramp->getLastScan());
       return Rcpp::List::create( );
     }
     rampPeakList *pl = ramp->getPeakList( whichScan );
@@ -285,7 +285,7 @@ RcppRamp::getPeakList ( int whichScan ) {
 			      Rcpp::_["peaks"]  = peaks
 			     ) ;
   }
-  printf("Warning: Ramp not yet initialized.\n ");
+  Rprintf("Warning: Ramp not yet initialized.\n ");
   return Rcpp::List::create( );
 }
 
@@ -305,7 +305,7 @@ RcppRamp::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whi
     }
     // map3d = 0.0;
     int j=0;
-    printf("%d\n",1);
+    Rprintf("%d\n",1);
     for (int i = 0; i < scanNumbers.size(); i++) {
       rampPeakList *pl = ramp->getPeakList( scanNumbers[i] );
       int peaksCount = pl->getPeakCount();
@@ -330,7 +330,7 @@ RcppRamp::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whi
     }
     return(map3d);
   }
-  printf("Warning: Ramp not yet initialized.\n ");
+  Rprintf("Warning: Ramp not yet initialized.\n ");
   return Rcpp::NumericMatrix(0,0);
 }
 
@@ -339,7 +339,7 @@ RcppRamp::getLastScan() const {
   if (ramp != NULL) {
     return ramp->getLastScan();
   }
-  printf("Warning: Ramp not yet initialized.\n ");
+  Rprintf("Warning: Ramp not yet initialized.\n ");
   return -1;
 }
 
@@ -348,7 +348,7 @@ RcppRamp::OK (  ) {
   if (ramp != NULL) {
     return ramp->OK();
   }
-  // printf("Warning: Ramp not yet initialized.\n ");
+  // Rprintf("Warning: Ramp not yet initialized.\n ");
   return false;
 }
 
