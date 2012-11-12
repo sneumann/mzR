@@ -38,7 +38,7 @@ cramp.hpp -- renamed cramp.h to avoid R checker warning
 #include "sys/errno.h"
 #endif
 #include "cramp.h"
-
+#include<R.h>
 
 /**
  * This function performs a non-sequential parsing operation on an indexed
@@ -107,7 +107,7 @@ rampInfo* cRamp::do_ramp( ramp_fileoffset_t arg , eWhatToRead	what )
    case RAMP_INSTRUMENT:
       break; // OK
    default:
-	  std::cerr << "unknown read type!\n";
+     Rf_error("unknown read type!\n");
       return NULL;
       break;
    }	
