@@ -1,0 +1,4 @@
+RBIN="${R_HOME}/bin/R"
+BUILT_RCPP_VERSION=`"${RBIN}" --vanilla --slave -q -e "cat(as.character(packageVersion('Rcpp')))"`
+
+sed "s/@BUILT_RCPP_VERSION@/${BUILT_RCPP_VERSION}/" R/zzz.R.in > R/zzz.R
