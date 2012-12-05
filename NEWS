@@ -1,0 +1,5 @@
+B1;3400;0cCHANGES IN VERSION 1.5.3
+------------------------
+ o bumping version to force rebuild due to Rcpp 
+   change LG <2012-12-05 Wed> 
+ o added NEWS file <2012-12-05 Wed> 
