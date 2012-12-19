@@ -2,7 +2,6 @@ BUILT_RCPP_VERSION = package_version("@BUILT_RCPP_VERSION@")
 
 .onLoad <-
     function(libname, pkgname) {
-      require("methods", character.only = TRUE, quietly = TRUE)
       ## checkeing installed vs build-time Rcpp version
       if (Sys.info()['sysname'] %in% c("Darwin", "Windows")) {
         installedRcpp <- utils::packageVersion("Rcpp")
