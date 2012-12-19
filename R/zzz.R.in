@@ -3,7 +3,6 @@ BUILT_RCPP_VERSION = package_version("@BUILT_RCPP_VERSION@")
 .onLoad <-
     function(libname, pkgname) {
       require("methods", character.only = TRUE, quietly = TRUE)
-      loadRcppModules()
       ## checkeing installed vs build-time Rcpp version
       if (Sys.info()['sysname'] %in% c("Darwin", "Windows")) {
         installedRcpp <- utils::packageVersion("Rcpp")
@@ -16,4 +15,8 @@ BUILT_RCPP_VERSION = package_version("@BUILT_RCPP_VERSION@")
             warning(msg)            
           }
       }
+      require2 <- require
+      require2("methods", character.only = TRUE, quietly = TRUE)
+      loadRcppModules()
+
     }
