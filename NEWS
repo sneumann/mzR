@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.7.2
+------------------------
+ o updated Rcpp number mismatch warning to include versions <2013-08-01 Thu>
+
 CHANGES IN VERSION 1.7.1
 ------------------------
  o version bump for Rcpp 0.10.4
