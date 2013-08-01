@@ -6,8 +6,8 @@ BUILT_RCPP_VERSION = package_version("@BUILT_RCPP_VERSION@")
       if (Sys.info()['sysname'] %in% c("Darwin", "Windows")) {
         installedRcpp <- utils::packageVersion("Rcpp")
           if (installedRcpp != BUILT_RCPP_VERSION) { # use > instead of !=?            
-            msg <- paste(" mzR has been built against a different Rcpp version\n",
-                         "than is installed on your system. This might lead to errors\n",
+            msg <- paste0("mzR has been built against a different Rcpp version (", BUILT_RCPP_VERSION, ")\n",
+                         "than is installed on your system (", installedRcpp, "). This might lead to errors\n",
                          "when loading mzR. If you encounter such issues, please send\n",
                          "a report, including the output of sessionInfo() to the Bioc\n",
                          "mailing list -- http://www.bioconductor.org/help/mailing-list.")
