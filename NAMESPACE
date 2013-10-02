@@ -1,5 +1,7 @@
 useDynLib(mzR)
 
+import(methods)
+
 importClassesFrom(Biobase, "Versioned")
 importFrom(Biobase, validMsg)
 importFrom(Rcpp, "loadRcppModules")
