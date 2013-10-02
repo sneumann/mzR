@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.7.4
+------------------------
+ o version bump for Rcpp 0.10.5 <2013-10-02 Wed>
+
 CHANGES IN VERSION 1.7.3
 ------------------------
  o Fix a compile error with the clang-3.3 compiler
