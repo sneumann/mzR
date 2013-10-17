@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.9.1
+------------------------
+ o moved vignettes to /vignettes <2013-10-17 Thu>
+
 CHANGES IN VERSION 1.7.4
 ------------------------
  o version bump for Rcpp 0.10.5 <2013-10-02 Wed>
