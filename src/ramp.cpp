@@ -1939,7 +1939,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
               {
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "contentType=\"") + 1 , '\"' );
-                  pEndAttrValue  = '\0';
+                  pEndAttrValue  = "\0";
                   Rprintf("%s Unsupported content type\n" , pBeginData ); 
                   return NULL;
               }
@@ -1958,7 +1958,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
               {
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "compressionType=\"") + 1 , '\"' );
-                  pEndAttrValue = '\0';
+                  pEndAttrValue = "\0";
                   Rprintf("%s Unsupported compression type\n" , pBeginData ); 
                   return NULL;
               }
