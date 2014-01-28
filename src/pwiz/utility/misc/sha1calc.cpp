@@ -26,7 +26,7 @@
 #include "pwiz/utility/misc/Std.hpp"
 
 #include <Rcpp.h>
-#include <Rcpp/iostream/Rostream.h>
+#include <Rcpp/iostream/Rstreambuf.h>
 
 using namespace pwiz::util;
 
