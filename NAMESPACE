@@ -4,7 +4,8 @@ import(methods)
 
 importClassesFrom(Biobase, "Versioned")
 importFrom(Biobase, validMsg)
-importFrom(Rcpp, "loadRcppModules")
+##importFrom(Rcpp, "loadRcppModules")
+import(Rcpp)
 
 export(openMSfile)
 
