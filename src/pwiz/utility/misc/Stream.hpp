@@ -1,5 +1,5 @@
 //
-// $Id: Stream.hpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: Stream.hpp 2976 2011-09-14 20:51:35Z pcbrefugee $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -45,9 +45,13 @@ using std::ofstream;
 using std::stringstream;
 using std::istringstream;
 using std::ostringstream;
+
+#ifndef BOOST_NO_STD_WSTRING
+// these cause trouble on mingw gcc - libstdc++ widechar not fully there yet
 using std::wstringstream;
 using std::wistringstream;
 using std::wostringstream;
+#endif
 
 using std::getline;
 

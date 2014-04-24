@@ -1,5 +1,5 @@
 //
-// $Id: VendorReaderTestHarness.cpp 2286 2010-09-30 17:34:02Z chambm $
+// $Id: VendorReaderTestHarness.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -25,6 +25,9 @@
 #include "VendorReaderTestHarness.hpp"
 #include "pwiz/data/msdata/TextWriter.hpp"
 #include "pwiz/data/msdata/MSDataFile.hpp"
+#ifndef WITHOUT_MZ5
+#include "pwiz/data/msdata/Serializer_mz5.hpp"
+#endif
 #include "pwiz/data/msdata/Serializer_mzXML.hpp"
 #include "pwiz/data/msdata/Serializer_MGF.hpp"
 #include "pwiz/data/msdata/Diff.hpp"
@@ -113,11 +116,13 @@ void manglePwizSoftware(MSData& msd)
 
 void calculateSourceFileChecksums(vector<SourceFilePtr>& sourceFiles)
 {
+    const string uriPrefix = "file://";
     BOOST_FOREACH(SourceFilePtr sourceFile, sourceFiles)
     {
-        const string uriPrefix = "file://";
-        if (sourceFile->location.substr(0, uriPrefix.size()) != uriPrefix) return;
-        bfs::path p(sourceFile->location.substr(uriPrefix.size()));
+        if (!bal::istarts_with(sourceFile->location, uriPrefix)) return;
+        string location = sourceFile->location.substr(uriPrefix.size());
+        bal::trim_if(location, bal::is_any_of("/"));
+        bfs::path p(location);
         p /= sourceFile->name;
 
         string sha1 = SHA1Calculator::hashFile(p.string());
@@ -227,7 +232,7 @@ void testRead(const Reader& reader, const string& rawpath)
     string rawheader = pwiz::util::read_file_header(rawpath, 512);
     reader.read(rawpath, rawheader, msds);
 
-    string sourceName = bfs::path(rawpath).filename();
+    string sourceName = BFS_STRING(bfs::path(rawpath).filename());
 
     for (size_t i=0; i < msds.size(); ++i)
     {
@@ -249,7 +254,21 @@ void testRead(const Reader& reader, const string& rawpath)
         // test serialization of this vendor format in and out of pwiz's supported open formats
         stringstream* stringstreamPtr = new stringstream;
         boost::shared_ptr<std::iostream> serializedStreamPtr(stringstreamPtr);
-        
+#ifndef WITHOUT_MZ5
+        // mzML <-> mz5
+        string targetResultFilename_mz5 = bfs::change_extension(targetResultFilename, ".mz5").string();
+        {
+            MSData msd_mz5;
+            Serializer_mz5 serializer_mz5;
+            serializer_mz5.write(targetResultFilename_mz5, msd);
+            serializer_mz5.read(targetResultFilename_mz5, msd_mz5);
+
+            Diff<MSData, DiffConfig> diff_mz5(msd, msd_mz5);
+            if (diff_mz5) cerr << headDiff(diff_mz5, 5000) << endl;
+            unit_assert(!diff_mz5);
+        }
+        bfs::remove(targetResultFilename_mz5);
+#endif
         DiffConfig diffConfig_non_mzML;
         diffConfig_non_mzML.ignoreMetadata = true;
         diffConfig_non_mzML.ignoreChromatograms = true;
@@ -350,6 +369,7 @@ void parseArgs(const vector<string>& args, bool& generateMzML, vector<string>& r
     {
         if (args[i] == "-v") os_ = &cout;
         else if (args[i] == "--generate-mzML") generateMzML = true;
+        else if (bal::starts_with(args[i], "--")) continue;
         else rawpaths.push_back(args[i]);
     }
 }
@@ -390,46 +410,48 @@ void testThreadSafety(const int& testThreadCount, const Reader& reader, bool tes
 PWIZ_API_DECL
 int testReader(const Reader& reader, const vector<string>& args, bool testAcceptOnly, const TestPathPredicate& isPathTestable)
 {
-    try
-    {
-        bool generateMzML;
-        vector<string> rawpaths;
-        parseArgs(args, generateMzML, rawpaths);
+    bool generateMzML;
+    vector<string> rawpaths;
+    parseArgs(args, generateMzML, rawpaths);
 
-        if (rawpaths.empty())
-            throw runtime_error(string("Invalid arguments: ") + bal::join(args, " ") +
-                                "\nUsage: " + args[0] + " [-v] [--generate-mzML] <source path 1> [source path 2] ..."); 
+    if (rawpaths.empty())
+        throw runtime_error(string("Invalid arguments: ") + bal::join(args, " ") +
+                            "\nUsage: " + args[0] + " [-v] [--generate-mzML] <source path 1> [source path 2] ..."); 
 
-        for (size_t i=0; i < rawpaths.size(); ++i)
-            for (bfs::directory_iterator itr(rawpaths[i]); itr != bfs::directory_iterator(); ++itr)
+    for (size_t i=0; i < rawpaths.size(); ++i)
+        for (bfs::directory_iterator itr(rawpaths[i]); itr != bfs::directory_iterator(); ++itr)
+        {
+            string rawpath = itr->path().string();
+            if (!isPathTestable(rawpath))
+                continue;
+            else if (generateMzML && !testAcceptOnly)
+                generate(reader, rawpath);
+            else
             {
-                string rawpath = itr->path().string();
-                if (!isPathTestable(rawpath))
-                    continue;
-                else if (generateMzML && !testAcceptOnly)
-                    generate(reader, rawpath);
-                else
-                {
-                    test(reader, testAcceptOnly, rawpath);
+                test(reader, testAcceptOnly, rawpath);
 
-                    /* TODO: there are issues to be resolved here but not just simple crashes
-                    testThreadSafety(1, reader, testAcceptOnly, rawpath);
-                    testThreadSafety(2, reader, testAcceptOnly, rawpath);
-                    testThreadSafety(4, reader, testAcceptOnly, rawpath);*/
+                /* TODO: there are issues to be resolved here but not just simple crashes
+                testThreadSafety(1, reader, testAcceptOnly, rawpath);
+                testThreadSafety(2, reader, testAcceptOnly, rawpath);
+                testThreadSafety(4, reader, testAcceptOnly, rawpath);*/
+
+                // test that the reader releases any locks on the data so it can be moved/deleted
+                try
+                {
+                    bfs::rename(rawpath, rawpath + ".renamed");
+                    bfs::rename(rawpath + ".renamed", rawpath);
+                }
+                catch (...)
+                {
+                    //string foo;
+                    //cin >> foo;
+                    //throw runtime_error("Cannot rename " + rawpath + ": there are unreleased file locks!");
+                    cerr << "Cannot rename " << rawpath << ": there are unreleased file locks!" << endl;
                 }
             }
-        return 0;
-    }
-    catch (exception& e)
-    {
-        throw runtime_error(string("std::exception: ") + e.what());
-    }
-    catch (...)
-    {
-        throw runtime_error("Caught unknown exception.\n");
-    }
-    
-    return 1;
+        }
+
+    return 0;
 }
 
 

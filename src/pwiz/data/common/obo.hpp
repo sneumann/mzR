@@ -1,5 +1,5 @@
 //
-// $Id: obo.hpp 1656 2009-12-30 20:54:17Z chambm $
+// $Id: obo.hpp 2778 2011-06-14 16:08:39Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -52,6 +52,7 @@ struct PWIZ_API_DECL Term
     id_list parentsIsA;
     id_list parentsPartOf;
     relation_map relations; // other than is_a and part_of
+    std::multimap<std::string, std::string> propertyValues;
     std::vector<std::string> exactSynonyms;
     bool isObsolete;
 

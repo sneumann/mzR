@@ -1,5 +1,5 @@
 //
-// $Id: RAMPAdapterTest.cpp 2214 2010-08-27 22:24:55Z cpaulse $
+// $Id: RAMPAdapterTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -137,7 +137,7 @@ void test(const string& filename)
 
     size_t scanCount = adapter.scanCount();
     if (os_) *os_ << "scanCount: " << scanCount << "\n\n";
-    unit_assert(scanCount == 4);
+    unit_assert(scanCount == 5);
 
     unit_assert(adapter.index(19) == 0);
     unit_assert(adapter.index(20) == 1);
@@ -206,21 +206,21 @@ void test(const string& filename)
     
     // last scan
 
-    ScanHeaderStruct header3;
-    adapter.getScanHeader(3, header3);
-    if (os_) *os_ << header3;
+    ScanHeaderStruct header5;
+    adapter.getScanHeader(4, header5);
+    if (os_) *os_ << header5;
 
     // RunHeader
 
     RunHeaderStruct runHeader;
     adapter.getRunHeader(runHeader);
-    unit_assert(runHeader.scanCount == 4);
+    unit_assert(runHeader.scanCount == 5);
     unit_assert(runHeader.lowMZ == 0);
     unit_assert(runHeader.highMZ == 0);
     unit_assert(runHeader.startMZ == 0);
     unit_assert(runHeader.endMZ == 0);
     unit_assert_equal(runHeader.dStartTime, header1.retentionTime, 1e-6);
-    unit_assert_equal(runHeader.dEndTime, header3.retentionTime, 1e-6);
+    unit_assert_equal(runHeader.dEndTime, header5.retentionTime, 1e-6);
 
     if (os_)
         *os_ << "RunHeader:\n" << runHeader << endl;
@@ -244,36 +244,47 @@ static void test_mzML_1_0(const char *test_app_name) {
 	// build\pwiz\data\msdata\gcc-mingw-3.4.5\release\link-static\runtime-link-static\threading-multi\RAMPAdapterTest.exe
 	std::string buildparent(test_app_name);
 	size_t pos = buildparent.find("build");
+    if (pos == std::string::npos) {
+        buildparent = __FILE__; // nonstandard build, maybe?  try using source file name
+        // something like \ProteoWizard\pwiz\pwiz\data\msdata\RAMPAdapterTest.cpp
+        pos = buildparent.rfind("pwiz");
+    }
 	buildparent.resize(pos);
 	std::string example_data_dir = buildparent + "example_data/";
 	RAMPAdapter adapter_1_0(example_data_dir + "tiny.pwiz.1.0.mzML");
-	RAMPAdapter adapter_1_1(example_data_dir + "tiny.pwiz.1.1.mzML");
+    const char *testfiles[2] = {"tiny.pwiz.1.1.mzML","tiny.pwiz.mzXML"};
+    for (int tf=2;tf--;) { // test mzML 1.0 vs mzML 1.1 and mzXML
+	    RAMPAdapter adapter_1_1(example_data_dir + testfiles[tf]);
 
-    // 1.1 adapter excludes spectra with non-default source files;
-    // tiny example has 4 spectra, the last of which is excluded -- test scans 1,2,3 only
-	unit_assert(adapter_1_0.scanCount() == adapter_1_1.scanCount()+1); 
-	for (int scan=3;scan--;) {
-		ScanHeaderStruct header1_0, header1_1;
-		adapter_1_0.getScanHeader(scan, header1_0);
-		adapter_1_1.getScanHeader(scan, header1_1);
-		unit_assert(header1_0.seqNum == header1_1.seqNum );
-		unit_assert(header1_0.acquisitionNum == header1_1.acquisitionNum );
-		unit_assert(header1_0.msLevel == header1_1.msLevel );
-		unit_assert(header1_0.peaksCount == header1_1.peaksCount );
-		const double epsilon = 1e-6;
-		unit_assert_equal(header1_0.totIonCurrent, header1_1.totIonCurrent, epsilon);
-		unit_assert_equal(header1_0.retentionTime, header1_1.retentionTime, epsilon);
-		unit_assert_equal(header1_0.basePeakMZ, header1_1.basePeakMZ, epsilon);
-		unit_assert_equal(header1_0.basePeakIntensity, header1_1.basePeakIntensity, epsilon);
-		unit_assert_equal(header1_0.collisionEnergy, header1_1.collisionEnergy, epsilon);
-		unit_assert_equal(header1_0.lowMZ, header1_1.lowMZ, epsilon);
-		unit_assert_equal(header1_0.highMZ, header1_1.highMZ, epsilon);
-		unit_assert(header1_0.precursorScanNum == header1_1.precursorScanNum );
-	}
+        // tiny example has 4 spectra, the last of which is non-default source -- test scans 1,2,3 only
+	    unit_assert(adapter_1_0.scanCount() == adapter_1_1.scanCount()); 
+	    for (int scan=4;scan--;) {
+		    ScanHeaderStruct header1_0, header1_1;
+		    adapter_1_0.getScanHeader(scan, header1_0);
+		    adapter_1_1.getScanHeader(scan, header1_1);
+		    unit_assert(header1_0.seqNum == header1_1.seqNum );
+            if (scan < 3) {
+		        unit_assert(header1_0.acquisitionNum == header1_1.acquisitionNum );
+            }
+		    unit_assert(header1_0.msLevel == header1_1.msLevel );
+		    unit_assert(header1_0.peaksCount == header1_1.peaksCount );
+		    const double epsilon = 1e-6;
+		    unit_assert_equal(header1_0.totIonCurrent, header1_1.totIonCurrent, epsilon);
+		    unit_assert_equal(header1_0.retentionTime, header1_1.retentionTime, epsilon);
+		    unit_assert_equal(header1_0.basePeakMZ, header1_1.basePeakMZ, epsilon);
+		    unit_assert_equal(header1_0.basePeakIntensity, header1_1.basePeakIntensity, epsilon);
+		    unit_assert_equal(header1_0.collisionEnergy, header1_1.collisionEnergy, epsilon);
+		    unit_assert_equal(header1_0.lowMZ, header1_1.lowMZ, epsilon);
+		    unit_assert_equal(header1_0.highMZ, header1_1.highMZ, epsilon);
+		    unit_assert(header1_0.precursorScanNum == header1_1.precursorScanNum );
+	    }
+    }
 }
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
@@ -291,18 +302,17 @@ int main(int argc, char* argv[])
 		// and make sure we're still good with older files
 		test_mzML_1_0(argv[0]); // passing in app name as it contains our path
         
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
-        return 1;
+        TEST_FAILED("Caught unknown exception.")
     }
+
+    TEST_EPILOG
 }
 
 

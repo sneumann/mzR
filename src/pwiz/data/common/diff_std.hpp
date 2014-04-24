@@ -1,5 +1,5 @@
 //
-// $Id: diff_std.hpp 1789 2010-02-03 16:41:42Z chambm $
+// $Id: diff_std.hpp 3725 2012-06-20 05:31:18Z pcbrefugee $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -40,8 +40,10 @@ namespace data {
     
 struct BaseDiffConfig
 {
-    BaseDiffConfig(double _precision = 1e-6) : precision(_precision) {}
+    BaseDiffConfig(double _precision = 1e-6) : precision(_precision), partialDiffOK(false), ignoreVersions(false) {}
     double precision;
+    bool partialDiffOK; // if true, can stop checking at first difference found
+	bool ignoreVersions; // if true, don't sweat version number mismatches
 };
 
 
@@ -54,6 +56,15 @@ void diff(const std::string& a,
           std::string& a_b,
           std::string& b_a,
           const BaseDiffConfig& config);
+
+// special handling for strings which are likely
+// to differ only by a trailing version number
+PWIZ_API_DECL
+void diff_ids(const std::string& a,
+              const std::string& b,
+              std::string& a_b,
+              std::string& b_a,
+              const BaseDiffConfig& config);
 
 PWIZ_API_DECL
 void diff(const boost::logic::tribool& a, 
@@ -162,6 +173,28 @@ struct Diff
 };
 
 
+template <typename textwriter_type, typename diff_type>
+std::string diff_string(const diff_type& diff)
+{
+    std::ostringstream os;
+    textwriter_type write(os, 1);
+
+    if (!diff.a_b.empty())
+    {            
+        os << "+\n";
+        write(diff.a_b);
+    }
+
+    if (!diff.b_a.empty())
+    {            
+        os << "-\n";
+        write(diff.b_a);
+    }
+
+    return os.str();
+}
+
+
 /// stream insertion of Diff results
 template <typename textwriter_type, typename object_type, typename config_type>
 std::ostream& operator<<(std::ostream& os, const Diff<object_type, config_type>& diff)
@@ -204,12 +237,11 @@ void diff_string(const string_type& a,
 }
 
 
-template <typename integral_type>
-void diff_integral(const integral_type& a, 
-                   const integral_type& b, 
-                   integral_type& a_b, 
-                   integral_type& b_a,
-                   const BaseDiffConfig& config)
+template <typename char_type>
+void diff_char(const char_type& a,
+               const char_type& b,
+               char_type& a_b,
+               char_type& b_a)
 {
     a_b = 0;
     b_a = 0;
@@ -218,6 +250,24 @@ void diff_integral(const integral_type& a,
     {
         a_b = a;
         b_a = b;
+    }
+}
+
+
+template <typename integral_type>
+void diff_integral(const integral_type& a, 
+                   const integral_type& b, 
+                   integral_type& a_b, 
+                   integral_type& b_a,
+                   const BaseDiffConfig& config)
+{
+    a_b = integral_type();
+    b_a = integral_type();
+    
+    if (a != b)
+    {
+        a_b = static_cast<integral_type>(a);
+        b_a = static_cast<integral_type>(b);
     }
 }
 
@@ -373,12 +423,15 @@ void vector_diff_deep(const std::vector< boost::shared_ptr<object_type> >& a,
     a_b.clear();
     b_a.clear();
 
+    config_type quick_config(config);
+    quick_config.partialDiffOK = true; // for fastest check in SameDeep
+
     for (typename std::vector< boost::shared_ptr<object_type> >::const_iterator it=a.begin(); it!=a.end(); ++it)
-        if (std::find_if(b.begin(), b.end(), SameDeep<object_type, config_type>(**it, config)) == b.end())
+        if (std::find_if(b.begin(), b.end(), SameDeep<object_type, config_type>(**it, quick_config)) == b.end())
             a_b.push_back(*it);
 
     for (typename std::vector< boost::shared_ptr<object_type> >::const_iterator it=b.begin(); it!=b.end(); ++it)
-        if (std::find_if(a.begin(), a.end(), SameDeep<object_type, config_type>(**it, config)) == a.end())
+        if (std::find_if(a.begin(), a.end(), SameDeep<object_type, config_type>(**it, quick_config)) == a.end())
             b_a.push_back(*it);
 }
 

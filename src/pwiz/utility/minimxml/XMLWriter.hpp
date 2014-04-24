@@ -1,5 +1,5 @@
 //
-// $Id: XMLWriter.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id: XMLWriter.hpp 2763 2011-06-09 19:44:07Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -26,6 +26,7 @@
 
 
 #include "pwiz/utility/misc/Export.hpp"
+#include "pwiz/utility/misc/optimized_lexical_cast.hpp"
 #include "boost/shared_ptr.hpp"
 #include "boost/iostreams/positioning.hpp"
 #include "boost/iostreams/filter/counter.hpp"
@@ -76,6 +77,20 @@ class PWIZ_API_DECL XMLWriter
         {}
     };
 
+    /// vector of name/value pairs to be written as XML attributes
+    class PWIZ_API_DECL Attributes : public std::vector< std::pair<std::string,std::string> >
+    {
+        public:
+        void add(const std::string& name, const double& value);
+        void add(const std::string& name, const int& value);
+
+        template <typename T>
+        inline void add(const std::string& name, const T& value)
+        {
+            push_back(make_pair(name, boost::lexical_cast<std::string>(value)));
+        }
+    };
+
     /// constructor
     XMLWriter(std::ostream& os, const Config& config = Config());
     virtual ~XMLWriter() {}
@@ -88,8 +103,6 @@ class PWIZ_API_DECL XMLWriter
 
     /// writes a processing instruction
     void processingInstruction(const std::string& name, const std::string& data);
-
-    typedef std::vector< std::pair<std::string,std::string> > Attributes;
 
     /// tag for indicating an empty element
     enum EmptyElementTag {NotEmptyElement, EmptyElement};

@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_mz5.cpp 2811 2011-06-23 20:44:29Z chambm $
+// $Id: SpectrumList_mz5.cpp 3484 2012-04-04 19:55:33Z mwilhelm42 $
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -27,10 +27,8 @@
 #include "References.hpp"
 #include "SpectrumList_mz5.hpp"
 
-
 namespace pwiz {
 namespace msdata {
-
 
 namespace {
 
@@ -238,12 +236,14 @@ SpectrumPtr SpectrumList_mz5Impl::spectrum(size_t index, bool getBinaryData) con
         ptr->defaultArrayLength = end - start;
         if (getBinaryData)
         {
-            std::vector<double> mz, inten;
-            conn_->getData(mz, Configuration_mz5::SpectrumMZ, start, end);
-            conn_->getData(inten, Configuration_mz5::SpectrumIntensity, start, end);
-            ptr->setMZIntensityArrays(mz, inten, CVID_Unknown);
-            // intensity unit will be set by the following command
-            binaryParamsData_[index].fill(*ptr->getMZArray(), *ptr->getIntensityArray(), *rref_);
+            if (!binaryParamsData_[index].empty()) {
+                std::vector<double> mz, inten;
+                conn_->getData(mz, Configuration_mz5::SpectrumMZ, start, end);
+                conn_->getData(inten, Configuration_mz5::SpectrumIntensity, start, end);
+                ptr->setMZIntensityArrays(mz, inten, CVID_Unknown);
+                // intensity unit will be set by the following command
+                binaryParamsData_[index].fill(*ptr->getMZArray(), *ptr->getIntensityArray(), *rref_);
+            }
         }
         References::resolve(*ptr, msd_);
         return ptr;

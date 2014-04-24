@@ -1,5 +1,5 @@
 //
-// $Id: HouseholderQRTest.cpp 1566 2009-11-24 19:49:25Z broter $
+// $Id: HouseholderQRTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License. 
@@ -17,7 +17,7 @@
 #include "HouseholderQR.hpp"
 using namespace pwiz::math;
 
-int main()
+int main(int argc, const char* argv[])
 {
   using namespace boost::numeric::ublas;
   using namespace std;

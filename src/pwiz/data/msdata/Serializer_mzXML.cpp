@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_mzXML.cpp 2274 2010-09-21 15:59:10Z chambm $
+// $Id: Serializer_mzXML.cpp 6002 2014-04-05 00:06:51Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -74,12 +74,9 @@ namespace {
 void start_mzXML(XMLWriter& xmlWriter)
 {
     XMLWriter::Attributes attributes; 
-    attributes.push_back(make_pair("xmlns", 
-        "http://sashimi.sourceforge.net/schema_revision/mzXML_3.1"));
-    attributes.push_back(make_pair("xmlns:xsi", 
-        "http://www.w3.org/2001/XMLSchema-instance"));
-    attributes.push_back(make_pair("xsi:schemaLocation", 
-        "http://sashimi.sourceforge.net/schema_revision/mzXML_3.1 http://sashimi.sourceforge.net/schema_revision/mzXML_3.1/mzXML_idx_3.1.xsd"));
+    attributes.add("xmlns", "http://sashimi.sourceforge.net/schema_revision/mzXML_3.2");
+    attributes.add("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    attributes.add("xsi:schemaLocation", "http://sashimi.sourceforge.net/schema_revision/mzXML_3.2 http://sashimi.sourceforge.net/schema_revision/mzXML_3.2/mzXML_idx_3.2.xsd");
 
     xmlWriter.pushStyle(XMLWriter::StyleFlag_AttributesOnMultipleLines);
     xmlWriter.startElement("mzXML", attributes);
@@ -117,9 +114,9 @@ void start_msRun(XMLWriter& xmlWriter, const MSData& msd)
     }
 
     XMLWriter::Attributes attributes; 
-    attributes.push_back(make_pair("scanCount", scanCount));
-    attributes.push_back(make_pair("startTime", startTime));
-    attributes.push_back(make_pair("endTime", endTime));
+    attributes.add("scanCount", scanCount);
+    attributes.add("startTime", startTime);
+    attributes.add("endTime", endTime);
     xmlWriter.startElement("msRun", attributes);
 }
 
@@ -132,14 +129,14 @@ string translate_SourceFileTypeToRunID(const SourceFile& sf, CVID sourceFileType
     switch (sourceFileType)
     {
         // location="file://path/to" name="source.RAW"
-        case MS_Thermo_RAW_file:
+        case MS_Thermo_RAW_format:
             if (nameExtension == ".raw")
                 return bfs::basename(sf.name);
             return "";
 
         // sane: location="file://path/to/source.raw" name="_FUNC001.DAT"
         // insane: location="file://path/to" name="source.raw"
-        case MS_Waters_raw_file:
+        case MS_Waters_raw_format:
             if (nameExtension == ".dat" && locationExtension == ".raw")
                 return bfs::basename(bfs::path(sf.location).leaf());
             else if (nameExtension == ".raw")
@@ -147,19 +144,19 @@ string translate_SourceFileTypeToRunID(const SourceFile& sf, CVID sourceFileType
             return "";
 
         // location="file://path/to/source.d" name="Analysis.yep"
-        case MS_Bruker_Agilent_YEP_file:
+        case MS_Bruker_Agilent_YEP_format:
             if (nameExtension == ".yep" && locationExtension == ".d")
                 return bfs::basename(bfs::path(sf.location).leaf());
             return "";
             
         // location="file://path/to/source.d" name="Analysis.baf"
-        case MS_Bruker_BAF_file:
+        case MS_Bruker_BAF_format:
             if (nameExtension == ".baf" && locationExtension == ".d")
                 return bfs::basename(bfs::path(sf.location).leaf());
             return "";
 
         // location="file://path/to/source.d/AcqData" name="msprofile.bin"
-        case MS_Agilent_MassHunter_file:
+        case MS_Agilent_MassHunter_format:
             if (nameExtension == ".bin" && bfs::path(sf.location).leaf() == "AcqData")
                 return bfs::basename(bfs::path(sf.location).parent_path().leaf());
             return "";
@@ -167,7 +164,7 @@ string translate_SourceFileTypeToRunID(const SourceFile& sf, CVID sourceFileType
         // location="file://path/to" name="source.mzXML"
         // location="file://path/to" name="source.mz.xml"
         // location="file://path/to" name="source.d" (ambiguous)
-        case MS_ISB_mzXML_file:
+        case MS_ISB_mzXML_format:
             if (nameExtension == ".mzxml" || nameExtension == ".d")
                 return bfs::basename(sf.name);
             else if (bal::iends_with(sf.name, ".mz.xml"))
@@ -176,33 +173,33 @@ string translate_SourceFileTypeToRunID(const SourceFile& sf, CVID sourceFileType
 
         // location="file://path/to" name="source.mzData"
         // location="file://path/to" name="source.mz.data" ???
-        case MS_PSI_mzData_file:
+        case MS_PSI_mzData_format:
             if (nameExtension == ".mzdata")
                 return bfs::basename(sf.name);
             return "";
 
         // location="file://path/to" name="source.mgf"
-        case MS_Mascot_MGF_file:
+        case MS_Mascot_MGF_format:
             if (nameExtension == ".mgf")
                 return bfs::basename(sf.name);
             return "";
 
         // location="file://path/to" name="source.wiff"
-        case MS_ABI_WIFF_file:
+        case MS_ABI_WIFF_format:
             if (nameExtension == ".wiff")
                 return bfs::basename(sf.name);
             return "";
 
         // location="file://path/to/source/maldi-spot/1/1SRef" name="fid"
         // location="file://path/to/source/1/1SRef" name="fid"
-        case MS_Bruker_FID_file:
+        case MS_Bruker_FID_format:
             // need the full list of FIDs to create a run ID (from the common prefix)
             return bfs::path(sf.location).parent_path().parent_path().string();
 
         // location="file://path/to/source" name="spectrum-id.t2d"
         // location="file://path/to/source/MS" name="spectrum-id.t2d"
         // location="file://path/to/source/MSMS" name="spectrum-id.t2d"
-        case MS_AB_SCIEX_TOF_TOF_T2D_file:
+        case MS_AB_SCIEX_TOF_TOF_T2D_format:
             // need the full list of T2Ds to create a run ID (from the common prefix)
             return sf.location;
 
@@ -254,9 +251,9 @@ void write_parentFile(XMLWriter& xmlWriter, const MSData& msd)
         fileSha1 = sf.cvParam(MS_SHA_1).value;
 
         XMLWriter::Attributes attributes;
-        attributes.push_back(make_pair("fileName", fileName));
-        attributes.push_back(make_pair("fileType", fileType));
-        attributes.push_back(make_pair("fileSha1", fileSha1));
+        attributes.add("fileName", fileName);
+        attributes.add("fileType", fileType);
+        attributes.add("fileSha1", fileSha1);
         xmlWriter.pushStyle(XMLWriter::StyleFlag_AttributesOnMultipleLines);
         xmlWriter.startElement("parentFile", attributes, XMLWriter::EmptyElement);
         xmlWriter.popStyle();
@@ -267,8 +264,8 @@ void write_parentFile(XMLWriter& xmlWriter, const MSData& msd)
 void writeCategoryValue(XMLWriter& xmlWriter, const string& category, const string& value)
 {
     XMLWriter::Attributes attributes; 
-    attributes.push_back(make_pair("category", category));
-    attributes.push_back(make_pair("value", value));
+    attributes.add("category", category);
+    attributes.add("value", value);
     xmlWriter.startElement(category, attributes, XMLWriter::EmptyElement);
 }
 
@@ -280,40 +277,45 @@ void writeSoftware(XMLWriter& xmlWriter, SoftwarePtr software,
     LegacyAdapter_Software adapter(software, const_cast<MSData&>(msd), cvTranslator);
     XMLWriter::Attributes attributes; 
 
-    attributes.push_back(make_pair("type", type.empty() ? adapter.type() : type));
-    attributes.push_back(make_pair("name", adapter.name()));
-    attributes.push_back(make_pair("version", adapter.version()));
+    attributes.add("type", type.empty() ? adapter.type() : type);
+    attributes.add("name", adapter.name());
+    attributes.add("version", adapter.version());
 
     xmlWriter.startElement("software", attributes, XMLWriter::EmptyElement);
 }
 
 
-void write_msInstrument(XMLWriter& xmlWriter, const InstrumentConfiguration& instrumentConfiguration, 
-                        const MSData& msd, const CVTranslator& cvTranslator)
+void write_msInstrument(XMLWriter& xmlWriter, const InstrumentConfigurationPtr& instrumentConfiguration, 
+                        const MSData& msd, const CVTranslator& cvTranslator,
+                        map<InstrumentConfigurationPtr, int>& instrumentIndexByPtr)
 {
     const LegacyAdapter_Instrument adapter(
-        const_cast<InstrumentConfiguration&>(instrumentConfiguration), cvTranslator);
+        const_cast<InstrumentConfiguration&>(*instrumentConfiguration), cvTranslator);
     
-    XMLWriter::Attributes attributes; 
-    attributes.push_back(make_pair("id", instrumentConfiguration.id));
+    int index = (int) instrumentIndexByPtr.size() + 1;
+    instrumentIndexByPtr[instrumentConfiguration] = index;
+
+    XMLWriter::Attributes attributes;
+    attributes.add("msInstrumentID", index);
     xmlWriter.startElement("msInstrument", attributes);
-        writeCategoryValue(xmlWriter, "msManufacturer", adapter.manufacturer());
-        writeCategoryValue(xmlWriter, "msModel", adapter.model());
-        try { writeCategoryValue(xmlWriter, "msIonisation", adapter.ionisation()); } catch (std::out_of_range&) {}
-        try { writeCategoryValue(xmlWriter, "msMassAnalyzer", adapter.analyzer()); } catch (std::out_of_range&) {}
-        try { writeCategoryValue(xmlWriter, "msDetector", adapter.detector()); } catch (std::out_of_range&) {}
-    if (instrumentConfiguration.softwarePtr.get())
-        writeSoftware(xmlWriter, instrumentConfiguration.softwarePtr,
+    writeCategoryValue(xmlWriter, "msManufacturer", adapter.manufacturer());
+    writeCategoryValue(xmlWriter, "msModel", adapter.model());
+    try { writeCategoryValue(xmlWriter, "msIonisation", adapter.ionisation()); } catch (std::out_of_range&) {}
+    try { writeCategoryValue(xmlWriter, "msMassAnalyzer", adapter.analyzer()); } catch (std::out_of_range&) {}
+    try { writeCategoryValue(xmlWriter, "msDetector", adapter.detector()); } catch (std::out_of_range&) {}
+    if (instrumentConfiguration->softwarePtr.get())
+        writeSoftware(xmlWriter, instrumentConfiguration->softwarePtr,
                       msd, cvTranslator, "acquisition");
     xmlWriter.endElement(); // msInstrument
 }
 
 
 void write_msInstruments(XMLWriter& xmlWriter, const MSData& msd,
-                        const CVTranslator& cvTranslator)
+                        const CVTranslator& cvTranslator,
+                        map<InstrumentConfigurationPtr, int>& instrumentIndexByPtr)
 {
     BOOST_FOREACH(const InstrumentConfigurationPtr& icPtr, msd.instrumentConfigurationPtrs)
-        if (icPtr.get()) write_msInstrument(xmlWriter, *icPtr, msd, cvTranslator);
+        if (icPtr.get()) write_msInstrument(xmlWriter, icPtr, msd, cvTranslator, instrumentIndexByPtr);
 }
 
 
@@ -323,7 +325,7 @@ void write_processingOperation(XMLWriter& xmlWriter, const ProcessingMethod& pm,
     if (!actionParam.empty() && actionParam != action)
     {
         XMLWriter::Attributes attributes;
-        attributes.push_back(make_pair("name", actionParam.name()));
+        attributes.add("name", actionParam.name());
         xmlWriter.startElement("processingOperation", attributes, XMLWriter::EmptyElement);
     }
 }
@@ -338,14 +340,14 @@ void write_dataProcessing(XMLWriter& xmlWriter, const MSData& msd, const CVTrans
         XMLWriter::Attributes attributes;
         BOOST_FOREACH(const ProcessingMethod& pm, dpPtr->processingMethods)
         {
-            if (pm.hasCVParamChild(MS_peak_picking)) attributes.push_back(make_pair("centroided", "1"));
-            if (pm.hasCVParamChild(MS_deisotoping)) attributes.push_back(make_pair("deisotoped", "1"));
-            if (pm.hasCVParamChild(MS_charge_deconvolution)) attributes.push_back(make_pair("chargeDeconvoluted", "1"));
+            if (pm.hasCVParamChild(MS_peak_picking)) attributes.add("centroided", "1");
+            if (pm.hasCVParamChild(MS_deisotoping)) attributes.add("deisotoped", "1");
+            if (pm.hasCVParamChild(MS_charge_deconvolution)) attributes.add("chargeDeconvoluted", "1");
             if (pm.hasCVParamChild(MS_thresholding))
             {
                 CVParam threshold = pm.cvParam(MS_low_intensity_threshold);
                 if (!threshold.empty())
-                    attributes.push_back(make_pair("intensityCutoff", threshold.value));
+                    attributes.add("intensityCutoff", threshold.value);
             }
         }
 
@@ -391,7 +393,8 @@ struct IndexEntry
 string getPolarity(const Spectrum& spectrum)
 {
     string result = "";
-    CVParam paramPolarity = spectrum.cvParamChild(MS_polarity);
+    CVParam paramPolarity = spectrum.cvParamChild(MS_scan_polarity);
+    if (paramPolarity.empty()) paramPolarity = spectrum.cvParamChild(MS_polarity_OBSOLETE);
     if (paramPolarity.cvid == MS_positive_scan) result = "+";
     if (paramPolarity.cvid == MS_negative_scan) result = "-";
     return result;
@@ -406,11 +409,12 @@ struct PrecursorInfo
     string charge;
     string collisionEnergy;
     string activation;
+    double windowWideness;
 
     bool empty() const 
     {
         return scanNum.empty() && mz.empty() && intensity.empty() && 
-               charge.empty() && collisionEnergy.empty() && activation.empty();
+               charge.empty() && collisionEnergy.empty() && activation.empty() && windowWideness == 0;
     }
 };
 
@@ -430,12 +434,14 @@ vector<PrecursorInfo> getPrecursorInfo(const Spectrum& spectrum,
             // mzXML scanNumber takes a different form depending on the source's nativeID format
             info.scanNum = id::translateNativeIDToScanNumber(nativeIdFormat, it->spectrumID);
         }
+
         if (!it->selectedIons.empty())
         { 
             info.mz = it->selectedIons[0].cvParam(MS_selected_ion_m_z).value;
             info.intensity = it->selectedIons[0].cvParam(MS_peak_intensity).value;
             info.charge = it->selectedIons[0].cvParam(MS_charge_state).value;
         }
+
         if (!it->activation.empty())
         {
             if (it->activation.hasCVParam(MS_ETD))
@@ -443,9 +449,7 @@ vector<PrecursorInfo> getPrecursorInfo(const Spectrum& spectrum,
                 info.activation = "ETD";
 
                 if (it->activation.hasCVParam(MS_CID))
-                {
                     info.activation += "+SA";
-                }
             }
             else if (it->activation.hasCVParam(MS_ECD))
             {
@@ -455,10 +459,24 @@ vector<PrecursorInfo> getPrecursorInfo(const Spectrum& spectrum,
             {
                 info.activation = "CID";
             }
+            else if (it->activation.hasCVParam(MS_HCD))
+            {
+                info.activation = "HCD";
+            }
 
-            if (it->activation.hasCVParam(MS_CID))
+            if (it->activation.hasCVParam(MS_CID) || it->activation.hasCVParam(MS_HCD))
                 info.collisionEnergy = it->activation.cvParam(MS_collision_energy).value;
         }
+
+        info.windowWideness = 0;
+        if (!it->isolationWindow.empty())
+        {
+            CVParam isolationWindowLowerOffset = it->isolationWindow.cvParam(MS_isolation_window_lower_offset);
+            CVParam isolationWindowUpperOffset = it->isolationWindow.cvParam(MS_isolation_window_upper_offset);
+            if (!isolationWindowLowerOffset.empty() && !isolationWindowUpperOffset.empty())
+                info.windowWideness = fabs(isolationWindowLowerOffset.valueAs<double>()) + isolationWindowUpperOffset.valueAs<double>();
+        }
+
         if (!info.empty()) result.push_back(info);
     }
 
@@ -475,17 +493,20 @@ void write_precursors(XMLWriter& xmlWriter, const vector<PrecursorInfo>& precurs
     {    
         XMLWriter::Attributes attributes;
         if (!it->scanNum.empty())
-            attributes.push_back(make_pair("precursorScanNum", it->scanNum));
+            attributes.add("precursorScanNum", it->scanNum);
         if (it->intensity.empty())
-            attributes.push_back(make_pair("precursorIntensity", "0")); // required attribute
+            attributes.add("precursorIntensity", "0"); // required attribute
         else
-            attributes.push_back(make_pair("precursorIntensity", it->intensity));
+            attributes.add("precursorIntensity", it->intensity);
         if (!it->charge.empty())
-            attributes.push_back(make_pair("precursorCharge", it->charge));
-        if(!it->activation.empty())
-            attributes.push_back(make_pair("activationMethod", it->activation));
+            attributes.add("precursorCharge", it->charge);
+        if (!it->activation.empty())
+            attributes.add("activationMethod", it->activation);
+        if (it->windowWideness != 0)
+            attributes.add("windowWideness", it->windowWideness);
+
         xmlWriter.startElement("precursorMz", attributes);
-        xmlWriter.characters(it->mz);
+        xmlWriter.characters(it->mz, false);
         xmlWriter.endElement();
     }
 
@@ -506,25 +527,30 @@ void write_peaks(XMLWriter& xmlWriter, const vector<MZIntensityPair>& mzIntensit
     if (!mzIntensityPairs.empty())
         encoder.encode(reinterpret_cast<const double*>(&mzIntensityPairs[0]), 
                        mzIntensityPairs.size()*2, encoded, &binaryByteCount);
+    else
+        binaryByteCount = 0;
 
     XMLWriter::Attributes attributes;
     string precision = bdeConfig.precision == BinaryDataEncoder::Precision_32 ? "32" : "64";
     if (bdeConfig.compression == BinaryDataEncoder::Compression_Zlib)
     {
-        attributes.push_back(make_pair("compressionType", "zlib"));
-        attributes.push_back(make_pair("compressedLen", lexical_cast<string>(binaryByteCount)));
+        attributes.add("compressionType", "zlib");
+        attributes.add("compressedLen", binaryByteCount);
     }
     else
-        attributes.push_back(make_pair("compressedLen", "0"));
+    {
+        attributes.add("compressionType", "none");
+        attributes.add("compressedLen", "0");
+    }
 
-    attributes.push_back(make_pair("precision", precision));
-    attributes.push_back(make_pair("byteOrder", "network"));
-    attributes.push_back(make_pair("pairOrder", "m/z-int"));
+    attributes.add("precision", precision);
+    attributes.add("byteOrder", "network");
+    attributes.add("contentType", "m/z-int");
 
     xmlWriter.pushStyle(XMLWriter::StyleFlag_InlineInner |
                         XMLWriter::StyleFlag_AttributesOnMultipleLines);
     xmlWriter.startElement("peaks", attributes);
-    xmlWriter.characters(encoded);
+    xmlWriter.characters(encoded, false);
     xmlWriter.endElement();
     xmlWriter.popStyle();
 }
@@ -534,18 +560,25 @@ IndexEntry write_scan(XMLWriter& xmlWriter,
                       CVID nativeIdFormat,
                       const Spectrum& spectrum,
                       const SpectrumListPtr spectrumListPtr,
-                      const Serializer_mzXML::Config& config)
+                      const Serializer_mzXML::Config& config,
+                      map<InstrumentConfigurationPtr, int>& instrumentIndexByPtr)
 {
     IndexEntry result;
     result.offset = xmlWriter.positionNext();
 
     // mzXML scanNumber takes a different form depending on the source's nativeID format
-    string scanNumberStr = id::translateNativeIDToScanNumber(nativeIdFormat, spectrum.id);
-    if (scanNumberStr.empty())
-        result.scanNumber = spectrum.index+1; // scanNumber is a 1-based index for some nativeID formats
+    if (MS_multiple_peak_list_nativeID_format == nativeIdFormat)  // 0-based
+    {
+        result.scanNumber = spectrum.index+1;  // mzXML is 1-based
+    }
     else
-        result.scanNumber = lexical_cast<int>(scanNumberStr);
-
+    {
+        string scanNumberStr = id::translateNativeIDToScanNumber(nativeIdFormat, spectrum.id);
+        if (scanNumberStr.empty())
+            result.scanNumber = spectrum.index+1; // scanNumber is a 1-based index for some nativeID formats
+        else
+            result.scanNumber = lexical_cast<int>(scanNumberStr);
+    }
     // get info
 
     Scan dummy;
@@ -558,17 +591,18 @@ IndexEntry write_scan(XMLWriter& xmlWriter,
     {
         case MS_MSn_spectrum:
         case MS_MS1_spectrum:
-            scanType = "FULL";
+            scanType = "Full";
             break;
 
         case MS_CRM_spectrum: scanType = "CRM"; break;
         case MS_SIM_spectrum: scanType = "SIM"; break;
         case MS_SRM_spectrum: scanType = "SRM"; break;
         case MS_precursor_ion_spectrum: scanType = "Q1"; break;
+        case MS_constant_neutral_gain_spectrum: case MS_constant_neutral_loss_spectrum: scanType = "Q3"; break;
         default: break;
     }
 
-    string scanEvent = scan.cvParam(MS_preset_scan_configuration).value;
+    //string scanEvent = scan.cvParam(MS_preset_scan_configuration).value;
     string msLevel = spectrum.cvParam(MS_ms_level).value;
     string polarity = getPolarity(spectrum);
     string retentionTime = getRetentionTime(scan);
@@ -577,6 +611,7 @@ IndexEntry write_scan(XMLWriter& xmlWriter,
     string basePeakMz = spectrum.cvParam(MS_base_peak_m_z).value;
     string basePeakIntensity = spectrum.cvParam(MS_base_peak_intensity).value;
     string totIonCurrent = spectrum.cvParam(MS_total_ion_current).value;
+    string filterLine = spectrum.cvParam(MS_filter_string).value;
 	string compensationVoltage;
 	if (spectrum.hasCVParam(MS_FAIMS))
         compensationVoltage = spectrum.cvParam(MS_FAIMS_compensation_voltage).value;
@@ -590,40 +625,43 @@ IndexEntry write_scan(XMLWriter& xmlWriter,
     // write out xml
 
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("num", lexical_cast<string>(result.scanNumber)));
-    if (!scanEvent.empty())
-        attributes.push_back(make_pair("scanEvent", scanEvent));
+    attributes.add("num", result.scanNumber);
+    //if (!scanEvent.empty())
+    //    attributes.add("scanEvent", scanEvent);
     if (!scanType.empty())
-        attributes.push_back(make_pair("scanType", scanType));
+        attributes.add("scanType", scanType);
+
+    if (!filterLine.empty())
+        attributes.add("filterLine", filterLine);
 
     // TODO: write this attribute only when SpectrumList_PeakPicker has processed the spectrum
-    attributes.push_back(make_pair("centroided", isCentroided ? "1" : "0"));
+    attributes.add("centroided", isCentroided ? "1" : "0");
 
-    attributes.push_back(make_pair("msLevel", msLevel));
-    attributes.push_back(make_pair("peaksCount", lexical_cast<string>(mzIntensityPairs.size())));
+    attributes.add("msLevel", msLevel);
+    attributes.add("peaksCount", mzIntensityPairs.size());
     if (!polarity.empty())
-        attributes.push_back(make_pair("polarity", polarity));
-    attributes.push_back(make_pair("retentionTime", retentionTime));
+        attributes.add("polarity", polarity);
+    attributes.add("retentionTime", retentionTime);
     if (!precursorInfo.empty())
     {
         if(!precursorInfo[0].collisionEnergy.empty())
-            attributes.push_back(make_pair("collisionEnergy", precursorInfo[0].collisionEnergy));
+            attributes.add("collisionEnergy", precursorInfo[0].collisionEnergy);
     }
     if (!lowMz.empty())
-        attributes.push_back(make_pair("lowMz", lowMz));
+        attributes.add("lowMz", lowMz);
     if (!highMz.empty())
-        attributes.push_back(make_pair("highMz", highMz));
+        attributes.add("highMz", highMz);
     if (!basePeakMz.empty())
-        attributes.push_back(make_pair("basePeakMz", basePeakMz));
+        attributes.add("basePeakMz", basePeakMz);
     if (!basePeakIntensity.empty())
-        attributes.push_back(make_pair("basePeakIntensity", basePeakIntensity));
+        attributes.add("basePeakIntensity", basePeakIntensity);
     if (!totIonCurrent.empty())
-        attributes.push_back(make_pair("totIonCurrent", totIonCurrent));
+        attributes.add("totIonCurrent", totIonCurrent);
     if (!compensationVoltage.empty())
-        attributes.push_back(make_pair("compensationVoltage", compensationVoltage));
+        attributes.add("compensationVoltage", compensationVoltage);
 
     if (scan.instrumentConfigurationPtr.get())
-        attributes.push_back(make_pair("msInstrumentID", scan.instrumentConfigurationPtr->id));
+        attributes.add("msInstrumentID", instrumentIndexByPtr[scan.instrumentConfigurationPtr]);
 
     xmlWriter.pushStyle(XMLWriter::StyleFlag_AttributesOnMultipleLines);
     xmlWriter.startElement("scan", attributes);
@@ -636,8 +674,8 @@ IndexEntry write_scan(XMLWriter& xmlWriter,
     BOOST_FOREACH(const UserParam& userParam, spectrum.userParams)
     {
         attributes.clear();
-        attributes.push_back(make_pair("name", userParam.name));
-        attributes.push_back(make_pair("value", userParam.value));
+        attributes.add("name", userParam.name);
+        attributes.add("value", userParam.value);
         xmlWriter.startElement("nameValue", attributes, XMLWriter::EmptyElement);
     }
 
@@ -649,7 +687,8 @@ IndexEntry write_scan(XMLWriter& xmlWriter,
 
 void write_scans(XMLWriter& xmlWriter, const MSData& msd, 
                  const Serializer_mzXML::Config& config, vector<IndexEntry>& index,
-                 const pwiz::util::IterationListenerRegistry* iterationListenerRegistry)
+                 const pwiz::util::IterationListenerRegistry* iterationListenerRegistry,
+                 map<InstrumentConfigurationPtr, int>& instrumentIndexByPtr)
 {
     SpectrumListPtr sl = msd.run.spectrumListPtr;
     if (!sl.get()) return;
@@ -684,7 +723,7 @@ void write_scans(XMLWriter& xmlWriter, const MSData& msd,
             continue;
 
         // write the spectrum
-        index.push_back(write_scan(xmlWriter, defaultNativeIdFormat, *spectrum, msd.run.spectrumListPtr, config));
+        index.push_back(write_scan(xmlWriter, defaultNativeIdFormat, *spectrum, msd.run.spectrumListPtr, config, instrumentIndexByPtr));
 
     }
 }
@@ -693,16 +732,16 @@ void write_scans(XMLWriter& xmlWriter, const MSData& msd,
 void write_index(XMLWriter& xmlWriter, const vector<IndexEntry>& index)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("name", "scan"));
+    attributes.add("name", "scan");
     xmlWriter.startElement("index", attributes);
 
     xmlWriter.pushStyle(XMLWriter::StyleFlag_InlineInner);
     for (vector<IndexEntry>::const_iterator it=index.begin(); it!=index.end(); ++it)
     {
-        XMLWriter::Attributes entryAttributes;
-        entryAttributes.push_back(make_pair("id", lexical_cast<string>(it->scanNumber)));
-        xmlWriter.startElement("offset", entryAttributes);
-        xmlWriter.characters(lexical_cast<string>(it->offset));
+        attributes.clear();
+        attributes.add("id", it->scanNumber);
+        xmlWriter.startElement("offset", attributes);
+        xmlWriter.characters(lexical_cast<string>(it->offset), false);
         xmlWriter.endElement(); // offset
     }
     xmlWriter.popStyle();
@@ -727,12 +766,14 @@ void Serializer_mzXML::Impl::write(ostream& os, const MSData& msd,
 
     start_mzXML(xmlWriter);
 
+    map<InstrumentConfigurationPtr, int> instrumentIndexByPtr;
+
     start_msRun(xmlWriter, msd);
     write_parentFile(xmlWriter, msd);  
-    write_msInstruments(xmlWriter, msd, cvTranslator_);
+    write_msInstruments(xmlWriter, msd, cvTranslator_, instrumentIndexByPtr);
     write_dataProcessing(xmlWriter, msd, cvTranslator_);
     vector<IndexEntry> index;
-    write_scans(xmlWriter, msd, config_, index, iterationListenerRegistry);
+    write_scans(xmlWriter, msd, config_, index, iterationListenerRegistry, instrumentIndexByPtr);
     xmlWriter.endElement(); // msRun 
 
     stream_offset indexOffset = xmlWriter.positionNext();
@@ -743,14 +784,14 @@ void Serializer_mzXML::Impl::write(ostream& os, const MSData& msd,
 
         xmlWriter.pushStyle(XMLWriter::StyleFlag_InlineInner);
         xmlWriter.startElement("indexOffset");
-        xmlWriter.characters(lexical_cast<string>(indexOffset));
+        xmlWriter.characters(lexical_cast<string>(indexOffset), false);
         xmlWriter.endElement();
         xmlWriter.popStyle();
     }
 
     xmlWriter.pushStyle(XMLWriter::StyleFlag_InlineInner);
     xmlWriter.startElement("sha1");
-    xmlWriter.characters(sha1OutputObserver.hash());
+    xmlWriter.characters(sha1OutputObserver.hash(), false);
     xmlWriter.endElement();
     xmlWriter.popStyle();
 
@@ -791,33 +832,33 @@ CVID translate_parentFilenameToSourceFileType(const string& name)
         // (Mass)Wolf-MRM or other non-compliant Waters converters might
         // conflict with this case, i.e. the extension could be from a Waters .raw directory
         // instead of a Thermo RAW file; these aberrant cases will be fixed globally by fillInMetadata()
-        return MS_Thermo_RAW_file;
+        return MS_Thermo_RAW_format;
     }
-    else if (fileExtension == ".dat")                           return MS_Waters_raw_file;
-    else if (fileExtension == ".wiff")                          return MS_ABI_WIFF_file;
-    else if (fileExtension == ".yep")                           return MS_Bruker_Agilent_YEP_file;
-    else if (fileExtension == ".baf")                           return MS_Bruker_BAF_file;
-    else if (name == "fid")                                     return MS_Bruker_FID_file;
-    else if (bal::iequals(name, "msprofile.bin"))               return MS_Agilent_MassHunter_file;
-    else if (bal::iequals(name, "mspeak.bin"))                  return MS_Agilent_MassHunter_file;
-    else if (bal::iequals(name, "msscan.bin"))                  return MS_Agilent_MassHunter_file;
-    else if (fileExtension == ".t2d")                           return MS_AB_SCIEX_TOF_TOF_T2D_file;
+    else if (fileExtension == ".dat")                           return MS_Waters_raw_format;
+    else if (fileExtension == ".wiff")                          return MS_ABI_WIFF_format;
+    else if (fileExtension == ".yep")                           return MS_Bruker_Agilent_YEP_format;
+    else if (fileExtension == ".baf")                           return MS_Bruker_BAF_format;
+    else if (name == "fid")                                     return MS_Bruker_FID_format;
+    else if (bal::iequals(name, "msprofile.bin"))               return MS_Agilent_MassHunter_format;
+    else if (bal::iequals(name, "mspeak.bin"))                  return MS_Agilent_MassHunter_format;
+    else if (bal::iequals(name, "msscan.bin"))                  return MS_Agilent_MassHunter_format;
+    else if (fileExtension == ".t2d")                           return MS_AB_SCIEX_TOF_TOF_T2D_format;
 
     // check for known open formats
-    else if (fileExtension == ".mzdata")                        return MS_PSI_mzData_file;
-    else if (fileExtension == ".mgf")                           return MS_Mascot_MGF_file;
-    else if (fileExtension == ".dta")                           return MS_DTA_file;
-    else if (fileExtension == ".pkl")                           return MS_Micromass_PKL_file;
-    else if (fileExtension == ".mzxml")                         return MS_ISB_mzXML_file;
-    else if (bal::iends_with(name, ".mz.xml"))                  return MS_ISB_mzXML_file;
-    else if (fileExtension == ".mzml")                          return MS_mzML_file;
+    else if (fileExtension == ".mzdata")                        return MS_PSI_mzData_format;
+    else if (fileExtension == ".mgf")                           return MS_Mascot_MGF_format;
+    else if (fileExtension == ".dta")                           return MS_DTA_format;
+    else if (fileExtension == ".pkl")                           return MS_Micromass_PKL_format;
+    else if (fileExtension == ".mzxml")                         return MS_ISB_mzXML_format;
+    else if (bal::iends_with(name, ".mz.xml"))                  return MS_ISB_mzXML_format;
+    else if (fileExtension == ".mzml")                          return MS_mzML_format;
 
     // This case is nasty for several reasons:
     // 1) a .d suffix almost certainly indicates a directory, not a file (so no SHA-1)
     // 2) the same suffix is used by multiple different formats (Agilent/Bruker YEP, Bruker BAF, Agilent ms*.bin)
     // 3) all the formats use the same nativeID style ("scan=123") so just treat it like an mzXML source
     // Therefore this "file" extension is quite useless.
-    else if (fileExtension == ".d")                             return MS_ISB_mzXML_file;
+    else if (fileExtension == ".d")                             return MS_ISB_mzXML_format;
 
     else                                                        return CVID_Unknown;
 }
@@ -828,21 +869,21 @@ CVID translateSourceFileTypeToNativeIdFormat(CVID sourceFileType)
     switch (sourceFileType)
     {
         // for these sources we treat the scan number as the nativeID
-        case MS_Thermo_RAW_file:            return MS_Thermo_nativeID_format;
-        case MS_Bruker_Agilent_YEP_file:    return MS_Bruker_Agilent_YEP_nativeID_format;
-        case MS_Bruker_BAF_file:            return MS_Bruker_BAF_nativeID_format;
-        case MS_ISB_mzXML_file:             return MS_scan_number_only_nativeID_format;
-        case MS_PSI_mzData_file:            return MS_spectrum_identifier_nativeID_format;
-        case MS_Mascot_MGF_file:            return MS_multiple_peak_list_nativeID_format;
-        case MS_DTA_file:                   return MS_scan_number_only_nativeID_format;
-        case MS_Agilent_MassHunter_file:    return MS_Agilent_MassHunter_nativeID_format;
+        case MS_Thermo_RAW_format:            return MS_Thermo_nativeID_format;
+        case MS_Bruker_Agilent_YEP_format:    return MS_Bruker_Agilent_YEP_nativeID_format;
+        case MS_Bruker_BAF_format:            return MS_Bruker_BAF_nativeID_format;
+        case MS_ISB_mzXML_format:             return MS_scan_number_only_nativeID_format;
+        case MS_PSI_mzData_format:            return MS_spectrum_identifier_nativeID_format;
+        case MS_Mascot_MGF_format:            return MS_multiple_peak_list_nativeID_format;
+        case MS_DTA_format:                   return MS_scan_number_only_nativeID_format;
+        case MS_Agilent_MassHunter_format:    return MS_Agilent_MassHunter_nativeID_format;
 
         // for these sources we must assume the scan number came from the index
-        case MS_ABI_WIFF_file:
-        case MS_Bruker_FID_file:
-        case MS_AB_SCIEX_TOF_TOF_T2D_file:
-        case MS_Waters_raw_file:
-        case MS_Micromass_PKL_file:
+        case MS_ABI_WIFF_format:
+        case MS_Bruker_FID_format:
+        case MS_AB_SCIEX_TOF_TOF_T2D_format:
+        case MS_Waters_raw_format:
+        case MS_Micromass_PKL_format:
             return MS_scan_number_only_nativeID_format;
 
         // in other cases, assume the source file doesn't contain instrument data
@@ -1015,7 +1056,7 @@ void fillInMetadata(MSData& msd)
         sf->set(sourceFileType);
         sf->set(translateSourceFileTypeToNativeIdFormat(sourceFileType));
 
-        if (sourceFileType == MS_Bruker_FID_file || sourceFileType == MS_AB_SCIEX_TOF_TOF_T2D_file)
+        if (sourceFileType == MS_Bruker_FID_format || sourceFileType == MS_AB_SCIEX_TOF_TOF_T2D_format)
         {       
             // each source file is translated to a run ID and added to a set of potential ids;
             // if they all have a common prefix, that is used as the id, otherwise it stays empty
@@ -1037,9 +1078,9 @@ void fillInMetadata(MSData& msd)
         // path/to/source/1A/1/1SRef/fid, path/to/source/1B/1/1SRef/fid, lcp: path/to/source/1, run id: source (not "1")
         // path/to/source/1A/1/1SRef/fid, path/to/source/2A/1/1SRef/fid, lcp: path/to/source/, run id: source
         if (*lcp.rbegin() == '/')
-            msd.id = msd.run.id = bfs::path(lcp).leaf();
+            msd.id = msd.run.id = BFS_STRING(bfs::path(lcp).leaf());
         else
-            msd.id = msd.run.id = bfs::path(lcp).parent_path().leaf();
+            msd.id = msd.run.id = BFS_STRING(bfs::path(lcp).parent_path().leaf());
     }
 }
 

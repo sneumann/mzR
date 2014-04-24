@@ -1,5 +1,5 @@
 //
-// $Id: endian_test.cpp 2051 2010-06-15 18:39:13Z chambm $ 
+// $Id: endian_test.cpp 4129 2012-11-20 00:05:37Z chambm $ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -21,9 +21,9 @@
 //
 
 
+#include "Std.hpp"
 #include "endian.hpp"
 #include "pwiz/utility/misc/unit.hpp"
-#include "pwiz/utility/misc/Std.hpp"
 
 using namespace pwiz::util;
 
@@ -53,19 +53,24 @@ void test()
 }
 
 
-int main()
+int main(int argc, const char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
-    
-    return 1;
+    catch (...)
+    {
+        TEST_FAILED("Caught unknown exception.")
+    }
+
+    TEST_EPILOG
 }
 
 

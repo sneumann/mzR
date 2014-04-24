@@ -1,5 +1,5 @@
 //
-// $Id: DefaultReaderList.hpp 1189 2009-08-14 17:36:06Z chambm $
+// $Id: DefaultReaderList.hpp 3808 2012-07-24 20:31:10Z donmarsh $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -33,6 +33,70 @@ namespace pwiz {
 namespace msdata {
 
 
+class PWIZ_API_DECL Reader_mzML : public Reader
+{
+    public:
+    virtual std::string identify(const std::string& filename, const std::string& head) const;
+    virtual void read(const std::string& filename, const std::string& head, MSData& result, int runIndex = 0, const Config& config = Config()) const;
+    virtual void read(const std::string& filename, const std::string& head, std::vector<MSDataPtr>& results, const Config& config = Config()) const;
+    virtual const char* getType() const {return "mzML";}
+
+    private:
+    enum Type { Type_mzML, Type_mzML_Indexed, Type_Unknown };
+    Type type(std::istream& is) const;
+};
+
+
+class PWIZ_API_DECL Reader_mzXML : public Reader
+{
+    public:
+    virtual std::string identify(const std::string& filename, const std::string& head) const;
+    virtual void read(const std::string& filename, const std::string& head, MSData& result, int runIndex = 0, const Config& config = Config()) const;
+    virtual void read(const std::string& filename, const std::string& head, std::vector<MSDataPtr>& results, const Config& config = Config()) const;
+    virtual const char* getType() const {return "mzXML";}
+};
+
+
+class PWIZ_API_DECL Reader_MGF : public Reader
+{
+    public:
+    virtual std::string identify(const std::string& filename, const std::string& head) const;
+    virtual void read(const std::string& filename, const std::string& head, MSData& result, int runIndex = 0, const Config& config = Config()) const;
+    virtual void read(const std::string& filename, const std::string& head, std::vector<MSDataPtr>& results, const Config& config = Config()) const;
+    virtual const char* getType() const {return "Mascot Generic";}
+};
+
+
+class PWIZ_API_DECL Reader_MSn : public Reader
+{
+    public:
+    virtual std::string identify(const std::string& filename, const std::string& head) const;
+    virtual void read(const std::string& filename, const std::string& head, MSData& result, int runIndex = 0, const Config& config = Config()) const;
+    virtual void read(const std::string& filename, const std::string& head, std::vector<MSDataPtr>& results, const Config& config = Config()) const;
+    virtual const char* getType() const {return "MSn";}
+};
+
+
+class PWIZ_API_DECL Reader_BTDX : public Reader
+{
+    public:
+    virtual std::string identify(const std::string& filename, const std::string& head) const;
+    virtual void read(const std::string& filename, const std::string& head, MSData& result, int runIndex = 0, const Config& config = Config()) const;
+    virtual void read(const std::string& filename, const std::string& head, std::vector<MSDataPtr>& results, const Config& config = Config()) const;
+    virtual const char* getType() const {return "Bruker Data Exchange";}
+};
+
+
+class PWIZ_API_DECL Reader_mz5 : public Reader
+{
+    public:
+    virtual std::string identify(const std::string& filename, const std::string& head) const;
+    virtual void read(const std::string& filename, const std::string& head, MSData& result, int runIndex = 0, const Config& config = Config()) const;
+    virtual void read(const std::string& filename, const std::string& head, std::vector<MSDataPtr>& results, const Config& config = Config()) const;
+    virtual const char* getType() const {return "MZ5";}
+};
+
+
 /// default Reader list
 class PWIZ_API_DECL DefaultReaderList : public ReaderList
 {
@@ -45,5 +109,4 @@ class PWIZ_API_DECL DefaultReaderList : public ReaderList
 } // namespace pwiz
 
 
-#endif// _DEFAULTREADERLIST_HPP_
-
+#endif // _DEFAULTREADERLIST_HPP_

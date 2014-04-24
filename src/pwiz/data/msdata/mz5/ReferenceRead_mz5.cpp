@@ -1,5 +1,5 @@
 //
-// $Id: ReferenceRead_mz5.cpp 2895 2011-07-29 21:09:45Z mwilhelm42 $
+// $Id: ReferenceRead_mz5.cpp 3484 2012-04-04 19:55:33Z mwilhelm42 $
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -209,7 +209,7 @@ pwiz::msdata::DataProcessingPtr ReferenceRead_mz5::getDataProcessingPtr(
     }
     else
     {
-		return pwiz::msdata::DataProcessingPtr();
+        return pwiz::msdata::DataProcessingPtr();
     }
 }
 

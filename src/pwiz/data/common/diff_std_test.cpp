@@ -1,5 +1,5 @@
 //
-// $Id: diff_std_test.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: diff_std_test.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Robert Burke <robetr.burke@proteowizard.org>
@@ -150,10 +150,10 @@ void testCVParam()
 {
     if (os_) *os_ << "testCVParam()\n";
 
-    CVParam a, b;
+    CVParam a, b, c;
     a.cvid = MS_ionization_type; 
     a.value = "420";
-    b = a;
+    c = b = a;
 
     Diff<CVParam> diff(a, b);
     unit_assert(!diff);
@@ -168,6 +168,35 @@ void testCVParam()
     unit_assert(diff.b_a.cvid == MS_ionization_type);
     unit_assert(diff.a_b.value == "420");
     unit_assert(diff.b_a.value == "value_changed");
+
+    c.value = "421"; // prove fix for bug that wouldn't catch diff in int values
+    diff(a,c);
+    unit_assert(diff);
+    if (os_) *os_ << diff << endl;
+    unit_assert(diff.a_b.cvid == MS_ionization_type);
+    unit_assert(diff.b_a.cvid == MS_ionization_type);
+    unit_assert(diff.a_b.value == "420");
+    unit_assert(diff.b_a.value == "421");
+
+    a.value = "4.1e5"; // make sure we handle scientific notation properly
+    c.value = "4.1"; 
+    diff(a,c);
+    unit_assert(diff);
+    if (os_) *os_ << diff << endl;
+
+    a.value = "4.1e5"; // make sure we handle scientific notation properly
+    c.value = "410000.0"; 
+    diff(a,c);
+    unit_assert(!diff);
+    if (os_) *os_ << diff << endl;
+
+    a.value = "1a"; // make sure we aren't naive about things that start out as ints
+    c.value = "1b"; 
+    diff(a,c);
+    unit_assert(diff);
+    if (os_) *os_ << diff << endl;
+
+
 }
 
 
@@ -274,21 +303,22 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
-    
-    return 1;
+
+    TEST_EPILOG
 }
 

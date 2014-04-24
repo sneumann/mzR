@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_MGF_Test.cpp 2296 2010-10-13 23:24:06Z frewen $
+// $Id: SpectrumList_MGF_Test.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -120,10 +120,7 @@ void test()
     unit_assert_equal(precursor0.selectedIons[0].cvParam(MS_selected_ion_m_z).valueAs<double>(), 810.79, 1e-5);
 
     unit_assert(s->defaultArrayLength == 3);
-    unit_assert(s->binaryDataArrayPtrs.size() == 2);
-    unit_assert(s->binaryDataArrayPtrs[0]->hasCVParam(MS_m_z_array));
-    unit_assert(s->binaryDataArrayPtrs[1]->hasCVParam(MS_intensity_array));
-    unit_assert(s->binaryDataArrayPtrs[0]->data.empty() && s->binaryDataArrayPtrs[1]->data.empty());
+    unit_assert(s->binaryDataArrayPtrs.empty());
 
     s = sl->spectrum(0, true);
     unit_assert(s->defaultArrayLength == 3);
@@ -180,21 +177,23 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
+
+    TEST_EPILOG
 }
 
 

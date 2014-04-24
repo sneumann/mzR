@@ -1,5 +1,5 @@
 //
-// $Id: Filesystem.hpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: Filesystem.hpp 5091 2013-10-30 20:02:10Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -31,21 +31,47 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/version.hpp>
 #include "pwiz/utility/misc/random_access_compressed_ifstream.hpp"
 
 namespace bfs = boost::filesystem;
 
+#ifndef BOOST_FILESYSTEM_VERSION
+# if (BOOST_VERSION/100) >= 1046
+#  define BOOST_FILESYSTEM_VERSION 3
+# else
+#  define BOOST_FILESYSTEM_VERSION 2
+# endif
+#endif // BOOST_FILESYSTEM_VERSION
+
+
+// boost filesystem v2 support is going away
+// and v3 breaks the API in surprising ways
+// see http://www.boost.org/doc/libs/1_47_0/libs/filesystem/v3/doc/deprecated.html
+#if BOOST_FILESYSTEM_VERSION == 2
+// in BFS2 p.filename() or p.leaf() or p.extension() returns a string
+#define BFS_STRING(p) p
+#define BFS_GENERIC_STRING(p) p
+// in BFS2 complete() is in namespace
+#define BFS_COMPLETE bfs::complete
+#else
+// in BFS3 p.filename() or p.leaf() or p.extension() returns a bfs::path
+#define BFS_STRING(p) (p).string()
+#define BFS_GENERIC_STRING(p) (p).generic_string()
+// in BFS3 complete() is not in namespace
+#define BFS_COMPLETE bfs::system_complete
+#endif
 
 namespace pwiz {
 namespace util {
 
 
-/// expands (aka globs) a pathmask to zero or more matching paths
+/// expands (aka globs) a pathmask to zero or more matching paths and returns the number of matching paths
 /// - matching paths can be either files or directories
 /// - matching paths will be absolute if input pathmask was absolute
 /// - matching paths will be relative if input pathmask was relative
-PWIZ_API_DECL void expand_pathmask(const bfs::path& pathmask,
-                                   vector<bfs::path>& matchingPaths);
+PWIZ_API_DECL int expand_pathmask(const bfs::path& pathmask,
+                                  vector<bfs::path>& matchingPaths);
 
 
 PWIZ_API_DECL enum ByteSizeAbbreviation

@@ -1,5 +1,5 @@
 //
-// $Id: RAMPAdapter.cpp 2374 2010-11-16 23:19:48Z chambm $
+// $Id: RAMPAdapter.cpp 3112 2011-11-09 19:42:29Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -51,24 +51,9 @@ class RAMPAdapter::Impl
         if (!msd_.run.spectrumListPtr.get())
             throw runtime_error("[RAMPAdapter] Null spectrumListPtr.");
 
-        // flag spectra not from the default source file
         size_ = msd_.run.spectrumListPtr->size();
-        nonDefaultSpectra_.resize(size_, false);
-        for (size_t i=0, end=size_; i < end; ++i)
-        {
-            SpectrumPtr s = msd_.run.spectrumListPtr->spectrum(i, false);
-            if (s->sourceFilePtr.get() && s->sourceFilePtr != msd_.run.defaultSourceFilePtr)
-            {
-                nonDefaultSpectra_[i] = true;
-                --size_;
-            }
-            else
-            {
-                if (firstIndex_ > lastIndex_)
-                    firstIndex_ = i;
-                lastIndex_ = i;
-            }
-        }
+        firstIndex_ = 0;
+        lastIndex_ = size_-1;
     }
 
     size_t scanCount() const
@@ -165,6 +150,25 @@ void RAMPAdapter::Impl::getScanHeader(size_t index, ScanHeaderStruct& result, bo
     result.precursorMZ = 0;
     result.precursorCharge = 0;
     result.precursorIntensity = 0;
+    result.compensationVoltage = 0;
+    
+
+    std::string filterLine = scan.cvParam(MS_filter_string).value;
+    
+    size_t found = filterLine.find("cv=");
+    
+    if (found!=string::npos) {
+      filterLine = filterLine.substr(found+3);
+      found = filterLine.find_first_of(" ");
+      if (found!=string::npos) {
+          filterLine = filterLine.substr(0, found);
+          result.compensationVoltage = atof(filterLine.c_str());
+      }
+    }
+
+    result.filterLine = filterLine;
+
+
 
     if (!spectrum->precursors.empty())
     {
@@ -216,11 +220,14 @@ void RAMPAdapter::Impl::getScanHeader(size_t index, ScanHeaderStruct& result, bo
 void RAMPAdapter::Impl::getScanPeaks(size_t index, std::vector<double>& result) const
 {
     // use previous spectrum if possible (it must have binary data)
-    if (!lastSpectrum.get() || lastSpectrum->index != index || lastSpectrum->binaryDataArrayPtrs.empty())
-        lastSpectrum = msd_.run.spectrumListPtr->spectrum(index, true);
+    if (!lastSpectrum.get() || lastSpectrum->index != index) {
+        lastSpectrum = msd_.run.spectrumListPtr->spectrum(index, true); // full read
+    } else if (!lastSpectrum->hasBinaryData()) {
+        // copy lastSpectrum header, avoids reread of header if format supports it
+        lastSpectrum = msd_.run.spectrumListPtr->spectrum(lastSpectrum, true);
+    }
 
     SpectrumPtr spectrum = lastSpectrum;
-
     result.clear();
     result.resize(spectrum->defaultArrayLength * 2);
     if (spectrum->defaultArrayLength == 0) return;

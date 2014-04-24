@@ -1,5 +1,5 @@
 //
-// $Id: examples.cpp 2214 2010-08-27 22:24:55Z cpaulse $ 
+// $Id: examples.cpp 5759 2014-02-19 22:26:29Z chambm $ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -49,7 +49,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     sfp->id = "tiny1.yep";
     sfp->name = "tiny1.yep";
     sfp->location = "file://F:/data/Exp01";
-    sfp->set(MS_Bruker_Agilent_YEP_file);
+    sfp->set(MS_Bruker_Agilent_YEP_format);
     sfp->set(MS_SHA_1,"1234567890123456789012345678901234567890");
     sfp->set(MS_Bruker_Agilent_YEP_nativeID_format);
     msd.fileDescription.sourceFilePtrs.push_back(sfp);
@@ -58,7 +58,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     sfp2->id = "tiny.wiff";
     sfp2->name = "tiny.wiff";
     sfp2->location = "file://F:/data/Exp01";
-    sfp2->set(MS_ABI_WIFF_file);
+    sfp2->set(MS_ABI_WIFF_format);
     sfp2->set(MS_SHA_1,"2345678901234567890123456789012345678901");
     sfp2->set(MS_WIFF_nativeID_format);
     msd.fileDescription.sourceFilePtrs.push_back(sfp2);
@@ -72,7 +72,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     msd.fileDescription.contacts.resize(1);
     Contact& contact = msd.fileDescription.contacts.front();
     contact.set(MS_contact_name, "William Pennington");
-    contact.set(MS_contact_organization, "Higglesworth University");
+	contact.set(MS_contact_affiliation, "Higglesworth University");
     contact.set(MS_contact_address, "12 Higglesworth Avenue, 12045, HI, USA");
 	contact.set(MS_contact_URL, "http://www.higglesworth.edu/");
 	contact.set(MS_contact_email, "wpennington@higglesworth.edu");
@@ -88,7 +88,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     ParamGroupPtr pg2(new ParamGroup);
     pg2->id = "CommonMS2SpectrumParams";
     pg2->set(MS_MSn_spectrum);
-    pg2->set(MS_positive_scan);
+    pg2->set(MS_negative_scan);
     msd.paramGroupPtrs.push_back(pg2);
 
     // sampleList
@@ -197,7 +197,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     s19.set(MS_lowest_observed_m_z, 400.39, MS_m_z);
     s19.set(MS_highest_observed_m_z, 1795.56, MS_m_z);
     s19.set(MS_base_peak_m_z, 445.347, MS_m_z);
-    s19.set(MS_base_peak_intensity, 120053, MS_number_of_counts);
+    s19.set(MS_base_peak_intensity, 120053, MS_number_of_detector_counts);
     s19.set(MS_total_ion_current, 1.66755e+007);
 
     s19.paramGroupPtrs.push_back(pg1);
@@ -222,7 +222,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
 
     BinaryDataArrayPtr s19_intensity(new BinaryDataArray);
     s19_intensity->dataProcessingPtr = dpCompassXtract;
-    s19_intensity->set(MS_intensity_array, "", MS_number_of_counts);
+    s19_intensity->set(MS_intensity_array, "", MS_number_of_detector_counts);
     s19_intensity->data.resize(15);
     for (int i=0; i<15; i++)
         s19_intensity->data[i] = 15-i;
@@ -242,7 +242,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     s20.set(MS_lowest_observed_m_z, 320.39, MS_m_z);
     s20.set(MS_highest_observed_m_z, 1003.56, MS_m_z);
     s20.set(MS_base_peak_m_z, 456.347, MS_m_z);
-    s20.set(MS_base_peak_intensity, 23433, MS_number_of_counts);
+    s20.set(MS_base_peak_intensity, 23433, MS_number_of_detector_counts);
     s20.set(MS_total_ion_current, 1.66755e+007);
 
     s20.precursors.resize(1);
@@ -253,7 +253,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     precursor.isolationWindow.set(MS_isolation_window_upper_offset, .5, MS_m_z);
     precursor.selectedIons.resize(1);
     precursor.selectedIons[0].set(MS_selected_ion_m_z, 445.34, MS_m_z);
-    precursor.selectedIons[0].set(MS_peak_intensity, 120053, MS_number_of_counts);
+    precursor.selectedIons[0].set(MS_peak_intensity, 120053, MS_number_of_detector_counts);
     precursor.selectedIons[0].set(MS_charge_state, 2);
     precursor.activation.set(MS_collision_induced_dissociation);
     precursor.activation.set(MS_collision_energy, 35.00, UO_electronvolt);
@@ -279,7 +279,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
 
     BinaryDataArrayPtr s20_intensity(new BinaryDataArray);
     s20_intensity->dataProcessingPtr = dpCompassXtract;
-    s20_intensity->set(MS_intensity_array, "", MS_number_of_counts);
+    s20_intensity->set(MS_intensity_array, "", MS_number_of_detector_counts);
     s20_intensity->data.resize(10);
     for (int i=0; i<10; i++)
         s20_intensity->data[i] = (10-i)*2;
@@ -298,7 +298,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     s21.set(MS_ms_level, 1);
     s21.set(MS_centroid_spectrum);
     s21.userParams.push_back(UserParam("example", "spectrum with no data"));
-    s21.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_counts);
+    s21.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_detector_counts);
 
     s21.scanList.scans.push_back(Scan());
     s21.scanList.scans.back().instrumentConfigurationPtr = instrumentConfigurationPtr;
@@ -317,7 +317,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     s22.set(MS_lowest_observed_m_z, 320.39, MS_m_z);
     s22.set(MS_highest_observed_m_z, 1003.56, MS_m_z);
     s22.set(MS_base_peak_m_z, 456.347, MS_m_z);
-    s22.set(MS_base_peak_intensity, 23433, MS_number_of_counts);
+    s22.set(MS_base_peak_intensity, 23433, MS_number_of_detector_counts);
     s22.set(MS_total_ion_current, 1.66755e+007);
 
     s22.precursors.resize(1);
@@ -328,7 +328,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     precursor22.isolationWindow.set(MS_isolation_window_upper_offset, .5, MS_m_z);
     precursor22.selectedIons.resize(1);
     precursor22.selectedIons[0].set(MS_selected_ion_m_z, 545.34, MS_m_z);
-    precursor22.selectedIons[0].set(MS_peak_intensity, 120053, MS_number_of_counts);
+    precursor22.selectedIons[0].set(MS_peak_intensity, 120053, MS_number_of_detector_counts);
     precursor22.selectedIons[0].set(MS_charge_state, 2);
     precursor22.activation.set(MS_ETD);
     precursor22.activation.set(MS_CID);
@@ -354,7 +354,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
 
     BinaryDataArrayPtr s22_intensity(new BinaryDataArray);
     s22_intensity->dataProcessingPtr = dpCompassXtract;
-    s22_intensity->set(MS_intensity_array, "", MS_number_of_counts);
+    s22_intensity->set(MS_intensity_array, "", MS_number_of_detector_counts);
     s22_intensity->data.resize(10);
     for (int i=0; i<10; i++)
         s22_intensity->data[i] = (10-i)*2;
@@ -375,7 +375,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
     s23.set(MS_lowest_observed_m_z, 142.39, MS_m_z);
     s23.set(MS_highest_observed_m_z, 942.56, MS_m_z);
     s23.set(MS_base_peak_m_z, 422.42, MS_m_z);
-    s23.set(MS_base_peak_intensity, 42, MS_number_of_counts);
+    s23.set(MS_base_peak_intensity, 42, MS_number_of_detector_counts);
     s23.set(MS_total_ion_current, 4200);
     s23.userParams.push_back(UserParam("alternate source file", "to test a different nativeID format"));
     s23.paramGroupPtrs.push_back(pg1);
@@ -420,7 +420,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
 
     BinaryDataArrayPtr tic_intensity(new BinaryDataArray);
     tic_intensity->dataProcessingPtr = dppwiz;
-    tic_intensity->set(MS_intensity_array, "", MS_number_of_counts);
+    tic_intensity->set(MS_intensity_array, "", MS_number_of_detector_counts);
     tic_intensity->data.resize(15);
     for (int i=0; i<15; i++)
         tic_intensity->data[i] = 15-i;
@@ -448,7 +448,7 @@ PWIZ_API_DECL void initializeTiny(MSData& msd)
 
     BinaryDataArrayPtr sic_intensity(new BinaryDataArray);
     sic_intensity->dataProcessingPtr = dppwiz;
-    sic_intensity->set(MS_intensity_array, "", MS_number_of_counts);
+    sic_intensity->set(MS_intensity_array, "", MS_number_of_detector_counts);
     sic_intensity->data.resize(10);
     for (int i=0; i<10; i++)
         sic_intensity->data[i] = 10-i;
@@ -471,14 +471,14 @@ PWIZ_API_DECL void addMIAPEExampleMetadata(MSData& msd)
     // fileDescription
 
     SourceFilePtr sfp_parameters(new SourceFile("sf_parameters", "parameters.par", "file:///C:/example/"));
-    sfp_parameters->set(MS_parameter_file);
+	sfp_parameters->set(MS_parameter_file);
     sfp_parameters->set(MS_SHA_1, "unknown");
     sfp_parameters->set(MS_no_nativeID_format);
     msd.fileDescription.sourceFilePtrs.push_back(sfp_parameters);
 
     Contact contact;
     contact.set(MS_contact_name, "William Pennington");
-    contact.set(MS_contact_organization, "Higglesworth University");
+    contact.set(MS_contact_affiliation, "Higglesworth University");
     contact.set(MS_contact_address, "12 Higglesworth Avenue, 12045, HI, USA");
 	contact.set(MS_contact_URL, "http://www.higglesworth.edu/");
 	contact.set(MS_contact_email, "wpennington@higglesworth.edu");

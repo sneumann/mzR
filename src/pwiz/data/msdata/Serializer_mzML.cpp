@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_mzML.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: Serializer_mzML.cpp 4242 2012-12-28 19:48:06Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -66,16 +66,16 @@ void writeSpectrumIndex(XMLWriter& xmlWriter,
                 const SpectrumListPtr& spectrumListPtr,
                 const vector<stream_offset>& positions)
 {
+    XMLWriter::Attributes indexAttributes;
+    indexAttributes.push_back(make_pair("name", "spectrum"));        
+    xmlWriter.startElement("index", indexAttributes);
+    xmlWriter.pushStyle(XMLWriter::StyleFlag_InlineInner);
     if (spectrumListPtr.get() && spectrumListPtr->size() > 0)
     {
-        XMLWriter::Attributes indexAttributes;
-        indexAttributes.push_back(make_pair("name", "spectrum"));        
-        xmlWriter.startElement("index", indexAttributes);
 
         if (spectrumListPtr->size() != positions.size())
             throw runtime_error("[Serializer_mzML::writeSpectrumIndex()] Sizes differ.");
 
-        xmlWriter.pushStyle(XMLWriter::StyleFlag_InlineInner);
         for (unsigned int i=0; i<positions.size(); ++i)
         {
             const SpectrumIdentity& spectrum = spectrumListPtr->spectrumIdentity(i);
@@ -89,25 +89,25 @@ void writeSpectrumIndex(XMLWriter& xmlWriter,
             xmlWriter.characters(lexical_cast<string>(positions[i]));
             xmlWriter.endElement();
         }
-        xmlWriter.popStyle();
-        xmlWriter.endElement(); 
     }
+    xmlWriter.popStyle();
+    xmlWriter.endElement(); 
 }
 
 void writeChromatogramIndex(XMLWriter& xmlWriter, 
                 const ChromatogramListPtr& chromatogramListPtr,
                 const vector<stream_offset>& positions)
 {
+    XMLWriter::Attributes indexAttributes;
+    indexAttributes.push_back(make_pair("name", "chromatogram"));        
+    xmlWriter.startElement("index", indexAttributes);
+    xmlWriter.pushStyle(XMLWriter::StyleFlag_InlineInner);
     if (chromatogramListPtr.get() && chromatogramListPtr->size() > 0)
     {
-        XMLWriter::Attributes indexAttributes;
-        indexAttributes.push_back(make_pair("name", "chromatogram"));        
-        xmlWriter.startElement("index", indexAttributes);
 
         if (chromatogramListPtr->size() != positions.size())
             throw runtime_error("[Serializer_mzML::WriteChromatogramIndex()] sizes differ.");
 
-        xmlWriter.pushStyle(XMLWriter::StyleFlag_InlineInner);
         for (unsigned int i=0; i<positions.size(); ++i)
         {
             const ChromatogramIdentity& chromatogram = chromatogramListPtr->chromatogramIdentity(i);
@@ -119,9 +119,9 @@ void writeChromatogramIndex(XMLWriter& xmlWriter,
             xmlWriter.characters(lexical_cast<string>(positions[i]));
             xmlWriter.endElement();
         }
-        xmlWriter.popStyle();
-        xmlWriter.endElement(); 
     }
+    xmlWriter.popStyle();
+    xmlWriter.endElement(); 
 }
 
 } // namespace
@@ -147,7 +147,7 @@ void Serializer_mzML::Impl::write(ostream& os, const MSData& msd,
         XMLWriter::Attributes attributes; 
         attributes.push_back(make_pair("xmlns", "http://psi.hupo.org/ms/mzml"));
         attributes.push_back(make_pair("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"));
-        attributes.push_back(make_pair("xsi:schemaLocation", "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.1_idx.xsd"));
+        attributes.push_back(make_pair("xsi:schemaLocation", "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd"));
         
         xmlWriter.startElement("indexedmzML", attributes);
         attributes.clear();
@@ -221,8 +221,9 @@ void Serializer_mzML::Impl::read(shared_ptr<istream> is, MSData& msd) const
     }
 
     IO::read(*is, msd, IO::IgnoreSpectrumList);
-    msd.run.spectrumListPtr = SpectrumList_mzML::create(is, msd, config_.indexed);
-    msd.run.chromatogramListPtr = ChromatogramList_mzML::create(is, msd, config_.indexed);
+    Index_mzML_Ptr indexPtr(new Index_mzML(is, msd));
+    msd.run.spectrumListPtr = SpectrumList_mzML::create(is, msd, indexPtr);
+    msd.run.chromatogramListPtr = ChromatogramList_mzML::create(is, msd, indexPtr);
 }
 
 

@@ -1,5 +1,5 @@
 //
-// $Id: optimized_lexical_cast.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id: optimized_lexical_cast.hpp 3126 2011-11-15 21:14:55Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -27,6 +27,33 @@
 #include <cstdlib>
 #include <cerrno>
 #include <boost/lexical_cast.hpp>
+#include <boost/logic/tribool.hpp>
+
+
+// HACK: Darwin strtod isn't threadsafe so strtod_l must be used
+#ifdef __APPLE__
+#include <xlocale.h>
+#include "pwiz/utility/misc/Singleton.hpp"
+
+namespace {
+
+class ThreadSafeCLocale : public boost::singleton<ThreadSafeCLocale>
+{
+    public:
+    ThreadSafeCLocale(boost::restricted) : c_locale(::newlocale(LC_ALL_MASK, "C", 0)) {}
+    ~ThreadSafeCLocale() {::freelocale(c_locale);}
+    ::locale_t c_locale;
+};
+
+} // namespace
+#define STRTOD(x, y) strtod_l((x), (y), ThreadSafeCLocale::instance->c_locale)
+#define ATOF(x) STRTOD(x,NULL)
+
+#else // __APPLE__
+#define STRTOD(x, y) strtod((x), (y))
+#define ATOF(x) atof(x)
+#endif // __APPLE__
+
 
 // optimized string->numeric conversions
 namespace boost
@@ -37,9 +64,8 @@ namespace boost
 		errno = 0;
 		const char* stringToConvert = str.c_str();
 		const char* endOfConversion = stringToConvert;
-		float value = (float) strtod( stringToConvert, const_cast<char**>(&endOfConversion) );
-		if( ( value == 0.0f && stringToConvert == endOfConversion ) || // error: conversion could not be performed
-			errno != 0 ) // error: overflow or underflow
+		float value = (float) STRTOD( stringToConvert, const_cast<char**>(&endOfConversion) );
+		if( value == 0.0f && stringToConvert == endOfConversion ) // error: conversion could not be performed
 			throw bad_lexical_cast();//throw bad_lexical_cast( std::type_info( str ), std::type_info( value ) );
 		return value;
 	}
@@ -50,9 +76,8 @@ namespace boost
 		errno = 0;
 		const char* stringToConvert = str.c_str();
 		const char* endOfConversion = stringToConvert;
-		double value = strtod( stringToConvert, const_cast<char**>(&endOfConversion) );
-		if( ( value == 0.0 && stringToConvert == endOfConversion ) || // error: conversion could not be performed
-			errno != 0 ) // error: overflow or underflow
+		double value = STRTOD( stringToConvert, const_cast<char**>(&endOfConversion) );
+		if( value == 0.0 && stringToConvert == endOfConversion ) // error: conversion could not be performed
 			throw bad_lexical_cast();//throw bad_lexical_cast( std::type_info( str ), std::type_info( value ) );
 		return value;
 	}
@@ -109,12 +134,31 @@ namespace boost
 		return value;
 	}
 
+    template<>
+    inline bool lexical_cast( const std::string& str )
+    {
+        if (str == "0" || str == "false")
+            return false;
+        return true;
+    }
+
+    template<>
+    inline boost::logic::tribool lexical_cast( const std::string& str )
+    {
+        using namespace boost::logic;
+        if (str.empty())
+            return tribool(indeterminate);
+        if (str == "0" || str == "false")
+            return false;
+        return true;
+    }
+
 	/*template<>
 	inline float lexical_cast( const char*& str )
 	{
 		errno = 0;
 		const char* endOfConversion = str;
-		float value = (float) strtod( str, const_cast<char**>(&endOfConversion) );
+		float value = (float) STRTOD( str, const_cast<char**>(&endOfConversion) );
 		if( ( value == 0.0f && str == endOfConversion ) || // error: conversion could not be performed
 			errno != 0 ) // error: overflow or underflow
 			throw bad_lexical_cast();//throw bad_lexical_cast( std::type_info( str ), std::type_info( value ) );
@@ -126,7 +170,7 @@ namespace boost
 	{
 		errno = 0;
 		const char* endOfConversion = str;
-		double value = strtod( str, const_cast<char**>(&endOfConversion) );
+		double value = STRTOD( str, const_cast<char**>(&endOfConversion) );
 		if( ( value == 0.0 && str == endOfConversion ) || // error: conversion could not be performed
 			errno != 0 ) // error: overflow or underflow
 			throw bad_lexical_cast();//throw bad_lexical_cast( std::type_info( str ), std::type_info( value ) );

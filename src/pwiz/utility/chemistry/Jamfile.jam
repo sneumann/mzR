@@ -1,5 +1,5 @@
 #
-# $Id: Jamfile.jam 2304 2010-10-20 16:50:47Z chambm $
+# $Id: Jamfile.jam 4129 2012-11-20 00:05:37Z chambm $
 #
 #
 # Original author: Darren Kessner <darren@proteowizard.org>
@@ -28,6 +28,7 @@ lib pwiz_utility_chemistry
         IsotopeCalculator.cpp 
         IsotopeEnvelopeEstimator.cpp 
         IsotopeTable.cpp
+        MZTolerance.cpp
     : # requirements
         <toolset>msvc,<link>shared:<define>PWIZ_DYN_LINK
         <library>/ext/boost//thread
@@ -37,7 +38,8 @@ lib pwiz_utility_chemistry
     ;
 
 
-unit-test-if-exists ChemistryTest : ChemistryTest.cpp pwiz_utility_chemistry ; 
-unit-test-if-exists IsotopeCalculatorTest : IsotopeCalculatorTest.cpp pwiz_utility_chemistry ; 
-unit-test-if-exists IsotopeEnvelopeEstimatorTest : IsotopeEnvelopeEstimatorTest.cpp pwiz_utility_chemistry ;
-unit-test-if-exists IsotopeTableTest : IsotopeTableTest.cpp pwiz_utility_chemistry ;
+unit-test-if-exists MZToleranceTest : MZToleranceTest.cpp pwiz_utility_chemistry /ext/boost//date_time /ext/boost//filesystem ; 
+unit-test-if-exists ChemistryTest : ChemistryTest.cpp pwiz_utility_chemistry /ext/boost//date_time /ext/boost//filesystem ; 
+unit-test-if-exists IsotopeCalculatorTest : IsotopeCalculatorTest.cpp pwiz_utility_chemistry /ext/boost//date_time /ext/boost//filesystem ; 
+unit-test-if-exists IsotopeEnvelopeEstimatorTest : IsotopeEnvelopeEstimatorTest.cpp pwiz_utility_chemistry /ext/boost//date_time /ext/boost//filesystem ;
+unit-test-if-exists IsotopeTableTest : IsotopeTableTest.cpp pwiz_utility_chemistry /ext/boost//date_time /ext/boost//filesystem ;

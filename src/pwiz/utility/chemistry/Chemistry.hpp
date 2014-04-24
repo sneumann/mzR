@@ -1,5 +1,5 @@
 //
-// $Id: Chemistry.hpp 1808 2010-02-12 21:01:48Z chambm $ 
+// $Id: Chemistry.hpp 2778 2011-06-14 16:08:39Z chambm $ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -113,6 +113,9 @@ struct PWIZ_API_DECL Record
 
 /// retrieve the record for an element
 PWIZ_API_DECL const Record& record(Type type);
+
+/// retrieve the record for an element
+PWIZ_API_DECL const Record& record(const std::string& symbol);
 
 
 } // namespace Info

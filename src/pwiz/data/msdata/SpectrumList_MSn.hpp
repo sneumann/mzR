@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_MSn.hpp 1852 2010-03-01 17:49:01Z tabaker $
+// $Id: SpectrumList_MSn.hpp 4009 2012-10-17 18:40:44Z kaipot $
 //
 //
 // Original author: Barbara Frewen <frewen@u.washington.edu>
@@ -35,7 +35,7 @@
 namespace pwiz {
 namespace msdata {
 
-enum MSn_Type {MSn_Type_UNKNOWN, MSn_Type_MS2, MSn_Type_CMS2, MSn_Type_BMS2}; // TODO: include [bc]ms1
+enum MSn_Type {MSn_Type_UNKNOWN, MSn_Type_BMS1, MSn_Type_CMS1, MSn_Type_BMS2, MSn_Type_CMS2, MSn_Type_MS1, MSn_Type_MS2};
 
 struct MSnHeader 
 {
