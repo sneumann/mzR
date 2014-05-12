@@ -4,10 +4,11 @@
 \alias{mzR-class}
 \alias{mzRramp-class}
 \alias{mzRnetCDF-class}
+\alias{mzRpwiz-class}
 \alias{class:mzR}
 \alias{class:mzRramp}
 \alias{class:mzRnetCDF}
-
+\alias{class:mzRpwiz}
 \alias{close,mzRramp-method}
 \alias{close,mzRnetCDF-method}
 \alias{close}
