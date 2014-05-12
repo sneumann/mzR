@@ -1,3 +1,12 @@
+CHANGES IN VERSION 1.9.8
+------------------------
+ o Pointing to the relevant wiki page in the Rcpp compiler/linker
+   warning [2014-04-03 Thu]
+
+CHANGES IN VERSION 1.9.7
+------------------------
+ o modify to new biocViews to DESCRIPTION file (s.arora)
+
 CHANGES IN VERSION 1.9.6
 ------------------------
  o import all of Rcpp to avoid warnings in reverse dependencies <2014-02-14 Fri>

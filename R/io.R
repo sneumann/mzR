@@ -1,19 +1,9 @@
 openMSfile <- function(filename,
-                       backend=c("Ramp", "netCDF"),
+                       backend=c("Ramp", "netCDF", "pwiz"),
                        verbose = FALSE) {
   if (!file.exists(filename))
     stop("File ",filename," not found.\n")
   filename <- path.expand(filename)
-  if (missing(backend)) {
-    ## Guess from file extension
-    if (grepl('\\.cdf$', filename,
-              ignore.case = TRUE, perl = TRUE)) {
-      backend <- "netCDF"
-    } else {
-      ## so far everything else is handled by Ramp
-      backend <- "Ramp"
-    }    
-  }
   
   if (tolower(backend) == "ramp") { 
     rampModule <- new( Ramp ) 
@@ -37,6 +27,14 @@ openMSfile <- function(filename,
     } else {
       stop("Unable to open netCDF file.")
     }
+  }else if(tolower(backend) == "pwiz"){
+      pwizModule <- new( Pwiz ) 
+	  pwizModule$open(filename)
+
+    return(new("mzRpwiz",
+               backend=pwizModule,
+               fileName=filename))
+  
   } else {
     stop("No valid backend", backend )
   }  
