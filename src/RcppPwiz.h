@@ -24,11 +24,15 @@ private:
 
 public: 
 
+  RcppPwiz();
+
   void open(const string& fileNames);
 
   Rcpp::StringVector getFilename (  );
   
   int getLastScan() const;
+  
+  Rcpp::List getInstrumentInfo();
   
 };
 
