@@ -41,3 +41,17 @@ setMethod("detector",
             info <- instrumentInfo(object)           
             return(info$detector)
           })
+
+setMethod("header",
+          signature=c("mzRpwiz","missing"),
+          function(object) return(object@backend$getAllScanHeaderInfo()))
+
+setMethod("header",
+          signature=c("mzRpwiz","numeric"),
+          function(object, scans) {
+            if (length(scans)==1) {
+              return(object@backend$getScanHeaderInfo(scans))
+            } else {
+              return(data.frame(t(sapply(scans,function(x) unlist(object@backend$getScanHeaderInfo(x))))))
+            }
+          })

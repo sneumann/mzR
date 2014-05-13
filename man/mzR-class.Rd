@@ -20,6 +20,8 @@
 \alias{get3Dmap,mzRramp-method}
 \alias{header,mzRramp,missing-method}
 \alias{header,mzRramp,numeric-method}
+\alias{header,mzRpwiz,missing-method}
+\alias{header,mzRpwiz,numeric-method}
 \alias{header,mzRnetCDF,missing-method}
 \alias{header,mzRnetCDF,numeric-method}
 \alias{initializeRamp,mzRramp-method}

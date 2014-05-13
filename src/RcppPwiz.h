@@ -1,10 +1,16 @@
 #ifndef _mzR_RCPP_PWIZ_H
 #define _mzR_RCPP_PWIZ_H
 
+#include "pwiz/data/msdata/RAMPAdapter.hpp"
 #include "pwiz/data/msdata/MSDataFile.hpp"
 #include "pwiz/data/msdata/LegacyAdapter.hpp"
 #include "pwiz/data/common/CVTranslator.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+#include <boost/iostreams/device/file_descriptor.hpp>
+#include <boost/iostreams/copy.hpp>
 
 #include "Rcpp.h"
 
@@ -20,7 +26,7 @@ private:
   bool isInCacheInstrumentInfo;
   Rcpp::DataFrame allScanHeaderInfo;
   bool isInCacheAllScanHeaderInfo;
-  Rcpp::StringVector filename;
+  string filename;
 
 public: 
 
@@ -28,11 +34,13 @@ public:
 
   void open(const string& fileNames);
 
-  Rcpp::StringVector getFilename (  );
+  string getFilename (  );
   
   int getLastScan() const;
   
   Rcpp::List getInstrumentInfo();
+  
+  Rcpp::List getScanHeaderInfo(int whichScan); 
   
 };
 
