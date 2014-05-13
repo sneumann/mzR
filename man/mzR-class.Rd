@@ -95,9 +95,11 @@
     \item{header}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
     \item{initializeRamp}{\code{signature(object = "mzRramp")}: ... }
     \item{instrumentInfo}{\code{signature(object = "mzRramp")}: ... }
+    \item{instrumentInfo}{\code{signature(object = "mzRpwiz")}: ... }
     \item{ionisation}{\code{signature(object = "mzRramp")}: ... }
     \item{isInitialized}{\code{signature(object = "mzRramp")}: ... }
     \item{length}{\code{signature(x = "mzRramp")}: ... }
+    \item{length}{\code{signature(x = "mzRpwiz")}: ... }
     \item{manufacturer}{\code{signature(object = "mzRramp")}: ... }
     \item{model}{\code{signature(object = "mzRramp")}: ... }
     \item{peaksCount}{\code{signature(object = "mzRramp", scans = "missing")}: ... }
