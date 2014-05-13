@@ -5,7 +5,7 @@ openMSfile <- function(filename,
     stop("File ",filename," not found.\n")
   filename <- path.expand(filename)
   
-  if (tolower(backend) == "ramp") { 
+  if (tolower(backend) == "ramp") {
     rampModule <- new( Ramp ) 
     rampModule$open(filename, declaredOnly = TRUE)
     if (!rampModule$OK()) {
@@ -20,7 +20,6 @@ openMSfile <- function(filename,
       if (!is.null(attr(ncid, "errortext"))) {
         stop(attr(ncid, "errortext"))
       }
-##      on.exit(netCDFClose(ncid)) ## Hm, that worked in xcms ?!
       return(new("mzRnetCDF",
                  backend=ncid,
                  fileName=filename))
