@@ -13,7 +13,9 @@
 \alias{close,mzRnetCDF-method}
 \alias{close}
 \alias{analyzer,mzRramp-method}
+\alias{analyzer,mzRpwiz-method}
 \alias{detector,mzRramp-method}
+\alias{detector,mzRpwiz-method}
 \alias{fileName,mzR-method}
 \alias{get3Dmap,mzRramp-method}
 \alias{header,mzRramp,missing-method}
@@ -22,14 +24,19 @@
 \alias{header,mzRnetCDF,numeric-method}
 \alias{initializeRamp,mzRramp-method}
 \alias{instrumentInfo,mzRramp-method}
+\alias{instrumentInfo,mzRpwiz-method}
 \alias{ionisation,mzRramp-method}
+\alias{ionisation,mzRpwiz-method}
 \alias{isInitialized,mzRramp-method}
 \alias{isInitialized,mzRnetCDF-method}
 \alias{length,mzRramp-method}
+\alias{length,mzRpwiz-method}
 \alias{length,mzRnetCDF-method}
 \alias{length}
 \alias{manufacturer,mzRramp-method}
+\alias{manufacturer,mzRpwiz-method}
 \alias{model,mzRramp-method}
+\alias{model,mzRpwiz-method}
 \alias{peaksCount,mzRramp,missing-method}
 \alias{peaksCount,mzRramp,numeric-method}
 \alias{peaks,mzRramp,missing-method}
@@ -95,11 +102,9 @@
     \item{header}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
     \item{initializeRamp}{\code{signature(object = "mzRramp")}: ... }
     \item{instrumentInfo}{\code{signature(object = "mzRramp")}: ... }
-    \item{instrumentInfo}{\code{signature(object = "mzRpwiz")}: ... }
     \item{ionisation}{\code{signature(object = "mzRramp")}: ... }
     \item{isInitialized}{\code{signature(object = "mzRramp")}: ... }
     \item{length}{\code{signature(x = "mzRramp")}: ... }
-    \item{length}{\code{signature(x = "mzRpwiz")}: ... }
     \item{manufacturer}{\code{signature(object = "mzRramp")}: ... }
     \item{model}{\code{signature(object = "mzRramp")}: ... }
     \item{peaksCount}{\code{signature(object = "mzRramp", scans = "missing")}: ... }
@@ -110,6 +115,17 @@
     \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
     \item{runInfo}{\code{signature(object = "mzRramp")}: ... }
   }
+  Methods currently implemented for \code{mzRpwiz}
+  \describe{
+    \item{analyzer}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{detector}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{instrumentInfo}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{ionisation}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{length}{\code{signature(x = "mzRpwiz")}: ... }
+    \item{manufacturer}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{model}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{runInfo}{\code{signature(object = "mzRpwiz")}: ... }
+  }
 }
 
 \references{
@@ -118,7 +134,7 @@
 }
 
 \author{
-  Steffen Neumann and Laurent Gatto
+  Steffen Neumann, Laurent Gatto, Qiang Kou
 }
 
 \examples{
