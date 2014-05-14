@@ -1,5 +1,5 @@
 //
-// $Id: ReaderTest.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: ReaderTest.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -21,9 +21,13 @@
 //
 
 
-#include "Reader.hpp"
 #include "pwiz/utility/misc/unit.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include "pwiz/utility/misc/Filesystem.hpp"
+#include "Reader.hpp"
+#include "examples.hpp"
+#include "MSDataFile.hpp"
+#include "pwiz/data/vendor_readers/ExtendedReaderList.hpp"
 #include <cstring>
 
 
@@ -39,14 +43,14 @@ class Reader1 : public Reader
 {
     public:
 
-    struct Config
+    struct ReaderConfig
     {
         string name;
         mutable bool done;
-        Config() : name("default"), done(false) {}
+        ReaderConfig() : name("default"), done(false) {}
     };
 
-    Config config;
+    ReaderConfig readerConfig;
 
     virtual std::string identify(const std::string& filename, const std::string& head) const
     {
@@ -58,18 +62,20 @@ class Reader1 : public Reader
     virtual void read(const std::string& filename, 
                       const std::string& head,
                       MSData& result,
-                      int runIndex = 0) const 
+                      int runIndex = 0,
+                      const Config& config = Config()) const 
     {
         if (os_) *os_ << "Reader1::read()\n";
-        config.done = true;
+        readerConfig.done = true;
     }
 
     virtual void read(const std::string& filename,
                       const std::string& head,
-                      std::vector<MSDataPtr>& results) const
+                      std::vector<MSDataPtr>& results,
+                      const Config& config = Config()) const
     {
         results.push_back(MSDataPtr(new MSData));
-        read(filename, head, *results.back());
+        read(filename, head, *results.back(), 0, config);
     }
 
     virtual const char *getType() const {return "Reader1";} // satisfy inheritance
@@ -80,14 +86,14 @@ class Reader2 : public Reader
 {
     public:
 
-    struct Config
+    struct ReaderConfig
     {
         string color;
         mutable bool done;
-        Config() : color("orange"), done(false) {}
+        ReaderConfig() : color("orange"), done(false) {}
     };
 
-    Config config;
+    ReaderConfig readerConfig;
 
     virtual std::string identify(const std::string& filename, const std::string& head) const
     {
@@ -99,18 +105,20 @@ class Reader2 : public Reader
     virtual void read(const std::string& filename, 
                       const std::string& head,
                       MSData& result,
-                      int runIndex = 0) const
+                      int runIndex = 0,
+                      const Config& config = Config()) const
     {
         if (os_) *os_ << "Reader2::read()\n";
-        config.done = true;
+        readerConfig.done = true;
     }
 
     virtual void read(const std::string& filename,
                       const std::string& head,
-                      std::vector<MSDataPtr>& results) const
+                      std::vector<MSDataPtr>& results,
+                      const Config& config = Config()) const
     {
         results.push_back(MSDataPtr(new MSData));
-        read(filename, head, *results.back());
+        read(filename, head, *results.back(), 0, config);
     }
 
     const char *getType() const {return "Reader2";} // satisfy inheritance
@@ -129,24 +137,24 @@ void testGet()
 
     Reader1* reader1 = readers.get<Reader1>();
     unit_assert(reader1);
-    if (os_) *os_ << "reader1 config: " << reader1->config.name << endl; 
-    unit_assert(reader1->config.name == "default");
-    reader1->config.name = "raw";
-    if (os_) *os_ << "reader1 config: " << reader1->config.name << endl; 
-    unit_assert(reader1->config.name == "raw");
+    if (os_) *os_ << "reader1 config: " << reader1->readerConfig.name << endl; 
+    unit_assert(reader1->readerConfig.name == "default");
+    reader1->readerConfig.name = "raw";
+    if (os_) *os_ << "reader1 config: " << reader1->readerConfig.name << endl; 
+    unit_assert(reader1->readerConfig.name == "raw");
 
     Reader2* reader2 = readers.get<Reader2>();
     unit_assert(reader2);
-    if (os_) *os_ << "reader2 config: " << reader2->config.color << endl; 
-    unit_assert(reader2->config.color == "orange");
-    reader2->config.color = "purple";
-    if (os_) *os_ << "reader2 config: " << reader2->config.color << endl; 
-    unit_assert(reader2->config.color == "purple");
+    if (os_) *os_ << "reader2 config: " << reader2->readerConfig.color << endl; 
+    unit_assert(reader2->readerConfig.color == "orange");
+    reader2->readerConfig.color = "purple";
+    if (os_) *os_ << "reader2 config: " << reader2->readerConfig.color << endl; 
+    unit_assert(reader2->readerConfig.color == "purple");
 
     const ReaderList& const_readers = readers;
     const Reader2* constReader2 = const_readers.get<Reader2>();
     unit_assert(constReader2);
-    if (os_) *os_ << "constReader2 config: " << constReader2->config.color << endl; 
+    if (os_) *os_ << "constReader2 config: " << constReader2->readerConfig.color << endl; 
 
     if (os_) *os_ << endl;
 }
@@ -185,19 +193,62 @@ void testRead()
     // to accept(); the alternative is to maintain state between accept()
     // and read(), which opens possibility for misuse. 
 
-    unit_assert(readers.get<Reader1>()->config.done == false);
+    unit_assert(readers.get<Reader1>()->readerConfig.done == false);
     if (readers.accept("1", "head"))
         readers.read("1", "head", msd);
-    unit_assert(readers.get<Reader1>()->config.done == true);
+    unit_assert(readers.get<Reader1>()->readerConfig.done == true);
 
-    readers.get<Reader1>()->config.done = false;
-    unit_assert(readers.get<Reader2>()->config.done == false);
+    readers.get<Reader1>()->readerConfig.done = false;
+    unit_assert(readers.get<Reader2>()->readerConfig.done == false);
     if (readers.accept("2", "head"))
         readers.read("2", "head", msd);
-    unit_assert(readers.get<Reader1>()->config.done == false);
-    unit_assert(readers.get<Reader2>()->config.done == true);
+    unit_assert(readers.get<Reader1>()->readerConfig.done == false);
+    unit_assert(readers.get<Reader2>()->readerConfig.done == true);
 
     if (os_) *os_ << endl;
+}
+
+
+void testIdentifyFileFormat()
+{
+    ReaderPtr readers(new ExtendedReaderList);
+
+    {ofstream fs("testSpectraDataFile.mzedML"); fs << "<?xml?><mzML>";}
+    unit_assert_operator_equal(MS_mzML_format, identifyFileFormat(readers, "testSpectraDataFile.mzedML"));
+    bfs::remove("testSpectraDataFile.mzedML");
+
+    {ofstream fs("testSpectraDataFile.mzedXML"); fs << "<?xml?><mzXML>";}
+    unit_assert_operator_equal(MS_ISB_mzXML_format, identifyFileFormat(readers, "testSpectraDataFile.mzedXML"));
+    bfs::remove("testSpectraDataFile.mzedXML");
+
+    
+    {
+        MSData msd;
+        examples::initializeTiny(msd);
+        MSDataFile::WriteConfig config;
+        config.format = MSDataFile::Format_MZ5;
+#ifndef WITHOUT_MZ5
+        MSDataFile::write(msd, "testSpectraDataFile.Mz5", config);
+        unit_assert_operator_equal(MS_mz5_format, identifyFileFormat(readers, "testSpectraDataFile.Mz5"));
+#endif
+    }
+    bfs::remove("testSpectraDataFile.Mz5");
+
+    {ofstream fs("testSpectraDataFile.mGF"); fs << "MGF";}
+    unit_assert_operator_equal(MS_Mascot_MGF_format, identifyFileFormat(readers, "testSpectraDataFile.mGF"));
+    bfs::remove("testSpectraDataFile.mGF");
+    
+    {ofstream fs("testSpectraDataFile.Ms2"); fs << "MS2";}
+    unit_assert_operator_equal(MS_MS2_format, identifyFileFormat(readers, "testSpectraDataFile.Ms2"));
+    bfs::remove("testSpectraDataFile.Ms2");
+    
+    {ofstream fs("testSpectraDataFile.wiFF"); fs << "WIFF";}
+    unit_assert_operator_equal(MS_ABI_WIFF_format, identifyFileFormat(readers, "testSpectraDataFile.wiFF"));
+    bfs::remove("testSpectraDataFile.wiFF");
+
+    {ofstream fs("_FUNC42.DAT"); fs << "Life, the Universe, and Everything";}
+    unit_assert_operator_equal(MS_Waters_raw_format, identifyFileFormat(readers, "."));
+    bfs::remove("_FUNC42.DAT");
 }
 
 
@@ -206,26 +257,28 @@ void test()
     testGet();
     testAccept();
     testRead();
+    testIdentifyFileFormat();
 }
 
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG_EX(argc, argv, "_MSData")
+
     try
     {
         if (argc==2 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
-    
-    return 1;
+
+    TEST_EPILOG
 }
 

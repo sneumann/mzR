@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumListWrapper.hpp 1189 2009-08-14 17:36:06Z chambm $
+// $Id: SpectrumListWrapper.hpp 4091 2012-11-08 16:15:32Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -47,9 +47,14 @@ class PWIZ_API_DECL SpectrumListWrapper : public SpectrumList
     }
 
     virtual size_t size() const {return inner_->size();}
-    virtual bool empty() const {return inner_->empty();}
+    virtual bool empty() const {return size() == 0;}
     virtual const SpectrumIdentity& spectrumIdentity(size_t index) const {return inner_->spectrumIdentity(index);} 
-    virtual SpectrumPtr spectrum(size_t index, bool getBinaryData = false) const {return inner_->spectrum(index, getBinaryData);}
+
+    // no default implementation, because otherwise subclasses could override the DetailLevel overload and the getBinaryData overload would be inconsistent
+    virtual SpectrumPtr spectrum(size_t index, bool getBinaryData = false) const = 0;
+
+    virtual SpectrumPtr spectrum(size_t index, DetailLevel detailLevel) const {return spectrum(index, detailLevel == DetailLevel_FullData);}
+
     virtual const boost::shared_ptr<const DataProcessing> dataProcessingPtr() const {return dp_;}
     protected:
 

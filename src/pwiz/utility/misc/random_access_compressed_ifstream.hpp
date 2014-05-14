@@ -1,4 +1,4 @@
-// $Id: random_access_compressed_ifstream.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id: random_access_compressed_ifstream.hpp 4140 2012-11-22 01:07:16Z pcbrefugee $
 //
 // This is just an istream which chooses its streambuf implementation
 // based on whether the file is gzipped or not.  Could be extended
@@ -11,7 +11,16 @@
 // every 1MB or so.  Further seeks are then quite efficient since they don't
 // have to begin at the head of the file.
 //
-// Copyright (C) Insilicos LLC 2008, ALl Rights Reserved.
+// It also features threaded readahead with adaptive buffering - it will read 
+// increasingly larger chunks of the raw file as it perceives a sequential read 
+// in progress, and will launch a thread to grab the next probable chunk of the 
+// file while the previous chunk is being parsed.  This is especially helpful for
+// files being read across a slow network connection.
+// If lots of seeking is going on, and the buffer size proves excessive, the read 
+// buffer size decreases.  This is also true for the non-compressed case, so this 
+// is generally useful for file read speed optimization.
+//
+// Copyright (C) Insilicos LLC 2008,2011 All Rights Reserved.
 //
 // draws heavily on example code from the zlib distro, so
 // for conditions of distribution and use, see copyright notice in zlib.h
@@ -20,6 +29,24 @@
 /* gzio.c -- IO on .gz files
 * Copyright (C) 1995-2005 Jean-loup Gailly.
 * For conditions of distribution and use, see copyright notice in zlib.h
+  Main idea there is as follows:
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+
 */
 
 // efficient random access stuff based on

@@ -48,23 +48,28 @@ namespace detail {
 
 // Contains the platform dependant implementation
 struct file_descriptor_impl {
+    // Note: These need to match file_desciptor_flags
+    enum flags {
+        never_close = 0,
+        close_on_exit = 1,
+        close_on_close = 2,
+        close_always = 3
+    };
+
     file_descriptor_impl();
     ~file_descriptor_impl();
-    void open(file_handle fd, bool close_on_exit);
+    void open(file_handle fd, flags);
 #ifdef BOOST_IOSTREAMS_WINDOWS
-    void open(int fd, bool close_on_exit);
+    void open(int fd, flags);
 #endif
     void open(const detail::path&, BOOST_IOS::openmode);
     bool is_open() const;
     void close();
+    void close_impl(bool close_flag, bool throw_);
     std::streamsize read(char* s, std::streamsize n);
     std::streamsize write(const char* s, std::streamsize n);
     std::streampos seek(stream_offset off, BOOST_IOS::seekdir way);
     static file_handle invalid_handle();
-    enum flags {
-        close_on_exit = 1,
-        append = 4
-    };
     file_handle  handle_;
     int          flags_;
 };
@@ -77,30 +82,38 @@ file_descriptor_impl::file_descriptor_impl()
 
 file_descriptor_impl::~file_descriptor_impl() 
 { 
-    if (flags_ & close_on_exit) {
-        try { 
-            close(); 
-        } catch (...) { }  
-    }
+    close_impl(flags_ & close_on_exit, false);
 }
 
-void file_descriptor_impl::open(file_handle fd, bool close_on_exit)
+void file_descriptor_impl::open(file_handle fd, flags f)
 {
+    // Using 'close' to close the existing handle so that it will throw an
+    // exception if it fails.
+    //
+    // Only closing after assigning the new handle, so that the class will
+    // take ownership of the handle regardless of whether close throws.
+
+    file_descriptor_impl tmp;
+    tmp.handle_ = handle_;
+    tmp.flags_ = flags_ & close_on_exit ? close_on_close : never_close;
+
     handle_ = fd;
-    flags_ = close_on_exit ? 
-        file_descriptor_impl::close_on_exit : 
-        0;
+    flags_ = f;
+    
+    tmp.close();
 }
 
 #ifdef BOOST_IOSTREAMS_WINDOWS //---------------------------------------------//
 
-void file_descriptor_impl::open(int fd, bool close_on_exit)
-{ open(reinterpret_cast<file_handle>(_get_osfhandle(fd)), close_on_exit); }
+void file_descriptor_impl::open(int fd, flags f)
+{ open(reinterpret_cast<file_handle>(_get_osfhandle(fd)), f); }
 
 #endif // #ifdef BOOST_IOSTREAMS_WINDOWS //-----------------------------------//
 
 void file_descriptor_impl::open(const detail::path& p, BOOST_IOS::openmode mode)
 {
+    close_impl(flags_ & close_on_exit, true);
+
 #ifdef BOOST_IOSTREAMS_WINDOWS //---------------------------------------------//
     DWORD dwDesiredAccess;
     DWORD dwCreationDisposition;
@@ -113,18 +126,30 @@ void file_descriptor_impl::open(const detail::path& p, BOOST_IOS::openmode mode)
         dwDesiredAccess = GENERIC_READ | GENERIC_WRITE;
         dwCreationDisposition =
             (mode & BOOST_IOS::trunc) ?
-                OPEN_ALWAYS :
+                CREATE_ALWAYS :
                 OPEN_EXISTING;
     } else if (mode & BOOST_IOS::in) {
-        if (mode & (BOOST_IOS::app |BOOST_IOS::trunc))
+        if (mode & (BOOST_IOS::app | BOOST_IOS::trunc))
             boost::throw_exception(BOOST_IOSTREAMS_FAILURE("bad open mode"));
         dwDesiredAccess = GENERIC_READ;
         dwCreationDisposition = OPEN_EXISTING;
     } else if (mode & BOOST_IOS::out) {
-        dwDesiredAccess = GENERIC_WRITE;
-        dwCreationDisposition = OPEN_ALWAYS;
-        if (mode & BOOST_IOS::app)
-            flags_ |= append;
+        if ( (mode & (BOOST_IOS::app | BOOST_IOS::trunc))
+                 ==
+              (BOOST_IOS::app | BOOST_IOS::trunc) )
+            boost::throw_exception(BOOST_IOSTREAMS_FAILURE("bad open mode"));
+        if (mode & BOOST_IOS::app) {
+            dwCreationDisposition = OPEN_ALWAYS;
+            dwDesiredAccess = 
+                FILE_APPEND_DATA |
+                FILE_WRITE_ATTRIBUTES |
+                FILE_WRITE_EA |
+                STANDARD_RIGHTS_WRITE |
+                SYNCHRONIZE;
+        } else {
+            dwDesiredAccess = GENERIC_WRITE;
+            dwCreationDisposition = CREATE_ALWAYS;
+        }
     } else {
         boost::throw_exception(BOOST_IOSTREAMS_FAILURE("bad open mode"));
     }
@@ -146,7 +171,7 @@ void file_descriptor_impl::open(const detail::path& p, BOOST_IOS::openmode mode)
                        NULL );                 // hTemplateFile
     if (handle != INVALID_HANDLE_VALUE) {
         handle_ = handle;
-        flags_ |= close_on_exit;
+        flags_ = close_always;
     } else {
         flags_ = 0;
         throw_system_failure("failed opening file");
@@ -160,19 +185,32 @@ void file_descriptor_impl::open(const detail::path& p, BOOST_IOS::openmode mode)
              ==
          (BOOST_IOS::in | BOOST_IOS::out) )
     {
-        assert(!(mode & BOOST_IOS::app));
+        if( mode & BOOST_IOS::app )
+            boost::throw_exception(BOOST_IOSTREAMS_FAILURE("bad open mode"));
         oflag |= O_RDWR;
+        if( mode & BOOST_IOS::trunc ) {
+            oflag |= O_TRUNC;
+            oflag |= O_CREAT;
+        }
     } else if (mode & BOOST_IOS::in) {
-        assert(!(mode & (BOOST_IOS::app |BOOST_IOS::trunc)));
+        if( mode & (BOOST_IOS::app | BOOST_IOS::trunc) )
+            boost::throw_exception(BOOST_IOSTREAMS_FAILURE("bad open mode"));
         oflag |= O_RDONLY;
     } else if (mode & BOOST_IOS::out) {
+        if( (mode & (BOOST_IOS::app | BOOST_IOS::trunc))
+               ==
+            (BOOST_IOS::app | BOOST_IOS::trunc) )
+            boost::throw_exception(BOOST_IOSTREAMS_FAILURE("bad open mode"));
         oflag |= O_WRONLY;
-        mode |= BOOST_IOS::trunc;
         if (mode & BOOST_IOS::app)
             oflag |= O_APPEND;
+        else {
+            oflag |= O_CREAT;
+            oflag |= O_TRUNC; 
+        }
+    } else {
+        boost::throw_exception(BOOST_IOSTREAMS_FAILURE("bad open mode"));
     }
-    if (mode & BOOST_IOS::trunc)
-        oflag |= O_CREAT;
     #ifdef _LARGEFILE64_SOURCE
         oflag |= O_LARGEFILE;
     #endif
@@ -190,7 +228,7 @@ void file_descriptor_impl::open(const detail::path& p, BOOST_IOS::openmode mode)
         boost::throw_exception(system_failure("failed opening file"));
     } else {
         handle_ = fd;
-        flags_ = close_on_exit;
+        flags_ = close_always;
     }
 #endif // #ifndef BOOST_IOSTREAMS_WINDOWS //----------------------------------//
 }
@@ -200,15 +238,21 @@ bool file_descriptor_impl::is_open() const
 
 void file_descriptor_impl::close()
 {
+    close_impl(flags_ & close_on_close, true);
+}
+
+void file_descriptor_impl::close_impl(bool close_flag, bool throw_) {
     if (handle_ != invalid_handle()) {
-        bool success = 
-            #ifdef BOOST_IOSTREAMS_WINDOWS
-                ::CloseHandle(handle_) == 1;
-            #else
-                BOOST_IOSTREAMS_FD_CLOSE(handle_) != -1;
-            #endif
-        if (!success)
-            throw_system_failure("failed closing file");
+        if (close_flag) {
+            bool success = 
+                #ifdef BOOST_IOSTREAMS_WINDOWS
+                    ::CloseHandle(handle_) == 1;
+                #else
+                    BOOST_IOSTREAMS_FD_CLOSE(handle_) != -1;
+                #endif
+            if (!success && throw_)
+                throw_system_failure("failed closing file");
+        }
         handle_ = invalid_handle();
         flags_ = 0;
     }
@@ -219,7 +263,15 @@ std::streamsize file_descriptor_impl::read(char* s, std::streamsize n)
 #ifdef BOOST_IOSTREAMS_WINDOWS
     DWORD result;
     if (!::ReadFile(handle_, s, n, &result, NULL))
-        throw_system_failure("failed reading");
+    {
+        // report EOF if the write-side of a pipe has been closed
+        if (GetLastError() == ERROR_BROKEN_PIPE)
+        {
+            result = 0;
+        }
+        else
+            throw_system_failure("failed reading");
+    }
     return result == 0 ? -1 : static_cast<std::streamsize>(result);
 #else // #ifdef BOOST_IOSTREAMS_WINDOWS
     errno = 0;
@@ -233,15 +285,6 @@ std::streamsize file_descriptor_impl::read(char* s, std::streamsize n)
 std::streamsize file_descriptor_impl::write(const char* s, std::streamsize n)
 {
 #ifdef BOOST_IOSTREAMS_WINDOWS
-    if (flags_ & append) {
-        DWORD const dwResult =
-            ::SetFilePointer(handle_, 0, NULL, FILE_END);
-        if ( dwResult == INVALID_SET_FILE_POINTER &&
-             ::GetLastError() != NO_ERROR )
-        {
-            throw_system_failure("failed seeking within file");
-        }
-    }
     DWORD ignore;
     if (!::WriteFile(handle_, s, n, &ignore, NULL))
         throw_system_failure("failed writing");
@@ -316,15 +359,27 @@ file_handle file_descriptor_impl::invalid_handle()
 
 file_descriptor::file_descriptor() : pimpl_(new impl_type) { }
 
+file_descriptor::file_descriptor(handle_type fd, file_descriptor_flags f)
+    : pimpl_(new impl_type)
+{ open(fd, f); }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
 file_descriptor::file_descriptor(handle_type fd, bool close_on_exit)
     : pimpl_(new impl_type)
 { open(fd, close_on_exit); }
+#endif
 
 #ifdef BOOST_IOSTREAMS_WINDOWS //---------------------------------------------//
 
+file_descriptor::file_descriptor(int fd, file_descriptor_flags f)
+    : pimpl_(new impl_type)
+{ open(fd, f); }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
 file_descriptor::file_descriptor(int fd, bool close_on_exit)
     : pimpl_(new impl_type)
 { open(fd, close_on_exit); }
+#endif
 
 #endif // #ifdef BOOST_IOSTREAMS_WINDOWS //-----------------------------------//
 
@@ -342,13 +397,27 @@ file_descriptor::file_descriptor(const file_descriptor& other)
     : pimpl_(other.pimpl_) 
     { }
 
+void file_descriptor::open(handle_type fd, file_descriptor_flags f)
+{ pimpl_->open(fd, static_cast<detail::file_descriptor_impl::flags>(f)); }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
 void file_descriptor::open(handle_type fd, bool close_on_exit)
-{ pimpl_->open(fd, close_on_exit); }
+{ pimpl_->open(fd, close_on_exit ?
+    detail::file_descriptor_impl::close_always :
+    detail::file_descriptor_impl::close_on_close); }
+#endif
 
 #ifdef BOOST_IOSTREAMS_WINDOWS //---------------------------------------------//
 
+void file_descriptor::open(int fd, file_descriptor_flags f)
+{ pimpl_->open(fd, static_cast<detail::file_descriptor_impl::flags>(f)); }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
 void file_descriptor::open(int fd, bool close_on_exit)
-{ pimpl_->open(fd, close_on_exit); }
+{ pimpl_->open(fd, close_on_exit ?
+    detail::file_descriptor_impl::close_always :
+    detail::file_descriptor_impl::close_on_close); }
+#endif
 
 #endif // #ifdef BOOST_IOSTREAMS_WINDOWS //-----------------------------------//
 
@@ -387,13 +456,24 @@ void file_descriptor::open(
 //------------------Implementation of file_descriptor_source------------------//
 
 file_descriptor_source::file_descriptor_source(
+    handle_type fd, file_descriptor_flags f)
+{ open(fd, f); }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
+file_descriptor_source::file_descriptor_source(
     handle_type fd, bool close_on_exit)
 { open(fd, close_on_exit); }
+#endif
 
 #ifdef BOOST_IOSTREAMS_WINDOWS //---------------------------------------------//
 
+file_descriptor_source::file_descriptor_source(int fd, file_descriptor_flags f)
+{ open(fd, f); }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
 file_descriptor_source::file_descriptor_source(int fd, bool close_on_exit)
 { open(fd, close_on_exit); }
+#endif
 
 #endif // #ifdef BOOST_IOSTREAMS_WINDOWS //-----------------------------------//
 
@@ -410,13 +490,23 @@ file_descriptor_source::file_descriptor_source(
         : file_descriptor(static_cast<const file_descriptor&>(other)) 
     { }
 
+void file_descriptor_source::open(handle_type fd, file_descriptor_flags f)
+{ file_descriptor::open(fd, f);  }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
 void file_descriptor_source::open(handle_type fd, bool close_on_exit)
-{ file_descriptor::open(fd, close_on_exit);  }
+{ file_descriptor::open(fd, close_on_exit); }
+#endif
 
 #ifdef BOOST_IOSTREAMS_WINDOWS //---------------------------------------------//
 
+void file_descriptor_source::open(int fd, file_descriptor_flags f)
+{ file_descriptor::open(fd, f); }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
 void file_descriptor_source::open(int fd, bool close_on_exit)
 { file_descriptor::open(fd, close_on_exit); }
+#endif
 
 #endif // #ifdef BOOST_IOSTREAMS_WINDOWS //-----------------------------------//
 
@@ -439,13 +529,24 @@ void file_descriptor_source::open(
 //------------------Implementation of file_descriptor_sink--------------------//
 
 file_descriptor_sink::file_descriptor_sink(
+    handle_type fd, file_descriptor_flags f)
+{ open(fd, f); }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
+file_descriptor_sink::file_descriptor_sink(
     handle_type fd, bool close_on_exit)
 { open(fd, close_on_exit); }
+#endif
 
 #ifdef BOOST_IOSTREAMS_WINDOWS //---------------------------------------------//
 
+file_descriptor_sink::file_descriptor_sink(int fd, file_descriptor_flags f)
+{ open(fd, f); }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
 file_descriptor_sink::file_descriptor_sink(int fd, bool close_on_exit)
 { open(fd, close_on_exit); }
+#endif
 
 #endif // #ifdef BOOST_IOSTREAMS_WINDOWS //-----------------------------------//
 
@@ -461,13 +562,23 @@ file_descriptor_sink::file_descriptor_sink(const file_descriptor_sink& other)
     : file_descriptor(static_cast<const file_descriptor&>(other)) 
     { }
 
+void file_descriptor_sink::open(handle_type fd, file_descriptor_flags f)
+{ file_descriptor::open(fd, f);  }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
 void file_descriptor_sink::open(handle_type fd, bool close_on_exit)
-{ file_descriptor::open(fd, close_on_exit);  }
+{ file_descriptor::open(fd, close_on_exit); }
+#endif
 
 #ifdef BOOST_IOSTREAMS_WINDOWS //---------------------------------------------//
 
+void file_descriptor_sink::open(int fd, file_descriptor_flags f)
+{ file_descriptor::open(fd, f); }
+
+#if defined(BOOST_IOSTREAMS_USE_DEPRECATED)
 void file_descriptor_sink::open(int fd, bool close_on_exit)
 { file_descriptor::open(fd, close_on_exit); }
+#endif
 
 #endif // #ifdef BOOST_IOSTREAMS_WINDOWS //-----------------------------------//
 

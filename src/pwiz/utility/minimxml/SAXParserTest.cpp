@@ -1,5 +1,5 @@
 //
-// $Id: SAXParserTest.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: SAXParserTest.cpp 4243 2012-12-28 20:24:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -21,9 +21,10 @@
 //
 
 
-#include "SAXParser.hpp"
 #include "pwiz/utility/misc/unit.hpp"
+#include "SAXParser.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include "pwiz/utility/misc/Filesystem.hpp"
 #include <cstring>
 
 
@@ -34,21 +35,22 @@ using namespace pwiz::minimxml::SAXParser;
 
 ostream* os_;
 
-
+// note: this tests single-quoted double quotes
 const char* sampleXML = 
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<!DOCTYPE foo>\n"
     "<RootElement param=\"value\">\n"
     "    <FirstElement escaped_attribute=\"&quot;&lt;&amp;lt;&gt;&quot;\">\n"
     "        Some Text with Entity References: &lt;&amp;&gt;\n"
     "    </FirstElement>\n"
     "    <SecondElement param2=\"something\" param3=\"something.else 1234-56\">\n"
-    "        Pre-Text <Inline>Inlined text</Inline> Post-text. <br/>\n"
+    "        Pre-Text <Inline>Inlined text with <![CDATA[<&\">]]></Inline> Post-text. <br/>\n"
     "    </SecondElement>\n"
     "    <prefix:ThirdElement goober:name=\"value\">\n"
     "    <!--this is a comment-->\n"
     "    <empty_with_space />\n"
     "    </prefix:ThirdElement>\n"
-    "    <FifthElement leeloo=\">Leeloo > mul-ti-pass\">\n"
+    "    <FifthElement leeloo='>Leeloo > mul-\"tipass'>\n"
     "        You're a monster, Zorg.>I know.\n"
     "    </FifthElement>\n"
     "</RootElement>\n"
@@ -65,9 +67,9 @@ struct PrintAttribute
     PrintAttribute(ostream& os) : os_(os) {}
     ostream& os_;
 
-    void operator()(const pair<string,string>& attribute)
+    void operator()(const Handler::Attributes::attribute &attr)
     {
-        os_ << " (" << attribute.first << "," << attribute.second << ")";
+        os_ << " (" << attr.getName() << "," << attr.getValue() << ")";
     }
 };
 
@@ -104,7 +106,7 @@ class PrintEventHandler : public Handler
         return Status::Ok;
     }
 
-    virtual Status characters(const string& text, stream_offset position)
+    virtual Status characters(const SAXParser::saxstring& text, stream_offset position)
     {
         os_ << "[0x" << hex << position << "] text: " << text << endl;
         return Status::Ok;
@@ -181,9 +183,9 @@ void readAttribute(const Handler::Attributes& attributes,
                    const string& attributeName, 
                    string& result)
 {
-    Handler::Attributes::const_iterator it = attributes.find(attributeName);
+    Handler::Attributes::attribute_list::const_iterator it = attributes.find(attributeName);
     if (it != attributes.end())
-        result = it->second;
+        result = it->getValue();
 }
 
 
@@ -191,9 +193,13 @@ class FirstHandler : public Handler
 {
     public:
     
-    FirstHandler(First& first)
+    FirstHandler(First& first, bool autoUnescapeAttributes, bool autoUnescapeCharacters)
     :   object_(first)
-    {}
+    {
+        parseCharacters = true;
+        this->autoUnescapeAttributes = autoUnescapeAttributes;
+        this->autoUnescapeCharacters = autoUnescapeCharacters;
+    }
 
     virtual Status startElement(const string& name,
                                 const Handler::Attributes& attributes, 
@@ -204,16 +210,16 @@ class FirstHandler : public Handler
         return Status::Ok;
     }
 
-    virtual Status characters(const string& text, stream_offset position)
+    virtual Status characters(const SAXParser::saxstring& text, stream_offset position)
     {
-        unit_assert(position == 0x8f);
-        object_.text = text;          
+        unit_assert_operator_equal(158, position);
+        object_.text = text.c_str();          
         return Status::Ok;
     }
 
     virtual Status endElement(const string& name, stream_offset position)
     {
-        unit_assert(position == 0xc3);
+        unit_assert_operator_equal(210, position);
         return Status::Ok;
     }
 
@@ -226,9 +232,13 @@ class SecondHandler : public Handler
 {
     public:
 
-    SecondHandler(Second& object)
+    SecondHandler(Second& object, bool autoUnescapeAttributes, bool autoUnescapeCharacters)
     :   object_(object)
-    {}
+    {
+        parseCharacters = true;
+        this->autoUnescapeAttributes = autoUnescapeAttributes;
+        this->autoUnescapeCharacters = autoUnescapeCharacters;
+    }
 
     virtual Status startElement(const string& name,
                                 const Handler::Attributes& attributes, 
@@ -238,14 +248,21 @@ class SecondHandler : public Handler
         {
             readAttribute(attributes, "param2", object_.param2);
             readAttribute(attributes, "param3", object_.param3);
+            // long as we're here, verify copyability of Handler::Attributes
+            Handler::Attributes *copy1 = new Handler::Attributes(attributes);
+            Handler::Attributes copy2(*copy1);
+            delete copy1;
+            std::string str;
+            readAttribute(copy2, "param2", str);
+            unit_assert(str==object_.param2);
         }
            
         return Status::Ok;
     }
 
-    virtual Status characters(const string& text, stream_offset position)
+    virtual Status characters(const SAXParser::saxstring& text, stream_offset position)
     {
-        object_.text.push_back(text);          
+        object_.text.push_back(text.c_str());          
         return Status::Ok;
     }
 
@@ -258,9 +275,13 @@ class FifthHandler : public Handler
 {
     public:
 
-    FifthHandler(Fifth& object)
-    : object_(object)
-    {}
+    FifthHandler(Fifth& object, bool autoUnescapeAttributes, bool autoUnescapeCharacters)
+    :   object_(object)
+    {
+        parseCharacters = true;
+        this->autoUnescapeAttributes = autoUnescapeAttributes;
+        this->autoUnescapeCharacters = autoUnescapeCharacters;
+    }
 
     virtual Status startElement(const string& name,
                                 const Handler::Attributes& attributes, 
@@ -274,15 +295,15 @@ class FifthHandler : public Handler
         return Status::Ok;
     }
 
-    virtual Status characters(const string& text, stream_offset position)
+    virtual Status characters(const SAXParser::saxstring& text, stream_offset position)
     {
-        object_.mr_zorg = text;
+        object_.mr_zorg = text.c_str();
         return Status::Ok;
     }
 
     virtual Status endElement(const string& name, stream_offset position)
     {
-        unit_assert(position == 0x24c);
+        unit_assert_operator_equal(625, position);
         return Status::Ok;
     }
 
@@ -295,12 +316,16 @@ class RootHandler : public Handler
 {
     public:
     
-    RootHandler(Root& root)
+    RootHandler(Root& root, bool autoUnescapeAttributes = true, bool autoUnescapeCharacters = true)
     :   object_(root), 
-        firstHandler_(object_.first),
-        secondHandler_(object_.second),
-        fifthHandler_(object_.fifth)
-    {}
+        firstHandler_(object_.first, autoUnescapeAttributes, autoUnescapeCharacters),
+        secondHandler_(object_.second, autoUnescapeAttributes, autoUnescapeCharacters),
+        fifthHandler_(object_.fifth, autoUnescapeAttributes, autoUnescapeCharacters)
+    {
+        parseCharacters = true;
+        this->autoUnescapeAttributes = autoUnescapeAttributes;
+        this->autoUnescapeCharacters = autoUnescapeCharacters;
+    }
 
     virtual Status startElement(const string& name,
                                 const Attributes& attributes, 
@@ -309,12 +334,12 @@ class RootHandler : public Handler
         if (name == "RootElement")
         {
             readAttribute(attributes, "param", object_.param);
-            unit_assert(position == 0x27);
+            unit_assert_operator_equal(54, position);
         }
         else if (name == "FirstElement")
         {
             // delegate handling to a FirstHandler
-            unit_assert(position == 0x47);
+            unit_assert_operator_equal(86, position);
             return Status(Status::Delegate, &firstHandler_); 
         }
         else if (name == "SecondElement")
@@ -362,17 +387,18 @@ void test()
              << "\n"; 
     }
 
-    unit_assert(root.param == "value");
-    unit_assert(root.first.escaped_attribute == "\"<&lt;>\"");
-    unit_assert(root.first.text == "Some Text with Entity References: <&>");
-    unit_assert(root.second.param2 == "something");
-    unit_assert(root.second.param3 == "something.else 1234-56");
-    unit_assert(root.second.text.size() == 3);
-    unit_assert(root.second.text[0] == "Pre-Text");
-    unit_assert(root.second.text[1] == "Inlined text");
-    unit_assert(root.second.text[2] == "Post-text.");
-    unit_assert(root.fifth.leeloo == ">Leeloo > mul-ti-pass");
-    unit_assert(root.fifth.mr_zorg == "You're a monster, Zorg.>I know.");
+    unit_assert_operator_equal("value", root.param);
+    unit_assert_operator_equal("\"<&lt;>\"", root.first.escaped_attribute);
+    unit_assert_operator_equal("Some Text with Entity References: <&>", root.first.text);
+    unit_assert_operator_equal("something", root.second.param2);
+    unit_assert_operator_equal("something.else 1234-56", root.second.param3);
+    unit_assert_operator_equal(4, root.second.text.size());
+    unit_assert_operator_equal("Pre-Text", root.second.text[0]);
+    unit_assert_operator_equal("Inlined text with", root.second.text[1]);
+    unit_assert_operator_equal("<&\">", root.second.text[2]);
+    unit_assert_operator_equal("Post-text.", root.second.text[3]);
+    unit_assert_operator_equal(">Leeloo > mul-\"tipass", root.fifth.leeloo);
+    unit_assert_operator_equal("You're a monster, Zorg.>I know.", root.fifth.mr_zorg);
 }
 
 
@@ -382,9 +408,7 @@ void testNoAutoUnescape()
 
     istringstream is(sampleXML);
     Root root;
-    RootHandler rootHandler(root);
-    rootHandler.autoUnescapeAttributes = false;
-    rootHandler.autoUnescapeCharacters = false;
+    RootHandler rootHandler(root, false, false);
     parse(is, rootHandler);
 
     if (os_)
@@ -399,15 +423,16 @@ void testNoAutoUnescape()
         *os_ << "\n\n"; 
     }
 
-    unit_assert(root.param == "value");
-    unit_assert(root.first.escaped_attribute == "&quot;&lt;&amp;lt;&gt;&quot;");
-    unit_assert(root.first.text == "Some Text with Entity References: &lt;&amp;&gt;");
-    unit_assert(root.second.param2 == "something");
-    unit_assert(root.second.param3 == "something.else 1234-56");
-    unit_assert(root.second.text.size() == 3);
-    unit_assert(root.second.text[0] == "Pre-Text");
-    unit_assert(root.second.text[1] == "Inlined text");
-    unit_assert(root.second.text[2] == "Post-text.");
+    unit_assert_operator_equal("value", root.param);
+    unit_assert_operator_equal("&quot;&lt;&amp;lt;&gt;&quot;", root.first.escaped_attribute);
+    unit_assert_operator_equal("Some Text with Entity References: &lt;&amp;&gt;", root.first.text);
+    unit_assert_operator_equal("something", root.second.param2);
+    unit_assert_operator_equal("something.else 1234-56", root.second.param3);
+    unit_assert_operator_equal(4, root.second.text.size());
+    unit_assert_operator_equal("Pre-Text", root.second.text[0]);
+    unit_assert_operator_equal("Inlined text with", root.second.text[1]);
+    unit_assert_operator_equal("<&\">", root.second.text[2]);
+    unit_assert_operator_equal("Post-text.", root.second.text[3]);
 }
 
 
@@ -421,7 +446,7 @@ class AnotherRootHandler : public Handler
     {
         if (name == "AnotherRoot")
         {
-            unit_assert(position == 0x26b);
+            unit_assert_operator_equal(656, position);
             return Status::Done; 
         }
 
@@ -443,7 +468,7 @@ void testDone()
     getline(is, buffer, '<');
     
     if (os_) *os_ << "buffer: " << buffer << "\n\n";
-    unit_assert(buffer == "The quick brown fox jumps over the lazy dog.");
+    unit_assert_operator_equal("The quick brown fox jumps over the lazy dog.", buffer);
 }
 
 
@@ -491,49 +516,98 @@ void testNested()
     NestedHandler nestedHandler;
     parse(is, nestedHandler);
     if (os_) *os_ << "count: " << nestedHandler.count << "\n\n";
-    unit_assert(nestedHandler.count == 2);
+    unit_assert_operator_equal(2, nestedHandler.count);
+}
+
+
+void testRootElement()
+{
+    if (os_) *os_ << "testRootElement()\n";
+
+    string RootElement = "RootElement";
+    unit_assert_operator_equal(RootElement, xml_root_element(sampleXML));
+
+    istringstream sampleXMLStream(sampleXML);
+    unit_assert_operator_equal(RootElement, xml_root_element(sampleXMLStream));
+
+    {ofstream sampleXMLFile("testRootElement.xml"); sampleXMLFile << sampleXML;}
+    unit_assert_operator_equal(RootElement, xml_root_element_from_file("testRootElement.xml"));
+    bfs::remove("testRootElement.xml");
+
+    unit_assert_operator_equal(RootElement, xml_root_element("<?xml?><RootElement>"));
+    unit_assert_operator_equal(RootElement, xml_root_element("<?xml?><RootElement name='value'"));
+
+    unit_assert_throws(xml_root_element("not-xml"), runtime_error);
 }
 
 
 void testDecoding()
 {
     string id1("_x0031_invalid_x0020_ID");
-    unit_assert(decode_xml_id_copy(id1) == "1invalid ID");
-    unit_assert(&decode_xml_id(id1) == &id1);
-    unit_assert(id1 == "1invalid ID");
+    unit_assert_operator_equal("1invalid ID", decode_xml_id_copy(id1));
+    unit_assert_operator_equal((void *)&id1, (void *)&decode_xml_id(id1)); // should return reference to id1
+    unit_assert_operator_equal("1invalid ID", id1);
 
     string id2("_invalid-ID__x0023_2__x003c_3_x003e_");
-    unit_assert(decode_xml_id_copy(id2) == "_invalid-ID_#2_<3>");
-    unit_assert(decode_xml_id(id2) == "_invalid-ID_#2_<3>");
+    unit_assert_operator_equal("_invalid-ID_#2_<3>", decode_xml_id_copy(id2));
+    unit_assert_operator_equal("_invalid-ID_#2_<3>", decode_xml_id(id2));
 
     string crazyId("_x0021__x0021__x0021_");
-    unit_assert(decode_xml_id(crazyId) == "!!!");
+    unit_assert_operator_equal("!!!", decode_xml_id(crazyId));
 }
 
+void testSaxParserString() 
+{
+    std::string str = " \t foo \n";
+    saxstring xstr = str;
+    unit_assert_operator_equal(xstr,str);
+    unit_assert_operator_equal(xstr,str.c_str());
+    unit_assert_operator_equal(str.length(),xstr.length());
+    xstr.trim_lead_ws();
+    unit_assert_operator_equal(xstr.length(),str.length()-3);
+    unit_assert_operator_equal(xstr,str.substr(3));
+    xstr.trim_trail_ws();
+    unit_assert_operator_equal(xstr.length(),str.length()-5);
+    unit_assert_operator_equal(xstr,str.substr(3,3));
+    unit_assert_operator_equal(xstr[1],'o');
+    xstr[1] = '0';
+    unit_assert_operator_equal(xstr[1],'0');
+    std::string str2(xstr.data());
+    unit_assert_operator_equal(str2,"f0o");
+    std::string str3(xstr.c_str());
+    unit_assert_operator_equal(str2,str3);
+    saxstring xstr2(xstr);
+    unit_assert_operator_equal(xstr2,xstr);
+    saxstring xstr3;
+    unit_assert_operator_equal(xstr3.c_str(),std::string());
+}
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         demo();
+        testSaxParserString();
         test();
         testNoAutoUnescape();
         testDone();
         testBadXML();
         testNested();
+        testRootElement();
         testDecoding();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n"; 
+        TEST_FAILED("Caught unknown exception.")
     }
-     
-    return 1;
+
+    TEST_EPILOG
 }
 

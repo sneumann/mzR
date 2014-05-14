@@ -18,8 +18,8 @@ namespace msdata {
 
 using std::string;
 
-int Version::Major()                {return 02;}
-int Version::Minor()                {return 01;}
+int Version::Major()                {return 03;}
+int Version::Minor()                {return 00;}
 int Version::Revision()             {return 0;}
 string Version::LastModified()      {return "--";}
 string Version::str()               

@@ -1,5 +1,5 @@
 //
-// $Id: ClickwrapPrompterTest.cpp 2281 2010-09-23 18:06:45Z chambm $
+// $Id: ClickwrapPrompterTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -39,20 +39,22 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         if (os_) *os_ << "ClickwrapPrompterTest\n";
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Unknown exception" << endl;
+        TEST_FAILED("Caught unknown exception.")
     }
-    return 1;
+
+    TEST_EPILOG
 }

@@ -5,6 +5,9 @@
 //  1.0. (See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
+// Acknowledgements:
+// aschoedl contributed an improvement to the determination
+// of the Reference type parameter.
 //
 // For more information, see http://www.boost.org/libs/range/
 //
@@ -12,15 +15,15 @@
 #define BOOST_RANGE_DETAIL_JOIN_ITERATOR_HPP_INCLUDED
 
 #include <iterator>
+#include <boost/assert.hpp>
 #include <boost/iterator/iterator_traits.hpp>
 #include <boost/iterator/iterator_facade.hpp>
-#include <boost/intrusive_ptr.hpp>
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include <boost/range/empty.hpp>
 #include <boost/range/detail/demote_iterator_traversal_tag.hpp>
 #include <boost/range/value_type.hpp>
-#include <boost/utility.hpp>
+#include <boost/next_prior.hpp>
 
 namespace boost
 {
@@ -30,21 +33,6 @@ namespace boost
 template<typename Iterator1, typename Iterator2>
 struct join_iterator_link
 {
-private:
-    class reference_count_t
-    {
-    public:
-        reference_count_t() : m_count(0u) {}
-        reference_count_t(const reference_count_t&) : m_count(0u) {}
-        reference_count_t& operator=(const reference_count_t&) { return *this; }
-
-        void increment() { ++m_count; }
-        bool decrement() { return --m_count ? false : true; }
-
-    private:
-        unsigned int m_count;
-    };
-
 public:
     join_iterator_link(Iterator1 last1, Iterator2 first2)
         :    last1(last1)
@@ -52,42 +40,12 @@ public:
     {
     }
 
-    void add_reference() const
-    {
-        count.increment();
-    }
-
-    bool release_reference() const
-    {
-        return count.decrement();
-    }
-
     Iterator1 last1;
     Iterator2 first2;
 
 private:
     join_iterator_link() /* = delete */ ;
-
-    mutable reference_count_t count;
 };
-
-} // range_detail
-
-template<typename Iterator1, typename Iterator2>
-inline void intrusive_ptr_add_ref(const range_detail::join_iterator_link<Iterator1,Iterator2>* p)
-{
-    p->add_reference();
-}
-
-template<typename Iterator1, typename Iterator2>
-inline void intrusive_ptr_release(const range_detail::join_iterator_link<Iterator1,Iterator2>* p)
-{
-    if (p->release_reference())
-        delete p;
-}
-
-namespace range_detail
-{
 
 class join_iterator_begin_tag {};
 class join_iterator_end_tag {};
@@ -165,7 +123,32 @@ private:
 template<typename Iterator1
        , typename Iterator2
        , typename ValueType = typename iterator_value<Iterator1>::type
-       , typename Reference = typename iterator_reference<Iterator1>::type
+       // find least demanding, commonly supported reference type, in the order &, const&, and by-value:
+       , typename Reference = typename mpl::if_c<
+                !is_reference<typename iterator_reference<Iterator1>::type>::value
+             || !is_reference<typename iterator_reference<Iterator2>::type>::value,
+                        typename remove_const<
+                            typename remove_reference<
+                                typename iterator_reference<Iterator1>::type
+                            >::type
+                        >::type,
+                        typename mpl::if_c<
+                            is_const<
+                                typename remove_reference<
+                                    typename iterator_reference<Iterator1>::type
+                                >::type
+                            >::value
+                            || is_const<
+                                typename remove_reference<
+                                    typename iterator_reference<Iterator2>::type
+                                >::type
+                            >::value,
+                            typename add_const<
+                                typename iterator_reference<Iterator2>::type
+                            >::type,
+                            typename iterator_reference<Iterator1>::type
+                        >::type
+                    >::type
        , typename Traversal = typename demote_iterator_traversal_tag<
                                   typename iterator_traversal<Iterator1>::type
                                 , typename iterator_traversal<Iterator2>::type>::type
@@ -179,12 +162,16 @@ public:
     typedef Iterator1 iterator1_t;
     typedef Iterator2 iterator2_t;
 
-    join_iterator() : m_section(0u) {}
+    join_iterator()
+        : m_section(0u)
+        , m_it(0u, iterator1_t(), iterator2_t())
+        , m_link(link_t(iterator1_t(), iterator2_t()))
+    {}
 
     join_iterator(unsigned int section, Iterator1 current1, Iterator1 last1, Iterator2 first2, Iterator2 current2)
         : m_section(section)
         , m_it(section, current1, current2)
-        , m_link(new link_t(last1, first2))
+        , m_link(link_t(last1, first2))
         {
         }
 
@@ -192,7 +179,7 @@ public:
     join_iterator(Range1& r1, Range2& r2, join_iterator_begin_tag)
         : m_section(boost::empty(r1) ? 1u : 0u)
         , m_it(boost::empty(r1) ? 1u : 0u, boost::begin(r1), boost::begin(r2))
-        , m_link(new link_t(boost::end(r1), boost::begin(r2)))
+        , m_link(link_t(boost::end(r1), boost::begin(r2)))
     {
     }
 
@@ -200,7 +187,7 @@ public:
     join_iterator(const Range1& r1, const Range2& r2, join_iterator_begin_tag)
         : m_section(boost::empty(r1) ? 1u : 0u)
         , m_it(boost::empty(r1) ? 1u : 0u, boost::const_begin(r1), boost::const_begin(r2))
-        , m_link(new link_t(boost::const_end(r1), boost::const_begin(r2)))
+        , m_link(link_t(boost::const_end(r1), boost::const_begin(r2)))
     {
     }
 
@@ -208,7 +195,7 @@ public:
     join_iterator(Range1& r1, Range2& r2, join_iterator_end_tag)
         : m_section(1u)
         , m_it(1u, boost::end(r1), boost::end(r2))
-        , m_link(new link_t(boost::end(r1), boost::begin(r2)))
+        , m_link(link_t(boost::end(r1), boost::begin(r2)))
     {
     }
 
@@ -216,7 +203,7 @@ public:
     join_iterator(const Range1& r1, const Range2& r2, join_iterator_end_tag)
         : m_section(1u)
         , m_it(1u, boost::const_end(r1), boost::const_end(r2))
-        , m_link(new link_t(boost::const_end(r1), boost::const_begin(r2)))
+        , m_link(link_t(boost::const_end(r1), boost::const_begin(r2)))
     {
     }
 
@@ -228,9 +215,9 @@ private:
         else
         {
             ++m_it.it1();
-            if (m_it.it1() == m_link->last1)
+            if (m_it.it1() == m_link.last1)
             {
-                m_it.it2() = m_link->first2;
+                m_it.it2() = m_link.first2;
                 m_section = 1u;
             }
         }
@@ -240,9 +227,9 @@ private:
     {
         if (m_section)
         {
-            if (m_it.it2() == m_link->first2)
+            if (m_it.it2() == m_link.first2)
             {
-                m_it.it1() = boost::prior(m_link->last1);
+                m_it.it1() = boost::prior(m_link.last1);
                 m_section = 0u;
             }
             else
@@ -280,8 +267,8 @@ private:
                 result = other.m_it.it2() - m_it.it2();
             else
             {
-                result = (m_link->first2 - m_it.it2())
-                       + (other.m_it.it1() - m_link->last1);
+                result = (m_link.first2 - m_it.it2())
+                       + (other.m_it.it1() - m_link.last1);
 
                 BOOST_ASSERT( result <= 0 );
             }
@@ -290,8 +277,8 @@ private:
         {
             if (other.m_section)
             {
-                result = (m_link->last1 - m_it.it1())
-                       + (other.m_it.it2() - m_link->first2);
+                result = (m_link.last1 - m_it.it1())
+                       + (other.m_it.it2() - m_link.first2);
             }
             else
                 result = other.m_it.it1() - m_it.it1();
@@ -305,7 +292,7 @@ private:
         BOOST_ASSERT( m_section == 1u );
         if (offset < 0)
         {
-            difference_t r2_dist = m_link->first2 - m_it.it2();
+            difference_t r2_dist = m_link.first2 - m_it.it2();
             BOOST_ASSERT( r2_dist <= 0 );
             if (offset >= r2_dist)
                 std::advance(m_it.it2(), offset);
@@ -313,7 +300,7 @@ private:
             {
                 difference_t r1_dist = offset - r2_dist;
                 BOOST_ASSERT( r1_dist <= 0 );
-                m_it.it1() = m_link->last1 + r1_dist;
+                m_it.it1() = m_link.last1 + r1_dist;
                 m_section = 0u;
             }
         }
@@ -327,7 +314,7 @@ private:
         BOOST_ASSERT( m_section == 0u );
         if (offset > 0)
         {
-            difference_t r1_dist = m_link->last1 - m_it.it1();
+            difference_t r1_dist = m_link.last1 - m_it.it1();
             BOOST_ASSERT( r1_dist >= 0 );
             if (offset < r1_dist)
                 std::advance(m_it.it1(), offset);
@@ -335,7 +322,7 @@ private:
             {
                 difference_t r2_dist = offset - r1_dist;
                 BOOST_ASSERT( r2_dist >= 0 );
-                m_it.it2() = m_link->first2 + r2_dist;
+                m_it.it2() = m_link.first2 + r2_dist;
                 m_section = 1u;
             }
         }
@@ -345,7 +332,7 @@ private:
 
     unsigned int m_section;
     iterator_union m_it;
-    intrusive_ptr<const link_t> m_link;
+    link_t m_link;
 
     friend class ::boost::iterator_core_access;
 };

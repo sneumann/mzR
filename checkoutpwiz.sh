@@ -9,7 +9,7 @@ rm -rf pwiz
 mkdir pwiz
 cd pwiz
 
-PWIZREPO=http://proteowizard.svn.sourceforge.net/svnroot/proteowizard/trunk/pwiz/
+PWIZREPO=http://svn.code.sf.net/p/proteowizard/code/trunk/pwiz/
 svn co --non-recursive $PWIZREPO .
 
 for DIR in data/msdata data/common utility/chemistry/ utility/misc/ utility/math/ utility/minimxml/ ; do 
@@ -23,7 +23,7 @@ rm -rf boost
 mkdir boost
 cd boost
 
-BOOSTVER=Boost_1_43_0
+BOOSTVER=Boost_1_54_0
 BOOSTREPO=http://svn.boost.org/svn/boost/tags/release/$BOOSTVER/boost
 
 svn co --non-recursive $BOOSTREPO .
@@ -48,7 +48,7 @@ rm -rf boost_aux
 mkdir boost_aux
 cd boost_aux
 
-PWIZBOOSTREPO=http://proteowizard.svn.sourceforge.net/svnroot/proteowizard/trunk/pwiz/libraries/boost_aux/boost/
+PWIZBOOSTREPO=http://svn.code.sf.net/p/proteowizard/code/trunk/pwiz/libraries/boost_aux/boost/
 svn co $PWIZBOOSTREPO boost
 
 cd ..

@@ -1,4 +1,4 @@
-// $Id: ramp.h 2359 2010-11-09 23:01:39Z chambm $
+// $Id: ramp.h 3397 2012-03-19 19:20:57Z pcbrefugee $
 /***************************************************************************
                              RAMP
 
@@ -37,9 +37,11 @@ and mzML, if you have the PWIZ library from Spielberg Family Proteomics Center
 #else
 // copied this code from TPP's sysdepend.h to make RAMP stand alone for other uses
 #if defined(_MSC_VER) || defined(__MINGW32__)  // MSVC or MinGW
+#ifndef WINDOWS_NATIVE
 #define WINDOWS_NATIVE
 #endif
-#ifdef _MSC_VER
+#endif
+#if defined(_MSC_VER) && !defined(S_ISREG)
 #define S_ISREG(mode) ((mode)&_S_IFREG)
 #endif
 #endif
@@ -87,6 +89,10 @@ typedef float RAMPREAL;
 
 #include "ramp_base64.h"
 typedef enum { mzInt = 0 , mzRuler, mzOnly, intensityOnly } e_contentType;
+#ifdef SWIG
+%apply long long {ramp_fileoffset_t};
+#else
+#ifndef RAMP_STRUCT_DECL_ONLY  // useful for pwiz, which only wants to mimic ramp structs
 #ifdef HAVE_PWIZ_MZML_LIB
 namespace pwiz {  // forward ref
 	namespace msdata {  // forward ref
@@ -105,7 +111,7 @@ typedef struct {
 #endif
    int bIsMzData; // if not mzML, then is it mzXML or mzData?
 } RAMPFILE;
-
+#endif  // RAMP_STRUCT_DECL_ONLY
 #ifdef RAMP_HAVE_GZ_INPUT
 #define ramp_fgets(buf,len,handle) random_access_gzgets((handle)->fileHandle, buf, len )
 #define ramp_feof(a) random_access_gzeof((a)->fileHandle)
@@ -118,7 +124,9 @@ typedef __int64 ramp_fileoffset_t;
 #define ramp_fseek(a,b,c) _lseeki64((a)->fileHandle,b,c)
 #define ramp_ftell(a) _lseeki64((a)->fileHandle,0,SEEK_CUR)
 #define ramp_fread(buf,len,handle) read((handle)->fileHandle,buf,len)
+#ifndef RAMP_STRUCT_DECL_ONLY  // useful for pwiz, which only wants to mimic ramp structs
 char *ramp_fgets(char *buf,int len,RAMPFILE *handle);
+#endif
 #define ramp_feof(handle) eof((handle)->fileHandle)
 #else // can use fopen for long files
 #define ramp_fread(buf,len,handle) fread(buf,1,len,(handle)->fileHandle)
@@ -134,6 +142,7 @@ typedef off_t ramp_fileoffset_t;
 #define ramp_ftell(a) ftello((a)->fileHandle)
 #endif
 #endif 
+#endif // not SWIG
 
 
 #include <string.h>
@@ -155,6 +164,7 @@ struct ScanHeaderStruct
    double basePeakMZ;
    double basePeakIntensity;
    double collisionEnergy;
+   double compensationVoltage;
    double ionisationEnergy;
    double lowMZ;
    double highMZ;
@@ -171,6 +181,7 @@ struct ScanHeaderStruct
    int mergedResultScanNum; /* scan number of the resultant merged scan */
    int mergedResultStartScanNum; /* smallest scan number of the scanOrigin for merged scan */
    int mergedResultEndScanNum; /* largest scan number of the scanOrigin for merged scan */
+   std::string filterLine;
    ramp_fileoffset_t filePosition; /* where in the file is this header? */
 };
 
@@ -195,6 +206,7 @@ typedef struct InstrumentStruct
    //char msType[INSTRUMENT_LENGTH];
 } InstrumentStruct;
 
+#ifndef RAMP_STRUCT_DECL_ONLY  // useful for pwiz, which only wants to mimic ramp structs
 // file open/close
 RAMPFILE *rampOpenFile(const char *filename);
 void rampCloseFile(RAMPFILE *pFI);
@@ -305,6 +317,7 @@ const struct ScanHeaderStruct* readHeaderCached(struct ScanCacheStruct* cache, i
 int readMsLevelCached(struct ScanCacheStruct* cache, int seqNum, RAMPFILE* pFI, ramp_fileoffset_t lScanIndex);
 const RAMPREAL *readPeaksCached(struct ScanCacheStruct* cache, int seqNum, RAMPFILE* pFI, ramp_fileoffset_t lScanIndex);
 
+#endif // ifndef RAMP_STRUCT_DECL_ONLY  useful for pwiz, which only wants to mimic ramp structs
 
 #endif
 

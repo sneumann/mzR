@@ -1,5 +1,5 @@
 #
-# $Id: Jamfile.jam 2323 2010-10-21 22:21:14Z chambm $
+# $Id: Jamfile.jam 4131 2012-11-20 20:09:49Z chambm $
 #
 #
 # Original author: Darren Kessner <darren@proteowizard.org>
@@ -30,7 +30,6 @@ project
                                         # (boost/numeric/ublas/traits.hpp)
         <toolset>msvc:<cxxflags>/wd4702 # warning: unreachable code
                                         # (boost/numeric/ublas/banded.hpp)
-        <toolset>darwin:<variant>debug  # ublas lu_factorize() causes bus error in release (inlining?)
         <toolset>msvc,<link>shared:<define>PWIZ_DYN_LINK
     ;
 
@@ -39,13 +38,13 @@ lib pwiz_utility_math
     : Parabola.cpp Stats.cpp erf.cpp
     ;
     
-unit-test-if-exists LinearLeastSquaresTest : LinearLeastSquaresTest.cpp ;
-unit-test-if-exists LinearSolverTest : LinearSolverTest.cpp ;
-unit-test-if-exists MatchedFilterTest : MatchedFilterTest.cpp ;
-unit-test-if-exists ParabolaTest : ParabolaTest.cpp Parabola.cpp ;
-unit-test-if-exists StatsTest : StatsTest.cpp Stats.cpp ;
-unit-test-if-exists erfTest : erfTest.cpp erf.cpp ;
-unit-test-if-exists qrTest : qrTest.cpp ;
-unit-test-if-exists OrderedPairTest : OrderedPairTest.cpp ;
+unit-test-if-exists LinearLeastSquaresTest : LinearLeastSquaresTest.cpp ../misc//pwiz_utility_misc ;
+unit-test-if-exists LinearSolverTest : LinearSolverTest.cpp ../misc//pwiz_utility_misc ;
+unit-test-if-exists MatchedFilterTest : MatchedFilterTest.cpp ../misc//pwiz_utility_misc ;
+unit-test-if-exists ParabolaTest : ParabolaTest.cpp pwiz_utility_math ../misc//pwiz_utility_misc ;
+unit-test-if-exists StatsTest : StatsTest.cpp pwiz_utility_math ../misc//pwiz_utility_misc ;
+unit-test-if-exists erfTest : erfTest.cpp pwiz_utility_math ../misc//pwiz_utility_misc ;
+unit-test-if-exists qrTest : qrTest.cpp ../misc//pwiz_utility_misc ;
+unit-test-if-exists OrderedPairTest : OrderedPairTest.cpp ../misc//pwiz_utility_misc ;
 
 

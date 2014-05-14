@@ -13,7 +13,7 @@
 #endif              
 
 #include <algorithm>                             // min.
-#include <cassert>
+#include <boost/assert.hpp>
 #include <cstddef>                               // ptrdiff_t.
 #include <iosfwd>                                // streamsize, streamoff.
 #include <boost/detail/iterator.hpp>             // boost::iterator_traits.
@@ -36,7 +36,7 @@ template<typename Traversal> struct range_adapter_impl;
 //
 // Template name: range_adapter
 // Description: Device based on an instance of boost::iterator_range.
-// Template paramters:
+// Template parameters:
 //     Mode - A mode tag.
 //     Range - An instance of iterator_range.
 //
@@ -175,7 +175,7 @@ struct range_adapter_impl<std::random_access_iterator_tag> {
             cur = last + off;
             break;
         default:
-            assert(0);
+            BOOST_ASSERT(0);
         }
     }
 };

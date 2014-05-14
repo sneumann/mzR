@@ -24,7 +24,7 @@
 #include <boost/preprocessor/facilities/empty.hpp>
 
 namespace std{
-    #if defined(__LIBCOMO__) || defined(__QNXNTO__) 
+    #if defined(__LIBCOMO__)
         using ::va_list;
     #endif
 } // namespace std
@@ -35,7 +35,7 @@ namespace serialization {
 // default implementation does nothing.
 template<class T, int N>
 T * factory(std::va_list){
-    assert(false);
+    BOOST_ASSERT(false);
     // throw exception here?
     return NULL;
 }

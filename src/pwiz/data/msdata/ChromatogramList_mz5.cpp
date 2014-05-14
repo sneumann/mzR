@@ -1,5 +1,5 @@
 //
-// $Id: ChromatogramList_mz5.cpp 2814 2011-06-24 17:40:00Z chambm $
+// $Id: ChromatogramList_mz5.cpp 3484 2012-04-04 19:55:33Z mwilhelm42 $
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -248,14 +248,16 @@ ChromatogramPtr ChromatogramList_mz5Impl::chromatogram(size_t index, bool getBin
         hsize_t start = bounds.first;
         hsize_t end = bounds.second;
         ptr->defaultArrayLength = end - start;
-        if (getBinaryData && ptr.get())
+        if (getBinaryData)
         {
-            std::vector<double> time, inten;
-            conn_->getData(time, Configuration_mz5::ChomatogramTime, start, end);
-            conn_->getData(inten, Configuration_mz5::ChromatogramIntensity, start, end);
-            ptr->setTimeIntensityArrays(time, inten, CVID_Unknown, CVID_Unknown);
-            // time and intensity unit will be set by the following command
-            binaryParamList_[index].fill(*ptr->getTimeArray(), *ptr->getIntensityArray(), *rref_);
+            if (!binaryParamList_[index].empty()) {
+                std::vector<double> time, inten;
+                conn_->getData(time, Configuration_mz5::ChomatogramTime, start, end);
+                conn_->getData(inten, Configuration_mz5::ChromatogramIntensity, start, end);
+                ptr->setTimeIntensityArrays(time, inten, CVID_Unknown, CVID_Unknown);
+                // time and intensity unit will be set by the following command
+                binaryParamList_[index].fill(*ptr->getTimeArray(), *ptr->getIntensityArray(), *rref_);
+            }
         }
         References::resolve(*ptr, msd_);
         return ptr;

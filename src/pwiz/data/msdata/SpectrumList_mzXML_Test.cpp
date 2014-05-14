@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_mzXML_Test.cpp 2272 2010-09-20 20:45:12Z chambm $
+// $Id: SpectrumList_mzXML_Test.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -60,11 +60,11 @@ void test(bool indexed)
   
     MSData dummy;
     dummy.fileDescription.sourceFilePtrs.push_back(SourceFilePtr(new SourceFile("tiny1.yep")));
-    dummy.fileDescription.sourceFilePtrs.back()->set(MS_Bruker_Agilent_YEP_file);
+    dummy.fileDescription.sourceFilePtrs.back()->set(MS_Bruker_Agilent_YEP_format);
     dummy.fileDescription.sourceFilePtrs.back()->set(MS_Bruker_Agilent_YEP_nativeID_format);
     dummy.softwarePtrs.push_back(SoftwarePtr(new Software("pwiz")));
-    dummy.softwarePtrs.back()->set(MS_ProteoWizard);
-    dummy.instrumentConfigurationPtrs.push_back(InstrumentConfigurationPtr(new InstrumentConfiguration("LCQ Deca")));
+    dummy.softwarePtrs.back()->set(MS_ProteoWizard_software);
+    dummy.instrumentConfigurationPtrs.push_back(InstrumentConfigurationPtr(new InstrumentConfiguration("1")));
     dummy.instrumentConfigurationPtrs.back()->set(MS_LCQ_Deca);
     dummy.instrumentConfigurationPtrs.back()->userParams.push_back(UserParam("doobie", "420"));
     dummy.dataProcessingPtrs.push_back(DataProcessingPtr(new DataProcessing("DP1")));
@@ -117,7 +117,7 @@ void test(bool indexed)
     unit_assert(s->scanList.scans.size() == 1);
     Scan& scan = s->scanList.scans[0];
     unit_assert(scan.hasCVParam(MS_scan_start_time));
-    unit_assert(scan.cvParam(MS_preset_scan_configuration).valueAs<int>() == 3);
+    //unit_assert(scan.cvParam(MS_preset_scan_configuration).valueAs<int>() == 3);
     unit_assert(s->cvParam(MS_base_peak_intensity).value == "120053");
     unit_assert(s->defaultArrayLength == 15);
     unit_assert(s->binaryDataArrayPtrs.size() == 2);
@@ -164,8 +164,8 @@ void test(bool indexed)
     unit_assert(s->cvParam(MS_ms_level).valueAs<int>() == 2);
 
     unit_assert(s->scanList.scans.size() == 1);
-    Scan& scan20 = s->scanList.scans[0];
-    unit_assert(scan20.cvParam(MS_preset_scan_configuration).valueAs<int>() == 4);
+    //Scan& scan20 = s->scanList.scans[0];
+    //unit_assert(scan20.cvParam(MS_preset_scan_configuration).valueAs<int>() == 4);
 
     unit_assert(s->precursors.size() == 1);
     Precursor& precursor = s->precursors[0];
@@ -238,21 +238,23 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
+
+    TEST_EPILOG
 }
 
 

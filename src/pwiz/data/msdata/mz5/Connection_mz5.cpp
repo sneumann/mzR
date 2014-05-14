@@ -1,5 +1,5 @@
 //
-// $Id: Connection_mz5.cpp 2819 2011-06-27 18:00:40Z chambm $
+// $Id: Connection_mz5.cpp 5123 2013-11-06 20:31:17Z pcbrefugee $
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -26,7 +26,6 @@
 #include "ReferenceRead_mz5.hpp"
 #include "Translator_mz5.hpp"
 #include <algorithm>
-#include <iostream>
 #include "boost/thread/mutex.hpp"
 
 namespace pwiz {
@@ -190,7 +189,6 @@ void Connection_mz5::readFile()
                     && fi[0].minorVersion
                             == Configuration_mz5::MZ5_FILE_MINOR_VERSION)
             {
-                config_.setFiltering(fi[0].didFiltering > 0 ? true : false);
                 config_.setTranslating(fi[0].deltaMZ && fi[0].translateInten);
             }
         }
@@ -242,7 +240,7 @@ void Connection_mz5::extendData(const std::vector<double>& d1,
         const Configuration_mz5::MZ5DataSets v)
 {
     boost::mutex::scoped_lock lock(connectionWriteMutex_);
-
+    size_t bs = config_.getBufferSizeFor(v);
     std::map<Configuration_mz5::MZ5DataSets, DataSet>::iterator it =
             bufferMap_.find(v);
     if (it == bufferMap_.end())
@@ -251,23 +249,17 @@ void Connection_mz5::extendData(const std::vector<double>& d1,
         { 0 };
         hsize_t maxdim[1] =
         { H5S_UNLIMITED };
-        bufferMap_.insert(std::pair<Configuration_mz5::MZ5DataSets, DataSet>(v,
-                getDataSet(1, dim, maxdim, v)));
-        it = bufferMap_.find(v);
+        it = bufferMap_.insert(std::pair<Configuration_mz5::MZ5DataSets, DataSet>(v,
+                getDataSet(1, dim, maxdim, v))).first;
+        if (bs != Configuration_mz5::NO_BUFFER_SIZE) {
+            buffers_.insert(std::pair<Configuration_mz5::MZ5DataSets,
+                std::vector<double> >(v, std::vector<double>()));
+            buffers_.find(v)->second.reserve(bs);
+        }
     }
-    size_t bs = config_.getBufferSizeFor(v);
     if (bs != Configuration_mz5::NO_BUFFER_SIZE)
     {
-        std::map<Configuration_mz5::MZ5DataSets, std::vector<double> >::iterator
-                it2 = buffers_.find(v);
-        if (it2 == buffers_.end())
-        {
-            buffers_.insert(std::pair<Configuration_mz5::MZ5DataSets,
-                    std::vector<double> >(v, std::vector<double>()));
-            it2 = buffers_.find(v);
-            it2->second.reserve(bs);
-        }
-        addToBuffer(it2->second, d1, bs, it->second);
+        addToBuffer(buffers_.find(v)->second, d1, bs, it->second);
     }
     else
     {
@@ -281,8 +273,8 @@ void Connection_mz5::extendAndWrite1DDataSet(const DataSet& dataset,
     hsize_t start[1], end[1];
     dataset.getSpace().getSelectBounds(start, end);
 
-    int currentsize = d1.size();
-    int fullsize = end[0] + 1;
+    hsize_t currentsize = d1.size();
+    hsize_t fullsize = end[0] + 1;
 
     hsize_t extension_size[1], offset[1], dims1[1];
     extension_size[0] = fullsize + currentsize;

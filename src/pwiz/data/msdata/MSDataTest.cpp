@@ -1,5 +1,5 @@
 //
-// $Id: MSDataTest.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: MSDataTest.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -138,11 +138,11 @@ void testSpectrumListSimple()
     vector<MZIntensityPair> mziPairs2;
     for (unsigned int i=0; i<10; i++)
         mziPairs2.push_back(MZIntensityPair(2*i, 3*i)); 
-    spectrum->setMZIntensityPairs(mziPairs2, MS_number_of_counts);
+    spectrum->setMZIntensityPairs(mziPairs2, MS_number_of_detector_counts);
     unit_assert(spectrum->binaryDataArrayPtrs.size() == 2);
     unit_assert(spectrum->binaryDataArrayPtrs[0]->hasCVParam(MS_m_z_array) == true);
     unit_assert(spectrum->binaryDataArrayPtrs[1]->hasCVParam(MS_intensity_array) == true);
-    unit_assert(spectrum->binaryDataArrayPtrs[1]->cvParam(MS_intensity_array).units == MS_number_of_counts);
+    unit_assert(spectrum->binaryDataArrayPtrs[1]->cvParam(MS_intensity_array).units == MS_number_of_detector_counts);
     unit_assert(spectrum->binaryDataArrayPtrs[0]->data.size() == 10);
     unit_assert(spectrum->binaryDataArrayPtrs[1]->data.size() == 10);
     for (unsigned int i=0; i<10; i++)
@@ -170,7 +170,7 @@ void testChromatograms()
         vector<TimeIntensityPair> pairs;
         for (int j=0; j<10; j++) pairs.push_back(TimeIntensityPair(j, 10*i+j));
         cls.chromatograms.push_back(ChromatogramPtr(new Chromatogram));
-        cls.chromatograms.back()->setTimeIntensityPairs(pairs, UO_second, MS_number_of_counts);
+        cls.chromatograms.back()->setTimeIntensityPairs(pairs, UO_second, MS_number_of_detector_counts);
     }
 
     DataProcessingPtr dp(new DataProcessing("dp"));
@@ -226,6 +226,7 @@ void testIDParsing()
 
     id = "scan=123";
     unit_assert(id::translateNativeIDToScanNumber(MS_scan_number_only_nativeID_format, id) == "123");
+    unit_assert(id::translateNativeIDToScanNumber(CVID_Unknown, id) == "123");
     unit_assert(id::translateScanNumberToNativeID(MS_scan_number_only_nativeID_format, "123") == id);
     unit_assert(id::translateScanNumberToNativeID(MS_Bruker_Agilent_YEP_nativeID_format, "123") == id);
     unit_assert(id::translateScanNumberToNativeID(MS_Bruker_BAF_nativeID_format, "123") == id);
@@ -248,37 +249,41 @@ void testAllDataProcessing()
     MSData msd;
     SpectrumListSimplePtr sl(new SpectrumListSimple);
     msd.run.spectrumListPtr = sl;
-    sl->dp = DataProcessingPtr(new DataProcessing("dp"));
-    msd.dataProcessingPtrs.push_back(DataProcessingPtr(new DataProcessing("dp")));
+
+    DataProcessingPtr realDeal(new DataProcessing("dp"));
+    DataProcessingPtr poser(new DataProcessing("dp"));
+
+    msd.dataProcessingPtrs.push_back(realDeal);
+    sl->dp = poser;
 
     // test allDataProcessingPtrs()
     vector<DataProcessingPtr> all = msd.allDataProcessingPtrs();
-    unit_assert(all.size() == 2 &&
-                all[0].get() && all[0]->id == "dp" &&
-                all[1].get() && all[1]->id == "more_dp");
+    unit_assert_operator_equal(1, all.size());
+    unit_assert_operator_equal(realDeal, all[0]);
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         testSpectrumListSimple();
         testChromatograms();
         testIDParsing();
         testAllDataProcessing();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
-        return 1;
+        TEST_FAILED("Caught unknown exception.")
     }
+
+    TEST_EPILOG
 }
 
 

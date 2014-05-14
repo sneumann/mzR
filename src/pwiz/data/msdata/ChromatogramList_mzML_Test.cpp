@@ -1,5 +1,5 @@
 //
-// $Id: ChromatogramList_mzML_Test.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: ChromatogramList_mzML_Test.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -64,7 +64,8 @@ void test(bool indexed)
     dummy.dataProcessingPtrs.push_back(DataProcessingPtr(new DataProcessing("pwiz_processing")));
     dummy.dataProcessingPtrs.push_back(DataProcessingPtr(new DataProcessing("CompassXtract processing")));
 
-    ChromatogramListPtr sl = ChromatogramList_mzML::create(is, dummy, indexed);
+    Index_mzML_Ptr index(new Index_mzML(is, dummy));
+    ChromatogramListPtr sl = ChromatogramList_mzML::create(is, dummy, index);
 
     // check easy functions
 
@@ -120,21 +121,23 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
+
+    TEST_EPILOG
 }
 
 

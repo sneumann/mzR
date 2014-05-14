@@ -1,5 +1,5 @@
 //
-// $Id: ParamTypes.cpp 2283 2010-09-29 17:00:24Z chambm $
+// $Id: ParamTypes.cpp 4008 2012-10-16 17:16:55Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -26,6 +26,8 @@
 #include "ParamTypes.hpp"
 #include "diff_std.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include <boost/spirit/include/karma.hpp>
+
 
 namespace pwiz {
 namespace data {
@@ -65,11 +67,40 @@ PWIZ_API_DECL double CVParam::timeInSeconds() const
     return 0; 
 }
 
+template <typename T>
+struct nosci_policy : boost::spirit::karma::real_policies<T>   
+{
+    //  we want to generate up to 12 fractional digits
+    static unsigned int precision(T) { return 12; }
+    //  we want the numbers always to be in fixed format
+    static int floatfield(T) { return boost::spirit::karma::real_policies<T>::fmtflags::fixed; }
+};
+
+/// convenience function to return value without scientific notation (throws if not a double)
+PWIZ_API_DECL std::string CVParam::valueFixedNotation() const
+{
+    std::string result = value;
+    if (std::string::npos != result.find_first_of("eE"))
+    {
+        using namespace boost::spirit::karma;
+        typedef real_generator<double, nosci_policy<double> > nosci_type;
+        static const nosci_type nosci = nosci_type();
+        char buffer[256];
+        char* p = buffer;
+        double d = valueAs<double>();
+        generate(p, nosci, d);
+        *p = 0;
+        result = buffer;
+    }
+    return result;
+}
 
 PWIZ_API_DECL ostream& operator<<(ostream& os, const CVParam& param)
 {
-    os << cvTermInfo(param.cvid).name << ": " << param.value;
+    os << cvTermInfo(param.cvid).name;
 
+    if (!param.value.empty())
+        os << ": " << param.value;
     if (param.units != CVID_Unknown)
         os << " " << cvTermInfo(param.units).name << "(s)";
 
@@ -245,6 +276,43 @@ PWIZ_API_DECL void ParamContainer::set(CVID cvid, const string& value, CVID unit
     }
 
     cvParams.push_back(CVParam(cvid, value, units));
+}
+
+
+template <typename T>
+struct double12_policy : boost::spirit::karma::real_policies<T>   
+{
+    //  we want to generate up to 12 fractional digits
+    static unsigned int precision(T) { return 12; }
+};
+
+
+PWIZ_API_DECL void ParamContainer::set(CVID cvid, double value, CVID units)
+{
+    // HACK: karma has a stack overflow on subnormal values, so we clamp to normalized values
+    if (value > 0)
+        value = max(numeric_limits<double>::min(), value);
+    else if (value < 0)
+        value = min(-numeric_limits<double>::min(), value);
+
+    using namespace boost::spirit::karma;
+    typedef real_generator<double, double12_policy<double> > double12_type;
+    static const double12_type double12 = double12_type();
+    char buffer[256];
+    char* p = buffer;
+    generate(p, double12, value);
+    set(cvid, std::string(&buffer[0], p), units);
+}
+
+
+PWIZ_API_DECL void ParamContainer::set(CVID cvid, int value, CVID units)
+{
+    using namespace boost::spirit::karma;
+    static const int_generator<int> intgen = int_generator<int>();
+    char buffer[256];
+    char* p = buffer;
+    generate(p, intgen, value);
+    set(cvid, std::string(&buffer[0], p), units);
 }
 
 

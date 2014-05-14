@@ -1,5 +1,5 @@
 //
-// $Id: Translator_mz5.hpp 2811 2011-06-23 20:44:29Z chambm $
+// $Id: Translator_mz5.hpp 3484 2012-04-04 19:55:33Z mwilhelm42 $
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -31,19 +31,11 @@ namespace msdata {
 namespace mz5 {
 
 /**
- * Helper class to translate and filter mz and intensity values.
+ * Helper class to translate mz values.
  */
 class Translator_mz5
 {
 public:
-    /**
-     * Removes 0 intensity values in a mass spectra.
-     * @param mz mz data
-     * @param inten intensity data
-     */
-    static void filter(std::vector<double>& mz, std::vector<double>& inten);
-    //	static void filterMZ(std::vector<double>&);
-    //	static void filterIntensity(std::vector<double>&);
 
     /**
      * Translates mz and intensity values.

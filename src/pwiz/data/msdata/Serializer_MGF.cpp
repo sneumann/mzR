@@ -1,10 +1,10 @@
 //
-// $Id: Serializer_MGF.cpp 2105 2010-07-07 19:45:59Z cpaulse $
+// $Id: Serializer_MGF.cpp 4008 2012-10-16 17:16:55Z pcbrefugee $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
 //
-// Copyright 2008 Vanderbilt University - Nashville, TN 37232
+// Copyright 2011 Vanderbilt University - Nashville, TN 37232
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License. 
@@ -26,6 +26,7 @@
 #include "SpectrumList_MGF.hpp"
 #include "pwiz/utility/misc/Filesystem.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include <boost/spirit/include/karma.hpp>
 
 
 namespace pwiz {
@@ -47,6 +48,15 @@ class Serializer_MGF::Impl
                const pwiz::util::IterationListenerRegistry* iterationListenerRegistry) const;
 
     void read(shared_ptr<istream> is, MSData& msd) const;
+};
+
+template <typename T>
+struct nosci10_policy : boost::spirit::karma::real_policies<T>   
+{
+    //  we want to generate up to 10 fractional digits
+    static unsigned int precision(T) { return 10; }
+    //  we want the numbers always to be in fixed format
+    static int floatfield(T) { return boost::spirit::karma::real_policies<T>::fmtflags::fixed; }
 };
 
 
@@ -76,7 +86,10 @@ void Serializer_MGF::Impl::write(ostream& os, const MSData& msd,
             CVParam scanTimeParam = scan ? scan->cvParam(MS_scan_start_time) : CVParam();
             CVParam chargeParam = si.cvParam(MS_charge_state);
 
-            if (titleIsThermoDTA)
+            CVParam spectrumTitle = s->cvParam(MS_spectrum_title);
+            if (!spectrumTitle.empty())
+                os << "TITLE=" << spectrumTitle.value << '\n';
+            else if (titleIsThermoDTA)
             {
                 string scan = id::value(s->id, "scan");
                 os << "TITLE=" << thermoBasename << '.' << scan << '.' << scan << '.' << chargeParam.value << '\n';
@@ -87,11 +100,14 @@ void Serializer_MGF::Impl::write(ostream& os, const MSData& msd,
             if (!scanTimeParam.empty())
                 os << "RTINSECONDS=" << scanTimeParam.timeInSeconds() << '\n';
 
-            os << "PEPMASS=" << si.cvParam(MS_selected_ion_m_z).value;
+            // many MGF parsers can't handle scientific notation (!) so explicitly use fixed
+            os << "PEPMASS=" << si.cvParam(MS_selected_ion_m_z).valueFixedNotation();
             
+            bool negativePolarity = s->hasCVParam(MS_negative_scan) ? true : false;
+
             CVParam intensityParam = si.cvParam(MS_peak_intensity);
             if (!intensityParam.empty())
-                os << " " << intensityParam.value;
+                os << " " << intensityParam.valueFixedNotation();
             os << '\n';
 
             if (chargeParam.empty())
@@ -100,17 +116,27 @@ void Serializer_MGF::Impl::write(ostream& os, const MSData& msd,
                 BOOST_FOREACH(const CVParam& param, si.cvParams)
                 {
                     if (param.cvid == MS_possible_charge_state)
-                        charges.push_back(param.value);
+                        charges.push_back(param.value + (negativePolarity ? '-' : '+'));
                 }
                 if (!charges.empty())
                     os << "CHARGE=" << bal::join(charges, " and ") << '\n';
-            } else
-                os << "CHARGE=" << chargeParam.value << '\n';
+            }
+            else
+                os << "CHARGE=" << chargeParam.value << (negativePolarity ? '-' : '+') << '\n';
 
             const BinaryDataArray& mzArray = *s->getMZArray();
             const BinaryDataArray& intensityArray = *s->getIntensityArray();
+            using namespace boost::spirit::karma;
+            typedef real_generator<double, nosci10_policy<double> > nosci10_type;
+            static const nosci10_type nosci10 = nosci10_type();
+            char buffer[256];
             for (size_t p=0; p < s->defaultArrayLength; ++p)
-                os << mzArray.data[p] << ' ' << intensityArray.data[p] << '\n';
+            {
+                char* b = buffer;
+                generate(b, nosci10, intensityArray.data[p]);
+                *b = 0;
+                os << mzArray.data[p] << ' ' << buffer << '\n';
+            }
 
             os << "END IONS\n";
         }

@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_mzML_Test.cpp 2214 2010-08-27 22:24:55Z cpaulse $
+// $Id: SpectrumList_mzML_Test.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -78,7 +78,8 @@ void test(bool indexed)
     dummy.instrumentConfigurationPtrs.push_back(InstrumentConfigurationPtr(new InstrumentConfiguration("LCQ Deca")));
     dummy.dataProcessingPtrs.push_back(DataProcessingPtr(new DataProcessing("CompassXtract processing")));
 
-    SpectrumListPtr sl = SpectrumList_mzML::create(is, dummy, indexed);
+    Index_mzML_Ptr index(new Index_mzML(is, dummy));
+    SpectrumListPtr sl = SpectrumList_mzML::create(is, dummy, index);
 
     // check easy functions
 
@@ -183,21 +184,23 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
+
+    TEST_EPILOG
 }
 
 

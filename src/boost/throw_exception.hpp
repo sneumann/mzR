@@ -1,5 +1,11 @@
-#ifndef BOOST_THROW_EXCEPTION_HPP_INCLUDED
-#define BOOST_THROW_EXCEPTION_HPP_INCLUDED
+#ifndef UUID_AA15E74A856F11E08B8D93F24824019B
+#define UUID_AA15E74A856F11E08B8D93F24824019B
+#if defined(__GNUC__) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
+#pragma GCC system_header
+#endif
+#if defined(_MSC_VER) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
+#pragma warning(push,1)
+#endif
 
 // MS compatible compilers support #pragma once
 
@@ -43,26 +49,6 @@
 
 namespace boost
 {
-#if !defined( BOOST_EXCEPTION_DISABLE )
-    namespace
-    exception_detail
-    {
-        template <class E>
-        void
-        throw_exception_( E const & x, char const * current_function, char const * file, int line )
-        {
-            throw_exception(
-                set_info(
-                    set_info(
-                        set_info(
-                            enable_error_info(x),
-                            throw_function(current_function)),
-                        throw_file(file)),
-                    throw_line(line)));
-        }
-    }
-#endif
-
 #ifdef BOOST_NO_EXCEPTIONS
 
 void throw_exception( std::exception const & e ); // user defined
@@ -86,6 +72,29 @@ template<class E> BOOST_ATTRIBUTE_NORETURN inline void throw_exception( E const 
 
 #endif
 
+#if !defined( BOOST_EXCEPTION_DISABLE )
+    namespace
+    exception_detail
+    {
+        template <class E>
+        BOOST_ATTRIBUTE_NORETURN
+        void
+        throw_exception_( E const & x, char const * current_function, char const * file, int line )
+        {
+            boost::throw_exception(
+                set_info(
+                    set_info(
+                        set_info(
+                            enable_error_info(x),
+                            throw_function(current_function)),
+                        throw_file(file)),
+                    throw_line(line)));
+        }
+    }
+#endif
 } // namespace boost
 
-#endif // #ifndef BOOST_THROW_EXCEPTION_HPP_INCLUDED
+#if defined(_MSC_VER) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
+#pragma warning(pop)
+#endif
+#endif
