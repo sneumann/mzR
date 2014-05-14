@@ -34,14 +34,20 @@ public:
 
   void open(const string& fileNames);
 
-  string getFilename (  );
+  string getFilename();
   
   int getLastScan() const;
   
   Rcpp::List getInstrumentInfo();
   
-  Rcpp::List getScanHeaderInfo(int whichScan); 
+  Rcpp::List getScanHeaderInfo(int whichScan);
   
+  Rcpp::DataFrame getAllScanHeaderInfo();
+  
+  Rcpp::List getPeakList(int whichScan);
+  
+  Rcpp::NumericMatrix get3DMap(std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz);
+    
 };
 
 #endif
