@@ -13,6 +13,7 @@
 #include <boost/preprocessor/arithmetic/dec.hpp>
 #include <boost/preprocessor/selection/max.hpp>
 #include <boost/preprocessor/iteration/iterate.hpp>
+#include <boost/preprocessor/facilities/intercept.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_trailing.hpp>
@@ -30,6 +31,7 @@
 # pragma warning(disable : 4510) // default constructor could not be generated
 # pragma warning(disable : 4512) // assignment operator could not be generated
 # pragma warning(disable : 4610) // user defined constructor required
+# pragma warning(disable : 4714) // function 'xxx' marked as __forceinline not inlined
 #endif
 
 namespace boost { namespace proto
@@ -37,19 +39,6 @@ namespace boost { namespace proto
 
     namespace detail
     {
-    /// INTERNAL ONLY
-    ///
-    #define BOOST_PROTO_CHILD(Z, N, DATA)                                                       \
-        typedef BOOST_PP_CAT(Arg, N) BOOST_PP_CAT(proto_child, N);                              \
-        BOOST_PP_CAT(proto_child, N) BOOST_PP_CAT(child, N);                                    \
-        /**< INTERNAL ONLY */
-
-    /// INTERNAL ONLY
-    ///
-    #define BOOST_PROTO_VOID(Z, N, DATA)                                                        \
-        typedef void BOOST_PP_CAT(proto_child, N);                                              \
-        /**< INTERNAL ONLY */
-
         struct not_a_valid_type
         {
         private:
@@ -69,17 +58,19 @@ namespace boost { namespace proto
             typedef Expr *type;
         };
 
-        template<typename T, typename Tag, typename Arg0>
-        proto::expr<Tag, proto::term<Arg0>, 0> make_terminal(T &t, proto::expr<Tag, proto::term<Arg0>, 0> *)
+        template<typename T, typename Expr, typename Arg0>
+        BOOST_FORCEINLINE
+        Expr make_terminal(T &t, Expr *, proto::term<Arg0> *)
         {
-            proto::expr<Tag, proto::term<Arg0>, 0> that = {t};
+            Expr that = {t};
             return that;
         }
 
-        template<typename T, typename Tag, typename Arg0, std::size_t N>
-        proto::expr<Tag, proto::term<Arg0[N]>, 0> make_terminal(T (&t)[N], proto::expr<Tag, proto::term<Arg0[N]>, 0> *)
+        template<typename T, typename Expr, typename Arg0, std::size_t N>
+        BOOST_FORCEINLINE
+        Expr make_terminal(T (&t)[N], Expr *, proto::term<Arg0[N]> *)
         {
-            expr<Tag, proto::term<Arg0[N]>, 0> that;
+            Expr that;
             for(std::size_t i = 0; i < N; ++i)
             {
                 that.child0[i] = t[i];
@@ -87,16 +78,30 @@ namespace boost { namespace proto
             return that;
         }
 
-        template<typename T, typename Tag, typename Arg0, std::size_t N>
-        proto::expr<Tag, proto::term<Arg0[N]>, 0> make_terminal(T const(&t)[N], proto::expr<Tag, proto::term<Arg0[N]>, 0> *)
+        template<typename T, typename Expr, typename Arg0, std::size_t N>
+        BOOST_FORCEINLINE
+        Expr make_terminal(T const(&t)[N], Expr *, proto::term<Arg0[N]> *)
         {
-            expr<Tag, proto::term<Arg0[N]>, 0> that;
+            Expr that;
             for(std::size_t i = 0; i < N; ++i)
             {
                 that.child0[i] = t[i];
             }
             return that;
         }
+
+        // Work-around for:
+        // https://connect.microsoft.com/VisualStudio/feedback/details/765449/codegen-stack-corruption-using-runtime-checks-when-aggregate-initializing-struct
+    #if BOOST_WORKAROUND(BOOST_MSVC, BOOST_TESTED_AT(1700))
+        template<typename T, typename Expr, typename C, typename U>
+        BOOST_FORCEINLINE
+        Expr make_terminal(T &t, Expr *, proto::term<U C::*> *)
+        {
+            Expr that;
+            that.child0 = t;
+            return that;
+        }
+    #endif
 
         template<typename T, typename U>
         struct same_cv
@@ -118,35 +123,19 @@ namespace boost { namespace proto
         template<typename Sig, typename This, typename Domain>
         struct funop;
 
-        #define BOOST_PP_ITERATION_PARAMS_1 (3, (0, BOOST_PP_DEC(BOOST_PROTO_MAX_FUNCTION_CALL_ARITY), <boost/proto/detail/funop.hpp>))
-        #include BOOST_PP_ITERATE()
+        #include <boost/proto/detail/funop.hpp>
     }
-
-    // TODO consider adding a basic_expr<> that doesn't have operator=,
-    // operator[] or operator() for use by BOOST_PROTO_BASIC_EXTENDS().
-    // Those member functions are unused in that case, and only slow
-    // down instantiations. basic_expr::proto_base_expr can still be
-    // expr<> because uses of proto_base_expr in proto::matches<> shouldn't
-    // cause the expr<> type to be instantiated. (<-- Check that assumtion!)
-    // OR, should expr<>::proto_base_expr be a typedef for basic_expr<>?
-    // It should, and proto_base() can return *this reinterpret_cast to
-    // a basic_expr because they should be layout compatible. Or not, because
-    // that would incur an extra template instantiation. :-(
 
     namespace exprns_
     {
-        // The expr<> specializations are actually defined here.
-        #define BOOST_PROTO_DEFINE_TERMINAL
-        #define BOOST_PP_ITERATION_PARAMS_1 (3, (0, 0, <boost/proto/detail/expr0.hpp>))
-        #include BOOST_PP_ITERATE()
+        // This is where the basic_expr specializations are
+        // actually defined:
+        #include <boost/proto/detail/basic_expr.hpp>
 
-        #undef BOOST_PROTO_DEFINE_TERMINAL
-        #define BOOST_PP_ITERATION_PARAMS_1 (3, (1, BOOST_PROTO_MAX_ARITY, <boost/proto/detail/expr0.hpp>))
-        #include BOOST_PP_ITERATE()
+        // This is where the expr specialization are
+        // actually defined:
+        #include <boost/proto/detail/expr.hpp>
     }
-
-    #undef BOOST_PROTO_CHILD
-    #undef BOOST_PROTO_VOID
 
     /// \brief Lets you inherit the interface of an expression
     /// while hiding from Proto the fact that the type is a Proto
@@ -157,6 +146,7 @@ namespace boost { namespace proto
     {
         BOOST_PROTO_UNEXPR()
 
+        BOOST_FORCEINLINE
         explicit unexpr(Expr const &e)
           : Expr(e)
         {}

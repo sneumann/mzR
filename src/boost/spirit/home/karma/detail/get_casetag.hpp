@@ -1,5 +1,5 @@
-//  Copyright (c) 2001-2010 Hartmut Kaiser
-//  Copyright (c) 2001-2010 Joel de Guzman
+//  Copyright (c) 2001-2011 Hartmut Kaiser
+//  Copyright (c) 2001-2011 Joel de Guzman
 // 
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying 
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,6 +12,8 @@
 #endif
 
 #include <boost/mpl/identity.hpp>
+#include <boost/spirit/home/support/unused.hpp>
+#include <boost/spirit/home/support/common_terminals.hpp>
 
 namespace boost { namespace spirit { namespace karma { namespace detail
 {
@@ -22,7 +24,6 @@ namespace boost { namespace spirit { namespace karma { namespace detail
     struct get_casetag<Modifiers, true>
       : mpl::if_<has_modifier<Modifiers, tag::char_code_base<tag::lower> >
           , tag::lower, tag::upper> {};
-
 }}}}
 
 #endif

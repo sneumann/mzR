@@ -21,6 +21,7 @@
 #include <boost/math/policies/error_handling.hpp>
 #include <boost/math/special_functions/math_fwd.hpp>
 #include <boost/math/special_functions/log1p.hpp>
+#include <boost/math/constants/constants.hpp>
 
 // This is the inverse of the hyperbolic cosine function.
 
@@ -58,7 +59,7 @@ namespace boost
                 {
                     // http://functions.wolfram.com/ElementaryFunctions/ArcCosh/06/01/06/01/0001/
                     // approximation by laurent series in 1/x at 0+ order from -1 to 0
-                    return( log( x * 2) );
+                    return log(x) + constants::ln_two<T>();
                 }
                 else if(x < 1.5f)
                 {
@@ -79,7 +80,7 @@ namespace boost
                 T y = x - 1;
                 
                 // approximation by taylor series in y at 0 up to order 2
-                T result = sqrt(2 * y) * (1 + y /12 + 3 * y * y / 160);
+                T result = sqrt(2 * y) * (1 - y /12 + 3 * y * y / 160);
                 return result;
             }
         }

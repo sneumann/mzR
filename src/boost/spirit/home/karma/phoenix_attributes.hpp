@@ -1,4 +1,4 @@
-//  Copyright (c) 2001-2010 Hartmut Kaiser
+//  Copyright (c) 2001-2011 Hartmut Kaiser
 // 
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying 
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -15,7 +15,8 @@
 // we support Phoenix attributes only starting with V2.2
 #if SPIRIT_VERSION >= 0x2020
 
-#include <boost/spirit/home/support/attributes.hpp>
+#include <boost/spirit/home/karma/detail/attributes.hpp>
+#include <boost/spirit/home/karma/detail/indirect_iterator.hpp>
 #include <boost/spirit/home/support/container.hpp>
 
 #include <boost/spirit/include/phoenix_core.hpp>
@@ -90,12 +91,24 @@ namespace boost { namespace spirit { namespace traits
         }
     };
 
+    template <typename Eval>
+    struct container_value<phoenix::actor<Eval> >
+    {
+        typedef phoenix::actor<Eval> const& type;
+    };
+
+    template <typename Eval>
+    struct make_indirect_iterator<phoenix::actor<Eval> const>
+    {
+        typedef phoenix::actor<Eval> const& type;
+    };
+
     ///////////////////////////////////////////////////////////////////////////
     // Handle Phoenix actors as attributes, just invoke the function object
     // and deal with the result as the attribute.
     ///////////////////////////////////////////////////////////////////////////
-    template <typename Eval>
-    struct extract_from_attribute<phoenix::actor<Eval> >
+    template <typename Eval, typename Exposed>
+    struct extract_from_attribute<phoenix::actor<Eval>, Exposed>
     {
         typedef typename boost::result_of<phoenix::actor<Eval>()>::type type;
 
@@ -105,7 +118,6 @@ namespace boost { namespace spirit { namespace traits
             return f(unused, context);
         }
     };
-
 }}}
 
 #endif
