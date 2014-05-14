@@ -12,17 +12,17 @@ env:
     - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
 
 before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+  - curl -OL http://raw.github.com/thirdwing/r-travis/master/scripts/travis-tool.sh
   - chmod 755 ./travis-tool.sh
   - ./travis-tool.sh bootstrap
 
 install:
   - ./travis-tool.sh install_aptget r-cran-runit
   - ./travis-tool.sh install_r Rcpp
-  - ./travis-tool.sh install_r BiocGenerics
-  - ./travis-tool.sh install_r Biobase
-  - ./travis-tool.sh install_r msdata
-  - ./travis-tool.sh install_r faahKO
+  - ./travis-tool.sh bio_install BiocGenerics
+  - ./travis-tool.sh bio_install Biobase
+  - ./travis-tool.sh bio_install msdata
+  - ./travis-tool.sh bio_install faahKO
 
 
 script: 
