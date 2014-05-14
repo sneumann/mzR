@@ -1,5 +1,5 @@
 //
-// $Id: MSDataTest.cpp 4922 2013-09-05 22:33:08Z pcbrefugee $
+// $Id: MSDataTest.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -263,7 +263,7 @@ void testAllDataProcessing()
 }
 
 
-int main(int argc, const char* argv[])
+int main(int argc, char* argv[])
 {
     TEST_PROLOG(argc, argv)
 

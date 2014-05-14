@@ -56,6 +56,8 @@
 #include <boost/mpl/not.hpp>
 #include <boost/mpl/identity.hpp>
 
+#include <boost/serialization/throw_exception.hpp>
+
 namespace boost {
 namespace serialization {
 namespace smart_cast_impl {
@@ -68,14 +70,14 @@ namespace smart_cast_impl {
             struct linear {
                 template<class U>
                  static T cast(U & u){
-                    return static_cast<T>(u);
+                    return static_cast< T >(u);
                 }
             };
 
             struct cross {
                  template<class U>
                 static T cast(U & u){
-                    return dynamic_cast<T>(u);
+                    return dynamic_cast< T >(u);
                 }
             };
 
@@ -96,12 +98,12 @@ namespace smart_cast_impl {
                     typedef BOOST_DEDUCED_TYPENAME mpl::eval_if<
                             BOOST_DEDUCED_TYPENAME mpl::and_<
                                 mpl::not_<is_base_and_derived<
-                                    BOOST_DEDUCED_TYPENAME remove_reference<T>::type,
+                                    BOOST_DEDUCED_TYPENAME remove_reference< T >::type,
                                     U
                                 > >,
                                 mpl::not_<is_base_and_derived<
                                     U,
-                                    BOOST_DEDUCED_TYPENAME remove_reference<T>::type
+                                    BOOST_DEDUCED_TYPENAME remove_reference< T >::type
                                 > >
                             >,
                             // borland chokes w/o full qualification here
@@ -117,7 +119,7 @@ namespace smart_cast_impl {
         struct non_polymorphic {
             template<class U>
              static T cast(U & u){
-                return static_cast<T>(u);
+                return static_cast< T >(u);
             }
         };
         template<class U>
@@ -150,16 +152,16 @@ namespace smart_cast_impl {
             struct linear {
                 template<class U>
                  static T cast(U * u){
-                    return static_cast<T>(u);
+                    return static_cast< T >(u);
                 }
             };
 
             struct cross {
                 template<class U>
                 static T cast(U * u){
-                    T tmp = dynamic_cast<T>(u);
+                    T tmp = dynamic_cast< T >(u);
                     #ifndef NDEBUG
-                        if ( tmp == 0 ) throw std::bad_cast();
+                        if ( tmp == 0 ) throw_exception(std::bad_cast());
                     #endif
                     return tmp;
                 }
@@ -181,12 +183,12 @@ namespace smart_cast_impl {
                         BOOST_DEDUCED_TYPENAME mpl::eval_if<
                             BOOST_DEDUCED_TYPENAME mpl::and_<
                                 mpl::not_<is_base_and_derived<
-                                    BOOST_DEDUCED_TYPENAME remove_pointer<T>::type,
+                                    BOOST_DEDUCED_TYPENAME remove_pointer< T >::type,
                                     U
                                 > >,
                                 mpl::not_<is_base_and_derived<
                                     U,
-                                    BOOST_DEDUCED_TYPENAME remove_pointer<T>::type
+                                    BOOST_DEDUCED_TYPENAME remove_pointer< T >::type
                                 > >
                             >,
                             // borland chokes w/o full qualification here
@@ -199,9 +201,9 @@ namespace smart_cast_impl {
             #else
             template<class U>
             static T cast(U * u){
-                T tmp = dynamic_cast<T>(u);
+                T tmp = dynamic_cast< T >(u);
                 #ifndef NDEBUG
-                    if ( tmp == 0 ) throw std::bad_cast();
+                    if ( tmp == 0 ) throw_exception(std::bad_cast());
                 #endif
                 return tmp;
             }
@@ -211,7 +213,7 @@ namespace smart_cast_impl {
         struct non_polymorphic {
             template<class U>
              static T cast(U * u){
-                return static_cast<T>(u);
+                return static_cast< T >(u);
             }
         };
 
@@ -272,15 +274,15 @@ T smart_cast(U u) {
                 boost::is_same<const void *, U>,
                 boost::is_same<const void *, T>
             >,
-            mpl::identity<smart_cast_impl::void_pointer<T> >,
+            mpl::identity<smart_cast_impl::void_pointer< T > >,
         // else
         BOOST_DEDUCED_TYPENAME mpl::eval_if<boost::is_pointer<U>,
-            mpl::identity<smart_cast_impl::pointer<T> >,
+            mpl::identity<smart_cast_impl::pointer< T > >,
         // else
         BOOST_DEDUCED_TYPENAME mpl::eval_if<boost::is_reference<U>,
-            mpl::identity<smart_cast_impl::reference<T> >,
+            mpl::identity<smart_cast_impl::reference< T > >,
         // else
-            mpl::identity<smart_cast_impl::error<T>
+            mpl::identity<smart_cast_impl::error< T >
         >
         >
         >
@@ -292,7 +294,7 @@ T smart_cast(U u) {
 // smart_cast_reference<Target &>(Source & s)
 template<class T, class U>
 T smart_cast_reference(U & u) {
-    return smart_cast_impl::reference<T>::cast(u);
+    return smart_cast_impl::reference< T >::cast(u);
 }
 
 } // namespace serialization

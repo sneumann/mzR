@@ -1,3 +1,4 @@
+// $Id: ramp_base64.h 2359 2010-11-09 23:01:39Z chambm $
 // base64 decode optimized using table lookup 
 // Copyright (C) 2005 Insilicos LLC All Rights Reserved
 // bpratt 10-5-05

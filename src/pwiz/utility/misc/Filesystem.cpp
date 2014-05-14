@@ -1,5 +1,5 @@
 //
-// $Id: Filesystem.cpp 4010 2012-10-17 20:22:16Z chambm $
+// $Id: Filesystem.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -36,6 +36,7 @@ using std::runtime_error;
     #define _WIN32_WINNT 0x0400
     #include <windows.h>
     #include <direct.h>
+    #include <boost/nowide/convert.hpp>
 #else
     #include <sys/types.h>
     #include <sys/stat.h>
@@ -60,21 +61,21 @@ PWIZ_API_DECL int expand_pathmask(const bfs::path& pathmask,
 
 #ifdef WIN32
     path maskParentPath = pathmask.branch_path();
-	WIN32_FIND_DATA fdata;
-	HANDLE srcFile = FindFirstFileEx(pathmask.string().c_str(), FindExInfoStandard, &fdata, FindExSearchNameMatch, NULL, 0);
+	WIN32_FIND_DATAW fdata;
+	HANDLE srcFile = FindFirstFileExW(boost::nowide::widen(pathmask.string()).c_str(), FindExInfoStandard, &fdata, FindExSearchNameMatch, NULL, 0);
 	if (srcFile == INVALID_HANDLE_VALUE)
 		return 0; // no matches
 
     do
     {
-        if (strcmp(fdata.cFileName, ".") != 0 &&
-            strcmp(fdata.cFileName, "..") != 0)
+        if (!bal::equals(fdata.cFileName, L".") &&
+            !bal::equals(fdata.cFileName, L"..") != 0)
         {
 	        matchingPaths.push_back( maskParentPath / fdata.cFileName );
             ++matchingPathCount;
         }
     }
-    while (FindNextFile(srcFile, &fdata));
+    while (FindNextFileW(srcFile, &fdata));
 
 	FindClose(srcFile);
 
@@ -166,7 +167,7 @@ PWIZ_API_DECL string read_file_header(const string& filepath, size_t length)
     {
         random_access_compressed_ifstream is(filepath.c_str());
         if (!is)
-            throw runtime_error(("[processFile()] Unable to open file " + filepath).c_str());
+            throw runtime_error(("[read_file_header()] Unable to open file " + filepath).c_str());
 
         head.resize(length, '\0');
         is.read(&head[0], (std::streamsize)head.size());

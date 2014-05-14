@@ -63,14 +63,14 @@ basic_text_iprimitive<IStream>::load_binary(
     if(0 == count)
         return;
         
-    assert(
+    BOOST_ASSERT(
         static_cast<std::size_t>((std::numeric_limits<std::streamsize>::max)())
         > (count + sizeof(CharType) - 1)/sizeof(CharType)
     );
         
     if(is.fail())
         boost::serialization::throw_exception(
-            archive_exception(archive_exception::stream_error)
+            archive_exception(archive_exception::input_stream_error)
         );
     // convert from base64 to binary
     typedef BOOST_DEDUCED_TYPENAME
@@ -86,23 +86,21 @@ basic_text_iprimitive<IStream>::load_binary(
             ,CharType
         > 
         binary;
-
-    binary ti_begin = binary(
+        
+    binary i = binary(
         BOOST_MAKE_PFTO_WRAPPER(
             iterators::istream_iterator<CharType>(is)
         )
     );
-                
+
     char * caddr = static_cast<char *>(address);
     
     // take care that we don't increment anymore than necessary
-    while(--count > 0){
-        *caddr++ = static_cast<char>(*ti_begin);
-        ++ti_begin;
+    while(count-- > 0){
+        *caddr++ = static_cast<char>(*i++);
     }
-    *caddr++ = static_cast<char>(*ti_begin);
-    
-    iterators::istream_iterator<CharType> i;
+
+    // skip over any excess input
     for(;;){
         BOOST_DEDUCED_TYPENAME IStream::int_type r;
         r = is.get();
@@ -112,7 +110,7 @@ basic_text_iprimitive<IStream>::load_binary(
             break;
     }
 }
-
+    
 template<class IStream>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL(BOOST_PP_EMPTY())
 basic_text_iprimitive<IStream>::basic_text_iprimitive(

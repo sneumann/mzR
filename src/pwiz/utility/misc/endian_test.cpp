@@ -1,5 +1,5 @@
 //
-// $Id: endian_test.cpp 4129 2012-11-20 00:05:37Z chambm $ 
+// $Id: endian_test.cpp 6141 2014-05-05 21:03:47Z chambm $ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -53,7 +53,7 @@ void test()
 }
 
 
-int main(int argc, const char* argv[])
+int main(int argc, char* argv[])
 {
     TEST_PROLOG(argc, argv)
 

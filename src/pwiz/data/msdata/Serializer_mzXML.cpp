@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_mzXML.cpp 6002 2014-04-05 00:06:51Z pcbrefugee $
+// $Id: Serializer_mzXML.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -778,7 +778,7 @@ void Serializer_mzXML::Impl::write(ostream& os, const MSData& msd,
 
     stream_offset indexOffset = xmlWriter.positionNext();
 
-    if (config_.indexed && msd.run.spectrumListPtr->size() > 0)
+    if (config_.indexed && msd.run.spectrumListPtr && msd.run.spectrumListPtr->size() > 0)
     {
         write_index(xmlWriter, index);
 

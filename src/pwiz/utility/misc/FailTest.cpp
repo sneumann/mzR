@@ -1,4 +1,4 @@
-// $Id: FailTest.cpp 4140 2012-11-22 01:07:16Z pcbrefugee $
+// $Id: FailTest.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License. 
@@ -17,7 +17,7 @@
 #include <iostream>
 using namespace std;
 
-int main(int argc, const char* argv[])
+int main(int argc, char* argv[])
 {
     cerr << "This is a test of the emergency test failure system." << endl;
     cout << "DON'T PANIC!" << endl;

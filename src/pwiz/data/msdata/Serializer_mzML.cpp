@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_mzML.cpp 4242 2012-12-28 19:48:06Z pcbrefugee $
+// $Id: Serializer_mzML.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -137,7 +137,7 @@ void Serializer_mzML::Impl::write(ostream& os, const MSData& msd,
     xmlConfig.outputObserver = &sha1OutputObserver;
     XMLWriter xmlWriter(os, xmlConfig);
 
-    string xmlData = "version=\"1.0\" encoding=\"ISO-8859-1\"";
+    string xmlData = "version=\"1.0\" encoding=\"utf-8\"";
     xmlWriter.processingInstruction("xml", xmlData);
 
     // <indexedmzML> start

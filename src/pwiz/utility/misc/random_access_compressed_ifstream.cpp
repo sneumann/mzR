@@ -1,4 +1,4 @@
-// $Id: random_access_compressed_ifstream.cpp 4140 2012-11-22 01:07:16Z pcbrefugee $
+// $Id: random_access_compressed_ifstream.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 // This is just an istream which chooses its streambuf implementation
 // based on whether the file is gzipped or not.  Could be extended
@@ -80,7 +80,9 @@ Version 1.0  29 May 2005  Mark Adler */
 #include <iostream>
 #include <cstring>
 #include "pwiz/utility/misc/Std.hpp"
-#include <boost/thread.hpp>  
+#include <boost/thread.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
 
 
 namespace pwiz {
@@ -1043,7 +1045,8 @@ bool chunky_streambuf::open(const char *path) {
         return false;
     }
 
-    this->handle = new boost::iostreams::file_descriptor_source(path);
+    boost::filesystem::detail::utf8_codecvt_facet utf8;
+    this->handle = new boost::iostreams::file_descriptor_source(boost::filesystem::path(path, utf8));
     this->flen = 0;
     this->desired_readbuf_len = 0;
     // dynamic read buffer sizing - start small

@@ -35,11 +35,19 @@
 #define BOOST_SERIALIZATION_VECTOR_VERSIONED(V) (V==4 || V==5)
 #endif
 
+// function specializations must be defined in the appropriate
+// namespace - boost::serialization
+#if defined(__SGI_STL_PORT) || defined(_STLPORT_VERSION)
+#define STD _STLP_STD
+#else
+#define STD std
+#endif
+
 namespace boost { 
 namespace serialization {
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// vector<T>
+// vector< T >
 
 // the default versions
 
@@ -127,7 +135,7 @@ inline void load(
     const unsigned int file_version
 ){
 #ifdef BOOST_SERIALIZATION_VECTOR_135_HPP
-    if (ar.get_library_version()==5)
+    if (ar.get_library_version()==boost::archive::library_version_type(5))
     {
       load(ar,t,file_version, boost::is_arithmetic<U>());
       return;
@@ -207,5 +215,6 @@ inline void serialize(
 #include <boost/serialization/collection_traits.hpp>
 
 BOOST_SERIALIZATION_COLLECTION_TRAITS(std::vector)
+#undef STD
 
 #endif // BOOST_SERIALIZATION_VECTOR_HPP
