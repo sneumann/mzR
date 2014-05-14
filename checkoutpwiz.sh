@@ -23,7 +23,7 @@ rm -rf boost
 mkdir boost
 cd boost
 
-BOOSTVER=Boost_1_43_0
+BOOSTVER=Boost_1_54_0
 BOOSTREPO=http://svn.boost.org/svn/boost/tags/release/$BOOSTVER/boost
 
 svn co --non-recursive $BOOSTREPO .
