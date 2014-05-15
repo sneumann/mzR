@@ -24,6 +24,7 @@ PWIZOBJECTS=\
 ./boost/thread/src/pthread/once.o \
 ./boost/thread/src/pthread/thread.o \
 ./boost/filesystem/src/operations.o \
+./boost/filesystem/src/utf8_codecvt_facet.o
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
