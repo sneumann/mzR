@@ -74,7 +74,7 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 ##  http://www.gamedev.net/topic/555511-is-there-a-way-to-only-disable-boost-debug-checks/
 ##
 PWIZ_LDFLAGS=-L./pwiz
-PWIZ_LDFLAGS=-lpthread  ##-lboost_system -lboost_filesystem
+PWIZ_LDFLAGS=-lpthread  -lboost_thread ##-lboost_system -lboost_filesystem
 PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./pwiz -I/usr/include/
 
 ## Use the R_HOME indirection to support installations of multiple R version
