@@ -21,6 +21,7 @@ PWIZOBJECTS=\
 ./pwiz/utility/minimxml/XMLWriter.o \
 ./pwiz/utility/minimxml/SAXParser.o \
 ./boost/iostreams/src/zlib.o \
+./boost/iostreams/src/file_descriptor.o \
 ./boost/thread/src/pthread/once.o \
 ./boost/thread/src/pthread/thread.o \
 ./boost/filesystem/src/operations.o \
@@ -58,6 +59,7 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/SpectrumListCache.o \
 ./pwiz/data/msdata/mz5/Connection_mz5.o \
 ./pwiz/data/msdata/mz5/Configuration_mz5.o \
+./pwiz/data/msdata/mz5/Datastructures_mz5.o \
 ./pwiz/utility/misc/IntegerSet.o \
 ./pwiz/utility/misc/Base64.o \
 ./pwiz/utility/misc/IterationListener.o \
@@ -68,32 +70,32 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
 ./pwiz/utility/misc/sha1calc.o \
-./hdf5/src/H5AbstractDs.o \
-./hdf5/src/H5ArrayType.o \
-./hdf5/src/H5AtomType.o \
-./hdf5/src/H5Attribute.o \
-./hdf5/src/H5CommonFG.o \
-./hdf5/src/H5CompType.o \
-./hdf5/src/H5DataSet.o \
-./hdf5/src/H5DataSpace.o \
-./hdf5/src/H5DataType.o \
-./hdf5/src/H5DcreatProp.o \
-./hdf5/src/H5DxferProp.o \
-./hdf5/src/H5EnumType.o \
-./hdf5/src/H5Exception.o \
-./hdf5/src/H5FaccProp.o \
-./hdf5/src/H5FcreatProp.o \
-./hdf5/src/H5File.o \
-./hdf5/src/H5FloatType.o \
-./hdf5/src/H5Group.o \
-./hdf5/src/H5IdComponent.o \
-./hdf5/src/H5IntType.o \
-./hdf5/src/H5Library.o \
-./hdf5/src/H5Object.o \
-./hdf5/src/H5PredType.o \
-./hdf5/src/H5PropList.o \
-./hdf5/src/H5StrType.o \
-./hdf5/src/H5VarLenType.o \
+./hdf5/c++/src/H5AbstractDs.o \
+./hdf5/c++/src/H5ArrayType.o \
+./hdf5/c++/src/H5AtomType.o \
+./hdf5/c++/src/H5Attribute.o \
+./hdf5/c++/src/H5CommonFG.o \
+./hdf5/c++/src/H5CompType.o \
+./hdf5/c++/src/H5DataSet.o \
+./hdf5/c++/src/H5DataSpace.o \
+./hdf5/c++/src/H5DataType.o \
+./hdf5/c++/src/H5DcreatProp.o \
+./hdf5/c++/src/H5DxferProp.o \
+./hdf5/c++/src/H5EnumType.o \
+./hdf5/c++/src/H5Exception.o \
+./hdf5/c++/src/H5FaccProp.o \
+./hdf5/c++/src/H5FcreatProp.o \
+./hdf5/c++/src/H5File.o \
+./hdf5/c++/src/H5FloatType.o \
+./hdf5/c++/src/H5Group.o \
+./hdf5/c++/src/H5IdComponent.o \
+./hdf5/c++/src/H5IntType.o \
+./hdf5/c++/src/H5Library.o \
+./hdf5/c++/src/H5Object.o \
+./hdf5/c++/src/H5PredType.o \
+./hdf5/c++/src/H5PropList.o \
+./hdf5/c++/src/H5StrType.o \
+./hdf5/c++/src/H5VarLenType.o \
 ./random_access_gzFile.o
 
 MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o
@@ -106,7 +108,7 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 ##
 PWIZ_LDFLAGS=-L./pwiz
 PWIZ_LDFLAGS=-lpthread  ## -lboost_thread ##-lboost_system -lboost_filesystem
-PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./pwiz -I/usr/include/
+PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./pwiz -I./hdf5/src
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)
