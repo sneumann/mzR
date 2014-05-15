@@ -54,6 +54,7 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/LegacyAdapter.o \
 ./pwiz/data/msdata/SpectrumIterator.o \
 ./pwiz/data/msdata/MSDataFile.o \
+./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
 ./pwiz/utility/misc/IntegerSet.o \
 ./pwiz/utility/misc/Base64.o \
