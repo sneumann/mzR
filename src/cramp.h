@@ -34,7 +34,7 @@ cramp.hpp -- renamed cramp.h to avoid R checker warning
 #include <string>
 #include <stdlib.h>
 
-#include "ramp.h" // stuff we expose to C, structs etc
+#include "pwiz/data/msdata/ramp/ramp.h" // stuff we expose to C, structs etc
 
 enum eWhatToRead { RAMP_RUNINFO, RAMP_HEADER , RAMP_PEAKS, RAMP_INSTRUMENT };
 
