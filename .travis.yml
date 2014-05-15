@@ -20,6 +20,7 @@ install:
   - ./travis-tool.sh install_aptget r-cran-runit
   - ./travis-tool.sh install_aptget libnetcdf-dev
   - ./travis-tool.sh install_aptget libudunits2-dev
+  - ./travis-tool.sh install_aptget libhdf5-serial-dev
   - ./travis-tool.sh install_r Rcpp
   - ./travis-tool.sh bio_install BiocGenerics
   - ./travis-tool.sh bio_install Biobase
