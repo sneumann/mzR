@@ -26,12 +26,19 @@ cd boost
 BOOSTVER=Boost_1_54_0
 BOOSTREPO=http://svn.boost.org/svn/boost/tags/release/$BOOSTVER/boost
 
-svn co $BOOSTREPO .
+svn co --non-recursive $BOOSTREPO .
+
+for DIR in smart_ptr  config config mpl detail iostreams exception function_types \
+    io type_traits preprocessor format algorithm logic optional range \
+    iterator function utility concept bind regex filesystem system thread \
+    date_time lambda  tuple multi_index serialization archive functional integer ; do 
+    svn co $BOOSTREPO/$DIR $DIR
+done
        
 BOOSTLIBSREPO=http://svn.boost.org/svn/boost/tags/release/$BOOSTVER/libs
-
-svn co $BOOSTLIBSREPO/$DIR $DIR
-
+for DIR in iostreams/src thread/src/pthread/ filesystem/src/ regex/src system/src ; do 
+    svn co $BOOSTLIBSREPO/$DIR $DIR
+done
 
 cd ..
            
