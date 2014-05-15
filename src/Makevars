@@ -37,6 +37,7 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/ChromatogramList_mzML.o \
 ./pwiz/data/msdata/examples.o \
 ./pwiz/data/msdata/Serializer_mzML.o \
+./pwiz/data/msdata/Serializer_mz5.o \
 ./pwiz/data/msdata/Serializer_MSn.o \
 ./pwiz/data/msdata/Reader.o \
 ./pwiz/data/msdata/Serializer_MGF.o \
