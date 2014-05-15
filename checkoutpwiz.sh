@@ -23,7 +23,7 @@ rm -rf boost
 mkdir boost
 cd boost
 
-BOOSTVER=Boost_1_54_0
+BOOSTVER=Boost_1_55_0
 BOOSTREPO=http://svn.boost.org/svn/boost/tags/release/$BOOSTVER/boost
 
 svn co --non-recursive $BOOSTREPO .
@@ -32,7 +32,7 @@ for DIR in smart_ptr  config config mpl detail iostreams exception function_type
     io type_traits preprocessor format algorithm logic optional range numeric math\
     iterator function utility concept bind regex filesystem system thread container\
     date_time lambda proto typeof fusion spirit tuple multi_index serialization\
-    ratio chrono atomic move variant archive functional integer locale ; do 
+    ratio chrono atomic move variant archive functional integer locale predef ; do 
     svn co $BOOSTREPO/$DIR $DIR
 done
        
