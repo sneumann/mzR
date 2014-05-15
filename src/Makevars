@@ -25,6 +25,7 @@ PWIZOBJECTS=\
 ./boost/thread/src/pthread/once.o \
 ./boost/thread/src/pthread/thread.o \
 ./boost/filesystem/src/operations.o \
+./boost/filesystem/src/path.o \
 ./boost/filesystem/src/utf8_codecvt_facet.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
@@ -49,6 +50,7 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSData.o \
 ./pwiz/data/msdata/References.o \
 ./pwiz/data/msdata/SpectrumList_mzXML.o \
+./pwiz/data/msdata/SpectrumList_mz5.o \
 ./pwiz/data/msdata/IO.o \
 ./pwiz/data/msdata/SpectrumList_BTDX.o \
 ./pwiz/data/msdata/SpectrumInfo.o \
@@ -58,9 +60,13 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSDataFile.o \
 ./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
+./pwiz/data/msdata/Index_mzML.o \
 ./pwiz/data/msdata/mz5/Connection_mz5.o \
 ./pwiz/data/msdata/mz5/Configuration_mz5.o \
 ./pwiz/data/msdata/mz5/Datastructures_mz5.o \
+./pwiz/data/msdata/mz5/ReferenceRead_mz5.o \
+./pwiz/data/msdata/mz5/ReferenceWrite_mz5.o \
+./pwiz/data/msdata/mz5/Translator_mz5.o \
 ./pwiz/utility/misc/IntegerSet.o \
 ./pwiz/utility/misc/Base64.o \
 ./pwiz/utility/misc/IterationListener.o \
