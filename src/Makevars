@@ -56,6 +56,8 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSDataFile.o \
 ./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
+./pwiz/data/msdata/mz5/Connection_mz5.o \
+./pwiz/data/msdata/mz5/Configuration_mz5.o \
 ./pwiz/utility/misc/IntegerSet.o \
 ./pwiz/utility/misc/Base64.o \
 ./pwiz/utility/misc/IterationListener.o \
