@@ -70,6 +70,7 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/sha1calc.o \
 ./hdf5/src/H5DataSpace.o \
 ./hdf5/src/H5IdComponent.o \
+./hdf5/src/H5Exception.o \
 ./random_access_gzFile.o
 
 MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o
