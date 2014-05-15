@@ -29,7 +29,7 @@ and gzipped versions of all of these if you have pwiz
 
 #define RAMP_HOME
 
-#include "ramp.h"
+#include "pwiz/data/msdata/ramp/ramp.h"
 
 #undef SIZE_BUF
 #define SIZE_BUF 512
