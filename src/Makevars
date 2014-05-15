@@ -75,7 +75,7 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 ##
 PWIZ_LDFLAGS=-L./pwiz
 PWIZ_LDFLAGS=-lpthread  ##-lboost_system -lboost_filesystem
-PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./pwiz
+PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./pwiz -I/usr/include/
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)
