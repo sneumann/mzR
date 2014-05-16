@@ -20,6 +20,6 @@ Imports: Biobase
 Suggests: msdata (>= 0.1.9), RUnit, faahKO
 LinkingTo: Rcpp
 RcppModules: Ramp
-SystemRequirements: GNU make, NetCDF, zlib, HDF5
+SystemRequirements: GNU make, NetCDF, zlib, hdf5
 biocViews: Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry
