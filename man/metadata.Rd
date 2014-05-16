@@ -53,5 +53,4 @@ model(object)
   mz <- openMSfile(file, backend = "pwiz")
   fileName(mz)
   instrumentInfo(mz)
-  close(mz)
 }
