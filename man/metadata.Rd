@@ -52,6 +52,6 @@ model(object)
                     full.names=TRUE, recursive = TRUE)
   mz <- openMSfile(file, backend = "pwiz")
   fileName(mz)
-  runInfo(mz)
+  instrumentInfo(mz)
   close(mz)
 }
