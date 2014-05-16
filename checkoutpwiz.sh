@@ -32,7 +32,8 @@ svn co --non-recursive $BOOSTREPO .
 for DIR in smart_ptr  config config mpl detail iostreams exception function_types \
     io type_traits preprocessor format algorithm logic optional range \
     iterator function utility concept bind regex filesystem system thread \
-    date_time lambda  tuple multi_index serialization archive functional integer ; do 
+    date_time lambda  tuple multi_index serialization archive functional integer \
+    units chrono ratio atomic move variant numeric math container locale spirit fusion proto typeof ; do 
     svn co $BOOSTREPO/$DIR $DIR
 done
        
