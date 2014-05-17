@@ -32,6 +32,8 @@ and gzipped versions of all of these if you have pwiz
 
 #include "ramp.h"
 
+#include <string>
+
 #undef SIZE_BUF
 #define SIZE_BUF 512
 
