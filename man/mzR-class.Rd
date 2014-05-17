@@ -18,6 +18,7 @@
 \alias{detector,mzRpwiz-method}
 \alias{fileName,mzR-method}
 \alias{get3Dmap,mzRramp-method}
+\alias{get3Dmap,mzRpwiz-method}
 \alias{header,mzRramp,missing-method}
 \alias{header,mzRramp,numeric-method}
 \alias{header,mzRpwiz,missing-method}
@@ -41,11 +42,16 @@
 \alias{model,mzRpwiz-method}
 \alias{peaksCount,mzRramp,missing-method}
 \alias{peaksCount,mzRramp,numeric-method}
+\alias{peaksCount,mzRpwiz,missing-method}
+\alias{peaksCount,mzRpwiz,numeric-method}
 \alias{peaks,mzRramp,missing-method}
 \alias{peaks,mzRramp,numeric-method}
+\alias{peaks,mzRpwiz,missing-method}
+\alias{peaks,mzRpwiz,numeric-method}
 \alias{peaks,mzRnetCDF,missing-method}
 \alias{peaks,mzRnetCDF,numeric-method}
 \alias{runInfo,mzRramp-method}
+\alias{runInfo,mzRpwiz-method}
 
 \title{Class \code{mzR} and sub-classes}
 \description{

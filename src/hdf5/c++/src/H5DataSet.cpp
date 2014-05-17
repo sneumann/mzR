@@ -39,8 +39,14 @@
 #include "H5DataSet.h"
 #include "H5private.h"		// for HDfree
 
+#include <Rcpp.h>
+
+
+
 #ifndef H5_NO_NAMESPACE
 namespace H5 {
+using namespace Rcpp;
+
 #ifndef H5_NO_STD
     using std::cerr;
     using std::endl;
@@ -821,7 +827,7 @@ DataSet::~DataSet()
 	close();
     }
     catch (Exception close_error) {
-	cerr << "DataSet::~DataSet - " << close_error.getDetailMsg() << endl;
+	Rcerr << "DataSet::~DataSet - " << close_error.getDetailMsg() << endl;
     }
 }
 

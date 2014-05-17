@@ -96,3 +96,17 @@ setMethod("peaksCount",
             n <- length(object)
             return(peaksCount(object,1:n))
           })
+
+setMethod("runInfo",
+          signature="mzRpwiz",
+          function(object) {
+            hd <- header(object)
+            ll <- list()
+            ll$'scanCount' <- length(object)
+            ll$'lowMz' <- min(hd$lowMZ)
+            ll$'highMz' <- max(hd$highMZ)
+            ll$'dStartTime' <- min(hd$retentionTime)
+            ll$'dEndTime' <- max(hd$retentionTime)
+            ll$'msLevels' <- unique(hd$msLevel)
+            return(ll)
+          })

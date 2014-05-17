@@ -31,8 +31,10 @@ and gzipped versions of all of these if you have pwiz
 #define RAMP_HOME
 
 #include "ramp.h"
-
+#include <Rcpp.h>
 #include <string>
+
+using namespace Rcpp;
 
 #undef SIZE_BUF
 #define SIZE_BUF 512
@@ -46,7 +48,7 @@ and gzipped versions of all of these if you have pwiz
 #include <pwiz/data/vendor_readers/Reader_Thermo.hpp>
 #endif
 #define MZML_TRYBLOCK try {
-#define MZML_CATCHBLOCK } catch (std::exception& e) { std::cout << e.what() << std::endl;  } catch (...) { std::cout << "Caught unknown exception." << std::endl;  }
+#define MZML_CATCHBLOCK } catch (std::exception& e) { Rcout << e.what() << std::endl;  } catch (...) { Rcout << "Caught unknown exception." << std::endl;  }
 #endif
 #ifdef RAMP_HAVE_GZ_INPUT
 #include "pwiz/utility/misc/random_access_compressed_ifstream.hpp"  // for reading mzxml.gz
@@ -240,14 +242,14 @@ RAMPFILE *rampOpenFile(const char *filename) {
 			  result->mzML = new pwiz::msdata::RAMPAdapter(std::string(filename));
 		      } 
 			  catch (std::exception& e) { 
-				  std::cout << e.what() << std::endl;  
+				  Rcout << e.what() << std::endl;  
 			  } catch (...) { 
-				  std::cout << "Caught unknown exception." << std::endl;  
+				  Rcout << "Caught unknown exception." << std::endl;  
 			  }
 			  if (!result->mzML) {
 #ifdef HAVE_PWIZ_RAW_LIB  // use RAMP+pwiz+xcalibur to read .raw
 				  if (pwiz::msdata::Reader_Thermo::hasRAWHeader(std::string(buf,sizeof(buf)))) {
-					  std::cout << "could not read .raw file - missing Xcalibur DLLs?" << std::endl;
+					  Rcout << "could not read .raw file - missing Xcalibur DLLs?" << std::endl;
 				  }
 #endif
 				  bRecognizedFormat = false; // something's amiss
