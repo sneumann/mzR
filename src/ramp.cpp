@@ -813,8 +813,7 @@ void readHeader(RAMPFILE *pFI,
    memset(scanHeader,0,sizeof(struct ScanHeaderStruct)); // mostly we want 0's
 #define LOWMZ_UNINIT 1.111E6
    scanHeader->lowMZ =  LOWMZ_UNINIT;
-   std::string test = "testing";
-   scanHeader->filterLine = test;
+   scanHeader->filterLine = "test";
    scanHeader->acquisitionNum = -1;
    scanHeader->seqNum = -1;
    scanHeader->retentionTime = -1;
