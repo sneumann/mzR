@@ -40,6 +40,8 @@
 #include "H5File.h"
 #include "H5Attribute.h"
 
+#include <Rcpp.h>
+
 #ifndef H5_NO_NAMESPACE
 namespace H5 {
 #ifndef H5_NO_STD
@@ -801,7 +803,7 @@ DataType::~DataType()
 	try {
 	    close();
 	} catch (Exception close_error) {
-	    cerr << inMemFunc("~DataType - ") << close_error.getDetailMsg() << endl;
+	    Rcpp::Rcerr << inMemFunc("~DataType - ") << close_error.getDetailMsg() << endl;
 	}
 }
 #ifndef H5_NO_NAMESPACE

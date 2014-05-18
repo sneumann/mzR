@@ -27,6 +27,7 @@
 #include "H5PropList.h"
 #include "H5private.h"		// for HDfree
 
+#include <Rcpp.h>
 
 #ifndef H5_NO_NAMESPACE
 namespace H5 {
@@ -686,7 +687,7 @@ PropList::~PropList()
 	close();
     }
     catch (Exception close_error) {
-	cerr << "PropList::~PropList - " << close_error.getDetailMsg() << endl;
+	Rcpp::Rcerr << "PropList::~PropList - " << close_error.getDetailMsg() << endl;
     }
 }
 

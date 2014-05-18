@@ -35,6 +35,8 @@
 #include "H5File.h"
 #include "H5Attribute.h"
 #include "H5private.h"		// for HDfree
+#include <Rcpp.h>
+
 
 #ifndef H5_NO_NAMESPACE
 namespace H5 {
@@ -529,7 +531,7 @@ Attribute::~Attribute()
 	close();
     }
     catch (Exception close_error) {
-	cerr << "Attribute::~Attribute - " << close_error.getDetailMsg() << endl;
+	Rcpp::Rcerr << "Attribute::~Attribute - " << close_error.getDetailMsg() << endl;
     }
 }
 

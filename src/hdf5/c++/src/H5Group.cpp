@@ -38,6 +38,8 @@
 #include "H5File.h"
 #include "H5Alltypes.h"
 
+#include <Rcpp.h>
+
 #ifndef H5_NO_NAMESPACE
 namespace H5 {
 #ifndef H5_NO_STD
@@ -293,7 +295,7 @@ Group::~Group()
 	close();
     }
     catch (Exception close_error) {
-	cerr << "Group::~Group - " << close_error.getDetailMsg() << endl;
+	Rcpp::Rcerr << "Group::~Group - " << close_error.getDetailMsg() << endl;
     }
 }
 

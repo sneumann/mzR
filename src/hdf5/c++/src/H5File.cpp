@@ -37,6 +37,8 @@
 #include "H5File.h"
 #include "H5Alltypes.h"
 
+#include <Rcpp.h>
+
 #ifndef H5_NO_NAMESPACE
 namespace H5 {
 #ifndef H5_NO_STD
@@ -813,7 +815,7 @@ H5File::~H5File()
     try {
 	close();
     } catch (Exception close_error) {
-	cerr << "H5File::~H5File - " << close_error.getDetailMsg() << endl;
+	Rcpp::Rcerr << "H5File::~H5File - " << close_error.getDetailMsg() << endl;
     }
 }
 

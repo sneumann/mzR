@@ -24,6 +24,8 @@
 #include "H5Exception.h"
 #include "H5IdComponent.h"
 #include "H5DataSpace.h"
+#include <Rcpp.h>
+
 
 #ifndef H5_NO_NAMESPACE
 namespace H5 {
@@ -632,7 +634,7 @@ DataSpace::~DataSpace()
     try {
 	close();
     } catch (Exception close_error) {
-	cerr << "DataSpace::~DataSpace - " << close_error.getDetailMsg() << endl;
+	Rcpp::Rcerr << "DataSpace::~DataSpace - " << close_error.getDetailMsg() << endl;
     }
 }
 
