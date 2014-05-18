@@ -913,14 +913,14 @@ H5FD_multi_sb_decode(H5FD_t *_file, const char *name, const unsigned char *buf)
     if (map_changed) {
 #ifdef H5FD_MULTI_DEBUG
         if (file->flags & H5F_ACC_DEBUG) {
-            fprintf(stderr, "H5FD_MULTI: member map override\n");
-            fprintf(stderr, "    old value: ");
+            REprintf("H5FD_MULTI: member map override\n");
+            REprintf("    old value: ");
             ALL_MEMBERS(mt) {
-                fprintf(stderr, "%s%d", mt?", ":"", (int)(file->fa.memb_map[mt]));
+                REprintf("%s%d", mt?", ":"", (int)(file->fa.memb_map[mt]));
             } END_MEMBERS;
-            fprintf(stderr, "\n    new value: ");
+            REprintf("\n    new value: ");
             ALL_MEMBERS(mt) {
-                fprintf(stderr, "%s%d", mt?", ":"", (int)(map[mt]));
+                REprintf("%s%d", mt?", ":"", (int)(map[mt]));
             } END_MEMBERS;
         }
 #endif
@@ -938,7 +938,7 @@ H5FD_multi_sb_decode(H5FD_t *_file, const char *name, const unsigned char *buf)
             if (!in_use[mt] && file->memb[mt]) {
 #ifdef H5FD_MULTI_DEBUG
                 if (file->flags & H5F_ACC_DEBUG) {
-                    fprintf(stderr, "H5FD_MULTI: close member %d\n", (int)mt);
+                    REprintf("H5FD_MULTI: close member %d\n", (int)mt);
                 }
 #endif
                 (void)H5FDclose(file->memb[mt]);
@@ -1313,13 +1313,13 @@ H5FD_multi_close(H5FD_t *_file)
 	if (file->memb[mt]) {
 #ifdef H5FD_MULTI_DEBUG
 	    if (file->flags & H5F_ACC_DEBUG) {
-		fprintf(stderr, "H5FD_MULTI: closing member %d\n", (int)mt);
+		REprintf("H5FD_MULTI: closing member %d\n", (int)mt);
 	    }
 #endif
 	    if (H5FDclose(file->memb[mt])<0) {
 #ifdef H5FD_MULTI_DEBUG
 		if (file->flags & H5F_ACC_DEBUG) {
-		    fprintf(stderr, "H5FD_MULTI: close failed\n");
+		    REprintf("H5FD_MULTI: close failed\n");
 		}
 #endif
 		nerrors++;
@@ -1923,26 +1923,26 @@ H5FD_multi_flush(H5FD_t *_file, hid_t dxpl_id, unsigned closing)
     H5FD_mem_t		mmt;
 
     /* Debugging stuff... */
-    fprintf(stderr, "multifile access information:\n");
+    REprintf("multifile access information:\n");
 
     /* print the map */
-    fprintf(stderr, "    map=");
+    REprintf("    map=");
     for (mt=1; mt<H5FD_MEM_NTYPES; mt++) {
 	mmt = file->memb_map[mt];
 	if (H5FD_MEM_DEFAULT==mmt) mmt = mt;
-	fprintf(stderr, "%s%d", 1==mt?"":",", (int)mmt);
+	REprintf("%s%d", 1==mt?"":",", (int)mmt);
     }
-    fprintf(stderr, "\n");
+    REprintf("\n");
 
     /* print info about each file */
-    fprintf(stderr, "      File             Starting            Allocated                 Next Member\n");
-    fprintf(stderr, "    Number              Address                 Size              Address Name\n");
-    fprintf(stderr, "    ------ -------------------- -------------------- -------------------- ------------------------------\n");
+    REprintf("      File             Starting            Allocated                 Next Member\n");
+    REprintf("    Number              Address                 Size              Address Name\n");
+    REprintf("    ------ -------------------- -------------------- -------------------- ------------------------------\n");
 
     for (mt=1; mt<H5FD_MEM_NTYPES; mt++) {
 	if (HADDR_UNDEF!=file->memb_addr[mt]) {
 	    haddr_t eoa = H5FDget_eoa(file->memb[mt], mt);
-	    fprintf(stderr, "    %6d %20llu %20llu %20llu %s\n",
+	    REprintf("    %6d %20llu %20llu %20llu %s\n",
 		    (int)mt, (unsigned long long)(file->memb_addr[mt]),
 		    (unsigned long long)eoa,
 		    (unsigned long long)(file->memb_next[mt]),
@@ -2086,7 +2086,7 @@ open_members(H5FD_multi_t *file)
 
 #ifdef H5FD_MULTI_DEBUG
 	if (file->flags & H5F_ACC_DEBUG) {
-	    fprintf(stderr, "H5FD_MULTI: open member %d \"%s\"\n",
+	    REprintf("H5FD_MULTI: open member %d \"%s\"\n",
 		    (int)mt, tmp);
 	}
 #endif
@@ -2097,7 +2097,7 @@ open_members(H5FD_multi_t *file)
 	if (!file->memb[mt]) {
 #ifdef H5FD_MULTI_DEBUG
 	    if (file->flags & H5F_ACC_DEBUG) {
-		fprintf(stderr, "H5FD_MULTI: open failed for member %d\n",
+		REprintf("H5FD_MULTI: open failed for member %d\n",
 			(int)mt);
 	    }
 #endif
