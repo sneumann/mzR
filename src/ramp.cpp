@@ -1105,8 +1105,8 @@ void readHeader(RAMPFILE *pFI,
 		      int curCharge = atoi(token);
 		      //printf("found %d\n", curCharge);
 		      if (curCharge > (CHARGEARRAY_LENGTH-1)) {
-			printf("error, cannot handle precursor charges > %d (got %d)\n", CHARGEARRAY_LENGTH-1, curCharge);
-			exit(-1);
+			REprintf("error, cannot handle precursor charges > %d (got %d)\n", CHARGEARRAY_LENGTH-1, curCharge);
+			//exit(-1);
 		      }
 		      scanHeader->possibleChargesArray[curCharge] = true;
 		      scanHeader->numPossibleCharges++;
@@ -1861,7 +1861,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "contentType=\"") + 1 , '\"' );
                   pEndAttrValue  = '\0';
-                  fprintf(stderr, "%s Unsupported content type\n" , pBeginData ); 
+                  REprintf("%s Unsupported content type\n" , pBeginData ); 
                   return NULL;
               }
           }
