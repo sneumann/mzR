@@ -37,10 +37,13 @@
 #include "boost/iostreams/device/array.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/data/msdata/MSNumpress.hpp"
+#include <Rcpp.h>
+
 
 namespace pwiz {
 namespace msdata {
 
+using namespace Rcpp;
 
 using namespace pwiz::util;
 using namespace pwiz::cv;
@@ -216,9 +219,9 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
             else
                 byteBuffer = reinterpret_cast<const void*>(&numpressed[0]);
         } catch (int e) {
-            cerr << "MZNumpress encoder threw exception: " << e << endl;
+            Rcerr << "MZNumpress encoder threw exception: " << e << endl;
         } catch (...) {
-            cerr << "Unknown exception while encoding " << dataSize << " doubles" << endl;
+            Rcerr << "Unknown exception while encoding " << dataSize << " doubles" << endl;
         }
 
     }

@@ -24,8 +24,9 @@
 #include "SHA1Calculator.hpp"
 #include "unit.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include <Rcpp.h>
 
-
+using namespace Rcpp;
 using namespace pwiz::util;
 
 
@@ -34,17 +35,17 @@ int main(int argc, char* argv[])
     try
     {
         if (argc<2) throw runtime_error("Usage: sha1calc filename"); 
-        cout << SHA1Calculator::hashFile(argv[1]) << endl;
+        Rcout << SHA1Calculator::hashFile(argv[1]) << endl;
         return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        Rcerr << e.what() << endl;
         return 1;
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        Rcerr << "Caught unknown exception.\n";
         return 1;
     }
 }

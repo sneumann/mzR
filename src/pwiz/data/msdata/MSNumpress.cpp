@@ -24,11 +24,13 @@
 #include <iostream>
 #include <cmath>
 #include "MSNumpress.hpp"
+#include <Rcpp.h>
 
 namespace ms {
 namespace numpress {
 namespace MSNumpress {
 
+using namespace Rcpp;
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -362,20 +364,20 @@ size_t decodeLinear(
             ints[2]         = y;
         }
     } catch (...) {
-        cerr << "DECODE ERROR" << endl;
-        cerr << "i: " << i << endl;
-        cerr << "ri: " << ri << endl;
-        cerr << "di: " << di << endl;
-        cerr << "half: " << half << endl;
-        cerr << "dataSize: " << dataSize << endl;
-        cerr << "ints[]: " << ints[0] << ", " << ints[1] << ", " << ints[2] << endl;
-        cerr << "extrapol: " << extrapol << endl;
-        cerr << "y: " << y << endl;
+        Rcerr << "DECODE ERROR" << endl;
+        Rcerr << "i: " << i << endl;
+        Rcerr << "ri: " << ri << endl;
+        Rcerr << "di: " << di << endl;
+        Rcerr << "half: " << half << endl;
+        Rcerr << "dataSize: " << dataSize << endl;
+        Rcerr << "ints[]: " << ints[0] << ", " << ints[1] << ", " << ints[2] << endl;
+        Rcerr << "extrapol: " << extrapol << endl;
+        Rcerr << "y: " << y << endl;
 
         for (i = di - 3; i < min(di + 3, dataSize); i++) {
-            cerr << "data[" << i << "] = " << data[i];
+            Rcerr << "data[" << i << "] = " << data[i];
         }
-        cerr << endl;
+        Rcerr << endl;
     }
     
     return ri;
@@ -483,17 +485,17 @@ size_t decodePic(
             result[ri++]     = count;
         }
     } catch (...) {
-        cerr << "DECODE ERROR" << endl;
-        cerr << "ri: " << ri << endl;
-        cerr << "di: " << di << endl;
-        cerr << "half: " << half << endl;
-        cerr << "dataSize: " << dataSize << endl;
-        cerr << "count: " << count << endl;
+        Rcerr << "DECODE ERROR" << endl;
+        Rcerr << "ri: " << ri << endl;
+        Rcerr << "di: " << di << endl;
+        Rcerr << "half: " << half << endl;
+        Rcerr << "dataSize: " << dataSize << endl;
+        Rcerr << "count: " << count << endl;
 
         for (i = di - 3; i < min(di + 3, dataSize); i++) {
-            cerr << "data[" << i << "] = " << data[i];
+            Rcerr << "data[" << i << "] = " << data[i];
         }
-        cerr << endl;
+        Rcerr << endl;
     }
     return ri;
 }
