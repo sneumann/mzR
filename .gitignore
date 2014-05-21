@@ -14,3 +14,5 @@
 # RUnit generated stuff
 inst/unitTests/report*
 
+# configure generated stuff:
+R/zzz.R
