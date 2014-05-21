@@ -100,7 +100,7 @@ netCDFVarDouble <- function(ncid, var) {
        as.integer(var),
        data = double(len),
        status = integer(1),
-       DUP = FALSE, PACKAGE = "mzR")$data
+       PACKAGE = "mzR")$data
 }
 
 netCDFVarInt <- function(ncid, var) {
@@ -120,7 +120,7 @@ netCDFVarInt <- function(ncid, var) {
        as.integer(var),
        data = integer(len),
        status = integer(1),
-       DUP = FALSE, PACKAGE = "mzR")$data
+       PACKAGE = "mzR")$data
 }
 
 netCDFMSPoints <- function(ncid, scanIndex) {
@@ -143,7 +143,7 @@ netCDFMSPoints <- function(ncid, scanIndex) {
        massValues = double(len),
        intensityValues = double(len),
        status = integer(1),
-       DUP = FALSE, PACKAGE = "mzR")[c("massValues", "intensityValues")]
+       PACKAGE = "mzR")[c("massValues", "intensityValues")]
 }
 
 netCDFRawData <- function(ncid) {

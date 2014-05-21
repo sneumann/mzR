@@ -28,10 +28,12 @@
 #include "Diff.hpp"
 #include <boost/functional/hash.hpp>
 
+#include <Rcpp.h>
+
 namespace pwiz {
 namespace msdata {
 
-
+using namespace Rcpp;
 using namespace pwiz::cv;
 using namespace pwiz::data;
 
@@ -1044,7 +1046,7 @@ PWIZ_API_DECL void SpectrumList::warn_once(const char *msg) const
     boost::hash<const char*> H;
     if (warn_msg_hashes.insert(H(msg)).second) // .second is true iff value is new
     {
-        cerr << msg << endl;
+        Rcerr << msg << endl;
     }
 }
 

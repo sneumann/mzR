@@ -31,6 +31,10 @@ and gzipped versions of all of these if you have pwiz
 #define RAMP_HOME
 
 #include "ramp.h"
+#include <Rcpp.h>
+#include <string>
+
+using namespace Rcpp;
 
 #undef SIZE_BUF
 #define SIZE_BUF 512
@@ -44,7 +48,7 @@ and gzipped versions of all of these if you have pwiz
 #include <pwiz/data/vendor_readers/Reader_Thermo.hpp>
 #endif
 #define MZML_TRYBLOCK try {
-#define MZML_CATCHBLOCK } catch (std::exception& e) { std::cout << e.what() << std::endl;  } catch (...) { std::cout << "Caught unknown exception." << std::endl;  }
+#define MZML_CATCHBLOCK } catch (std::exception& e) { Rcout << e.what() << std::endl;  } catch (...) { Rcout << "Caught unknown exception." << std::endl;  }
 #endif
 #ifdef RAMP_HAVE_GZ_INPUT
 #include "pwiz/utility/misc/random_access_compressed_ifstream.hpp"  // for reading mzxml.gz
@@ -238,14 +242,14 @@ RAMPFILE *rampOpenFile(const char *filename) {
 			  result->mzML = new pwiz::msdata::RAMPAdapter(std::string(filename));
 		      } 
 			  catch (std::exception& e) { 
-				  std::cout << e.what() << std::endl;  
+				  Rcout << e.what() << std::endl;  
 			  } catch (...) { 
-				  std::cout << "Caught unknown exception." << std::endl;  
+				  Rcout << "Caught unknown exception." << std::endl;  
 			  }
 			  if (!result->mzML) {
 #ifdef HAVE_PWIZ_RAW_LIB  // use RAMP+pwiz+xcalibur to read .raw
 				  if (pwiz::msdata::Reader_Thermo::hasRAWHeader(std::string(buf,sizeof(buf)))) {
-					  std::cout << "could not read .raw file - missing Xcalibur DLLs?" << std::endl;
+					  Rcout << "could not read .raw file - missing Xcalibur DLLs?" << std::endl;
 				  }
 #endif
 				  bRecognizedFormat = false; // something's amiss
@@ -425,7 +429,7 @@ ramp_fileoffset_t *readIndex(RAMPFILE *pFI,
 			 pScanIndex = (ramp_fileoffset_t *)realloc(pScanIndex, sizeof(ramp_fileoffset_t)*reallocSize);
 		 }
          if (!pScanIndex) {
-            printf("Cannot allocate memory\n");
+            Rprintf("Cannot allocate memory\n");
             return NULL;
          }
 		 while (curscan < newN) {
@@ -453,7 +457,7 @@ ramp_fileoffset_t *readIndex(RAMPFILE *pFI,
         n = 0;
          pScanIndex = (ramp_fileoffset_t *)malloc( sizeof(ramp_fileoffset_t)*reallocSize); // allocate space for the scan index info
          if (!pScanIndex) {
-            printf("Cannot allocate memory\n");
+            Rprintf("Cannot allocate memory\n");
             return NULL;
          }
          ramp_fseek(pFI,0,SEEK_SET);
@@ -486,7 +490,7 @@ ramp_fileoffset_t *readIndex(RAMPFILE *pFI,
                  reallocSize = newN + 500; 
                  pScanIndex = (ramp_fileoffset_t *)realloc(pScanIndex, sizeof(ramp_fileoffset_t)*reallocSize);
                  if (!pScanIndex) {
-                   printf("Cannot allocate memory\n");
+                   Rprintf("Cannot allocate memory\n");
                    return NULL;
                  }
                }               
@@ -537,7 +541,7 @@ ramp_fileoffset_t *readIndex(RAMPFILE *pFI,
          n = 0;
          
          if ((pScanIndex = (ramp_fileoffset_t *) malloc(reallocSize * sizeof(ramp_fileoffset_t))) == NULL) {
-            printf("Cannot allocate memory\n");
+            Rprintf("Cannot allocate memory\n");
             return NULL;
          }
          
@@ -573,7 +577,7 @@ ramp_fileoffset_t *readIndex(RAMPFILE *pFI,
               reallocSize = newN + 500;
               pTmp = (ramp_fileoffset_t*)realloc(pScanIndex, reallocSize * sizeof(ramp_fileoffset_t));
               if (pTmp == NULL) { 
-                printf("Cannot allocate memory\n");
+                Rprintf("Cannot allocate memory\n");
                 return NULL;
               } else {
                 pScanIndex=pTmp;
@@ -811,6 +815,7 @@ void readHeader(RAMPFILE *pFI,
    memset(scanHeader,0,sizeof(struct ScanHeaderStruct)); // mostly we want 0's
 #define LOWMZ_UNINIT 1.111E6
    scanHeader->lowMZ =  LOWMZ_UNINIT;
+   //scanHeader->filterLine = "test";
    scanHeader->acquisitionNum = -1;
    scanHeader->seqNum = -1;
    scanHeader->retentionTime = -1;
@@ -1100,8 +1105,8 @@ void readHeader(RAMPFILE *pFI,
 		      int curCharge = atoi(token);
 		      //printf("found %d\n", curCharge);
 		      if (curCharge > (CHARGEARRAY_LENGTH-1)) {
-			printf("error, cannot handle precursor charges > %d (got %d)\n", CHARGEARRAY_LENGTH-1, curCharge);
-			exit(-1);
+			REprintf("error, cannot handle precursor charges > %d (got %d)\n", CHARGEARRAY_LENGTH-1, curCharge);
+			//exit(-1);
 		      }
 		      scanHeader->possibleChargesArray[curCharge] = true;
 		      scanHeader->numPossibleCharges++;
@@ -1422,7 +1427,7 @@ char *rampConstructInputPath(char *inbuf, // put the result here
 			  if (!result) {
 			     result = strdup((g.gl_pathv)[j]);
 			  } else if (strcasecmp((g.gl_pathv)[j],result)) { // win32 isn't case sensitive
-                 printf("found both %s and %s, using %s\n",
+                 Rprintf("found both %s and %s, using %s\n",
                   (g.gl_pathv)[j],result,result);
             }
 		  } // end if supported filetype
@@ -1443,7 +1448,7 @@ char *rampConstructInputPath(char *inbuf, // put the result here
       free(result);
       result = inbuf;
    } else {
-      printf("buffer too small for file %s\n",
+      Rprintf("buffer too small for file %s\n",
          result);
       free(result);
       result = NULL;
@@ -1600,7 +1605,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
 	   int peaksCount = (int)vec.size()/2; // vec contains mz/int pairs
 	   pPeaks = (RAMPREAL *) malloc((peaksCount+1) * 2 * sizeof(RAMPREAL) + 1);
 	   if (!pPeaks) {
-		   printf("Cannot allocate memory\n");
+		   Rprintf("Cannot allocate memory\n");
 		   return NULL;
 	   }
 	   size_t rsize=sizeof(RAMPREAL);
@@ -1703,7 +1708,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
             
             if ((pData = (char *) realloc(pData,1 + peaksLen)) == NULL)
             {
-               printf("Cannot allocate memory\n");
+               Rprintf("Cannot allocate memory\n");
                return NULL;
             }
             
@@ -1736,7 +1741,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
                         
             if ((pDecoded = (char *) realloc(pDecoded,peaksCount * (precision/8) + 1)) == NULL)
                {
-                  printf("Cannot allocate memory\n");
+                  Rprintf("Cannot allocate memory\n");
                   return NULL;
                }
                // Base64 decoding
@@ -1744,7 +1749,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
             
             if ((!pPeaks) && ((pPeaks = (RAMPREAL *) malloc((peaksCount+1) * 2 * sizeof(RAMPREAL) + 1)) == NULL))
             {
-               printf("Cannot allocate memory\n");
+               Rprintf("Cannot allocate memory\n");
                return NULL;
             }
             
@@ -1856,7 +1861,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "contentType=\"") + 1 , '\"' );
                   pEndAttrValue  = '\0';
-                  fprintf(stderr, "%s Unsupported content type\n" , pBeginData ); 
+                  REprintf("%s Unsupported content type\n" , pBeginData ); 
                   return NULL;
               }
           }
@@ -1875,7 +1880,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "compressionType=\"") + 1 , '\"' );
                   pEndAttrValue = '\0';
-                  fprintf(stderr, "%s Unsupported compression type\n" , pBeginData ); 
+                  REprintf("%s Unsupported compression type\n" , pBeginData ); 
                   return NULL;
               }
           }
@@ -1920,7 +1925,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
       
        if ((pData = (char *) malloc(1 + peaksLen)) == NULL)
       {
-         printf("Cannot allocate memory\n");
+         Rprintf("Cannot allocate memory\n");
          return NULL;
       }
       pData[peaksLen] = 0;
@@ -1961,7 +1966,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
       
       if ((pDecoded = (char *) malloc( decodedSize )) == NULL)
          {
-            printf("Cannot allocate memory\n");
+            Rprintf("Cannot allocate memory\n");
             return NULL;
          }
       // Base64 decoding
@@ -1970,7 +1975,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
       
       if ((!pPeaks) && ((pPeaks = (RAMPREAL *) malloc((peaksCount+1) * 2 * sizeof(RAMPREAL) + 1)) == NULL))
       {
-         printf("Cannot allocate memory\n");
+         Rprintf("Cannot allocate memory\n");
          return NULL;
       }
 
@@ -2032,7 +2037,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
 
           if ((pPeaksDeRuled = (RAMPREAL *) malloc((peaksCount+1) * 2 * sizeof(RAMPREAL) + 1)) == NULL)
           {
-              printf("Cannot allocate memory\n");
+              Rprintf("Cannot allocate memory\n");
               return NULL;
           }
          
@@ -2216,7 +2221,7 @@ InstrumentStruct* getInstrumentStruct(RAMPFILE *pFI)
   char stringBuf[SIZE_BUF+1];
    if ((output = (InstrumentStruct *) calloc(1,sizeof(InstrumentStruct))) == NULL)
    {
-      printf("Cannot allocate memory\n");
+      Rprintf("Cannot allocate memory\n");
       return NULL;
    } else {
       const char *cpUnknown="UNKNOWN";

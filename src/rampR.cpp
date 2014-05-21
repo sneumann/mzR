@@ -19,50 +19,69 @@ static int        rampInitalized = 0;
 static RAMPSTRUCT rampStructs[MAX_RAMP_FILES];
 
 void RampRInit(void) {
+
     int    i;
+    
     for (i = 0; i < MAX_RAMP_FILES; i++) {
         rampStructs[i].file = NULL;
         rampStructs[i].index = NULL;
         rampStructs[i].numscans = 0;
     }
+    
     rampInitalized = 1;
 }
 
 void RampRPrintFiles(void) {
+
     int i;
+    
     if (!rampInitalized)
         RampRInit();
+    
     for (i = 0; i < MAX_RAMP_FILES; i++)
         if (rampStructs[i].file)
             Rprintf("File %i (%i scans)\n", i, rampStructs[i].numscans);
 }
 
 int RampRFreeHandle(void) {
+
     int i;
+    
     if (!rampInitalized)
         RampRInit();
+    
     for (i = 0; i < MAX_RAMP_FILES; i++)
         if (!rampStructs[i].file)
             return i;
+    
     return -1;
 }
 
 void RampRIsFile(const char *fileName[], int *isfile) {
+
     RAMPFILE *rampfile;
+    
     *isfile = 0;
+    
     rampfile = rampOpenFile(fileName[0]);
     if (!rampfile)
 	    return;
+	
 	rampCloseFile(rampfile);
+	
 	*isfile = 1;
 }
 
 void RampROpen(const char *fileName[], int *rampid, int *status) {
+
     ramp_fileoffset_t indexOffset;
     int               numscans;
+    
     if (!rampInitalized)
         RampRInit();
+    
     *status = -1;
+    
     *rampid = RampRFreeHandle();
     if (*rampid < 0) {
         *status = *rampid;
@@ -72,7 +91,9 @@ void RampROpen(const char *fileName[], int *rampid, int *status) {
     rampStructs[*rampid].file = rampOpenFile(fileName[0]);
 	if (!rampStructs[*rampid].file)
 	    return;
+	
 	indexOffset = getIndexOffset(rampStructs[*rampid].file);
+	
 	rampStructs[*rampid].index = readIndex(rampStructs[*rampid].file,
 	                                       indexOffset, &numscans);
 	
@@ -89,60 +110,72 @@ void RampROpen(const char *fileName[], int *rampid, int *status) {
 }
 
 void RampRClose(const int *rampid) {
+
     if (!rampInitalized)
         return;
+
     if (*rampid < 0 || *rampid >= MAX_RAMP_FILES)
         return;
+
     if (rampStructs[*rampid].file)
         rampCloseFile(rampStructs[*rampid].file);
     rampStructs[*rampid].file = NULL;
+    
     if (rampStructs[*rampid].index)
         free(rampStructs[*rampid].index);
     rampStructs[*rampid].index = NULL;
+    
     rampStructs[*rampid].numscans = 0;
 }
 
 void RampRCloseAll(void) {
+
     int i;
+    
     if (!rampInitalized)
         return;
+    
     for (i = 0; i < MAX_RAMP_FILES; i++)
         if (rampStructs[i].file)
             RampRClose(&i);
 }
 
 void RampRNumScans(const int *rampid, int *numscans, int *status) {
+
     if (!rampInitalized)
         RampRInit();
+
     *status = -1;
+
     if (*rampid < 0 || *rampid >= MAX_RAMP_FILES)
         return;
+	
 	*numscans = rampStructs[*rampid].numscans;
+	
 	if (*numscans)
 	    *status = 0;
 }
 
 SEXP RampRScanHeaders(SEXP rampid) {
 
-    int 
-      i, j, id, numscans, ncol = 17, ntypes = 0, stlen = 10;
-    SEXP result = PROTECT(NEW_LIST(ncol)), temp, names;
-    struct ScanHeaderStruct scanHeader;
-    RAMPFILE *file;
+    int               i, j, id, numscans, ncol = 18, ntypes = 0, stlen = 10;
+    SEXP              result = PROTECT(NEW_LIST(ncol)), temp, names;
+    struct            ScanHeaderStruct scanHeader;
+    RAMPFILE          *file;
     ramp_fileoffset_t *index;
-    char rowname[20], *scanTypes;
-    int 
-      *seqNum, *acquisitionNum, *msLevel, *peaksCount,
+    char              rowname[20], *scanTypes;
+    int               *seqNum, *acquisitionNum, *msLevel, *peaksCount,
       *precursorScanNum, *precursorCharge, *scanType;
-    double 
-      *totIonCurrent, *retentionTime, *basePeakMZ,
-      *basePeakIntensity, *collisionEnergy, *ionisationEnergy,
-      *lowMZ, *highMZ, *precursorMZ, *precursorIntensity;
-
+    double            *totIonCurrent, *retentionTime, *basePeakMZ, 
+                      *basePeakIntensity, *collisionEnergy, *ionisationEnergy,
+	              *lowMZ, *highMZ, *precursorMZ, *precursorIntensity;
+    
     if (!rampInitalized)
         RampRInit();
+    
     if (GET_LENGTH(rampid) != 1)
         error("rampid must be of length 1");
+    
     id = *INTEGER_POINTER(rampid);
     if (id < 0 || id >= MAX_RAMP_FILES || !rampStructs[id].file)
         error("invalid rampid");
@@ -230,9 +263,9 @@ SEXP RampRScanHeaders(SEXP rampid) {
     precursorIntensity = NUMERIC_POINTER(temp);
     SET_STRING_ELT(names, 16, mkChar("precursorIntensity"));
 
-    SET_VECTOR_ELT(result, 17, temp = NEW_INTEGER(numscans));
-    // polarity = INTEGER_POINTER(temp);
-    // SET_STRING_ELT(names, 17, mkChar("polarity"));
+    //SET_VECTOR_ELT(result, 17, temp = NEW_INTEGER(numscans));
+    //polarity = INTEGER_POINTER(temp);
+    //SET_STRING_ELT(names, 17, mkChar("polarity"));
         
     scanTypes = S_alloc(stlen*SCANTYPE_LENGTH, sizeof(char));
     
@@ -253,7 +286,7 @@ SEXP RampRScanHeaders(SEXP rampid) {
         precursorScanNum[i] = scanHeader.precursorScanNum;
         precursorMZ[i] = scanHeader.precursorMZ;
         precursorIntensity[i] = scanHeader.precursorIntensity;
-	// polarity[i] = scanHeader.polarity;
+	//polarity[i] = scanHeader.polarity;
         precursorCharge[i] = scanHeader.precursorCharge;
         for (j = 0; j < ntypes; j++)
             if (!strcmp(scanHeader.scanType, scanTypes+j*SCANTYPE_LENGTH)) {
