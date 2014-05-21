@@ -24,9 +24,7 @@
 #include "SHA1Calculator.hpp"
 #include "unit.hpp"
 #include "pwiz/utility/misc/Std.hpp"
-#include <Rcpp.h>
 
-using namespace Rcpp;
 
 using namespace pwiz::util;
 
@@ -41,12 +39,12 @@ int main(int argc, char* argv[])
     }
     catch (exception& e)
     {
-        Rcerr << e.what() << endl;
+        cerr << e.what() << endl;
         return 1;
     }
     catch (...)
     {
-        Rcerr << "Caught unknown exception.\n";
+        cerr << "Caught unknown exception.\n";
         return 1;
     }
 }
