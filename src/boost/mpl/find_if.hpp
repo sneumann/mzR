@@ -11,7 +11,11 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Id: find_if.hpp 49274 2008-10-11 07:22:05Z agurtovoy $
+<<<<<<< HEAD
 // $Date: 2008-10-11 08:22:05 +0100 (Sat, 11 Oct 2008) $
+=======
+// $Date: 2008-10-11 03:22:05 -0400 (Sat, 11 Oct 2008) $
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 // $Revision: 49274 $
 
 #include <boost/mpl/aux_/find_if_pred.hpp>

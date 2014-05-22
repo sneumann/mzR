@@ -18,6 +18,7 @@ PWIZOBJECTS=\
 ./boost/regex/src/static_mutex.o \
 ./boost/regex/src/usinstances.o \
 ./boost/regex/src/w32_regex_traits.o \
+<<<<<<< HEAD
 ./boost/regex/src/wc_regex_traits.o \
 ./boost/regex/src/wide_posix_api.o \
 ./boost/regex/src/winstances.o \
@@ -25,11 +26,40 @@ PWIZOBJECTS=\
 ./boost/thread/src/pthread/once.o \
 ./boost/thread/src/pthread/thread.o \
 ./pwiz/data/common/BinaryIndexStream.o \
+=======
+./pwiz/data/msdata/Version.o \
+./pwiz/utility/minimxml/XMLWriter.o \
+./pwiz/utility/minimxml/SAXParser.o \
+./boost/iostreams/src/zlib.o \
+./boost/iostreams/src/file_descriptor.o \
+./boost/thread/src/pthread/once.o \
+./boost/thread/src/pthread/thread.o \
+./boost/filesystem/src/operations.o \
+./boost/filesystem/src/path.o \
+./boost/filesystem/src/utf8_codecvt_facet.o \
+./pwiz/data/common/MemoryIndex.o \
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/ParamTypes.o \
 ./pwiz/data/common/cv.o \
 ./pwiz/data/common/diff_std.o \
+<<<<<<< HEAD
+=======
+./pwiz/data/msdata/SpectrumList_MGF.o \
+./pwiz/data/msdata/DefaultReaderList.o \
+./pwiz/data/msdata/ChromatogramList_mzML.o \
+./pwiz/data/msdata/ChromatogramList_mz5.o \
+./pwiz/data/msdata/examples.o \
+./pwiz/data/msdata/Serializer_mzML.o \
+./pwiz/data/msdata/Serializer_mz5.o \
+./pwiz/data/msdata/Serializer_MSn.o \
+./pwiz/data/msdata/Reader.o \
+./pwiz/data/msdata/Serializer_MGF.o \
+./pwiz/data/msdata/Serializer_mzXML.o \
+./pwiz/data/msdata/SpectrumList_mzML.o \
+./pwiz/data/msdata/SpectrumList_MSn.o \
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 ./pwiz/data/msdata/BinaryDataEncoder.o \
 ./pwiz/data/msdata/ChromatogramList_mz5.o \
 ./pwiz/data/msdata/ChromatogramList_mzML.o \
@@ -44,13 +74,21 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/RAMPAdapter.o \
 ./pwiz/data/msdata/Reader.o \
 ./pwiz/data/msdata/References.o \
+<<<<<<< HEAD
 ./pwiz/data/msdata/Serializer_MGF.o \
 ./pwiz/data/msdata/Serializer_MSn.o \
 ./pwiz/data/msdata/Serializer_mz5.o \
 ./pwiz/data/msdata/Serializer_mzML.o \
 ./pwiz/data/msdata/Serializer_mzXML.o \
+=======
+./pwiz/data/msdata/SpectrumList_mzXML.o \
+./pwiz/data/msdata/SpectrumList_mz5.o \
+./pwiz/data/msdata/IO.o \
+./pwiz/data/msdata/SpectrumList_BTDX.o \
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 ./pwiz/data/msdata/SpectrumInfo.o \
 ./pwiz/data/msdata/SpectrumIterator.o \
+<<<<<<< HEAD
 ./pwiz/data/msdata/SpectrumListCache.o \
 ./pwiz/data/msdata/SpectrumList_BTDX.o \
 ./pwiz/data/msdata/SpectrumList_MGF.o \
@@ -62,12 +100,24 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/examples.o \
 ./pwiz/data/msdata/mz5/Configuration_mz5.o \
 ./pwiz/data/msdata/mz5/Connection_mz5.o \
+=======
+./pwiz/data/msdata/MSDataFile.o \
+./pwiz/data/msdata/MSNumpress.o \
+./pwiz/data/msdata/SpectrumListCache.o \
+./pwiz/data/msdata/Index_mzML.o \
+./pwiz/data/msdata/mz5/Connection_mz5.o \
+./pwiz/data/msdata/mz5/Configuration_mz5.o \
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 ./pwiz/data/msdata/mz5/Datastructures_mz5.o \
 ./pwiz/data/msdata/mz5/ReferenceRead_mz5.o \
 ./pwiz/data/msdata/mz5/ReferenceWrite_mz5.o \
 ./pwiz/data/msdata/mz5/Translator_mz5.o \
+<<<<<<< HEAD
 ./pwiz/utility/minimxml/SAXParser.o \
 ./pwiz/utility/minimxml/XMLWriter.o \
+=======
+./pwiz/utility/misc/IntegerSet.o \
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 ./pwiz/utility/misc/Base64.o \
 ./pwiz/utility/misc/Filesystem.o \
 ./pwiz/utility/misc/IntegerSet.o \
@@ -78,6 +128,7 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/TabReader.o \
 ./pwiz/utility/misc/random_access_compressed_ifstream.o \
 ./pwiz/utility/misc/sha1calc.o \
+<<<<<<< HEAD
 ./random_access_gzFile.o 
 
 ## HEADERS:=$(shell find . -name "*.h" -o -name "*.hpp")
@@ -85,6 +136,38 @@ PWIZOBJECTS=\
 ## OBJS:= $(patsubst %.hpp,%.o,$(OBJS))
 
 MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o 
+=======
+./hdf5/c++/src/H5AbstractDs.o \
+./hdf5/c++/src/H5ArrayType.o \
+./hdf5/c++/src/H5AtomType.o \
+./hdf5/c++/src/H5Attribute.o \
+./hdf5/c++/src/H5CommonFG.o \
+./hdf5/c++/src/H5CompType.o \
+./hdf5/c++/src/H5DataSet.o \
+./hdf5/c++/src/H5DataSpace.o \
+./hdf5/c++/src/H5DataType.o \
+./hdf5/c++/src/H5DcreatProp.o \
+./hdf5/c++/src/H5DxferProp.o \
+./hdf5/c++/src/H5EnumType.o \
+./hdf5/c++/src/H5Exception.o \
+./hdf5/c++/src/H5FaccProp.o \
+./hdf5/c++/src/H5FcreatProp.o \
+./hdf5/c++/src/H5File.o \
+./hdf5/c++/src/H5FloatType.o \
+./hdf5/c++/src/H5Group.o \
+./hdf5/c++/src/H5IdComponent.o \
+./hdf5/c++/src/H5IntType.o \
+./hdf5/c++/src/H5Library.o \
+./hdf5/c++/src/H5Object.o \
+./hdf5/c++/src/H5PredType.o \
+./hdf5/c++/src/H5PropList.o \
+./hdf5/c++/src/H5StrType.o \
+./hdf5/c++/src/H5VarLenType.o \
+./hdf5/src/H5FDmulti.o \
+./random_access_gzFile.o
+
+MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 
 OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 
@@ -92,8 +175,14 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 ## R complains about assert(), hence -D_NODEBUG
 ##  http://www.gamedev.net/topic/555511-is-there-a-way-to-only-disable-boost-debug-checks/
 ##
+<<<<<<< HEAD
 PWIZ_LDFLAGS=-lpthread  -lboost_thread  -lboost_system -lboost_filesystem -lboost_iostreams
 PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./pwiz
+=======
+PWIZ_LDFLAGS=-L./pwiz
+PWIZ_LDFLAGS=-lpthread 
+PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./hdf5/src -I./hdf5/c++/src -I./hdf5/src/posix
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)

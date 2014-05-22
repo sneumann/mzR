@@ -12,7 +12,11 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Id: insert_impl.hpp 55751 2009-08-24 04:11:00Z agurtovoy $
+<<<<<<< HEAD
 // $Date: 2009-08-24 05:11:00 +0100 (Mon, 24 Aug 2009) $
+=======
+// $Date: 2009-08-24 00:11:00 -0400 (Mon, 24 Aug 2009) $
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 // $Revision: 55751 $
 
 #include <boost/mpl/insert_fwd.hpp>

@@ -22,11 +22,12 @@ Further information is available in the following vignette:
 }
 }
 \author{
-Bernd Fischer, Steffen Neumann, Laurent Gatto
+Bernd Fischer, Steffen Neumann, Laurent Gatto, Qiang Kou
 
 Maintainers: Bernd Fischer <bernd.fischer@embl.de>,
 Steffen Neumann <sneumann@ipb-halle.de>,
-Laurent Gatto <lg390@cam.ac.uk>
+Laurent Gatto <lg390@cam.ac.uk>,
+Qiang Kou <qkou@umail.iu.edu>
 }
 
 \references{

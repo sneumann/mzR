@@ -15,7 +15,11 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Id: apply_wrap.hpp 49272 2008-10-11 06:50:46Z agurtovoy $
+<<<<<<< HEAD
 // $Date: 2008-10-11 07:50:46 +0100 (Sat, 11 Oct 2008) $
+=======
+// $Date: 2008-10-11 02:50:46 -0400 (Sat, 11 Oct 2008) $
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 // $Revision: 49272 $
 
 #if !defined(BOOST_MPL_PREPROCESSING_MODE)

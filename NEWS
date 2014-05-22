@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 CHANGES IN VERSION 1.11.1
 -------------------------
  o new pwiz checkout [2014-04-24 Thu]
@@ -14,6 +15,8 @@ CHANGES IN VERSION 1.10.0
 -------------------------
  o stable version for Bioc 2.14
 
+=======
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 CHANGES IN VERSION 1.9.8
 ------------------------
  o Pointing to the relevant wiki page in the Rcpp compiler/linker

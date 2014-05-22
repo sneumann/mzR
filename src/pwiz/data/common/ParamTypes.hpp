@@ -1,5 +1,9 @@
 //
+<<<<<<< HEAD
 // $Id: ParamTypes.hpp 6212 2014-05-20 22:38:47Z pcbrefugee $
+=======
+// $Id: ParamTypes.hpp 4008 2012-10-16 17:16:55Z pcbrefugee $
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

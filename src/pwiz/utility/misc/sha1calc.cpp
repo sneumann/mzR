@@ -24,9 +24,14 @@
 #include "SHA1Calculator.hpp"
 #include "unit.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+<<<<<<< HEAD
 #include <Rcpp.h>
 
 using namespace Rcpp;
+=======
+
+
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 using namespace pwiz::util;
 
 

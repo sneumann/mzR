@@ -24,13 +24,20 @@
 #include <iostream>
 #include <cmath>
 #include "MSNumpress.hpp"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 #include <Rcpp.h>
 
 namespace ms {
 namespace numpress {
 namespace MSNumpress {
 
+<<<<<<< HEAD
 using namespace Rcpp;
+=======
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -38,6 +45,10 @@ using std::min;
 using std::max;
 using std::abs;
 
+<<<<<<< HEAD
+=======
+using namespace Rcpp;
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 
 const int ONE = 1;
 bool is_big_endian() {

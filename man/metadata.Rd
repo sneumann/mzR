@@ -27,8 +27,8 @@ model(object)
 \description{
   Accessors to the analytical setup metadata of a run.
   \code{runInfo} will show a summary of the experiment as a named list,
-  including \code{scanCount}, \code{lowMZ}, \code{highMZ}, \code{startMZ},
-  \code{endMZ}, \code{dStartTime} and \code{dEndTime}.
+  including \code{scanCount}, \code{lowMZ}, \code{highMZ},
+  \code{dStartTime} and \code{dEndTime}.
   The \code{instrumentInfo} method returns a named \code{list} including
   instrument manufacturer, model, ionisation technique, analyzer and
   detector. These individual pieces of information can also be directly
@@ -50,8 +50,7 @@ model(object)
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
                     full.names=TRUE, recursive = TRUE)
-  mz <- openMSfile(file)
+  mz <- openMSfile(file, backend = "pwiz")
   fileName(mz)
-  runInfo(mz)
-  close(mz)
+  instrumentInfo(mz)
 }

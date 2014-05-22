@@ -11,7 +11,11 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Id: compiler.hpp 53189 2009-05-22 20:07:55Z hkaiser $
+<<<<<<< HEAD
 // $Date: 2009-05-22 21:07:55 +0100 (Fri, 22 May 2009) $
+=======
+// $Date: 2009-05-22 16:07:55 -0400 (Fri, 22 May 2009) $
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 // $Revision: 53189 $
 
 #if !defined(BOOST_MPL_CFG_COMPILER_DIR)

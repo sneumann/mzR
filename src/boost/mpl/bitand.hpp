@@ -12,7 +12,11 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Id: bitand.hpp 63520 2010-07-02 08:59:55Z agurtovoy $
+<<<<<<< HEAD
 // $Date: 2010-07-02 09:59:55 +0100 (Fri, 02 Jul 2010) $
+=======
+// $Date: 2010-07-02 04:59:55 -0400 (Fri, 02 Jul 2010) $
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 // $Revision: 63520 $
 
 // agurt, 23/jan/10: workaround a conflict with <iso646.h> header's 

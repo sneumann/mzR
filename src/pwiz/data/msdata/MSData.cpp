@@ -27,13 +27,20 @@ n// Unless required by applicable law or agreed to in writing, software
 #include <boost/lexical_cast.hpp>
 #include "Diff.hpp"
 #include <boost/functional/hash.hpp>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 #include <Rcpp.h>
 
 namespace pwiz {
 namespace msdata {
 
 using namespace Rcpp;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 using namespace pwiz::cv;
 using namespace pwiz::data;
 
