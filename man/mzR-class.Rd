@@ -4,54 +4,37 @@
 \alias{mzR-class}
 \alias{mzRramp-class}
 \alias{mzRnetCDF-class}
-\alias{mzRpwiz-class}
 \alias{class:mzR}
 \alias{class:mzRramp}
 \alias{class:mzRnetCDF}
-\alias{class:mzRpwiz}
 \alias{close,mzRramp-method}
 \alias{close,mzRnetCDF-method}
 \alias{close}
 \alias{analyzer,mzRramp-method}
-\alias{analyzer,mzRpwiz-method}
 \alias{detector,mzRramp-method}
-\alias{detector,mzRpwiz-method}
 \alias{fileName,mzR-method}
 \alias{get3Dmap,mzRramp-method}
-\alias{get3Dmap,mzRpwiz-method}
 \alias{header,mzRramp,missing-method}
 \alias{header,mzRramp,numeric-method}
-\alias{header,mzRpwiz,missing-method}
-\alias{header,mzRpwiz,numeric-method}
 \alias{header,mzRnetCDF,missing-method}
 \alias{header,mzRnetCDF,numeric-method}
 \alias{initializeRamp,mzRramp-method}
 \alias{instrumentInfo,mzRramp-method}
-\alias{instrumentInfo,mzRpwiz-method}
 \alias{ionisation,mzRramp-method}
-\alias{ionisation,mzRpwiz-method}
 \alias{isInitialized,mzRramp-method}
 \alias{isInitialized,mzRnetCDF-method}
 \alias{length,mzRramp-method}
-\alias{length,mzRpwiz-method}
 \alias{length,mzRnetCDF-method}
 \alias{length}
 \alias{manufacturer,mzRramp-method}
-\alias{manufacturer,mzRpwiz-method}
 \alias{model,mzRramp-method}
-\alias{model,mzRpwiz-method}
 \alias{peaksCount,mzRramp,missing-method}
 \alias{peaksCount,mzRramp,numeric-method}
-\alias{peaksCount,mzRpwiz,missing-method}
-\alias{peaksCount,mzRpwiz,numeric-method}
 \alias{peaks,mzRramp,missing-method}
 \alias{peaks,mzRramp,numeric-method}
-\alias{peaks,mzRpwiz,missing-method}
-\alias{peaks,mzRpwiz,numeric-method}
 \alias{peaks,mzRnetCDF,missing-method}
 \alias{peaks,mzRnetCDF,numeric-method}
 \alias{runInfo,mzRramp-method}
-\alias{runInfo,mzRpwiz-method}
 
 \title{Class \code{mzR} and sub-classes}
 \description{
@@ -122,17 +105,6 @@
     \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "missing")}: ... }
     \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
     \item{runInfo}{\code{signature(object = "mzRramp")}: ... }
-  }
-  Methods currently implemented for \code{mzRpwiz}
-  \describe{
-    \item{analyzer}{\code{signature(object = "mzRpwiz")}: ... }
-    \item{detector}{\code{signature(object = "mzRpwiz")}: ... }
-    \item{instrumentInfo}{\code{signature(object = "mzRpwiz")}: ... }
-    \item{ionisation}{\code{signature(object = "mzRpwiz")}: ... }
-    \item{length}{\code{signature(x = "mzRpwiz")}: ... }
-    \item{manufacturer}{\code{signature(object = "mzRpwiz")}: ... }
-    \item{model}{\code{signature(object = "mzRpwiz")}: ... }
-    \item{runInfo}{\code{signature(object = "mzRpwiz")}: ... }
   }
 }
 
