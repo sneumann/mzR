@@ -11,11 +11,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Id: for_each.hpp 55648 2009-08-18 05:16:53Z agurtovoy $
-<<<<<<< HEAD
-// $Date: 2009-08-18 06:16:53 +0100 (Tue, 18 Aug 2009) $
-=======
 // $Date: 2009-08-18 01:16:53 -0400 (Tue, 18 Aug 2009) $
->>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 // $Revision: 55648 $
 
 #include <boost/mpl/is_sequence.hpp>

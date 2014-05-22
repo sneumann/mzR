@@ -15,11 +15,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Id: template_arity.hpp 61584 2010-04-26 18:48:26Z agurtovoy $
-<<<<<<< HEAD
-// $Date: 2010-04-26 19:48:26 +0100 (Mon, 26 Apr 2010) $
-=======
 // $Date: 2010-04-26 14:48:26 -0400 (Mon, 26 Apr 2010) $
->>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 // $Revision: 61584 $
 
 #include <boost/mpl/aux_/config/ttp.hpp>

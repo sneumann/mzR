@@ -11,11 +11,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Id: push_back_impl.hpp 55679 2009-08-20 07:50:16Z agurtovoy $
-<<<<<<< HEAD
-// $Date: 2009-08-20 08:50:16 +0100 (Thu, 20 Aug 2009) $
-=======
 // $Date: 2009-08-20 03:50:16 -0400 (Thu, 20 Aug 2009) $
->>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 // $Revision: 55679 $
 
 #include <boost/mpl/push_back_fwd.hpp>

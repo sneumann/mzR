@@ -13,7 +13,7 @@
 //
 // http://www.apache.org/licenses/LICENSE-2.0
 //
-n// Unless required by applicable law or agreed to in writing, software 
+// Unless required by applicable law or agreed to in writing, software 
 // distributed under the License is distributed on an "AS IS" BASIS, 
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
 // See the License for the specific language governing permissions and 
@@ -27,20 +27,13 @@ n// Unless required by applicable law or agreed to in writing, software
 #include <boost/lexical_cast.hpp>
 #include "Diff.hpp"
 #include <boost/functional/hash.hpp>
-<<<<<<< HEAD
-=======
 
->>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 #include <Rcpp.h>
 
 namespace pwiz {
 namespace msdata {
 
 using namespace Rcpp;
-<<<<<<< HEAD
-
-=======
->>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 using namespace pwiz::cv;
 using namespace pwiz::data;
 

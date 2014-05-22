@@ -11,11 +11,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Id: assert.hpp 86514 2013-10-29 13:15:03Z bemandawes $
-<<<<<<< HEAD
-// $Date: 2013-10-29 13:15:03 +0000 (Tue, 29 Oct 2013) $
-=======
 // $Date: 2013-10-29 09:15:03 -0400 (Tue, 29 Oct 2013) $
->>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 // $Revision: 86514 $
 
 #include <boost/mpl/not.hpp>

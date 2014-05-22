@@ -8,11 +8,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 // $Source$
-<<<<<<< HEAD
-// $Date: 2011-04-25 13:26:48 +0100 (Mon, 25 Apr 2011) $
-=======
 // $Date: 2011-04-25 08:26:48 -0400 (Mon, 25 Apr 2011) $
->>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 // $Revision: 71481 $
 
 #include <boost/type_traits/detail/template_arity_spec.hpp>

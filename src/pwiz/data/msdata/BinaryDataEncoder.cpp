@@ -37,27 +37,18 @@
 #include "boost/iostreams/device/array.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/data/msdata/MSNumpress.hpp"
-<<<<<<< HEAD
-#include <Rcpp.h>
-
-=======
 
 #include <Rcpp.h>
->>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 
 namespace pwiz {
 namespace msdata {
 
-using namespace Rcpp;
 
 using namespace pwiz::util;
 using namespace pwiz::cv;
 using namespace boost::iostreams;
 using namespace ms::numpress;
-<<<<<<< HEAD
-=======
 using namespace Rcpp;
->>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 
 //
 // BinaryDataEncoder::Impl

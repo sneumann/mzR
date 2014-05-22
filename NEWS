@@ -1,22 +1,7 @@
-<<<<<<< HEAD
 CHANGES IN VERSION 1.11.1
 -------------------------
- o new pwiz checkout [2014-04-24 Thu]
- o fixing building issue and segfault using KK's code [2014-05-21 Wed]
- o removed DUP=FALSE [2014-05-21 Wed]
- o added inst/[script/extdata] with code/rda for reproducibility
-   [2014-05-21 Wed]
+ o update pwiz/boost [2014-05-22 Thu]
 
-CHANGES IN VERSION 1.11.0
--------------------------
- o new devel version 
-
-CHANGES IN VERSION 1.10.0
--------------------------
- o stable version for Bioc 2.14
-
-=======
->>>>>>> 6351d5b3dac0b2a2cbdb7bf18b5ef3f3fb6bafe4
 CHANGES IN VERSION 1.9.8
 ------------------------
  o Pointing to the relevant wiki page in the Rcpp compiler/linker

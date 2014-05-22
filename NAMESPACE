@@ -27,6 +27,5 @@ exportMethods(close,
 
 exportClasses("mzR",
               "mzRramp",
-              "mzRnetCDF",
-              "mzRpwiz")
+              "mzRnetCDF")
 
