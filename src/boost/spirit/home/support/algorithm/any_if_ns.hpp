@@ -1,6 +1,6 @@
 /*=============================================================================
-    Copyright (c) 2001-2010 Hartmut Kaiser
-    Copyright (c) 2001-2010 Joel de Guzman
+    Copyright (c) 2001-2011 Hartmut Kaiser
+    Copyright (c) 2001-2011 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -48,7 +48,7 @@ namespace boost { namespace spirit
         any_if_ns(First1 const& first1, First2 const& first2
           , Last1 const& last1, Last2 const& last2, F& f, mpl::false_)
         {
-            return (0 != (f(*first1, attribute_value<Pred, First1, Last2>(first2)) |
+            return (0 != (f(*first1, spirit::detail::attribute_value<Pred, First1, Last2>(first2)) |
                 detail::any_if_ns<Pred>(
                     fusion::next(first1)
                   , attribute_next<Pred, First1, Last2>(first2)

@@ -7,7 +7,6 @@
 \alias{class:mzR}
 \alias{class:mzRramp}
 \alias{class:mzRnetCDF}
-
 \alias{close,mzRramp-method}
 \alias{close,mzRnetCDF-method}
 \alias{close}
@@ -115,7 +114,7 @@
 }
 
 \author{
-  Steffen Neumann and Laurent Gatto
+  Steffen Neumann, Laurent Gatto, Qiang Kou
 }
 
 \examples{

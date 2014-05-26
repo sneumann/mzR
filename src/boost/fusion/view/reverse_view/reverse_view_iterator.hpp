@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2001-2006 Joel de Guzman
+    Copyright (c) 2001-2011 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -41,10 +41,14 @@ namespace boost { namespace fusion
                 bidirectional_traversal_tag
               , category>::value));
 
-        reverse_view_iterator(First const& first)
-            : first(converter::call(first)) {}
+        reverse_view_iterator(First const& in_first)
+            : first(converter::call(in_first)) {}
 
         first_type first;
+
+    private:
+        // silence MSVC warning C4512: assignment operator could not be generated
+        reverse_view_iterator& operator= (reverse_view_iterator const&);
     };
 }}
 

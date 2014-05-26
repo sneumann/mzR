@@ -21,8 +21,12 @@ PWIZOBJECTS=\
 ./pwiz/utility/minimxml/XMLWriter.o \
 ./pwiz/utility/minimxml/SAXParser.o \
 ./boost/iostreams/src/zlib.o \
+./boost/iostreams/src/file_descriptor.o \
 ./boost/thread/src/pthread/once.o \
+./boost/thread/src/pthread/thread.o \
 ./boost/filesystem/src/operations.o \
+./boost/filesystem/src/path.o \
+./boost/filesystem/src/utf8_codecvt_facet.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
@@ -52,7 +56,9 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/LegacyAdapter.o \
 ./pwiz/data/msdata/SpectrumIterator.o \
 ./pwiz/data/msdata/MSDataFile.o \
+./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
+./pwiz/data/msdata/Index_mzML.o \
 ./pwiz/utility/misc/IntegerSet.o \
 ./pwiz/utility/misc/Base64.o \
 ./pwiz/utility/misc/IterationListener.o \
@@ -65,7 +71,7 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/sha1calc.o \
 ./random_access_gzFile.o
 
-MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o
+MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o 
 
 OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 
@@ -73,8 +79,9 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 ## R complains about assert(), hence -D_NODEBUG
 ##  http://www.gamedev.net/topic/555511-is-there-a-way-to-only-disable-boost-debug-checks/
 ##
+PWIZ_LDFLAGS=-L./pwiz
 PWIZ_LDFLAGS=-lpthread 
-PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG
+PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost 
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)

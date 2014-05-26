@@ -1,5 +1,5 @@
 //
-// $Id: BinaryDataEncoder.hpp 1656 2009-12-30 20:54:17Z chambm $
+// $Id: BinaryDataEncoder.hpp 5084 2013-10-28 23:32:24Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -36,6 +36,9 @@
 namespace pwiz {
 namespace msdata {
 
+const double BinaryDataEncoder_default_numpressSlofErrorTolerance = 0.0002; // 2/100th of one percent
+const double BinaryDataEncoder_default_numpressLinearErrorTolerance = 2e-9; 
+const double BinaryDataEncoder_default_numpressPicErrorTolerance = 0.5; // rounds to nearest integer
 
 /// binary-to-text encoding
 class PWIZ_API_DECL BinaryDataEncoder
@@ -45,24 +48,36 @@ class PWIZ_API_DECL BinaryDataEncoder
     enum Precision {Precision_32, Precision_64};
     enum ByteOrder {ByteOrder_LittleEndian, ByteOrder_BigEndian};
     enum Compression {Compression_None, Compression_Zlib};
+    enum Numpress {Numpress_None, Numpress_Linear, Numpress_Pic, Numpress_Slof}; // lossy numerical representations
 
     /// encoding/decoding configuration 
     struct PWIZ_API_DECL Config
     {
         Precision precision;
         ByteOrder byteOrder;
-        Compression compression;
+        Compression compression;  // zlib or none
+        Numpress numpress; // lossy numerical compression
+        double numpressFixedPoint;  // for Numpress_* use, 0=derive best value
+        double numpressLinearErrorTolerance;  // guarantee abs(1.0-(encoded/decoded)) <= this, 0=do not guarantee anything
+        double numpressSlofErrorTolerance;  // guarantee abs(1.0-(encoded/decoded)) <= this, 0=do not guarantee anything
 
         std::map<cv::CVID, Precision> precisionOverrides;
+        std::map<cv::CVID, Numpress> numpressOverrides; 
 
         Config()
         :   precision(Precision_64),
             byteOrder(ByteOrder_LittleEndian),
-            compression(Compression_None)
+            compression(Compression_None),
+            numpress(Numpress_None),
+            numpressFixedPoint(0.0),
+            numpressLinearErrorTolerance(BinaryDataEncoder_default_numpressLinearErrorTolerance),
+            numpressSlofErrorTolerance(BinaryDataEncoder_default_numpressSlofErrorTolerance)
         {}
     };
 
     BinaryDataEncoder(const Config& config = Config());
+
+    const Config& getConfig() const; // get the config actually used - may differ from input for numpress use
 
     /// encode binary data as a text string
     void encode(const std::vector<double>& data, std::string& result, size_t* binaryByteCount = NULL) const;
@@ -71,7 +86,11 @@ class PWIZ_API_DECL BinaryDataEncoder
     void encode(const double* data, size_t dataSize, std::string& result, size_t* binaryByteCount = NULL) const;
 
     /// decode text-encoded data as binary 
-    void decode(const std::string& encodedData, std::vector<double>& result) const;
+    void decode(const char *encodedData, size_t len, std::vector<double>& result) const;
+    void decode(const std::string& encodedData, std::vector<double>& result) const 
+    {
+        decode(encodedData.c_str(),encodedData.length(),result);
+    }
 
     private:
     class Impl;

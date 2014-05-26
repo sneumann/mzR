@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2001-2006 Joel de Guzman
+    Copyright (c) 2001-2011 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -47,8 +47,8 @@ namespace boost { namespace fusion
     {
         typedef Cons cons_type;
 
-        explicit boost_tuple_iterator(Cons& cons)
-            : cons(cons) {}
+        explicit boost_tuple_iterator(Cons& in_cons)
+            : cons(in_cons) {}
         Cons& cons;
 
         template <typename Iterator>
@@ -127,6 +127,10 @@ namespace boost { namespace fusion
                 return type();
             }
         };
+
+    private:
+        // silence MSVC warning C4512: assignment operator could not be generated
+        boost_tuple_iterator& operator= (boost_tuple_iterator const&);
     };
 
     template <typename Null>

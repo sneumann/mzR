@@ -1,5 +1,5 @@
 //
-// $Id: ChemistryTest.cpp 2161 2010-07-29 16:33:06Z chambm $
+// $Id: ChemistryTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -159,6 +159,17 @@ void testInfo()
             *os_ << Element::Info::record(e).symbol << " " << Element::Info::record(e).atomicNumber << endl;
         *os_ << endl;
     }
+
+    unit_assert(Element::Info::record(Element::C).atomicNumber == 6);
+    unit_assert(Element::Info::record("C").atomicNumber == 6);
+    unit_assert(Element::Info::record(Element::U).atomicNumber == 92);
+    unit_assert(Element::Info::record("U").atomicNumber == 92);
+    unit_assert(Element::Info::record(Element::Uuh).atomicNumber == 116);
+    unit_assert(Element::Info::record("Uuh").atomicNumber == 116);
+
+    unit_assert_throws_what(Element::Info::record("foo"),
+                            runtime_error,
+                            "[chemistry::text2enum()] Error translating symbol foo");
 }
 
 
@@ -222,6 +233,8 @@ void testThreadSafety(const int& testThreadCount)
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
     if (os_) *os_ << "ChemistryTest\n" << setprecision(12);
 
@@ -232,18 +245,17 @@ int main(int argc, char* argv[])
         testThreadSafety(4);
         testThreadSafety(8);
         testThreadSafety(16);
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
 
-    return 1;
+    TEST_EPILOG
 }
 
 

@@ -1,5 +1,5 @@
 //
-// $Id: Diff.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: Diff.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -133,6 +133,7 @@ void diff(const Software& a,
 {
     diff(static_cast<const ParamContainer&>(a), b, a_b, b_a, config);
     diff(a.id, b.id, a_b.id, b_a.id, config);
+	if (!config.ignoreVersions)
     diff(a.version, b.version, a_b.version, b_a.version, config);
 
     // provide id for context
@@ -296,8 +297,9 @@ void diff(const ScanList& a,
 }
 
 
-// measure maximum relative difference between elements in the vectors
-double maxdiff(const vector<double>& a, const vector<double>& b)
+// measure maximum relative difference between elements in the vectors;
+// returns the index and magnitude of the largest difference
+pair<size_t, double> maxdiff(const vector<double>& a, const vector<double>& b)
 {
     if (a.size() != b.size()) 
         throw runtime_error("[Diff::maxdiff()] Sizes differ.");
@@ -305,14 +307,14 @@ double maxdiff(const vector<double>& a, const vector<double>& b)
     vector<double>::const_iterator i = a.begin(); 
     vector<double>::const_iterator j = b.begin(); 
 
-    double max = 0;
+    pair<size_t, double> max;
 
     for (; i!=a.end(); ++i, ++j)
     {
         double denominator = min(*i, *j);
         if (denominator == 0) denominator = 1;
         double current = fabs(*i - *j)/denominator;
-        if (max < current) max = current;
+        if (max.second < current) max = make_pair(i-a.begin(), current);
 
     }
 
@@ -321,6 +323,7 @@ double maxdiff(const vector<double>& a, const vector<double>& b)
 
 
 const char* userParamName_BinaryDataArrayDifference_ = "Binary data array difference";
+const char* userParamName_BinaryDataArrayDifferenceAtIndex_ = "Binary data array difference at index";
 
 PWIZ_API_DECL
 void diff(const BinaryDataArray& a,
@@ -344,16 +347,19 @@ void diff(const BinaryDataArray& a,
     }
     else
     {
-        double max = maxdiff(a.data, b.data);
+        pair<size_t, double> max = maxdiff(a.data, b.data);
        
-        if (max > config.precision + numeric_limits<double>::epsilon())
+        if (max.second > config.precision + numeric_limits<double>::epsilon())
         {
             a_b.userParams.push_back(UserParam(userParamName_BinaryDataArrayDifference_,
-                                               lexical_cast<string>(max),
+                                               lexical_cast<string>(max.second),
                                                "xsd:float"));
-            b_a.userParams.push_back(UserParam(userParamName_BinaryDataArrayDifference_,
-                                               lexical_cast<string>(max),
-					       "xsd:float"));
+            b_a.userParams.push_back(a_b.userParams.back());
+
+            a_b.userParams.push_back(UserParam(userParamName_BinaryDataArrayDifferenceAtIndex_,
+                                               lexical_cast<string>(max.first),
+                                               "xsd:float"));
+            b_a.userParams.push_back(a_b.userParams.back());
         }
     }    
     
@@ -371,7 +377,7 @@ void diff(const vector<BinaryDataArrayPtr>& a,
           const vector<BinaryDataArrayPtr>& b,
           vector<BinaryDataArrayPtr>& a_b,
           vector<BinaryDataArrayPtr>& b_a,
-          const DiffConfig& config, double& maxPrecisionDiff)
+          const DiffConfig& config, pair<size_t, double>& maxPrecisionDiff)
 {
     if (a.size() != b.size())
         throw runtime_error("[Diff::diff(vector<BinaryDataArrayPtr>)] Sizes differ.");
@@ -395,11 +401,35 @@ void diff(const vector<BinaryDataArrayPtr>& a,
             if(!temp_a_b->userParam(userParamName_BinaryDataArrayDifference_).empty())
             {
                 double max = lexical_cast<double>(temp_a_b->userParam(userParamName_BinaryDataArrayDifference_).value);
-                if (max>maxPrecisionDiff) maxPrecisionDiff=max;
+                if (max>maxPrecisionDiff.second)
+                {
+                    size_t maxIndex = lexical_cast<size_t>(temp_a_b->userParam(userParamName_BinaryDataArrayDifferenceAtIndex_).value);
+                    maxPrecisionDiff.first = maxIndex;
+                    maxPrecisionDiff.second = max;
+                }
             }
         }
     }
 }
+
+static void diff_index(const size_t& a, 
+                   const size_t& b, 
+                   size_t& a_b, 
+                   size_t& b_a)
+{
+    
+    if (a != b)
+    {
+        a_b = a;
+        b_a = b;
+    }
+    else
+    {
+        a_b = IDENTITY_INDEX_NONE;
+        b_a = IDENTITY_INDEX_NONE;
+    }
+}
+
 
 
 PWIZ_API_DECL
@@ -415,7 +445,7 @@ void diff(const Spectrum& a,
     if (!config.ignoreIdentity)
     {
         diff(a.id, b.id, a_b.id, b_a.id, config);
-        diff_integral(a.index, b.index, a_b.index, b_a.index, config);
+        diff_index(a.index, b.index, a_b.index, b_a.index);
     }
 
     // important scan metadata
@@ -442,19 +472,22 @@ void diff(const Spectrum& a,
     }
     else
     {
-        double maxPrecisionDiff=0;
+        pair<size_t, double> maxPrecisionDiff(0, 0);
         diff(a.binaryDataArrayPtrs, b.binaryDataArrayPtrs, 
              a_b.binaryDataArrayPtrs, b_a.binaryDataArrayPtrs,
              config, maxPrecisionDiff);
       
-        if (maxPrecisionDiff>(config.precision+numeric_limits<double>::epsilon()))   
+        if (maxPrecisionDiff.second>(config.precision+numeric_limits<double>::epsilon()))   
         {
             a_b.userParams.push_back(UserParam(userParamName_BinaryDataArrayDifference_,
-                                               lexical_cast<string>(maxPrecisionDiff),
-                                               "xsd:float"));      
-            b_a.userParams.push_back(UserParam(userParamName_BinaryDataArrayDifference_,
-			                                   lexical_cast<string>(maxPrecisionDiff),
-			                                   "xsd:float"));
+                                               lexical_cast<string>(maxPrecisionDiff.second),
+                                               "xsd:float"));
+            b_a.userParams.push_back(a_b.userParams.back());
+
+            a_b.userParams.push_back(UserParam(userParamName_BinaryDataArrayDifferenceAtIndex_,
+                                               lexical_cast<string>(maxPrecisionDiff.first),
+                                               "xsd:float"));
+            b_a.userParams.push_back(a_b.userParams.back());
         }
     }
 
@@ -482,7 +515,7 @@ void diff(const Chromatogram& a,
     if (!config.ignoreIdentity)
     {
         diff(a.id, b.id, a_b.id, b_a.id, config);
-        diff_integral(a.index, b.index, a_b.index, b_a.index, config);
+        diff_index(a.index, b.index, a_b.index, b_a.index);
     }
 
     // important scan metadata
@@ -507,19 +540,22 @@ void diff(const Chromatogram& a,
     }
     else
     {
-        double maxPrecisionDiff=0;
+        pair<size_t, double> maxPrecisionDiff(0, 0);
         diff(a.binaryDataArrayPtrs, b.binaryDataArrayPtrs,
              a_b.binaryDataArrayPtrs, b_a.binaryDataArrayPtrs,
              config, maxPrecisionDiff);
 
-        if (maxPrecisionDiff>(config.precision+numeric_limits<double>::epsilon()))   
+        if (maxPrecisionDiff.second>(config.precision+numeric_limits<double>::epsilon()))   
         {
             a_b.userParams.push_back(UserParam(userParamName_BinaryDataArrayDifference_,
-                                               lexical_cast<string>(maxPrecisionDiff),
-                                               "xsd:float"));      
-            b_a.userParams.push_back(UserParam(userParamName_BinaryDataArrayDifference_,
-                                               lexical_cast<string>(maxPrecisionDiff),
+                                               lexical_cast<string>(maxPrecisionDiff.second),
                                                "xsd:float"));
+            b_a.userParams.push_back(a_b.userParams.back());
+
+            a_b.userParams.push_back(UserParam(userParamName_BinaryDataArrayDifferenceAtIndex_,
+                                               lexical_cast<string>(maxPrecisionDiff.first),
+                                               "xsd:float"));
+            b_a.userParams.push_back(a_b.userParams.back());
         }
     }
 
@@ -764,6 +800,7 @@ void diff(const MSData& a,
     {
         diff(a.accession, b.accession, a_b.accession, b_a.accession, config);
         diff(a.id, b.id, a_b.id, b_a.id, config);
+	    if (!config.ignoreVersions)
         diff(a.version(), b.version(), a_b_version, b_a_version, config);
         vector_diff_diff(a.cvs, b.cvs, a_b.cvs, b_a.cvs, config);
         diff(a.fileDescription, b.fileDescription, a_b.fileDescription, b_a.fileDescription, config);
@@ -825,6 +862,17 @@ std::ostream& os_write_spectra(std::ostream& os, const SpectrumListPtr a_b, cons
 std::ostream& os_write_chromatograms(std::ostream& os, const ChromatogramListPtr a_b, const ChromatogramListPtr b_a)
 {
     TextWriter write(os,1);
+
+    if((a_b==NULL) != (b_a==NULL))
+    {
+        os<<"in ChromatogramList diff: one of two ChromatogramList pointers is NULL"<<endl;
+        return os;
+    }
+
+    if((a_b==NULL) && (b_a==NULL))
+    {
+        return os;
+    }
 
     if(a_b->size()!=b_a->size())
     {

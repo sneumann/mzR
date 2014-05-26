@@ -1,5 +1,5 @@
 #
-# $Id: Jamfile.jam 2304 2010-10-20 16:50:47Z chambm $
+# $Id: Jamfile.jam 4990 2013-09-24 18:52:40Z pcbrefugee $
 #
 #
 # Original author: Darren Kessner <darren@proteowizard.org>
@@ -48,10 +48,12 @@ lib pwiz_data_msdata
         DefaultReaderList.cpp
         Diff.cpp
         IO.cpp
+        Index_mzML.cpp
         LegacyAdapter.cpp
         MSData.cpp
         MSDataFile.cpp
         MSDataMerger.cpp
+        MSNumpress.cpp
         Serializer_mzML.cpp
         Serializer_mzXML.cpp
         Serializer_MGF.cpp
@@ -84,7 +86,7 @@ lib pwiz_data_msdata
         <library>pwiz_data_msdata_version
         <library>../common//pwiz_data_common
         <library>../..//pwiz_version
-		<library>../../utility/misc//pwiz_utility_misc
+        <library>../../utility/misc//pwiz_utility_misc
         <library>../../utility/minimxml//pwiz_utility_minimxml
         <library>/ext/boost//iostreams/<boost-iostreams-zlib>on
         <library>/ext/boost//filesystem
@@ -96,9 +98,9 @@ lib pwiz_data_msdata
 
 lib pwiz_data_msdata_examples
     :   examples.cpp
-	:   <library>pwiz_data_msdata
-	:
-	:	<library>pwiz_data_msdata
+    :   <library>pwiz_data_msdata
+    :
+    :   <library>pwiz_data_msdata
     ;
 
 
@@ -128,7 +130,7 @@ unit-test-if-exists Serializer_MSn_Test : Serializer_MSn_Test.cpp pwiz_data_msda
 unit-test-if-exists MSnReaderTest : MSnReaderTest.cpp pwiz_data_msdata pwiz_data_msdata_examples ;
 unit-test-if-exists MSDataFileTest : MSDataFileTest.cpp pwiz_data_msdata pwiz_data_msdata_examples /ext/boost//filesystem ;
 unit-test-if-exists RAMPAdapterTest : RAMPAdapterTest.cpp pwiz_data_msdata pwiz_data_msdata_examples /ext/boost//filesystem ;
-unit-test-if-exists ReaderTest : ReaderTest.cpp pwiz_data_msdata ;
+unit-test-if-exists ReaderTest : ReaderTest.cpp pwiz_data_msdata pwiz_data_msdata_examples ../vendor_readers ;
 unit-test-if-exists SpectrumInfoTest : SpectrumInfoTest.cpp pwiz_data_msdata_examples ;
 unit-test-if-exists SpectrumListBaseTest : SpectrumListBaseTest.cpp pwiz_data_msdata ;
 unit-test-if-exists ChromatogramListBaseTest : ChromatogramListBaseTest.cpp pwiz_data_msdata ;

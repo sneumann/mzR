@@ -26,6 +26,7 @@
 // note that Filesystem.hpp is not included since it depends on Filesystem.cpp
 
 #include "pwiz/utility/misc/Exception.hpp"
+#include "pwiz/utility/misc/Environment.hpp"
 #include "pwiz/utility/misc/Container.hpp"
 #include "pwiz/utility/misc/String.hpp"
 #include "pwiz/utility/misc/Stream.hpp"
@@ -53,4 +54,19 @@ using boost::shared_ptr;
 using boost::weak_ptr;
 using boost::scoped_ptr;
 
+using std::exception;
+using std::runtime_error;
+using std::out_of_range;
+using std::domain_error;
+using std::invalid_argument;
+using std::length_error;
+using std::logic_error;
+using std::overflow_error;
+using std::range_error;
+using std::underflow_error;
+
+
+#include <Rcpp.h>
+using Rcpp::Rcout;
+using Rcpp::Rcerr;
 #endif // _STD_HPP_

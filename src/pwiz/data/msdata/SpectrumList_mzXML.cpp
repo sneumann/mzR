@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_mzXML.cpp 2272 2010-09-20 20:45:12Z chambm $
+// $Id: SpectrumList_mzXML.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -50,12 +50,16 @@ class SpectrumList_mzXMLImpl : public SpectrumList_mzXML
     virtual size_t size() const {return index_.size();}
     virtual const SpectrumIdentity& spectrumIdentity(size_t index) const;
     virtual size_t find(const string& id) const;
+    virtual SpectrumPtr spectrum(size_t index, DetailLevel detailLevel) const;
     virtual SpectrumPtr spectrum(size_t index, bool getBinaryData) const;
+    virtual SpectrumPtr spectrum(const SpectrumPtr &seed, bool getBinaryData) const;
+    virtual SpectrumPtr spectrum(size_t index, IO::BinaryDataFlag binaryDataFlag, const SpectrumPtr *defaults) const;
 
     private:
+    SpectrumPtr spectrum(size_t index, IO::BinaryDataFlag binaryDataFlag, DetailLevel detailLevel, const SpectrumPtr *defaults, bool isRecursiveCall) const;
     shared_ptr<istream> is_;
     const MSData& msd_;
-    vector<SpectrumIdentity> index_;
+    vector<SpectrumIdentityFromMzXML> index_;
     map<string,size_t> idToIndex_;
 
     mutable vector<int> scanMsLevelCache_;
@@ -111,7 +115,10 @@ struct HandlerPrecursor : public SAXParser::Handler
 
     HandlerPrecursor()
     :   precursor(0)
-    {}
+    {
+        parseCharacters = true;
+        autoUnescapeCharacters = false;
+    }
 
     virtual Status startElement(const string& name, 
                                 const Attributes& attributes,
@@ -122,33 +129,61 @@ struct HandlerPrecursor : public SAXParser::Handler
 
         if (name == "precursorMz")
         {
-            string precursorScanNum("0"), precursorIntensity, precursorCharge,
-                possibleCharges;
+            string precursorScanNum, precursorIntensity, precursorCharge, possibleCharges, activationMethod, windowWideness;
             getAttribute(attributes, "precursorScanNum", precursorScanNum);
             getAttribute(attributes, "precursorIntensity", precursorIntensity);
             getAttribute(attributes, "precursorCharge", precursorCharge);
             getAttribute(attributes, "possibleCharges", possibleCharges);
+            getAttribute(attributes, "activationMethod", activationMethod);
+            getAttribute(attributes, "windowWideness", windowWideness);
 
-            precursor->spectrumID = id::translateScanNumberToNativeID(nativeIdFormat, precursorScanNum);
+            if (!precursorScanNum.empty()) // precursorScanNum is an optional element
+                precursor->spectrumID = id::translateScanNumberToNativeID(nativeIdFormat, precursorScanNum);
 
             precursor->selectedIons.push_back(SelectedIon());
 
             if (!precursorIntensity.empty() && precursorIntensity != "0")
-                precursor->selectedIons.back().cvParams.push_back(CVParam(MS_peak_intensity, precursorIntensity, MS_number_of_counts));
+                precursor->selectedIons.back().set(MS_peak_intensity, precursorIntensity, MS_number_of_detector_counts);
 
             if (!precursorCharge.empty())
-                precursor->selectedIons.back().cvParams.push_back(CVParam(MS_charge_state, precursorCharge));
+                precursor->selectedIons.back().set(MS_charge_state, precursorCharge);
 
-			if (!possibleCharges.empty())
-			{
-				vector<string> strCharges;
-				boost::algorithm::split(strCharges, possibleCharges, boost::is_any_of(","));
+            if (!possibleCharges.empty())
+            {
+                vector<string> strCharges;
+                boost::algorithm::split(strCharges, possibleCharges, boost::is_any_of(","));
 
-				BOOST_FOREACH(string& charge, strCharges)
-				{
-					precursor->selectedIons.back().cvParams.push_back(CVParam(MS_possible_charge_state, lexical_cast<int>(charge)));
-				}
-			}
+                BOOST_FOREACH(const string& charge, strCharges)
+                {
+                    precursor->selectedIons.back().set(MS_possible_charge_state, lexical_cast<int>(charge));
+                }
+            }
+
+            if (activationMethod.empty() || activationMethod == "CID")
+            {
+                // TODO: is it reasonable to assume CID if activation method is unspecified (i.e. older mzXMLs)?
+                precursor->activation.set(MS_CID);
+            }
+            else if (activationMethod == "ETD")
+                precursor->activation.set(MS_ETD);
+            else if (activationMethod == "ETD+SA")
+            {
+                precursor->activation.set(MS_ETD);
+                precursor->activation.set(MS_CID);
+            }
+            else if (activationMethod == "ECD")
+                precursor->activation.set(MS_ECD);
+            else if (activationMethod == "HCD")
+                precursor->activation.set(MS_HCD);
+            //else
+                // TODO: log about invalid attribute value
+
+            if (!windowWideness.empty())
+            {
+                double isolationWindowWidth = lexical_cast<double>(windowWideness) / 2.0;
+                precursor->isolationWindow.set(MS_isolation_window_lower_offset, isolationWindowWidth);
+                precursor->isolationWindow.set(MS_isolation_window_upper_offset, isolationWindowWidth);
+            }
 
             return Status::Ok;
         }
@@ -156,13 +191,13 @@ struct HandlerPrecursor : public SAXParser::Handler
         throw runtime_error(("[SpectrumList_mzXML::HandlerPrecursor] Unexpected element name: " + name).c_str());
     }
 
-    virtual Status characters(const string& text,
+    virtual Status characters(const SAXParser::saxstring& text,
                               stream_offset position)
     {
         if (!precursor)
             throw runtime_error("[SpectrumList_mzXML::HandlerPrecursor] Null precursor."); 
 
-        precursor->selectedIons.back().cvParams.push_back(CVParam(MS_selected_ion_m_z, text, MS_m_z));
+        precursor->selectedIons.back().set(MS_selected_ion_m_z, text, MS_m_z);
 
         return Status::Ok;
     }
@@ -175,9 +210,12 @@ class HandlerPeaks : public SAXParser::Handler
 
     unsigned int peaksCount;
 
-    HandlerPeaks(Spectrum& spectrum)
-    :   peaksCount(0), spectrum_(spectrum)
-    {}
+    HandlerPeaks(Spectrum& spectrum,unsigned int peakscount)
+    :   peaksCount(peakscount), spectrum_(spectrum)
+    {
+        parseCharacters = true;
+        autoUnescapeCharacters = false;
+    }
 
     virtual Status startElement(const string& name, 
                                 const Attributes& attributes,
@@ -223,24 +261,24 @@ class HandlerPeaks : public SAXParser::Handler
         throw runtime_error(("[SpectrumList_mzXML::HandlerPeaks] Unexpected element name: " + name).c_str());
     }
 
-    virtual Status characters(const string& text,
+    virtual Status characters(const SAXParser::saxstring& text,
                               stream_offset position)
     {
         if (peaksCount == 0)
         {
-            spectrum_.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_counts);
+            spectrum_.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_detector_counts);
             return Status::Ok;
         }
 
         BinaryDataEncoder encoder(config_);
         vector<double> decoded;
-        encoder.decode(text, decoded);
+        encoder.decode(text.c_str(), text.length(), decoded);
 
         if (decoded.size()%2 != 0 || decoded.size()/2 != peaksCount) 
             throw runtime_error("[SpectrumList_mzXML::HandlerPeaks] Invalid peak count."); 
 
         spectrum_.setMZIntensityPairs(reinterpret_cast<const MZIntensityPair*>(&decoded[0]),
-                                      peaksCount, MS_number_of_counts);
+                                      peaksCount, MS_number_of_detector_counts);
         return Status::Ok;
     }
  
@@ -261,6 +299,10 @@ class HandlerPeaks : public SAXParser::Handler
         return Status::Ok;
     }
 
+    unsigned int getPeaksCount() const {
+        return peaksCount;
+    }
+
     private:
     Spectrum& spectrum_;
     BinaryDataEncoder::Config config_;
@@ -271,11 +313,12 @@ class HandlerScan : public SAXParser::Handler
 {
     public:
 
-    HandlerScan(const MSData& msd, Spectrum& spectrum, bool getBinaryData)
+    HandlerScan(const MSData& msd, Spectrum& spectrum, const SpectrumIdentityFromMzXML &spectrum_id, bool getBinaryData,size_t peakscount)
     :   msd_(msd),
         spectrum_(spectrum), 
+        spectrum_id_(spectrum_id),
         getBinaryData_(getBinaryData),
-        handlerPeaks_(spectrum),
+        handlerPeaks_(spectrum,peakscount),
         handlerPrecursor_(),
         nativeIdFormat_(id::getDefaultNativeIDFormat(msd))
     {
@@ -293,13 +336,16 @@ class HandlerScan : public SAXParser::Handler
                 // we're in a nested scan declaration, we can quit
                 return Status::Done;
             }
-            string scanEvent, msLevel, peaksCount, polarity,
+            string /*scanEvent,*/ msLevel, polarity,
                 retentionTime, lowMz, highMz, basePeakMz, basePeakIntensity, totIonCurrent,
                 msInstrumentID, centroided, deisotoped, chargeDeconvoluted, scanType,
-                ionisationEnergy, cidGasPressure, startMz, endMz;
+                ionisationEnergy, cidGasPressure;
+
+            unsigned int peaksCount;
+            double startMz, endMz;
 
             getAttribute(attributes, "num", scanNumber_);
-            getAttribute(attributes, "scanEvent", scanEvent);
+            //getAttribute(attributes, "scanEvent", scanEvent);
             getAttribute(attributes, "msLevel", msLevel);
             getAttribute(attributes, "peaksCount", peaksCount);
             getAttribute(attributes, "polarity", polarity);
@@ -331,13 +377,13 @@ class HandlerScan : public SAXParser::Handler
                 msLevel = "1";
             spectrum_.set(MS_ms_level, msLevel);
 
-            handlerPeaks_.peaksCount = lexical_cast<unsigned int>(peaksCount);
+            handlerPeaks_.peaksCount = peaksCount;
 
             spectrum_.scanList.set(MS_no_combination);
             spectrum_.scanList.scans.push_back(Scan());
             Scan& scan = spectrum_.scanList.scans.back();
 
-            scan.set(MS_preset_scan_configuration, scanEvent);
+            //scan.set(MS_preset_scan_configuration, scanEvent);
 
             if (polarity == "+")
                 spectrum_.set(MS_positive_scan);
@@ -360,26 +406,30 @@ class HandlerScan : public SAXParser::Handler
                 scan.set(MS_SIM);
             } else if (scanType == "srm" ||
                        scanType == "mrm" || // hack: mzWiff (ABI) and wolf-mrm (Waters) use this value
-                       scanType == "multiplereaction") // hack: Trapper (Agilent) uses this value
+                       scanType == "multiplereaction" || // hack: Trapper (Agilent) uses this value
+                       scanType == "srm_ionprep") // hack: (Bruker) uses this value
             {
                 spectrum_.set(MS_SRM_spectrum);
                 scan.set(MS_SRM);
             } else if (scanType == "crm")
             {
                 spectrum_.set(MS_CRM_spectrum);
-                scan.set(MS_CRM);
+                scan.set(MS_CRM_OBSOLETE);
             } else if (scanType == "q1")
             {
                 spectrum_.set(MS_precursor_ion_spectrum);
-                scan.set(MS_precursor_ion_scan);
+                scan.set(MS_precursor_ion_spectrum);
             } else if (scanType == "q3")
             {
                 spectrum_.set(MS_product_ion_spectrum);
-                scan.set(MS_product_ion_scan);
+                scan.set(MS_product_ion_spectrum);
             }
 
             // TODO: make this more robust
-            bool hasCentroidDataProcessing = msd_.dataProcessingPtrs[0]->processingMethods[0].hasCVParam(MS_peak_picking);
+            bool hasCentroidDataProcessing = true;
+            if (!msd_.dataProcessingPtrs.empty() && !msd_.dataProcessingPtrs[0]->processingMethods.empty())
+                hasCentroidDataProcessing = msd_.dataProcessingPtrs[0]->processingMethods[0].hasCVParam(MS_peak_picking);
+
             if (centroided.empty())
                 spectrum_.set(hasCentroidDataProcessing ? MS_centroid_spectrum : MS_profile_spectrum);
             else if (centroided == "1")
@@ -404,9 +454,8 @@ class HandlerScan : public SAXParser::Handler
                 scan.set(MS_scan_start_time, retentionTime, UO_second);
             }
 
-            if (!startMz.empty() && !endMz.empty())
-                scan.scanWindows.push_back(
-                    ScanWindow(lexical_cast<double>(startMz), lexical_cast<double>(endMz), MS_m_z));
+            if (endMz > 0)
+                scan.scanWindows.push_back(ScanWindow(startMz, endMz, MS_m_z));
             
             if (!lowMz.empty())
                 spectrum_.set(MS_lowest_observed_m_z, lowMz);
@@ -423,39 +472,25 @@ class HandlerScan : public SAXParser::Handler
         }
         else if (name == "precursorMz")
         {
-            getAttribute(attributes, "activationMethod", activationMethod_);
-
             spectrum_.precursors.push_back(Precursor());
             Precursor& precursor = spectrum_.precursors.back();
-
+            
             if (!collisionEnergy_.empty())
                 precursor.activation.set(MS_collision_energy, collisionEnergy_, UO_electronvolt);
-
-            if (activationMethod_.empty() || activationMethod_ == "CID")
-            {
-                // TODO: is it reasonable to assume CID if activation method is unspecified (i.e. older mzXMLs)?
-                precursor.activation.set(MS_CID);
-            }
-            else if (activationMethod_ == "ETD")
-                precursor.activation.set(MS_ETD);
-            else if (activationMethod_ == "ETD+SA")
-            {
-                precursor.activation.set(MS_ETD);
-                precursor.activation.set(MS_CID);
-            }
-            else if (activationMethod_ == "ECD")
-                precursor.activation.set(MS_ECD);
-            //else
-                // TODO: log about invalid attribute value
 
             handlerPrecursor_.precursor = &precursor; 
             return Status(Status::Delegate, &handlerPrecursor_);
         }
         else if (name == "peaks")
         {
+            // pretty likely to come right back here and read the
+            // binary data once the header info has been inspected, 
+            // so note position
+            spectrum_id_.sourceFilePositionForBinarySpectrumData = position; 
+
             if (!getBinaryData_ || handlerPeaks_.peaksCount == 0)
             {
-                spectrum_.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_counts);
+                spectrum_.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_detector_counts);
                 spectrum_.defaultArrayLength = handlerPeaks_.peaksCount;
                 return Status::Ok;
             }
@@ -490,9 +525,14 @@ class HandlerScan : public SAXParser::Handler
         throw runtime_error("[SpectrumList_mzXML::HandlerScan] Unexpected element name \"" + name + "\" in scan " + scanNumber_);
     }
 
+    unsigned int getPeaksCount() const {
+        return handlerPeaks_.getPeaksCount();
+    }
+
     private:
     const MSData& msd_;
     Spectrum& spectrum_;
+    const SpectrumIdentityFromMzXML& spectrum_id_; // for noting binary data position
     bool getBinaryData_;
     string scanNumber_;
     string collisionEnergy_;
@@ -502,8 +542,50 @@ class HandlerScan : public SAXParser::Handler
     CVID nativeIdFormat_;
 };
 
+/// retrieve a spectrum by index
+/// - detailLevel determines what fields are guaranteed present on the spectrum after the call
+/// - client may assume the underlying Spectrum* is valid 
+SpectrumPtr SpectrumList_mzXMLImpl::spectrum(size_t index, DetailLevel detailLevel) const
+{
+    return spectrum(index,(detailLevel == DetailLevel_FullData) ? IO::ReadBinaryData : IO::IgnoreBinaryData, detailLevel, NULL, false);
+}
+
 
 SpectrumPtr SpectrumList_mzXMLImpl::spectrum(size_t index, bool getBinaryData) const
+{
+    return spectrum(index, getBinaryData ? IO::ReadBinaryData : IO::IgnoreBinaryData,
+        getBinaryData ? DetailLevel_FullData : DetailLevel_FullMetadata,  NULL, false);
+}
+
+/// get a copy of the seed spectrum with its binary data populated
+/// this is useful for formats like mzXML that can delay loading of binary data
+/// - client may assume the underlying Spectrum* is valid 
+SpectrumPtr SpectrumList_mzXMLImpl::spectrum(const SpectrumPtr &seed, bool getBinaryData) const {
+    return spectrum(seed->index, getBinaryData ? IO::ReadBinaryDataOnly: IO::IgnoreBinaryData, 
+        DetailLevel_InstantMetadata, // assume full metadata is already loaded
+        &seed, false);
+}
+
+SpectrumPtr SpectrumList_mzXMLImpl::spectrum(size_t index, IO::BinaryDataFlag binaryDataFlag, const SpectrumPtr *defaults) const
+{
+    DetailLevel detailLevel;
+    switch (binaryDataFlag)
+    {
+    case IO::IgnoreBinaryData:
+        detailLevel = DetailLevel_FullMetadata;
+        break;
+    case IO::ReadBinaryDataOnly:
+        detailLevel = DetailLevel_InstantMetadata;
+        break;
+    case IO::ReadBinaryData:
+    default:
+        detailLevel = DetailLevel_FullData;
+        break;
+    }
+    return spectrum(index, binaryDataFlag, detailLevel, defaults, false);
+}
+
+SpectrumPtr SpectrumList_mzXMLImpl::spectrum(size_t index, IO::BinaryDataFlag binaryDataFlag, DetailLevel detailLevel, const SpectrumPtr *defaults, bool isRecursiveCall) const
 {
     if (index > index_.size())
         throw runtime_error("[SpectrumList_mzXML::spectrum()] Index out of bounds.");
@@ -513,32 +595,56 @@ SpectrumPtr SpectrumList_mzXMLImpl::spectrum(size_t index, bool getBinaryData) c
     SpectrumPtr result(new Spectrum);
     if (!result.get())
         throw runtime_error("[SpectrumList_mzXML::spectrum()] Out of memory.");
+    if (defaults) { // provide some context from previous parser runs
+        result = *defaults; // copy in anything we may have cached before
+    }
 
     result->index = index;
 
-    is_->seekg(offset_to_position(index_[index].sourceFilePosition));
+	// we may just be here to get binary data of otherwise previously read spectrum
+    const SpectrumIdentityFromMzXML &id = index_[index];
+	boost::iostreams::stream_offset seekto;
+    unsigned int peakscount;
+    if (binaryDataFlag==IO::ReadBinaryDataOnly &&
+        (id.sourceFilePositionForBinarySpectrumData != (boost::iostreams::stream_offset)-1)) {
+        // we're here to add binary data to an already parsed header
+        seekto = id.sourceFilePositionForBinarySpectrumData;
+        peakscount = id.peaksCount; // expecting this many peaks
+    } else {
+		seekto = id.sourceFilePosition; // read from start of scan
+        peakscount = 0; // don't know how many peaks to expect yet
+	}
+    is_->seekg(offset_to_position(seekto));
     if (!*is_)
         throw runtime_error("[SpectrumList_mzXML::spectrum()] Error seeking to <scan>.");
 
-    HandlerScan handler(msd_, *result, getBinaryData);
+    HandlerScan handler(msd_, *result, id, binaryDataFlag!=IO::IgnoreBinaryData, peakscount);
     SAXParser::parse(*is_, handler);
+
+    // note the binary data size in case we come back around to read full data
+    if (!id.peaksCount) {
+        id.peaksCount = handler.getPeaksCount();
+    }
 
     int msLevel = result->cvParam(MS_ms_level).valueAs<int>();
     scanMsLevelCache_[index] = msLevel;
 
-    // hack to get parent scanNumber if precursorScanNum wasn't set
-
-    if (msLevel > 1 &&
-        !result->precursors.empty() &&
-        result->precursors.front().spectrumID.empty())
+    if (detailLevel >= DetailLevel_FullMetadata)
     {
-        // MCC: I see your hack and I raise you a hack!
-        // * precursorScanNum is optional
-        // * the precursor scan is not necessarily in the mzXML
-        if (result->precursors.front().spectrumID == "0")
-            result->precursors.front().spectrumID.clear();
-        else
-            result->precursors.front().spectrumID = getPrecursorID(msLevel-1, index);
+        // hack to get parent scanNumber if precursorScanNum wasn't set
+        if (msLevel > 1 &&
+            !isRecursiveCall && // in an all-MS2 file we can run out of stack
+            !result->precursors.empty() &&
+            result->precursors.front().spectrumID.empty())
+        {
+            // MCC: I see your hack and I raise you a hack!
+            // * precursorScanNum is optional
+            // * the precursor scan is not necessarily in the mzXML
+            if (result->precursors.front().spectrumID == "0")
+                result->precursors.front().spectrumID.clear();
+            else
+                result->precursors.front().spectrumID = getPrecursorID(msLevel-1, index);
+        }
     }
 
     // resolve any references into the MSData object
@@ -555,7 +661,10 @@ class HandlerIndexOffset : public SAXParser::Handler
 
     HandlerIndexOffset(stream_offset& indexOffset)
     :   indexOffset_(indexOffset)
-    {}
+    {
+        parseCharacters = true;
+        autoUnescapeCharacters = false;
+    }
 
     virtual Status startElement(const string& name, 
                                 const Attributes& attributes,
@@ -566,7 +675,7 @@ class HandlerIndexOffset : public SAXParser::Handler
         return Status::Ok;
     }
 
-    virtual Status characters(const string& text,
+    virtual Status characters(const SAXParser::saxstring& text,
                               stream_offset position)
     {
         indexOffset_ = lexical_cast<stream_offset>(text);
@@ -580,12 +689,16 @@ class HandlerIndexOffset : public SAXParser::Handler
 
 struct HandlerOffset : public SAXParser::Handler
 {
-    SpectrumIdentity* spectrumIdentity;
+    SpectrumIdentityFromMzXML* spectrumIdentity;
     CVID nativeIdFormat;
 
     HandlerOffset(const MSData& msd)
         :   spectrumIdentity(0),
-            nativeIdFormat(id::getDefaultNativeIDFormat(msd)) {}
+            nativeIdFormat(id::getDefaultNativeIDFormat(msd))
+    {
+        parseCharacters = true;
+        autoUnescapeCharacters = false;
+    }
 
     virtual Status startElement(const string& name, 
                                 const Attributes& attributes,
@@ -606,7 +719,7 @@ struct HandlerOffset : public SAXParser::Handler
         return Status::Ok;
     }
 
-    virtual Status characters(const string& text,
+    virtual Status characters(const SAXParser::saxstring& text,
                               stream_offset position)
     {
         if (!spectrumIdentity)
@@ -623,9 +736,12 @@ class HandlerIndex : public SAXParser::Handler
 {
     public:
 
-    HandlerIndex(vector<SpectrumIdentity>& index, const MSData& msd)
+    HandlerIndex(vector<SpectrumIdentityFromMzXML>& index, const MSData& msd)
     :   index_(index), handlerOffset_(msd)
-    {}
+    {
+        parseCharacters = true;
+        autoUnescapeCharacters = false;
+    }
 
     virtual Status startElement(const string& name, 
                                 const Attributes& attributes,
@@ -637,7 +753,7 @@ class HandlerIndex : public SAXParser::Handler
         }
         else if (name == "offset")
         {
-            index_.push_back(SpectrumIdentity());
+            index_.push_back(SpectrumIdentityFromMzXML());
             index_.back().index = index_.size()-1;
             handlerOffset_.spectrumIdentity = &index_.back();
             return Status(Status::Delegate, &handlerOffset_);
@@ -646,14 +762,14 @@ class HandlerIndex : public SAXParser::Handler
           throw SpectrumList_mzXML::index_not_found(("[SpectrumList_mzXML::HandlerIndex] Unexpected element name: " + name).c_str());
     }
 
-    virtual Status characters(const std::string& text,
+    virtual Status characters(const SAXParser::saxstring& text,
                               stream_offset position)
     {
         throw SpectrumList_mzXML::index_not_found("[SpectrumList_mzXML::HandlerIndex] <index> not found.");
     }
 
     private:
-    vector<SpectrumIdentity>& index_;
+    vector<SpectrumIdentityFromMzXML>& index_;
     HandlerOffset handlerOffset_;
 };
 
@@ -708,7 +824,7 @@ class HandlerIndexCreator : public SAXParser::Handler
 {
     public:
 
-    HandlerIndexCreator(vector<SpectrumIdentity>& index, const MSData& msd)
+    HandlerIndexCreator(vector<SpectrumIdentityFromMzXML>& index, const MSData& msd)
     :   index_(index), nativeIdFormat_(id::getDefaultNativeIDFormat(msd))
     {}
 
@@ -721,7 +837,7 @@ class HandlerIndexCreator : public SAXParser::Handler
             string scanNumber;
             getAttribute(attributes, "num", scanNumber);
 
-            SpectrumIdentity si;
+            SpectrumIdentityFromMzXML si;
             si.index = index_.size();
             si.id = id::translateScanNumberToNativeID(nativeIdFormat_, scanNumber);
             if (si.id.empty())
@@ -744,7 +860,7 @@ class HandlerIndexCreator : public SAXParser::Handler
     }
 
     private:
-    vector<SpectrumIdentity>& index_;
+    vector<SpectrumIdentityFromMzXML>& index_;
     CVID nativeIdFormat_;
 };
 
@@ -759,7 +875,7 @@ void SpectrumList_mzXMLImpl::createIndex()
 
 void SpectrumList_mzXMLImpl::createMaps()
 {
-    vector<SpectrumIdentity>::const_iterator it=index_.begin();
+    vector<SpectrumIdentityFromMzXML>::const_iterator it=index_.begin();
     for (unsigned int i=0; i!=index_.size(); ++i, ++it)
         idToIndex_[it->id] = i;
 }
@@ -771,16 +887,20 @@ string SpectrumList_mzXMLImpl::getPrecursorID(int precursorMsLevel, size_t index
 
     while (index > 0)
     {
-	    --index;
+        --index;
         int& cachedMsLevel = scanMsLevelCache_[index];
-        if (cachedMsLevel == 0)
+        if (index && (cachedMsLevel == 0))
         {
             // populate the missing MS level
-            SpectrumPtr s = spectrum(index-1, false);
-	        cachedMsLevel = s->cvParam(MS_ms_level).valueAs<int>();
+            SpectrumPtr s = spectrum(index, DetailLevel_FastMetadata); // avoid excessive recursion
+
+            cachedMsLevel = s->cvParam(MS_ms_level).valueAs<int>();
         }
-        if (cachedMsLevel == precursorMsLevel)
-            return lexical_cast<string>(index);
+        if (cachedMsLevel == precursorMsLevel) 
+        {
+            SpectrumPtr s = spectrum(index, DetailLevel_FastMetadata);
+            return s ?  s->id : lexical_cast<string>(index);
+        }
     }
 
     return "";

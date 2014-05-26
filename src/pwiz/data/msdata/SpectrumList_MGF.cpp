@@ -1,12 +1,12 @@
 //
-// $Id: SpectrumList_MGF.cpp 2295 2010-10-13 22:21:14Z frewen $
+// $Id: SpectrumList_MGF.cpp 5074 2013-10-24 21:14:29Z kaipot $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
 //
 // Copyright 2008 Spielberg Family Center for Applied Proteomics
 //   Cedars Sinai Medical Center, Los Angeles, California  90048
-// Copyright 2008 Vanderbilt University - Nashville, TN 37232
+// Copyright 2011 Vanderbilt University - Nashville, TN 37232
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License. 
@@ -145,17 +145,35 @@ class SpectrumList_MGFImpl : public SpectrumList_MGF
         string lineStr;
 	    bool inBeginIons = false;
         bool inPeakList = false;
+        bool negativePolarity = false;
         double lowMZ = std::numeric_limits<double>::max();
         double highMZ = 0;
         double tic = 0;
         double basePeakMZ = 0;
         double basePeakIntensity = 0;
         spectrum.defaultArrayLength = 0;
-        spectrum.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_counts);
+        spectrum.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_detector_counts);
         vector<double>& mzArray = spectrum.getMZArray()->data;
         vector<double>& intensityArray = spectrum.getIntensityArray()->data;
 	    while (getline(*is_, lineStr))
 	    {
+            size_t lineBegin = lineStr.find_first_not_of(" \t");
+            if (lineBegin == string::npos)
+            {
+                // Skip blank lines
+                continue;
+            }
+            else if (lineBegin > 0)
+            {
+                // Trim leading whitespace
+                lineStr.erase(0, lineBegin);
+            }
+
+            if (!inBeginIons && (lineStr[0] == '#' || lineStr[0] == ';' || lineStr[0] == '!' || lineStr[0] == '/'))
+            {
+                // Skip comment lines (lines beginning with #;!/ outside of BEGIN IONS)
+                continue;
+            }
 		    if (lineStr.find("BEGIN IONS") == 0)
 		    {
 			    if (inBeginIons)
@@ -177,7 +195,7 @@ class SpectrumList_MGFImpl : public SpectrumList_MGF
             else
             {
                 try
-                   {
+                {
                     if (!inPeakList)
                     {
                         size_t delim = lineStr.find('=');
@@ -192,6 +210,13 @@ class SpectrumList_MGFImpl : public SpectrumList_MGF
                             if (name == "TITLE")
                             {
                                 bal::trim(value);
+
+                                // Some formats omit RTINSECONDS and store the retention time
+                                // in the title field instead.
+                                double scanTimeMin = getRetentionTimeFromTitle(value);
+                                if (scanTimeMin > 0)
+                                    scan.set(MS_scan_start_time, scanTimeMin * 60, UO_second);
+
                                 spectrum.set(MS_spectrum_title, value);
                             }
                             else if (name == "PEPMASS")
@@ -200,17 +225,26 @@ class SpectrumList_MGFImpl : public SpectrumList_MGF
                                 size_t delim2 = value.find(' ');
                                 if (delim2 != string::npos)
                                 {
-                                    selectedIon.set(MS_selected_ion_m_z, lexical_cast<double>(value.substr(0, delim2)), MS_m_z);
-                                    selectedIon.set(MS_peak_intensity, lexical_cast<double>(value.substr(delim2+1)), MS_number_of_counts);
+                                    selectedIon.set(MS_selected_ion_m_z, value.substr(0, delim2), MS_m_z);
+                                    selectedIon.set(MS_peak_intensity, value.substr(delim2+1), MS_number_of_detector_counts);
                                 }
                                 else
-                                    selectedIon.set(MS_selected_ion_m_z, lexical_cast<double>(value), MS_m_z);
+                                    selectedIon.set(MS_selected_ion_m_z, value, MS_m_z);
 				            }
                             else if (name == "CHARGE")
 				            {
-                                bal::trim_if(value, bal::is_any_of("+- \t\r"));
-					            int charge = lexical_cast<int>(value);
-                                selectedIon.set(MS_charge_state, charge);
+                                bal::trim_if(value, bal::is_any_of(" \t\r"));
+                                negativePolarity = bal::ends_with(value, "-");
+                                vector<string> charges;
+                                bal::split(charges, value, bal::is_any_of(" "));
+                                if (charges.size() > 1)
+                                {
+                                    BOOST_FOREACH(const string& charge, charges)
+                                        if (charge != "and")
+                                            selectedIon.cvParams.push_back(CVParam(MS_possible_charge_state, lexical_cast<int>(charge)));
+                                }
+                                else
+                                    selectedIon.set(MS_charge_state, lexical_cast<int>(value));
 				            }
                             else if (name == "RTINSECONDS")
 				            {
@@ -218,6 +252,14 @@ class SpectrumList_MGFImpl : public SpectrumList_MGF
                                 // TODO: handle (multiple) time ranges?
                                 double scanTime = lexical_cast<double>(value);
                                 scan.set(MS_scan_start_time, scanTime, UO_second);
+                            }
+                            else if (name == "SCANS")
+                            {
+                                spectrum.set(MS_peak_list_scans, value);
+                            }
+                            else if (name == "RAWSCANS")
+                            {
+                                spectrum.set(MS_peak_list_raw_scans, value);
                             }
                             else
 				            {
@@ -267,11 +309,82 @@ class SpectrumList_MGFImpl : public SpectrumList_MGF
             }
         }
 
+        if (!getBinaryData)
+            spectrum.binaryDataArrayPtrs.clear();
+
+        spectrum.set(negativePolarity ? MS_negative_scan : MS_positive_scan);
         spectrum.set(MS_lowest_observed_m_z, lowMZ);
         spectrum.set(MS_highest_observed_m_z, highMZ);
         spectrum.set(MS_total_ion_current, tic);
         spectrum.set(MS_base_peak_m_z, basePeakMZ);
         spectrum.set(MS_base_peak_intensity, basePeakIntensity);
+    }
+
+    /**
+     * Parse the spectrum title to look for retention times.  If there are
+     * two times, return the center of the range.  Possible formats to look
+     * for are "Elution:<time> min", "RT:<time>min" and "rt=<time>,".
+     */
+    double getRetentionTimeFromTitle(const string& title) const
+    {
+        // text to search for preceeding and following time
+        const char* startTags[3] = { "Elution:", "RT:", "rt=" };
+        const char* secondStartTags[3] = { "to ", NULL, NULL };
+        const char* endTags[3] = { "min", "min", "," };
+
+        double firstTime = 0;
+        double secondTime = 0;
+        for(int format_idx = 0; format_idx < 2; format_idx++)
+        {
+
+            size_t position = 0;
+            firstTime = getTime(title, startTags[format_idx], 
+                                endTags[format_idx], position);
+            if (secondStartTags[format_idx] != NULL)
+            {
+                secondTime = getTime(title, secondStartTags[format_idx], 
+                                     endTags[format_idx], position);
+            }
+
+            if( firstTime > 0 )
+                break;
+
+        } // try another format
+
+        double time = firstTime;
+        if( secondTime != 0 )
+        {
+            time = (firstTime + secondTime) / 2 ;
+        }
+
+        return time;
+    }
+
+    /**
+     * Helper function to parse a double from the given string
+     * found between the two tags.  Search for number after position
+     * Update position to the end of the parsed double.
+     */
+    double getTime(const string& title, const char* startTag,
+                   const char* endTag, size_t position) const
+    {
+        size_t start = title.find(startTag, position);
+        if( start == string::npos )
+            return 0; // not found
+
+        start += strlen(startTag);
+        size_t end = title.find(endTag, start);
+        string timeStr = title.substr(start, end - start);
+        try
+        {
+            double time = boost::lexical_cast<double>(timeStr);
+            position = start;
+            return time;
+        }
+        catch(...)
+        {
+            return 0;
+        }
     }
 
     void createIndex()

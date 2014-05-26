@@ -1,5 +1,5 @@
 //
-// $Id: Unimod.cpp 2901 2011-08-03 20:16:57Z chambm $
+// $Id: Unimod.cpp 5162 2013-11-15 20:16:10Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -157,8 +157,7 @@ struct UnimodData : public boost::singleton<UnimodData>
                 itr = term.propertyValues.lower_bound("spec_");
                 while (true)
                 {
-                    mod.specificities.push_back(Modification::Specificity());
-                    Modification::Specificity& spec = mod.specificities.back();
+                    Modification::Specificity spec;
 
                     map<string, Classification>::const_iterator itr2 = classificationMap.find(itr->second);
                     if (itr2 == classificationMap.end())
@@ -189,17 +188,19 @@ struct UnimodData : public boost::singleton<UnimodData>
                         throw runtime_error("unknown site \"" + itr->second + "\" for term \"" + term.id + "\"");
                     spec.site = itr4->second;
 
+                    mod.specificities.push_back(spec);
+
                     // add copies of the currently specificity for each site, e.g.
                     // spec_1_site = S
                     // spec_1_site = T
                     ++itr;
                     while (itr != end && bal::ends_with(itr->first, "site"))
                     {
-                        mod.specificities.push_back(spec);
                         itr4 = siteMap.find(itr->second);
                         if (itr4 == siteMap.end())
                             throw runtime_error("unknown site \"" + itr->second + "\" for term \"" + term.id + "\"");
-                        mod.specificities.back().site = itr4->second;
+                        spec.site = itr4->second;
+                        mod.specificities.push_back(spec);
                         ++itr;
                     }
 
@@ -289,8 +290,8 @@ PWIZ_API_DECL Site site(char symbol)
         Site(Site::Any).value() // x
     };
 
-    if (symbol > 'x' || symbol != 'x' && symbolMap[(size_t) symbol] == nil)
-        throw invalid_argument("[unimod::site] invalid symbol");
+    if (symbol > 'x' || (symbol != 'x' && symbolMap[(size_t) symbol] == nil))
+        throw invalid_argument("[unimod::site] invalid symbol \"" + string(1, symbol) + "\"");
 
     return Site::get_by_value(symbolMap[(size_t) symbol]).get();
 }
@@ -301,9 +302,11 @@ PWIZ_API_DECL Position position(CVID cvid)
     switch (cvid)
     {
         case CVID_Unknown: return Position::Anywhere;
-        case MS_modification_specificity_N_term: return Position::AnyNTerminus;
-        case MS_modification_specificity_C_term: return Position::AnyCTerminus;
-        default: throw invalid_argument("[unimod::position] invalid cvid");
+        case MS_modification_specificity_peptide_N_term: return Position::AnyNTerminus;
+        case MS_modification_specificity_peptide_C_term: return Position::AnyCTerminus;
+        case MS_modification_specificity_protein_N_term: return Position::ProteinNTerminus;
+        case MS_modification_specificity_protein_C_term: return Position::ProteinCTerminus;
+        default: throw invalid_argument("[unimod::position] invalid cvid \"" + cvTermInfo(cvid).shortName() + "\" (" + lexical_cast<string>(cvid) + ")");
     }
 }
 
@@ -381,7 +384,7 @@ PWIZ_API_DECL const Modification& modification(CVID cvid)
     UnimodData::lease unimodData;
     map<CVID, size_t>::const_iterator itr = unimodData->indexByCVID.find(cvid);
     if (itr == unimodData->indexByCVID.end())
-        throw runtime_error("[unimod::modification] invalid cvid \"" + lexical_cast<string>(cvid) + "\"");
+        throw runtime_error("[unimod::modification] invalid cvid \"" + cvTermInfo(cvid).shortName() + "\"");
 
     return unimodData->modifications[itr->second];
 }

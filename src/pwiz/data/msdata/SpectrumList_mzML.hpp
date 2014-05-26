@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_mzML.hpp 1189 2009-08-14 17:36:06Z chambm $
+// $Id: SpectrumList_mzML.hpp 2898 2011-08-01 17:55:13Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -27,6 +27,7 @@
 
 #include "pwiz/utility/misc/Export.hpp"
 #include "SpectrumListBase.hpp"
+#include "Index_mzML.hpp"
 #include <iosfwd>
 
 
@@ -41,7 +42,7 @@ class PWIZ_API_DECL SpectrumList_mzML : public SpectrumListBase
 
     static SpectrumListPtr create(boost::shared_ptr<std::istream> is,
                                   const MSData& msd,
-                                  bool indexed = true);
+                                  const Index_mzML_Ptr& indexPtr);
 };
 
 

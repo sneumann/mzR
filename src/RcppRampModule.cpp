@@ -16,7 +16,7 @@ RCPP_MODULE(Ramp){
     .method( "getAllScanHeaderInfo", &RcppRamp::getAllScanHeaderInfo, "Reads the header info for all mass spectra." )
     .method( "getPeakList", &RcppRamp::getPeakList, 
 	     "Performs a non-sequential parsing operation on an indexed mzXML file to obtain the peak list for a numbered scan." )
-    .method( "get3DMap", &RcppRamp::get3DMap, "Reads al scans and returns them as a matrix." )
+    .method( "get3DMap", &RcppRamp::get3DMap, "Reads all scans and returns them as a matrix." )
     .method( "getLastScan", &RcppRamp::getLastScan, "Returns the last scan (not necessarily the number of scans because of missing scans)." )
     .method( "OK", &RcppRamp::OK, "Checks the status of the object." )
     ;

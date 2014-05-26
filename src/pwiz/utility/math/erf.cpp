@@ -1,5 +1,5 @@
 //
-// $Id: erf.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: erf.cpp 4151 2012-11-28 18:32:03Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -238,7 +238,7 @@ complex<double> erf_series(complex<double> z)
 }
 */
 
-complex<double> erf_series2(const complex<double>& z)
+PWIZ_API_DECL complex<double> erf_series2(const complex<double>& z)
 {
     // From "Handbook of Mathematical Functions" p297, 7.1.6
     // (seems to converge better than the first series)

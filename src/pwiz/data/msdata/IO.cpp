@@ -1,5 +1,5 @@
 //
-// $Id: IO.cpp 2237 2010-09-10 18:23:09Z chambm $
+// $Id: IO.cpp 5043 2013-10-07 19:05:24Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -47,10 +47,10 @@ using namespace util;
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const CV& cv)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("id", encode_xml_id_copy(cv.id)));
-    attributes.push_back(make_pair("fullName", cv.fullName));
-    attributes.push_back(make_pair("version", cv.version));
-    attributes.push_back(make_pair("URI", cv.URI));
+    attributes.add("id", encode_xml_id_copy(cv.id));
+    attributes.add("fullName", cv.fullName);
+    attributes.add("version", cv.version);
+    attributes.add("URI", cv.URI);
     writer.startElement("cv", attributes, XMLWriter::EmptyElement);
 }
 
@@ -72,6 +72,7 @@ struct HandlerCV : public SAXParser::Handler
         getAttribute(attributes, "URI", cv->URI);
         return Status::Ok;
     }
+
 };
 
 
@@ -90,15 +91,15 @@ PWIZ_API_DECL void read(std::istream& is, CV& cv)
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const UserParam& userParam)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("name", userParam.name));
+    attributes.add("name", userParam.name);
     if (!userParam.value.empty())
-        attributes.push_back(make_pair("value", userParam.value));
+        attributes.add("value", userParam.value);
     if (!userParam.type.empty())
-        attributes.push_back(make_pair("type", userParam.type));
+        attributes.add("type", userParam.type);
     if (userParam.units != CVID_Unknown)
     {
-        attributes.push_back(make_pair("unitAccession", cvTermInfo(userParam.units).id));
-        attributes.push_back(make_pair("unitName", cvTermInfo(userParam.units).name));
+        attributes.add("unitAccession", cvTermInfo(userParam.units).id);
+        attributes.add("unitName", cvTermInfo(userParam.units).name);
     }
 
     writer.startElement("userParam", attributes, XMLWriter::EmptyElement);
@@ -149,15 +150,15 @@ PWIZ_API_DECL void read(std::istream& is, UserParam& userParam)
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const CVParam& cvParam)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("cvRef", cvTermInfo(cvParam.cvid).prefix()));
-    attributes.push_back(make_pair("accession", cvTermInfo(cvParam.cvid).id));
-    attributes.push_back(make_pair("name", cvTermInfo(cvParam.cvid).name));
-    attributes.push_back(make_pair("value", cvParam.value));
+    attributes.add("cvRef", cvTermInfo(cvParam.cvid).prefix());
+    attributes.add("accession", cvTermInfo(cvParam.cvid).id);
+    attributes.add("name", cvTermInfo(cvParam.cvid).name);
+    attributes.add("value", cvParam.value);
     if (cvParam.units != CVID_Unknown)
     {
-        attributes.push_back(make_pair("unitCvRef", cvTermInfo(cvParam.units).prefix()));
-        attributes.push_back(make_pair("unitAccession", cvTermInfo(cvParam.units).id));
-        attributes.push_back(make_pair("unitName", cvTermInfo(cvParam.units).name));
+        attributes.add("unitCvRef", cvTermInfo(cvParam.units).prefix());
+        attributes.add("unitAccession", cvTermInfo(cvParam.units).id);
+        attributes.add("unitName", cvTermInfo(cvParam.units).name);
     }
     writer.startElement("cvParam", attributes, XMLWriter::EmptyElement);
 }
@@ -179,16 +180,14 @@ struct HandlerCVParam : public SAXParser::Handler
         if (!cvParam)
             throw runtime_error("[IO::HandlerCVParam] Null cvParam."); 
 
-        string accession;
-        getAttribute(attributes, "accession", accession);
-        if (!accession.empty())
+        const char *accession = getAttribute(attributes, "accession",  NoXMLUnescape); 
+        if (accession)
             cvParam->cvid = cvTermInfo(accession).cvid;
 
         getAttribute(attributes, "value", cvParam->value);
 
-        string unitAccession;
-        getAttribute(attributes, "unitAccession", unitAccession);
-        if (!unitAccession.empty())
+        const char *unitAccession = getAttribute(attributes, "unitAccession", NoXMLUnescape); 
+        if (unitAccession)
             cvParam->units = cvTermInfo(unitAccession).cvid;
 
         return Status::Ok;
@@ -214,7 +213,7 @@ PWIZ_API_DECL void read(std::istream& is, CVParam& cvParam)
 PWIZ_API_DECL void writeParamGroupRef(minimxml::XMLWriter& writer, const ParamGroup& paramGroup)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("ref", paramGroup.id));
+    attributes.add("ref", paramGroup.id);
     writer.startElement("referenceableParamGroupRef", attributes, XMLWriter::EmptyElement);
 }
 
@@ -310,7 +309,7 @@ struct HandlerNamedParamContainer : public HandlerParamContainer
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const ParamGroup& paramGroup)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("id", encode_xml_id_copy(paramGroup.id)));
+    attributes.add("id", encode_xml_id_copy(paramGroup.id));
     writer.startElement("referenceableParamGroup", attributes);
     writeParamContainer(writer, paramGroup);
     writer.endElement();
@@ -379,9 +378,9 @@ PWIZ_API_DECL void read(std::istream& is, FileContent& fc)
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const SourceFile& sf)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("id", encode_xml_id_copy(sf.id)));
-    attributes.push_back(make_pair("name", sf.name));
-    attributes.push_back(make_pair("location", sf.location));
+    attributes.add("id", encode_xml_id_copy(sf.id));
+    attributes.add("name", sf.name);
+    attributes.add("location", sf.location);
     writer.startElement("sourceFile", attributes);
     writeParamContainer(writer, sf);
     writer.endElement();
@@ -391,7 +390,7 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const SourceFile& sf)
 void writeSourceFileRef(minimxml::XMLWriter& writer, const SourceFile& sourceFile)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("ref", encode_xml_id_copy(sourceFile.id)));
+    attributes.add("ref", encode_xml_id_copy(sourceFile.id));
     writer.startElement("sourceFileRef", attributes, XMLWriter::EmptyElement);
 }
 
@@ -463,7 +462,7 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const FileDescription& fd)
     write(writer, fd.fileContent);
 
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("count", lexical_cast<string>(fd.sourceFilePtrs.size())));
+    attributes.add("count", fd.sourceFilePtrs.size());
     writer.startElement("sourceFileList", attributes);
 
     for (vector<SourceFilePtr>::const_iterator it=fd.sourceFilePtrs.begin(); 
@@ -548,8 +547,8 @@ PWIZ_API_DECL void read(std::istream& is, FileDescription& fd)
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const Sample& sample)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("id", encode_xml_id_copy(sample.id)));
-    attributes.push_back(make_pair("name", sample.name));
+    attributes.add("id", encode_xml_id_copy(sample.id));
+    attributes.add("name", sample.name);
     writer.startElement("sample", attributes);
     writeParamContainer(writer, sample);
     writer.endElement();
@@ -599,7 +598,7 @@ PWIZ_API_DECL void read(std::istream& is, Sample& sample)
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const Component& component)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("order", lexical_cast<string>(component.order)));
+    attributes.add("order", component.order);
     switch (component.type)
     {
         case ComponentType_Source:
@@ -665,7 +664,7 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const ComponentList& compo
     int count = (int) componentList.size();
 
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("count", lexical_cast<string>(count)));
+    attributes.add("count", count);
 
     writer.startElement("componentList", attributes);
     for (size_t i=0; i < componentList.size(); ++i)
@@ -732,8 +731,8 @@ PWIZ_API_DECL void read(std::istream& is, ComponentList& componentList)
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const Software& software)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("id", encode_xml_id_copy(software.id)));
-    attributes.push_back(make_pair("version", software.version));
+    attributes.add("id", encode_xml_id_copy(software.id));
+    attributes.add("version", software.version);
     writer.startElement("software", attributes);
     writeParamContainer(writer, software);
     writer.endElement();
@@ -793,7 +792,7 @@ PWIZ_API_DECL void read(std::istream& is, Software& software)
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const InstrumentConfiguration& instrumentConfiguration)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("id", encode_xml_id_copy(instrumentConfiguration.id)));
+    attributes.add("id", encode_xml_id_copy(instrumentConfiguration.id));
     writer.startElement("instrumentConfiguration", attributes);
 
     writeParamContainer(writer, instrumentConfiguration);
@@ -803,7 +802,7 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const InstrumentConfigurat
     if (instrumentConfiguration.softwarePtr.get())
     {
         attributes.clear();
-        attributes.push_back(make_pair("ref", encode_xml_id_copy(instrumentConfiguration.softwarePtr->id)));
+        attributes.add("ref", encode_xml_id_copy(instrumentConfiguration.softwarePtr->id));
         writer.startElement("softwareRef", attributes, XMLWriter::EmptyElement);
     }
 
@@ -869,9 +868,9 @@ PWIZ_API_DECL void read(std::istream& is, InstrumentConfiguration& instrumentCon
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const ProcessingMethod& processingMethod)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("order", lexical_cast<string>(processingMethod.order)));
+    attributes.add("order", processingMethod.order);
     if (processingMethod.softwarePtr.get())
-        attributes.push_back(make_pair("softwareRef", encode_xml_id_copy(processingMethod.softwarePtr->id))); 
+        attributes.add("softwareRef", encode_xml_id_copy(processingMethod.softwarePtr->id)); 
 
     writer.startElement("processingMethod", attributes);
     writeParamContainer(writer, processingMethod);
@@ -931,7 +930,7 @@ PWIZ_API_DECL void read(std::istream& is, ProcessingMethod& processingMethod)
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const DataProcessing& dataProcessing)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("id", encode_xml_id_copy(dataProcessing.id)));
+    attributes.add("id", encode_xml_id_copy(dataProcessing.id));
 
     writer.startElement("dataProcessing", attributes);
 
@@ -1023,14 +1022,14 @@ PWIZ_API_DECL void read(std::istream& is, Target& t)
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const ScanSettings& scanSettings)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("id", encode_xml_id_copy(scanSettings.id)));
+    attributes.add("id", encode_xml_id_copy(scanSettings.id));
 
     writer.startElement("scanSettings", attributes);
 
     if (!scanSettings.sourceFilePtrs.empty()) 
     {
         attributes.clear();
-        attributes.push_back(make_pair("count", lexical_cast<string>(scanSettings.sourceFilePtrs.size())));
+        attributes.add("count", scanSettings.sourceFilePtrs.size());
         writer.startElement("sourceFileRefList", attributes);
         for (vector<SourceFilePtr>::const_iterator it=scanSettings.sourceFilePtrs.begin(); 
              it!=scanSettings.sourceFilePtrs.end(); ++it)
@@ -1041,7 +1040,7 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const ScanSettings& scanSe
     if (!scanSettings.targets.empty())
     {
         XMLWriter::Attributes attributes;
-        attributes.push_back(make_pair("count", lexical_cast<string>(scanSettings.targets.size())));
+        attributes.add("count", scanSettings.targets.size());
         writer.startElement("targetList", attributes);
 
         for (vector<Target>::const_iterator it=scanSettings.targets.begin(); 
@@ -1188,12 +1187,12 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const Precursor& precursor
             if (!precursor.sourceFilePtr.get())
                 throw runtime_error("[IO::write] External spectrum references must refer to a source file");
 
-            attributes.push_back(make_pair("sourceFileRef", encode_xml_id_copy(precursor.sourceFilePtr->id))); 
-            attributes.push_back(make_pair("externalSpectrumID", precursor.externalSpectrumID)); 
+            attributes.add("sourceFileRef", encode_xml_id_copy(precursor.sourceFilePtr->id)); 
+            attributes.add("externalSpectrumID", precursor.externalSpectrumID); 
         }
     }
     else
-        attributes.push_back(make_pair("spectrumRef", precursor.spectrumID)); // not an XML:IDREF
+        attributes.add("spectrumRef", precursor.spectrumID); // not an XML:IDREF
 
     writer.startElement("precursor", attributes);
     writeParamContainer(writer, precursor);
@@ -1208,7 +1207,7 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const Precursor& precursor
     if (!precursor.selectedIons.empty())
     {
         attributes.clear();
-        attributes.push_back(make_pair("count", lexical_cast<string>(precursor.selectedIons.size())));
+        attributes.add("count", precursor.selectedIons.size());
         writer.startElement("selectedIonList", attributes);
 
         for (vector<SelectedIon>::const_iterator it=precursor.selectedIons.begin(); 
@@ -1409,18 +1408,18 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const Scan& scan, const MS
             if (!scan.sourceFilePtr.get())
                 throw runtime_error("[IO::write] External spectrum references must refer to a source file");
 
-            attributes.push_back(make_pair("sourceFileRef", encode_xml_id_copy(scan.sourceFilePtr->id))); 
-            attributes.push_back(make_pair("externalSpectrumID", scan.externalSpectrumID)); 
+            attributes.add("sourceFileRef", encode_xml_id_copy(scan.sourceFilePtr->id)); 
+            attributes.add("externalSpectrumID", scan.externalSpectrumID); 
         }
     }
     else
-        attributes.push_back(make_pair("spectrumRef", scan.spectrumID)); // not an XML:IDREF
+        attributes.add("spectrumRef", scan.spectrumID); // not an XML:IDREF
 
     // don't write the instrumentConfigurationRef if it's set to the default
     const InstrumentConfigurationPtr& defaultIC = msd.run.defaultInstrumentConfigurationPtr;
     if (scan.instrumentConfigurationPtr.get() &&
         (!defaultIC.get() || scan.instrumentConfigurationPtr != defaultIC))
-        attributes.push_back(make_pair("instrumentConfigurationRef", encode_xml_id_copy(scan.instrumentConfigurationPtr->id)));
+        attributes.add("instrumentConfigurationRef", encode_xml_id_copy(scan.instrumentConfigurationPtr->id));
 
     writer.startElement("scan", attributes);
     writeParamContainer(writer, scan);
@@ -1428,7 +1427,7 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const Scan& scan, const MS
     if (!scan.scanWindows.empty())
     {
         attributes.clear();
-        attributes.push_back(make_pair("count", lexical_cast<string>(scan.scanWindows.size())));
+        attributes.add("count", scan.scanWindows.size());
         writer.startElement("scanWindowList", attributes);
         
         for (vector<ScanWindow>::const_iterator it=scan.scanWindows.begin(); 
@@ -1457,66 +1456,69 @@ struct HandlerScan : public HandlerParamContainer
         if (!scan)
             throw runtime_error("[IO::HandlerScan] Null scan.");
 
-        if (name == "scan")
-        {
-            getAttribute(attributes, "spectrumRef", scan->spectrumID); // not an XML:IDREF
-            getAttribute(attributes, "externalSpectrumID", scan->externalSpectrumID);
-
-            // note: placeholder
-            string sourceFileRef;
-            decode_xml_id(getAttribute(attributes, "sourceFileRef", sourceFileRef));
-            if (!sourceFileRef.empty())
-                scan->sourceFilePtr = SourceFilePtr(new SourceFile(sourceFileRef));
-
-            // note: placeholder
-            string instrumentConfigurationRef;
-            decode_xml_id(getAttribute(attributes, "instrumentConfigurationRef", instrumentConfigurationRef));
-            if (!instrumentConfigurationRef.empty())
-                scan->instrumentConfigurationPtr = InstrumentConfigurationPtr(new InstrumentConfiguration(instrumentConfigurationRef));
-            return Status::Ok;
-        }
-        else if (version == 1 && name == "acquisition")
-        {
-            // note: spectrumRef, externalNativeID, and externalSpectrumID are mutually exclusive
-            getAttribute(attributes, "spectrumRef", scan->spectrumID); // not an XML:IDREF
-            if (scan->spectrumID.empty())
+        if (name != "cvParam") 
+        { // most common, but not handled here
+            if (name == "scan")
             {
-                string externalNativeID;
-                getAttribute(attributes, "externalNativeID", externalNativeID);
-                if (externalNativeID.empty())
-                    getAttribute(attributes, "externalSpectrumID", scan->externalSpectrumID);
-                else
-                    try
-                    {
-                        lexical_cast<int>(externalNativeID);
-                        //cerr << "[IO::HandlerScan] Warning - mzML 1.0: <acquisition>::externalNativeID\n";
-                        scan->externalSpectrumID = "scan=" + externalNativeID;
-                    }
-                    catch(exception&)
-                    {
-                        //cerr << "[IO::HandlerScan] Warning - mzML 1.0: non-integral <acquisition>::externalNativeID; externalSpectrumID format unknown\n";
-                        scan->externalSpectrumID = externalNativeID;
-                    }
+                getAttribute(attributes, "spectrumRef", scan->spectrumID); // not an XML:IDREF
+                getAttribute(attributes, "externalSpectrumID", scan->externalSpectrumID);
+
+                // note: placeholder
+                string sourceFileRef;
+                decode_xml_id(getAttribute(attributes, "sourceFileRef", sourceFileRef));
+                if (!sourceFileRef.empty())
+                    scan->sourceFilePtr = SourceFilePtr(new SourceFile(sourceFileRef));
+
+                // note: placeholder
+                string instrumentConfigurationRef;
+                decode_xml_id(getAttribute(attributes, "instrumentConfigurationRef", instrumentConfigurationRef));
+                if (!instrumentConfigurationRef.empty())
+                    scan->instrumentConfigurationPtr = InstrumentConfigurationPtr(new InstrumentConfiguration(instrumentConfigurationRef));
+                return Status::Ok;
             }
+            else if (version == 1 && name == "acquisition")
+            {
+                // note: spectrumRef, externalNativeID, and externalSpectrumID are mutually exclusive
+                getAttribute(attributes, "spectrumRef", scan->spectrumID); // not an XML:IDREF
+                if (scan->spectrumID.empty())
+                {
+                    string externalNativeID;
+                    getAttribute(attributes, "externalNativeID", externalNativeID);
+                    if (externalNativeID.empty())
+                        getAttribute(attributes, "externalSpectrumID", scan->externalSpectrumID);
+                    else
+                        try
+                        {
+                            lexical_cast<int>(externalNativeID);
+                            //cerr << "[IO::HandlerScan] Warning - mzML 1.0: <acquisition>::externalNativeID\n";
+                            scan->externalSpectrumID = "scan=" + externalNativeID;
+                        }
+                        catch(exception&)
+                        {
+                            //cerr << "[IO::HandlerScan] Warning - mzML 1.0: non-integral <acquisition>::externalNativeID; externalSpectrumID format unknown\n";
+                            scan->externalSpectrumID = externalNativeID;
+                        }
+                }
 
-            // note: placeholder
-            string sourceFileRef;
-            decode_xml_id(getAttribute(attributes, "sourceFileRef", sourceFileRef));
-            if (!sourceFileRef.empty())
-                scan->sourceFilePtr = SourceFilePtr(new SourceFile(sourceFileRef));
+                // note: placeholder
+                string sourceFileRef;
+                decode_xml_id(getAttribute(attributes, "sourceFileRef", sourceFileRef));
+                if (!sourceFileRef.empty())
+                    scan->sourceFilePtr = SourceFilePtr(new SourceFile(sourceFileRef));
 
-            return Status::Ok;
-        }
-        else if (name == "scanWindowList")
-        {
-            return Status::Ok;
-        }
-        else if (name == "scanWindow")
-        {
-            scan->scanWindows.push_back(ScanWindow());
-            handlerScanWindow_.paramContainer = &scan->scanWindows.back();
-            return Status(Status::Delegate, &handlerScanWindow_);
-        }
+                return Status::Ok;
+            }
+            else if (name == "scanWindowList")
+            {
+                return Status::Ok;
+            }
+            else if (name == "scanWindow")
+            {
+                scan->scanWindows.push_back(ScanWindow());
+                handlerScanWindow_.paramContainer = &scan->scanWindows.back();
+                return Status(Status::Delegate, &handlerScanWindow_);
+            }
+        } // end if not cvParam
 
         HandlerParamContainer::paramContainer = scan;
         return HandlerParamContainer::startElement(name, attributes, position);
@@ -1542,7 +1544,7 @@ PWIZ_API_DECL void read(std::istream& is, Scan& scan)
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const ScanList& scanList, const MSData& msd)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("count", lexical_cast<string>(scanList.scans.size())));
+    attributes.add("count", scanList.scans.size());
     writer.startElement("scanList", attributes);
     writeParamContainer(writer, scanList);
     
@@ -1609,10 +1611,14 @@ void write(minimxml::XMLWriter& writer, const BinaryDataArray& binaryDataArray,
     map<CVID, BinaryDataEncoder::Precision>::const_iterator overrideItr = config.precisionOverrides.find(binaryDataArray.cvParamChild(MS_binary_data_array).cvid);
     if (overrideItr != config.precisionOverrides.end())
         usedConfig.precision = overrideItr->second;
+    map<CVID, BinaryDataEncoder::Numpress>::const_iterator n_overrideItr = config.numpressOverrides.find(binaryDataArray.cvParamChild(MS_binary_data_array).cvid);
+    if (n_overrideItr != config.numpressOverrides.end())
+        usedConfig.numpress = n_overrideItr->second;
 
     BinaryDataEncoder encoder(usedConfig);
     string encoded;
     encoder.encode(binaryDataArray.data, encoded);
+    usedConfig = encoder.getConfig(); // config may have changed if numpress error was excessive
 
     XMLWriter::Attributes attributes;
 
@@ -1621,31 +1627,55 @@ void write(minimxml::XMLWriter& writer, const BinaryDataArray& binaryDataArray,
         !binaryDataArray.hasCVParam(MS_time_array) &&
         !binaryDataArray.hasCVParam(MS_intensity_array))
     {
-        attributes.push_back(make_pair("arrayLength", lexical_cast<string>(binaryDataArray.data.size())));
+        attributes.add("arrayLength", binaryDataArray.data.size());
     }
 
-    attributes.push_back(make_pair("encodedLength", lexical_cast<string>(encoded.size())));
+    attributes.add("encodedLength", encoded.size());
     if (binaryDataArray.dataProcessingPtr.get())
-        attributes.push_back(make_pair("dataProcessingRef", encode_xml_id_copy(binaryDataArray.dataProcessingPtr->id)));
+        attributes.add("dataProcessingRef", encode_xml_id_copy(binaryDataArray.dataProcessingPtr->id));
 
     writer.startElement("binaryDataArray", attributes);
 
-    if (usedConfig.precision == BinaryDataEncoder::Precision_32)
-        write(writer, MS_32_bit_float);
-    else
-        write(writer, MS_64_bit_float);
-
+    if (BinaryDataEncoder::Numpress_None == usedConfig.numpress)
+    {
+        if (usedConfig.precision == BinaryDataEncoder::Precision_32)
+            write(writer, MS_32_bit_float);
+        else
+            write(writer, MS_64_bit_float);
+    }
     if (usedConfig.byteOrder == BinaryDataEncoder::ByteOrder_BigEndian)
-        throw runtime_error("[IO::writeConfig()] mzML: must use little endian encoding.");
+        throw runtime_error("[IO::write()] mzML: must use little endian encoding.");
 
-    if (usedConfig.compression == BinaryDataEncoder::Compression_None)
-        write(writer, MS_no_compression);
-    else if (config.compression == BinaryDataEncoder::Compression_Zlib)
-        write(writer, MS_zlib_compression);
-    else
-        throw runtime_error("[IO::writeConfig()] Unsupported compression method.");
+    switch (usedConfig.compression) {
+        case BinaryDataEncoder::Compression_None:
+            if (BinaryDataEncoder::Numpress_None == usedConfig.numpress)
+                write(writer, MS_no_compression);
+            break;
+        case BinaryDataEncoder::Compression_Zlib:
+            write(writer, MS_zlib_compression);
+            break;
+        default:
+            throw runtime_error("[IO::write()] Unsupported compression method.");
+            break;
+    }
+    switch (usedConfig.numpress) {
+        case BinaryDataEncoder::Numpress_Linear:
+            write(writer, MS_MS_Numpress_linear_prediction_compression);
+            break;
+        case BinaryDataEncoder::Numpress_Pic:
+            write(writer, MS_MS_Numpress_positive_integer_compression);
+            break;
+        case BinaryDataEncoder::Numpress_Slof:
+            write(writer, MS_MS_Numpress_short_logged_float_compression);
+            break;
+        case BinaryDataEncoder::Numpress_None:
+            break;
+        default:
+            throw runtime_error("[IO::write()] Unsupported numpress method.");
+            break;
+    }
 
-    writeParamContainer(writer, binaryDataArray);
+    writeParamContainer(writer, binaryDataArray); 
 
     writer.pushStyle(XMLWriter::StyleFlag_InlineInner);
     writer.startElement("binary");
@@ -1670,7 +1700,10 @@ struct HandlerBinaryDataArray : public HandlerParamContainer
         defaultArrayLength(0),
         arrayLength_(0),
         encodedLength_(0)
-    {}
+    {
+        parseCharacters = true;
+        autoUnescapeCharacters = false;
+    }
 
     virtual Status startElement(const string& name, 
                                 const Attributes& attributes,
@@ -1679,47 +1712,49 @@ struct HandlerBinaryDataArray : public HandlerParamContainer
         if (!binaryDataArray)
             throw runtime_error("[IO::HandlerBinaryDataArray] Null binaryDataArray.");
 
-        if (name == "binaryDataArray")
-        {
-            // note: placeholder
-            string dataProcessingRef;
-            decode_xml_id(getAttribute(attributes, "dataProcessingRef", dataProcessingRef));
-            if (!dataProcessingRef.empty())
-                binaryDataArray->dataProcessingPtr = DataProcessingPtr(new DataProcessing(dataProcessingRef));
+        if (name != "cvParam") // most common, but not handled here
+        { 
+            if (name == "binaryDataArray")
+            {
+                // note: placeholder
+                string dataProcessingRef;
+                decode_xml_id(getAttribute(attributes, "dataProcessingRef", dataProcessingRef));
+                if (!dataProcessingRef.empty())
+                    binaryDataArray->dataProcessingPtr = DataProcessingPtr(new DataProcessing(dataProcessingRef));
 
-            arrayLength_ = defaultArrayLength;
-            encodedLength_ = 0;
-            getAttribute(attributes, "arrayLength", arrayLength_);
-            getAttribute(attributes, "encodedLength", encodedLength_);
+                    getAttribute(attributes, "encodedLength", encodedLength_, NoXMLUnescape);
+                    getAttribute(attributes, "arrayLength", arrayLength_, NoXMLUnescape, defaultArrayLength);
 
-            return Status::Ok;
-        }
-        else if (name == "binary")
-        {
-            if (msd) References::resolve(*binaryDataArray, *msd);
-            config = getConfig();
-            return Status::Ok;
-        }
+                return Status::Ok;
+            }
+            else if (name == "binary")
+            {
+                if (msd) References::resolve(*binaryDataArray, *msd);
+                config = getConfig();
+                return Status::Ok;
+            }
+        } // end if not cvParam
 
         HandlerParamContainer::paramContainer = binaryDataArray;
         return HandlerParamContainer::startElement(name, attributes, position);
     }
 
 
-    virtual Status characters(const std::string& text,
+    virtual Status characters(const SAXParser::saxstring& text,
                               stream_offset position)
     {
         if (!binaryDataArray)
             throw runtime_error("[IO::HandlerBinaryDataArray] Null binaryDataArray."); 
 
         BinaryDataEncoder encoder(config);
-        encoder.decode(text, binaryDataArray->data); 
+        encoder.decode(text.c_str(), text.length(), binaryDataArray->data); 
 
         if (binaryDataArray->data.size() != arrayLength_)
-            throw runtime_error("[IO::HandlerBinaryDataArray] Array lengths differ."); 
+            throw runtime_error((format("[IO::HandlerBinaryDataArray] At position %d: expected array of size %d, but decoded array is actually size %d.")
+                                 % position % arrayLength_ % binaryDataArray->data.size()).str()); 
 
-        if (text.size() != encodedLength_)
-            throw runtime_error("[IO::HandlerBinaryDataArray] Encoded lengths differ."); 
+        if (text.length() != encodedLength_)
+            throw runtime_error("[IO::HandlerBinaryDataArray] At position " + lexical_cast<string>(position) + ": encoded lengths differ."); 
 
         return Status::Ok;
     }
@@ -1753,6 +1788,23 @@ struct HandlerBinaryDataArray : public HandlerParamContainer
         return result;
     }
 
+    void extractCVParams(ParamContainer& container, CVID cvid, vector<CVID> &results)
+    {
+        vector<CVParam>& params = container.cvParams;
+        vector<CVParam>::iterator it;
+        while ((it = find_if(params.begin(), params.end(),CVParamIsChildOf(cvid))) != params.end())
+        {   
+            // found the cvid in container -- erase the CVParam
+            results.push_back(it->cvid);
+            params.erase(it);
+        }
+
+        // also search recursively, but don't erase anything
+        vector<CVParam> CVParams = container.cvParamChildren(cvid);
+        BOOST_FOREACH(const CVParam& cvParam, CVParams)
+            results.push_back(cvParam.cvid);
+    }
+
     BinaryDataEncoder::Config getConfig()
     {
         if (!binaryDataArray)
@@ -1761,13 +1813,42 @@ struct HandlerBinaryDataArray : public HandlerParamContainer
         BinaryDataEncoder::Config config;
 
         //
-        // Note: these two CVParams are really info about the encoding, and not 
+        // Note: these CVParams are really info about the encoding, and not 
         // part of the BinaryDataArray.  We look at them to see how to decode the data,
-        // and remove them from the BinaryDataArray struct.
+        // and remove them from the BinaryDataArray struct (extractCVParam does the removal).
         //
 
         CVID cvidBinaryDataType = extractCVParam(*binaryDataArray, MS_binary_data_type);
-        CVID cvidCompressionType = extractCVParam(*binaryDataArray, MS_binary_data_compression_type);
+ 
+        // handle mix of zlib and numpress compression
+        CVID cvidCompressionType;
+        config.compression = BinaryDataEncoder::Compression_None;
+        config.numpress = BinaryDataEncoder::Numpress_None;
+        vector<CVID> children;
+        extractCVParams(*binaryDataArray, MS_binary_data_compression_type, children);
+        BOOST_FOREACH(cvidCompressionType,children)
+        {
+            switch (cvidCompressionType)
+            {
+                case MS_no_compression:
+                    config.compression = BinaryDataEncoder::Compression_None;
+                    break;
+                case MS_zlib_compression:
+                    config.compression = BinaryDataEncoder::Compression_Zlib;
+                    break;
+                case MS_MS_Numpress_linear_prediction_compression:
+                    config.numpress = BinaryDataEncoder::Numpress_Linear;
+                    break;
+                case MS_MS_Numpress_positive_integer_compression:
+                    config.numpress = BinaryDataEncoder::Numpress_Pic;
+                    break;
+                case MS_MS_Numpress_short_logged_float_compression:
+                    config.numpress = BinaryDataEncoder::Numpress_Slof;
+                    break;
+                default:
+                    throw runtime_error("[IO::HandlerBinaryDataArray] Unknown compression type.");
+            }
+        }
 
         switch (cvidBinaryDataType)
         {
@@ -1778,24 +1859,13 @@ struct HandlerBinaryDataArray : public HandlerParamContainer
                 config.precision = BinaryDataEncoder::Precision_64;
                 break;
             case CVID_Unknown:
-                throw runtime_error("[IO::HandlerBinaryDataArray] Missing binary data type.");
+                if (BinaryDataEncoder::Numpress_None == config.numpress) // 32 vs 64 bit is meaningless in numpress
+                    throw runtime_error("[IO::HandlerBinaryDataArray] Missing binary data type.");
+                break;
             default:
                 throw runtime_error("[IO::HandlerBinaryDataArray] Unknown binary data type.");
         }
 
-        switch (cvidCompressionType)
-        {
-            case MS_no_compression:
-                config.compression = BinaryDataEncoder::Compression_None;
-                break;
-            case MS_zlib_compression:
-                config.compression = BinaryDataEncoder::Compression_Zlib;
-                break;
-            case CVID_Unknown:
-                throw runtime_error("[IO::HandlerBinaryDataArray] Missing compression type.");
-            default:
-                throw runtime_error("[IO::HandlerBinaryDataArray] Unknown compression.");
-        }
 
         return config;
     }
@@ -1805,7 +1875,6 @@ struct HandlerBinaryDataArray : public HandlerParamContainer
 PWIZ_API_DECL void read(std::istream& is, BinaryDataArray& binaryDataArray, const MSData* msd)
 {
     HandlerBinaryDataArray handler(&binaryDataArray, msd);
-    handler.autoUnescapeCharacters = false;
     SAXParser::parse(is, handler);
 }
 
@@ -1820,15 +1889,15 @@ void write(minimxml::XMLWriter& writer, const Spectrum& spectrum, const MSData& 
            const BinaryDataEncoder::Config& config)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("index", lexical_cast<string>(spectrum.index)));
-    attributes.push_back(make_pair("id", spectrum.id)); // not an XML:ID
+    attributes.add("index", spectrum.index);
+    attributes.add("id", spectrum.id); // not an XML:ID
     if (!spectrum.spotID.empty())
-        attributes.push_back(make_pair("spotID", spectrum.spotID));
-    attributes.push_back(make_pair("defaultArrayLength", lexical_cast<string>(spectrum.defaultArrayLength)));
+        attributes.add("spotID", spectrum.spotID);
+    attributes.add("defaultArrayLength", spectrum.defaultArrayLength);
     if (spectrum.dataProcessingPtr.get())
-        attributes.push_back(make_pair("dataProcessingRef", encode_xml_id_copy(spectrum.dataProcessingPtr->id)));
+        attributes.add("dataProcessingRef", encode_xml_id_copy(spectrum.dataProcessingPtr->id));
     if (spectrum.sourceFilePtr.get())
-        attributes.push_back(make_pair("sourceFileRef", encode_xml_id_copy(spectrum.sourceFilePtr->id)));
+        attributes.add("sourceFileRef", encode_xml_id_copy(spectrum.sourceFilePtr->id));
 
     writer.startElement("spectrum", attributes);
 
@@ -1839,7 +1908,7 @@ void write(minimxml::XMLWriter& writer, const Spectrum& spectrum, const MSData& 
     if (!spectrum.precursors.empty())
     {
         XMLWriter::Attributes attributes;
-        attributes.push_back(make_pair("count", lexical_cast<string>(spectrum.precursors.size())));
+        attributes.add("count", spectrum.precursors.size());
         writer.startElement("precursorList", attributes);
         
         for (vector<Precursor>::const_iterator it=spectrum.precursors.begin(); 
@@ -1852,7 +1921,7 @@ void write(minimxml::XMLWriter& writer, const Spectrum& spectrum, const MSData& 
     if (!spectrum.products.empty())
     {
         XMLWriter::Attributes attributes;
-        attributes.push_back(make_pair("count", lexical_cast<string>(spectrum.products.size())));
+        attributes.add("count", spectrum.products.size());
         writer.startElement("productList", attributes);
         
         for (vector<Product>::const_iterator it=spectrum.products.begin(); 
@@ -1865,7 +1934,7 @@ void write(minimxml::XMLWriter& writer, const Spectrum& spectrum, const MSData& 
     if (!spectrum.binaryDataArrayPtrs.empty())
     {
         attributes.clear();
-        attributes.push_back(make_pair("count", lexical_cast<string>(spectrum.binaryDataArrayPtrs.size())));
+        attributes.add("count", spectrum.binaryDataArrayPtrs.size());
         writer.startElement("binaryDataArrayList", attributes);
 
         for (vector<BinaryDataArrayPtr>::const_iterator it=spectrum.binaryDataArrayPtrs.begin(); 
@@ -1883,15 +1952,18 @@ struct HandlerSpectrum : public HandlerParamContainer
 {
     BinaryDataFlag binaryDataFlag;
     Spectrum* spectrum;
+    const SpectrumIdentityFromXML *spectrumID; 
     const map<string,string>* legacyIdRefToNativeId;
     const MSData* msd;
 
     HandlerSpectrum(BinaryDataFlag _binaryDataFlag,
                     Spectrum* _spectrum = 0,
                     const map<string,string>* legacyIdRefToNativeId = 0,
-                    const MSData* _msd = 0)
+                    const MSData* _msd = 0,
+                    const SpectrumIdentityFromXML *_spectrumID = 0)
     :   binaryDataFlag(_binaryDataFlag),
         spectrum(_spectrum),
+        spectrumID(_spectrumID),
         legacyIdRefToNativeId(legacyIdRefToNativeId),
         msd(_msd),
         handlerPrecursor_(0, legacyIdRefToNativeId)
@@ -1905,88 +1977,96 @@ struct HandlerSpectrum : public HandlerParamContainer
         if (!spectrum)
             throw runtime_error("[IO::HandlerSpectrum] Null spectrum.");
 
-        if (name == "spectrum")
-        {
-            spectrum->sourceFilePosition = position;
-
-            getAttribute(attributes, "index", spectrum->index);
-            getAttribute(attributes, "spotID", spectrum->spotID);
-            getAttribute(attributes, "defaultArrayLength", spectrum->defaultArrayLength);
-            getAttribute(attributes, "id", spectrum->id); // not an XML:ID
-
-            // mzML 1.0
-            if (version == 1 && legacyIdRefToNativeId)
+        if (name != "cvParam") // the most common, but not handled here
+        { 
+            if (name == "spectrum")
             {
-                map<string,string>::const_iterator itr = legacyIdRefToNativeId->find(spectrum->id);
-                if (itr != legacyIdRefToNativeId->end())
-                    spectrum->id = itr->second;
+                spectrum->sourceFilePosition = position;
+
+                getAttribute(attributes, "index", spectrum->index);
+                getAttribute(attributes, "spotID", spectrum->spotID);
+                getAttribute(attributes, "defaultArrayLength", spectrum->defaultArrayLength);
+                getAttribute(attributes, "id", spectrum->id); // not an XML:ID
+
+                // mzML 1.0
+                if (version == 1 && legacyIdRefToNativeId)
+                {
+                    map<string,string>::const_iterator itr = legacyIdRefToNativeId->find(spectrum->id);
+                    if (itr != legacyIdRefToNativeId->end())
+                        spectrum->id = itr->second;
+                }
+
+                // note: placeholder
+                string dataProcessingRef;
+                decode_xml_id(getAttribute(attributes, "dataProcessingRef", dataProcessingRef));
+                if (!dataProcessingRef.empty())
+                    spectrum->dataProcessingPtr = DataProcessingPtr(new DataProcessing(dataProcessingRef));
+
+                // note: placeholder
+                string sourceFileRef;
+                decode_xml_id(getAttribute(attributes, "sourceFileRef", sourceFileRef));
+                if (!sourceFileRef.empty())
+                    spectrum->sourceFilePtr = SourceFilePtr(new SourceFile(sourceFileRef));
+
+                return Status::Ok;
             }
+            else if (version == 1 && name == "acquisitionList" /* mzML 1.0 */ || name == "scanList")
+            {
+                handlerScanList_.scanList = &spectrum->scanList;
+                handlerScanList_.version = version;
+                return Status(Status::Delegate, &handlerScanList_);
+            }
+            else if (name == "precursorList" || name == "productList")
+            {
+                return Status::Ok;
+            }
+            else if (name == "precursor")
+            {
+                spectrum->precursors.push_back(Precursor());
+                handlerPrecursor_.precursor = &spectrum->precursors.back();
+                handlerPrecursor_.version = version;
+                return Status(Status::Delegate, &handlerPrecursor_);
+            }
+            else if (name == "product")
+            {
+                spectrum->products.push_back(Product());
+                handlerProduct_.product = &spectrum->products.back();
+                return Status(Status::Delegate, &handlerProduct_);
+            }
+            else if (name == "binaryDataArray")
+            {
+                if (binaryDataFlag == IgnoreBinaryData)
+                    return Status::Done;
 
-            // note: placeholder
-            string dataProcessingRef;
-            decode_xml_id(getAttribute(attributes, "dataProcessingRef", dataProcessingRef));
-            if (!dataProcessingRef.empty())
-                spectrum->dataProcessingPtr = DataProcessingPtr(new DataProcessing(dataProcessingRef));
-
-            // note: placeholder
-            string sourceFileRef;
-            decode_xml_id(getAttribute(attributes, "sourceFileRef", sourceFileRef));
-            if (!sourceFileRef.empty())
-                spectrum->sourceFilePtr = SourceFilePtr(new SourceFile(sourceFileRef));
-
-            return Status::Ok;
-        }
-        else if (version == 1 && name == "acquisitionList" /* mzML 1.0 */ || name == "scanList")
-        {
-            handlerScanList_.scanList = &spectrum->scanList;
-            handlerScanList_.version = version;
-            return Status(Status::Delegate, &handlerScanList_);
-        }
-        else if (name == "precursorList" || name == "productList")
-        {
-            return Status::Ok;
-        }
-        else if (name == "precursor")
-        {
-            spectrum->precursors.push_back(Precursor());
-            handlerPrecursor_.precursor = &spectrum->precursors.back();
-            handlerPrecursor_.version = version;
-            return Status(Status::Delegate, &handlerPrecursor_);
-        }
-        else if (name == "product")
-        {
-            spectrum->products.push_back(Product());
-            handlerProduct_.product = &spectrum->products.back();
-            return Status(Status::Delegate, &handlerProduct_);
-        }
-        else if (name == "binaryDataArray")
-        {
-            if (binaryDataFlag == IgnoreBinaryData)
-                return Status::Done;
-
-            spectrum->binaryDataArrayPtrs.push_back(BinaryDataArrayPtr(new BinaryDataArray()));
-            handlerBinaryDataArray_.binaryDataArray = spectrum->binaryDataArrayPtrs.back().get();
-            handlerBinaryDataArray_.defaultArrayLength = spectrum->defaultArrayLength;
-            handlerBinaryDataArray_.msd = msd;
-            return Status(Status::Delegate, &handlerBinaryDataArray_);
-        }
-        else if (name == "binaryDataArrayList")
-        {
-            return Status::Ok;
-        }
-        else if (version == 1 && name == "spectrumDescription") // mzML 1.0
-        {
-            // read cvParams, userParams, and referenceableParamGroups in <spectrumDescription> into <spectrum>
-            return Status::Ok;
-        }
-        else if (version == 1 && name == "scan") // mzML 1.0
-        {
-            spectrum->scanList.scans.push_back(Scan());
-            handlerScan_.version = version;
-            handlerScan_.scan = &spectrum->scanList.scans.back();
-            return Status(Status::Delegate, &handlerScan_);
-        }
-
+                spectrum->binaryDataArrayPtrs.push_back(BinaryDataArrayPtr(new BinaryDataArray()));
+                handlerBinaryDataArray_.binaryDataArray = spectrum->binaryDataArrayPtrs.back().get();
+                handlerBinaryDataArray_.defaultArrayLength = spectrum->defaultArrayLength;
+                handlerBinaryDataArray_.msd = msd;
+                return Status(Status::Delegate, &handlerBinaryDataArray_);
+            }
+            else if (name == "binaryDataArrayList")
+            {
+                // pretty likely to come right back here and read the
+                // binary data once the header info has been inspected, 
+                // so note position
+                if (spectrumID) {
+                    spectrumID->sourceFilePositionForBinarySpectrumData = position; 
+                }
+                return Status::Ok;
+            }
+            else if (version == 1 && name == "spectrumDescription") // mzML 1.0
+            {
+                // read cvParams, userParams, and referenceableParamGroups in <spectrumDescription> into <spectrum>
+                return Status::Ok;
+            }
+            else if (version == 1 && name == "scan") // mzML 1.0
+            {
+                spectrum->scanList.scans.push_back(Scan());
+                handlerScan_.version = version;
+                handlerScan_.scan = &spectrum->scanList.scans.back();
+                return Status(Status::Delegate, &handlerScan_);
+            }
+        }  // end if name != cvParam
         HandlerParamContainer::paramContainer = spectrum;
         return HandlerParamContainer::startElement(name, attributes, position);
     }
@@ -2004,9 +2084,10 @@ PWIZ_API_DECL void read(std::istream& is, Spectrum& spectrum,
                         BinaryDataFlag binaryDataFlag,
                         int version,
                         const map<string,string>* legacyIdRefToNativeId,
-                        const MSData* msd)
+                        const MSData* msd,
+                        const SpectrumIdentityFromXML *id)
 {
-    HandlerSpectrum handler(binaryDataFlag, &spectrum, legacyIdRefToNativeId, msd);
+    HandlerSpectrum handler(binaryDataFlag, &spectrum, legacyIdRefToNativeId, msd, id);
     handler.version = version;
     SAXParser::parse(is, handler);
 }
@@ -2022,11 +2103,11 @@ void write(minimxml::XMLWriter& writer, const Chromatogram& chromatogram,
            const BinaryDataEncoder::Config& config)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("index", lexical_cast<string>(chromatogram.index)));
-    attributes.push_back(make_pair("id", chromatogram.id)); // not an XML:ID
-    attributes.push_back(make_pair("defaultArrayLength", lexical_cast<string>(chromatogram.defaultArrayLength)));
+    attributes.add("index", chromatogram.index);
+    attributes.add("id", chromatogram.id); // not an XML:ID
+    attributes.add("defaultArrayLength", chromatogram.defaultArrayLength);
     if (chromatogram.dataProcessingPtr.get())
-        attributes.push_back(make_pair("dataProcessingRef", encode_xml_id_copy(chromatogram.dataProcessingPtr->id)));
+        attributes.add("dataProcessingRef", encode_xml_id_copy(chromatogram.dataProcessingPtr->id));
 
     writer.startElement("chromatogram", attributes);
 
@@ -2041,7 +2122,7 @@ void write(minimxml::XMLWriter& writer, const Chromatogram& chromatogram,
     if (!chromatogram.binaryDataArrayPtrs.empty())
     {
         attributes.clear();
-        attributes.push_back(make_pair("count", lexical_cast<string>(chromatogram.binaryDataArrayPtrs.size())));
+        attributes.add("count", chromatogram.binaryDataArrayPtrs.size());
         writer.startElement("binaryDataArrayList", attributes);
 
         for (vector<BinaryDataArrayPtr>::const_iterator it=chromatogram.binaryDataArrayPtrs.begin(); 
@@ -2146,7 +2227,7 @@ void write(minimxml::XMLWriter& writer, const SpectrumList& spectrumList, const 
            const IterationListenerRegistry* iterationListenerRegistry)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("count", lexical_cast<string>(spectrumList.size())));
+    attributes.add("count", spectrumList.size());
 
     if (spectrumList.dataProcessingPtr().get())
         attributes.push_back(make_pair("defaultDataProcessingRef", 
@@ -2175,6 +2256,8 @@ void write(minimxml::XMLWriter& writer, const SpectrumList& spectrumList, const 
         // write the spectrum
 
         SpectrumPtr spectrum = spectrumList.spectrum(i, true);
+        BOOST_ASSERT(spectrum->binaryDataArrayPtrs.empty() ||
+                     spectrum->defaultArrayLength == spectrum->getMZArray()->data.size());
         if (spectrum->index != i) throw runtime_error("[IO::write(SpectrumList)] Bad index.");
         write(writer, *spectrum, msd, config);
     }
@@ -2244,7 +2327,7 @@ void write(minimxml::XMLWriter& writer, const ChromatogramList& chromatogramList
            const IterationListenerRegistry* iterationListenerRegistry)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("count", lexical_cast<string>(chromatogramList.size())));
+    attributes.add("count", chromatogramList.size());
 
     if (chromatogramList.dataProcessingPtr().get())
         attributes.push_back(make_pair("defaultDataProcessingRef", 
@@ -2342,24 +2425,24 @@ void write(minimxml::XMLWriter& writer, const Run& run, const MSData& msd,
            const pwiz::util::IterationListenerRegistry* iterationListenerRegistry)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("id", encode_xml_id_copy(run.id)));
+    attributes.add("id", encode_xml_id_copy(run.id));
 
     // defaultInstrumentConfigurationPtr is mandatory for schematic validity;
     // at least one (possibly unknown) instrument configuration is mandatory for schematic validity;
     // therefore we set this attribute to a reasonable default if the client didn't set it
     if (run.defaultInstrumentConfigurationPtr.get())
-        attributes.push_back(make_pair("defaultInstrumentConfigurationRef", encode_xml_id_copy(run.defaultInstrumentConfigurationPtr->id)));
+        attributes.add("defaultInstrumentConfigurationRef", encode_xml_id_copy(run.defaultInstrumentConfigurationPtr->id));
     else if (!msd.instrumentConfigurationPtrs.empty())
-        attributes.push_back(make_pair("defaultInstrumentConfigurationRef", encode_xml_id_copy(msd.instrumentConfigurationPtrs.front()->id)));
+        attributes.add("defaultInstrumentConfigurationRef", encode_xml_id_copy(msd.instrumentConfigurationPtrs.front()->id));
     else
-        attributes.push_back(make_pair("defaultInstrumentConfigurationRef", "IC"));
+        attributes.add("defaultInstrumentConfigurationRef", "IC");
 
     if (run.samplePtr.get())
-        attributes.push_back(make_pair("sampleRef", encode_xml_id_copy(run.samplePtr->id)));
+        attributes.add("sampleRef", encode_xml_id_copy(run.samplePtr->id));
     if (!run.startTimeStamp.empty())
-        attributes.push_back(make_pair("startTimeStamp", run.startTimeStamp));
+        attributes.add("startTimeStamp", run.startTimeStamp);
     if (run.defaultSourceFilePtr.get())
-        attributes.push_back(make_pair("defaultSourceFileRef", encode_xml_id_copy(run.defaultSourceFilePtr->id)));
+        attributes.add("defaultSourceFileRef", encode_xml_id_copy(run.defaultSourceFilePtr->id));
  
     writer.startElement("run", attributes);
 
@@ -2367,10 +2450,6 @@ void write(minimxml::XMLWriter& writer, const Run& run, const MSData& msd,
 
     bool hasSpectrumList = run.spectrumListPtr.get() && run.spectrumListPtr->size() > 0;
     bool hasChromatogramList = run.chromatogramListPtr.get() && run.chromatogramListPtr->size() > 0;
-
-    // at least one spectrum or chromatogram is mandatory for schematic validity
-    if (!hasSpectrumList && !hasChromatogramList)
-        throw runtime_error("[IO::write(Run)] At least one spectrum or chromatogram must be present.");
 
     if (hasSpectrumList)
         write(writer, *run.spectrumListPtr, msd, config, spectrumPositions, iterationListenerRegistry);
@@ -2485,7 +2564,7 @@ void writeList(minimxml::XMLWriter& writer, const vector<object_type>& objectPtr
     if (!objectPtrs.empty())
     {
         XMLWriter::Attributes attributes;
-        attributes.push_back(make_pair("count", lexical_cast<string>(objectPtrs.size())));
+        attributes.add("count", objectPtrs.size());
         writer.startElement(label, attributes);
         for (typename vector<object_type>::const_iterator it=objectPtrs.begin(); it!=objectPtrs.end(); ++it)
             write(writer, **it);
@@ -2502,20 +2581,20 @@ void write(minimxml::XMLWriter& writer, const MSData& msd,
            const pwiz::util::IterationListenerRegistry* iterationListenerRegistry)
 {
     XMLWriter::Attributes attributes;
-    attributes.push_back(make_pair("xmlns", "http://psi.hupo.org/ms/mzml"));
-    attributes.push_back(make_pair("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"));
-    attributes.push_back(make_pair("xsi:schemaLocation", "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML" + msd.version() + ".xsd"));
+    attributes.add("xmlns", "http://psi.hupo.org/ms/mzml");
+    attributes.add("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    attributes.add("xsi:schemaLocation", "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML" + msd.version() + ".xsd");
     if (!msd.accession.empty())
-        attributes.push_back(make_pair("accession", msd.accession));
-    attributes.push_back(make_pair("id", msd.id)); // not an XML:ID
-    attributes.push_back(make_pair("version", msd.version()));
+        attributes.add("accession", msd.accession);
+    attributes.add("id", msd.id); // not an XML:ID
+    attributes.add("version", msd.version());
 
     writer.startElement("mzML", attributes);
 
     if (!msd.cvs.empty())
     {
         attributes.clear();
-        attributes.push_back(make_pair("count", lexical_cast<string>(msd.cvs.size())));
+        attributes.add("count", msd.cvs.size());
         writer.startElement("cvList", attributes);
         for (vector<CV>::const_iterator it=msd.cvs.begin(); it!=msd.cvs.end(); ++it)
             write(writer, *it);
@@ -2576,7 +2655,7 @@ struct HandlerMSData : public SAXParser::Handler
             else
             {
                 schemaLocation = schemaLocation.substr(schemaLocation.find(' ')+1);
-                string xsdName = bfs::path(schemaLocation).filename();
+                string xsdName = BFS_STRING(bfs::path(schemaLocation).filename());
                 msd->version_ = xsdName.substr(4, xsdName.length()-8); // read between "mzML" and ".xsd"
             }
 

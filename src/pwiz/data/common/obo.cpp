@@ -1,5 +1,5 @@
 //
-// $Id: obo.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: obo.cpp 4922 2013-09-05 22:33:08Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -82,10 +82,7 @@ string unescape_copy(const string& str)
 istream& getcleanline(istream& is, string& buffer)
 {
     if (getline(is, buffer))
-    {
-        if (buffer.size() > 0 && buffer.at(buffer.size()-1) == '\r')
-            buffer.erase(buffer.size()-1);
-    }
+        bal::trim(buffer);
 
     return is;
 }
@@ -93,7 +90,7 @@ istream& getcleanline(istream& is, string& buffer)
 
 void parse_id(const string& line, Term& term)
 {
-    static const boost::regex e("id: (\\w+):(\\d+)");
+    static const boost::regex e("id: (\\w+):(\\d+)\\s*");
 
     boost::smatch what; 
     if (!regex_match(line, what, e))
@@ -111,7 +108,7 @@ void parse_id(const string& line, Term& term)
 
 void parse_name(const string& line, Term& term)
 {
-    static const boost::regex e("name: (.*)");
+    static const boost::regex e("name: (.*?)\\s*");
 
     boost::smatch what; 
     if (!regex_match(line, what, e))
@@ -157,7 +154,7 @@ void parse_relationship(const string& line, Term& term)
 
 void parse_is_obsolete(const string& line, Term& term)
 {
-    static const boost::regex e("is_obsolete: (\\w+)");
+    static const boost::regex e("is_obsolete: (\\w+)\\s*");
 
     boost::smatch what; 
     if (!regex_match(line, what, e))
@@ -199,7 +196,7 @@ void parse_exact_synonym(const string& line, Term& term)
 
 void parse_synonym(const string& line, Term& term)
 {
-    static const boost::regex e("synonym: \"(.*)\"\\s*(\\w+).*");
+    static const boost::regex e("synonym: \"(.*)\"\\s*(\\w+)?.*");
 
     boost::smatch what; 
     if (!regex_match(line, what, e))
@@ -207,6 +204,30 @@ void parse_synonym(const string& line, Term& term)
 
     if (what[2] == "EXACT")
         term.exactSynonyms.push_back(unescape_copy(what[1]));
+}
+
+
+void parse_property_value(const string& line, Term& term)
+{
+    static const boost::regex e("property_value: (\\S+?)\\s*[=:]?\\s*\"(.*)\".*");
+
+    boost::smatch what;
+    if (!regex_match(line, what, e))
+        throw runtime_error("Error matching term property_value.");
+
+    term.propertyValues.insert(make_pair(what[1], what[2]));
+}
+
+
+void parse_xref(const string& line, Term& term)
+{
+    static const boost::regex e("xref: (\\S+?)\\s*\"(.*)\".*");
+
+    boost::smatch what;
+    if (!regex_match(line, what, e))
+        throw runtime_error("Error matching term xref.");
+
+    term.propertyValues.insert(make_pair(unescape_copy(what[1]), unescape_copy(what[2])));
 }
 
 
@@ -234,17 +255,22 @@ void parseTagValuePair(const string& line, Term& term)
         parse_exact_synonym(line, term);
     else if (tag == "synonym")
         parse_synonym(line, term);
+    else if (tag == "property_value")
+        parse_property_value(line, term);
+    else if (tag == "xref")
+        parse_xref(line, term);
     else if (tag == "related_synonym" ||
              tag == "narrow_synonym" ||
              tag == "comment" ||
              tag == "alt_id" ||
              tag == "namespace" ||
-			 tag == "xref" ||
              tag == "xref_analog" ||
              tag == "replaced_by" ||
              tag == "created_by" ||
-             tag == "creation_date" ||
-             tag == "property_value")
+             tag == "has_domain" || // first appeared in psi-ms.obo 3.52.0
+             tag == "has_order"  || // first appeared in psi-ms.obo 3.52.0
+             tag == "subset"  ||    // first appeared in unit.obo in rev 2755
+             tag == "creation_date")
         ; // ignore these tags
     else
         cerr << "[obo] Unknown tag \"" << tag << "\":\n  " << line << endl;

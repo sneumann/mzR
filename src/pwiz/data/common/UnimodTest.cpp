@@ -1,5 +1,5 @@
 //
-// $Id: UnimodTest.cpp 2901 2011-08-03 20:16:57Z chambm $
+// $Id: UnimodTest.cpp 5162 2013-11-15 20:16:10Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -48,14 +48,14 @@ void test()
     unit_assert_operator_equal(Site::Tyrosine, site('Y'));
     unit_assert_operator_equal((Site::Asparagine | Site::AsparticAcid), site('B'));
     unit_assert_operator_equal((Site::Glutamine | Site::GlutamicAcid), site('Z'));
-    unit_assert_throws_what(site('1'), invalid_argument, "[unimod::site] invalid symbol");
-    unit_assert_throws_what(site('z'), invalid_argument, "[unimod::site] invalid symbol");
+    unit_assert_throws_what(site('1'), invalid_argument, "[unimod::site] invalid symbol \"1\"");
+    unit_assert_throws_what(site('z'), invalid_argument, "[unimod::site] invalid symbol \"z\"");
 
 
     unit_assert_operator_equal(Position::Anywhere, position());
-    unit_assert_operator_equal(Position::AnyNTerminus, position(MS_modification_specificity_N_term));
-    unit_assert_operator_equal(Position::AnyCTerminus, position(MS_modification_specificity_C_term));
-    unit_assert_throws_what(position(MS_ion_trap), invalid_argument, "[unimod::position] invalid cvid");
+    unit_assert_operator_equal(Position::AnyNTerminus, position(MS_modification_specificity_peptide_N_term));
+    unit_assert_operator_equal(Position::AnyCTerminus, position(MS_modification_specificity_peptide_C_term));
+    unit_assert_throws_what(position(MS_matrix_assisted_laser_desorption_ionization), invalid_argument, "[unimod::position] invalid cvid \"MALDI\" (1000075)");
 
 
     if (os_) *os_ << "Unimod entries: " << modifications().size() << endl;
@@ -94,7 +94,7 @@ void test()
     unit_assert_operator_equal(UNIMOD_Acetyl, modifications(acetyl.deltaAverageMass(), 0, false)[0].cvid);
 
     // test a position-only filter
-    unit_assert_operator_equal(1, modifications(acetyl.deltaMonoisotopicMass(), 0.5,
+    unit_assert_operator_equal(1, modifications(acetyl.deltaMonoisotopicMass(), 0.0001,
                                                 indeterminate, indeterminate,
                                                 Site::Any, Position::AnyNTerminus).size());
     unit_assert_operator_equal(UNIMOD_Acetyl, modifications(acetyl.deltaMonoisotopicMass(), 0.5,
@@ -185,21 +185,22 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
-    
-    return 1;
+
+    TEST_EPILOG
 }
 

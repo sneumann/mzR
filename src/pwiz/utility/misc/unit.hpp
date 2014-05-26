@@ -1,5 +1,5 @@
 //
-// $Id: unit.hpp 1310 2009-09-14 16:08:45Z chambm $
+// $Id: unit.hpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -26,9 +26,13 @@
 
 
 #include "Exception.hpp"
+#include "DateTime.hpp"
+#include "Filesystem.hpp"
+#include "pwiz/utility/math/round.hpp"
 #include <string>
 #include <sstream>
 #include <cmath>
+#include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
 
 
 namespace pwiz {
@@ -53,7 +57,14 @@ inline std::string unit_assert_message(const char* filename, int line, const cha
     return oss.str();
 }
 
-inline std::string unit_assert_equal_message(const char* filename, int line, double x, double y, double epsilon)
+inline std::string unit_assert_equal_message(const char* filename, int line, const std::string& x, const std::string& y, const char* expression)
+{
+    std::ostringstream oss;
+    oss << "[" << filename << ":" << line << "] Assertion failed: expected \"" << x << "\" but got \"" << y << "\" (" << expression << ")";
+    return oss.str();
+}
+
+inline std::string unit_assert_numeric_equal_message(const char* filename, int line, double x, double y, double epsilon)
 {
     std::ostringstream oss;
     oss.precision(10);
@@ -64,16 +75,23 @@ inline std::string unit_assert_equal_message(const char* filename, int line, dou
 inline std::string unit_assert_exception_message(const char* filename, int line, const char* expression, const std::string& exception)
 {
     std::ostringstream oss;
-    oss << "[" << filename << ":" << line << "] Assertion failed to throw \"" << exception << "\": " << expression;
+    oss << "[" << filename << ":" << line << "] Assertion \"" << expression << "\" failed to throw " << exception;
     return oss.str();
 }
+
+inline std::string quote_string(const string& str) {return "\"" + str + "\"";}
+
 
 #define unit_assert(x) \
     (!(x) ? throw std::runtime_error(unit_assert_message(__FILE__, __LINE__, #x)) : 0) 
 
 
+#define unit_assert_operator_equal(expected, actual) \
+    (!(expected == actual) ? throw std::runtime_error(unit_assert_equal_message(__FILE__, __LINE__, lexical_cast<string>(expected), lexical_cast<string>(actual), #actual)) : 0)
+
+
 #define unit_assert_equal(x, y, epsilon) \
-    (!(fabs((x)-(y)) <= (epsilon)) ? throw std::runtime_error(unit_assert_equal_message(__FILE__, __LINE__, (x), (y), (epsilon))) : 0)
+    (!(fabs((x)-(y)) <= (epsilon)) ? throw std::runtime_error(unit_assert_numeric_equal_message(__FILE__, __LINE__, (x), (y), (epsilon))) : 0)
 
 
 #define unit_assert_throws(x, exception) \
@@ -98,10 +116,10 @@ inline std::string unit_assert_exception_message(const char* filename, int line,
             if (e.what() == std::string(whatStr)) \
                 threw = true; \
             else \
-                throw std::runtime_error(unit_assert_exception_message(__FILE__, __LINE__, #x, std::string(#exception)+" "+(whatStr)+"\nBut a different exception was thrown: ")+(e.what())); \
+                throw std::runtime_error(unit_assert_exception_message(__FILE__, __LINE__, #x, std::string(#exception)+" "+quote_string(whatStr)+"\nBut a different exception was thrown: ")+quote_string(e.what())); \
         } \
         if (!threw) \
-            throw std::runtime_error(unit_assert_exception_message(__FILE__, __LINE__, #x, std::string(#exception)+" "+(whatStr))); \
+            throw std::runtime_error(unit_assert_exception_message(__FILE__, __LINE__, #x, std::string(#exception)+" "+quote_string(whatStr))); \
     }
 
 
@@ -111,6 +129,52 @@ inline std::string unit_assert_exception_message(const char* filename, int line,
 
 #define unit_assert_vectors_equal(A, B, epsilon) \
     unit_assert(boost::numeric::ublas::norm_2((A)-(B)) < (epsilon))
+
+
+// the following macros are used by the ProteoWizard tests to report test status and duration to TeamCity
+
+inline std::string escape_teamcity_string(const std::string& str)
+{
+    string result = str;
+    bal::replace_all(result, "'", "|'");
+    bal::replace_all(result, "\n", "|n");
+    bal::replace_all(result, "\r", "|r");
+    bal::replace_all(result, "|", "||");
+    bal::replace_all(result, "[", "|[");
+    bal::replace_all(result, "]", "|]");
+    return result;
+}
+
+#define TEST_PROLOG_EX(argc, argv, suffix) \
+    bnw::args args(argc, argv); \
+    std::locale global_loc = std::locale(); \
+    std::locale loc(global_loc, new boost::filesystem::detail::utf8_codecvt_facet); \
+    bfs::path::imbue(loc); \
+    bfs::path testName = bfs::change_extension(bfs::basename(argv[0]), (suffix)); \
+    string teamcityTestName = pwiz::util::escape_teamcity_string(testName.string()); \
+    bpt::ptime testStartTime; \
+    vector<string> testArgs(argv, argv+argc); \
+    bool teamcityTestDecoration = find(testArgs.begin(), testArgs.end(), "--teamcity-test-decoration") != testArgs.end(); \
+    if (teamcityTestDecoration) \
+    { \
+        testStartTime = bpt::microsec_clock::local_time(); \
+        cout << "##teamcity[testStarted name='" << teamcityTestName << "']" << endl; \
+    } \
+    int testExitStatus = 0;
+
+#define TEST_PROLOG(argc, argv) TEST_PROLOG_EX(argc, argv, "")
+
+#define TEST_FAILED(x) \
+    if (teamcityTestDecoration) \
+        cout << "##teamcity[testFailed name='" << teamcityTestName << "' message='" << pwiz::util::escape_teamcity_string((x)) << "']\n"; \
+    cerr << (x) << endl; \
+    testExitStatus = 1;
+
+#define TEST_EPILOG \
+    if (teamcityTestDecoration) \
+        cout << "##teamcity[testFinished name='" << teamcityTestName << \
+                "' duration='" << round((bpt::microsec_clock::local_time() - testStartTime).total_microseconds() / 1000.0) << "']" << endl; \
+    return testExitStatus;
 
 
 } // namespace util

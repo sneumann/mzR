@@ -1,5 +1,5 @@
 //
-// $Id: MSData.hpp 1807 2010-02-12 16:32:36Z chambm $
+// $Id: MSData.hpp 4584 2013-05-24 19:37:52Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -32,13 +32,14 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <set>
 
 
 namespace pwiz {
 namespace msdata {
 
 
-	using namespace pwiz::data;
+    using namespace pwiz::data;
 
 
 PWIZ_API_DECL std::vector<CV> defaultCVList();
@@ -462,6 +463,7 @@ struct PWIZ_API_DECL TimeIntensityPair
 
 PWIZ_API_DECL std::ostream& operator<<(std::ostream& os, const TimeIntensityPair& ti);
 
+const size_t IDENTITY_INDEX_NONE = (size_t)-1;
 
 /// Identifying information for a spectrum
 struct PWIZ_API_DECL SpectrumIdentity
@@ -476,11 +478,11 @@ struct PWIZ_API_DECL SpectrumIdentity
     std::string spotID;
 
     /// for file-based MSData implementations, this attribute may refer to the spectrum's position in the file
-	boost::iostreams::stream_offset sourceFilePosition;
+    boost::iostreams::stream_offset sourceFilePosition;
 
-    SpectrumIdentity() : index((size_t)-1), sourceFilePosition(-1) {}
+ 
+    SpectrumIdentity() : index(IDENTITY_INDEX_NONE), sourceFilePosition((boost::iostreams::stream_offset)-1) {}
 };
-
 
 /// Identifying information for a chromatogram
 struct PWIZ_API_DECL ChromatogramIdentity
@@ -492,9 +494,9 @@ struct PWIZ_API_DECL ChromatogramIdentity
     std::string id;
 
     /// for file-based MSData implementations, this attribute may refer to the chromatogram's position in the file
-	boost::iostreams::stream_offset sourceFilePosition;
+    boost::iostreams::stream_offset sourceFilePosition;
 
-    ChromatogramIdentity() : index(0), sourceFilePosition(-1) {}
+    ChromatogramIdentity() : index(IDENTITY_INDEX_NONE), sourceFilePosition(-1) {}
 };
 
 
@@ -527,6 +529,13 @@ struct PWIZ_API_DECL Spectrum : public SpectrumIdentity, public ParamContainer
 
     /// returns true iff the element contains no params and all members are empty or null
     bool empty() const;
+
+    /// returns true iff has nonnull and nonempty BinaryDataArrayPtr
+    bool hasBinaryData() const {
+        return binaryDataArrayPtrs.size() && 
+               binaryDataArrayPtrs[0] &&
+              !binaryDataArrayPtrs[0]->data.empty();
+    };
 
     /// copy binary data arrays into m/z-intensity pair array
     void getMZIntensityPairs(std::vector<MZIntensityPair>& output) const;
@@ -610,6 +619,13 @@ typedef boost::shared_ptr<Chromatogram> ChromatogramPtr;
 // note: derived container to support dynamic linking on Windows
 class IndexList : public std::vector<size_t> {};
 
+enum DetailLevel
+{
+    DetailLevel_InstantMetadata,
+    DetailLevel_FastMetadata,
+    DetailLevel_FullMetadata,
+    DetailLevel_FullData
+};
 
 /// 
 /// Interface for accessing spectra, which may be stored in memory
@@ -660,11 +676,36 @@ class PWIZ_API_DECL SpectrumList
     /// - client may assume the underlying Spectrum* is valid 
     virtual SpectrumPtr spectrum(size_t index, bool getBinaryData = false) const = 0;
 
+    /// get a copy of the seed spectrum, optionally with its binary data populated
+    /// this is useful for formats like mzML that can delay loading of binary data
+    /// - client may assume the underlying Spectrum* is valid 
+    virtual SpectrumPtr spectrum(const SpectrumPtr &seed, bool getBinaryData) const {
+        return spectrum(seed->index, getBinaryData); // default implementation
+    };
+
+    /// retrieve a spectrum by index
+    /// - detailLevel determines what fields are guaranteed present on the spectrum after the call
+    /// - client may assume the underlying Spectrum* is valid 
+    virtual SpectrumPtr spectrum(size_t index, DetailLevel detailLevel) const
+    {
+        // By default faster metadeta access is not implemented
+        if (detailLevel == DetailLevel_FastMetadata || detailLevel == DetailLevel_InstantMetadata)
+            return SpectrumPtr(new Spectrum);
+
+        return spectrum(index, detailLevel == DetailLevel_FullData);
+    }
+
     /// returns the data processing affecting spectra retrieved through this interface
     /// - may return a null shared pointer
     virtual const boost::shared_ptr<const DataProcessing> dataProcessingPtr() const;
 
+    /// makes it easy to issue simple warnings without repeats (based on string hash)
+    void warn_once(const char *msg) const; 
+
     virtual ~SpectrumList(){} 
+
+private:
+    mutable std::set<size_t> warn_msg_hashes; // for warn_once use
 };
 
 
@@ -854,6 +895,10 @@ struct PWIZ_API_DECL MSData
     /// for a document created from a file/stream, the version is the schema version read from the file/stream
     const std::string& version() const;
 
+    // for detecting out of order filters
+    void filterApplied() {nFiltersApplied_++;};
+    int countFiltersApplied() const {return nFiltersApplied_;};
+
     private:
     // no copying
     MSData(const MSData&);
@@ -862,6 +907,7 @@ struct PWIZ_API_DECL MSData
     protected:
     std::string version_; // schema version read from the file/stream
     friend struct IO::HandlerMSData;
+    int nFiltersApplied_; // useful for flagging filters that need to be first, like vendor centroiding
 };
 
 

@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumListWrapperTest.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: SpectrumListWrapperTest.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -43,6 +43,8 @@ class MyWrapper : public SpectrumListWrapper
         // verify that we can see inner_ 
         unit_assert(size == inner_->size());
     }
+
+    virtual SpectrumPtr spectrum(size_t index, bool getBinaryData = false) const {return inner_->spectrum(index, getBinaryData);}
 };
 
 
@@ -120,23 +122,24 @@ void test()
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
-        return 1;
+        TEST_FAILED("Caught unknown exception.")
     }
+
+    TEST_EPILOG
 }
 
 

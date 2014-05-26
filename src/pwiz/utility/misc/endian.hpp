@@ -1,5 +1,5 @@
 //
-// $Id: endian.hpp 2056 2010-06-17 16:17:29Z chambm $ 
+// $Id: endian.hpp 3214 2012-01-13 01:08:04Z pcbrefugee $ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -26,9 +26,7 @@
 
 
 #include "boost/static_assert.hpp"
-#if defined(__MACH__) && !defined(__APPLE_CC__) 
-#include <machine/endian.h>
-#endif
+
 
 namespace pwiz {
 namespace util {
@@ -38,21 +36,14 @@ namespace util {
 #define PWIZ_GCC
 #endif
 
+
 #if defined(_MSC_VER)
 #define PWIZ_MSVC
 #endif
 
-#ifdef __BYTE_ORDER
-#if __BYTE_ORDER == __BIG_ENDIAN //if both are not defined it is TRUE!
-#define PWIZ_BIG_ENDIAN
-#elif __BYTE_ORDER == __LITTLE_ENDIAN
-#define PWIZ_LITTLE_ENDIAN
-#endif
-#endif
 
 #if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__LITTLE_ENDIAN) || \
     (defined(__DARWIN_BYTE_ORDER) && __DARWIN_BYTE_ORDER==__DARWIN_LITTLE_ENDIAN) || \
-    (defined(__DARWIN_10_6_AND_LATER) && defined(__LITTLE_ENDIAN__)) || \
     (defined(__LITTLE_ENDIAN__)) || \
     (defined(__MINGW32__)) || \
     (defined(__i386__)) || \
@@ -61,8 +52,7 @@ namespace util {
 #endif
 
 
-#if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__BIG_ENDIAN) || \
-    (defined(__BIG_ENDIAN__))    
+#if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__BIG_ENDIAN)
 #define PWIZ_BIG_ENDIAN
 #endif
 

@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.11.1
+-------------------------
+ o update pwiz/boost to support Maverick [2014-05-26 Mon]
+
 CHANGES IN VERSION 1.9.8
 ------------------------
  o Pointing to the relevant wiki page in the Rcpp compiler/linker

@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2001-2010 Joel de Guzman
+    Copyright (c) 2001-2011 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -50,8 +50,8 @@ namespace boost { namespace spirit { namespace detail
         struct result<F(A0&)>
           : result_type<A0> {};
 
-        expand_arg(Context& context)
-          : context(context)
+        expand_arg(Context& context_)
+          : context(context_)
         {
         }
 

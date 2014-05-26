@@ -1,5 +1,5 @@
 //
-// $Id: DateTimeTest.cpp 1767 2010-01-29 21:43:37Z chambm $
+// $Id: DateTimeTest.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -19,10 +19,10 @@
 // limitations under the License.
 //
 
-#include "DateTime.hpp"
-#include "Stream.hpp"
-#include "Exception.hpp"
+
+#include "Std.hpp"
 #include "pwiz/utility/misc/unit.hpp"
+#include "pwiz/utility/misc/DateTime.hpp"
 
 
 using namespace pwiz::util;
@@ -56,6 +56,85 @@ void test_time_from_OADATE()
 
     if (os_) *os_ << "OADATE: -1.25 -> " << time_from_OADATE<time_type>(-1.25) << endl;
     unit_assert(time_from_OADATE<time_type>(-1.25) == time_type(date_type(1899, bdt::Dec, 29), time_duration_type(6,0,0)));
+}
+
+
+void test_format_date_time()
+{
+    using bpt::ptime;
+    typedef blt::local_date_time datetime;
+    typedef datetime::time_duration_type time;
+
+    string encoded;
+
+    ptime pt = ptime(date(1942, bdt::Apr, 2));
+    encoded = format_date_time("%Y-%m-%d", pt);
+    if (os_) *os_ << pt << " -> " << encoded << endl;
+    unit_assert(encoded == "1942-04-02");
+
+    pt = ptime(date(2011, bdt::Nov, 11));
+    encoded = format_date_time("--=%d/%m/%y=--", pt);
+    if (os_) *os_ << pt << " -> " << encoded << endl;
+    unit_assert(encoded == "--=11/11/11=--");
+
+    pt = ptime(date(2000, bdt::Nov, 11), time(1, 2, 3));
+    encoded = format_date_time("%H:%M:%S", pt);
+    if (os_) *os_ << pt << " -> " << encoded << endl;
+    unit_assert(encoded == "01:02:03");
+
+    time elapsed = time(1, 2, 3) - time(0, 0, 3);
+    encoded = format_date_time("%H:%M:%S", elapsed);
+    if (os_) *os_ << bpt::to_simple_string(elapsed) << " -> " << encoded << endl;
+    unit_assert(encoded == "01:02:00");
+
+    elapsed = time(1, 2, 3) - time(0, 1, 2);
+    encoded = format_date_time("%H:%M:%S", elapsed);
+    if (os_) *os_ << bpt::to_simple_string(elapsed) << " -> " << encoded << endl;
+    unit_assert(encoded == "01:01:01");
+
+    elapsed = time(1, 2, 3) - time(1, 2, 3);
+    encoded = format_date_time("%H:%M:%S", elapsed);
+    if (os_) *os_ << bpt::to_simple_string(elapsed) << " -> " << encoded << endl;
+    unit_assert(encoded == "00:00:00");
+}
+
+
+void test_parse_date_time()
+{
+    typedef blt::local_date_time datetime;
+
+    string encoded;
+
+    encoded = "1942-04-02";
+    datetime decoded = parse_date_time("%Y-%m-%d", encoded);
+    if (os_) *os_ << encoded << " -> " << format_date_time("%Y-%m-%d", decoded.local_time()) << endl;
+    unit_assert(decoded.local_time().date().year() == 1942);
+    unit_assert(decoded.local_time().date().month() == 4);
+    unit_assert(decoded.local_time().date().day() == 2);
+
+    encoded = "1400-12-11";
+    decoded = parse_date_time("%Y-%d-%m", encoded);
+    if (os_) *os_ << encoded << " -> " << format_date_time("%Y-%d-%m", decoded.local_time()) << endl;
+    unit_assert(decoded.local_time().date().year() == 1400);
+    unit_assert(decoded.local_time().date().month() == 11);
+    unit_assert(decoded.local_time().date().day() == 12);
+
+    encoded = "124221";
+    decoded = parse_date_time("%H%M%S", encoded);
+    if (os_) *os_ << encoded << " -> " << format_date_time("%H%M%S", decoded.local_time()) << endl;
+    unit_assert(decoded.local_time().time_of_day().hours() == 12);
+    unit_assert(decoded.local_time().time_of_day().minutes() == 42);
+    unit_assert(decoded.local_time().time_of_day().seconds() == 21);
+
+    encoded = "16:42:21 on 01-02-2011";
+    decoded = parse_date_time("%H:%M:%S on %m-%d-%Y", encoded);
+    if (os_) *os_ << encoded << " -> " << format_date_time("%H:%M:%S on %m-%d-%Y", decoded.local_time()) << endl;
+    unit_assert(decoded.local_time().date().year() == 2011);
+    unit_assert(decoded.local_time().date().month() == 1);
+    unit_assert(decoded.local_time().date().day() == 2);
+    unit_assert(decoded.local_time().time_of_day().hours() == 16);
+    unit_assert(decoded.local_time().time_of_day().minutes() == 42);
+    unit_assert(decoded.local_time().time_of_day().seconds() == 21);
 }
 
 
@@ -141,8 +220,10 @@ void test_xml_datetime()
 }
 
 
-int main(int argc, const char* argv[])
+int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
@@ -156,17 +237,18 @@ int main(int argc, const char* argv[])
         }
         test_time_from_OADATE<boost::posix_time::ptime>();
         //test_time_from_OADATE<boost::local_time::local_date_time>();
+        test_format_date_time();
+        test_parse_date_time();
         test_xml_datetime();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << "Caught exception: " << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception" << endl;
+        TEST_FAILED("Caught unknown exception.")
     }
 
-    return 1;
+    TEST_EPILOG
 }

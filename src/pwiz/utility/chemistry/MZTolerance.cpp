@@ -1,5 +1,5 @@
 //
-// $Id: MZTolerance.cpp 2778 2011-06-14 16:08:39Z chambm $
+// $Id: MZTolerance.cpp 3317 2012-02-27 16:36:06Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -56,6 +56,12 @@ PWIZ_API_DECL istream& operator>>(istream& is, MZTolerance& mzt)
 PWIZ_API_DECL bool operator==(const MZTolerance& a, const MZTolerance& b)
 {
     return a.value==b.value && a.units==b.units;
+}
+
+
+PWIZ_API_DECL bool operator!=(const MZTolerance& a, const MZTolerance& b)
+{
+    return a.value!=b.value || a.units!=b.units;
 }
 
 

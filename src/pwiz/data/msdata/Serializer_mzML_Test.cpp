@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_mzML_Test.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: Serializer_mzML_Test.cpp 5084 2013-10-28 23:32:24Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -39,7 +39,7 @@ using namespace pwiz::msdata;
 ostream* os_ = 0;
 
 
-void testWriteRead(const MSData& msd, const Serializer_mzML::Config& config)
+void testWriteRead(const MSData& msd, const Serializer_mzML::Config& config, const DiffConfig &diffcfg)
 {
     if (os_) *os_ << "testWriteRead() " << config << endl;
 
@@ -56,7 +56,7 @@ void testWriteRead(const MSData& msd, const Serializer_mzML::Config& config)
 
     References::resolve(msd2);
 
-    Diff<MSData, DiffConfig> diff(msd, msd2);
+    Diff<MSData, DiffConfig> diff(msd, msd2, diffcfg);
     if (os_ && diff) *os_ << diff << endl; 
     unit_assert(!diff);
 }
@@ -66,38 +66,64 @@ void testWriteRead()
 {
     MSData msd;
     examples::initializeTiny(msd);
+    for (int zloop=2;zloop--;) // run through once without zlib, then with
+    {
+        DiffConfig diffcfg;
+        Serializer_mzML::Config config;
 
-    Serializer_mzML::Config config;
-    unit_assert(config.binaryDataEncoderConfig.precision == BinaryDataEncoder::Precision_64);
-    testWriteRead(msd, config);
+        if (!zloop) // retest with compression 
+            config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
 
-    config.binaryDataEncoderConfig.precision = BinaryDataEncoder::Precision_32;
-    testWriteRead(msd, config);
+        unit_assert(config.binaryDataEncoderConfig.precision == BinaryDataEncoder::Precision_64);
+        testWriteRead(msd, config, diffcfg);
 
-    config.indexed = false;
-    testWriteRead(msd, config);
+        config.binaryDataEncoderConfig.precision = BinaryDataEncoder::Precision_32;
+        testWriteRead(msd, config, diffcfg);
 
-    // TODO: test with compression 
+        config.indexed = false;
+        testWriteRead(msd, config, diffcfg);
+
+        // lossy compression, increase allowable mismatch
+        diffcfg.precision = 0.01;
+        config.binaryDataEncoderConfig.numpress = BinaryDataEncoder::Numpress_Linear;
+        testWriteRead(msd, config, diffcfg);
+
+        config.binaryDataEncoderConfig.numpress = BinaryDataEncoder::Numpress_Pic;
+        testWriteRead(msd, config, diffcfg);
+
+        config.binaryDataEncoderConfig.numpress = BinaryDataEncoder::Numpress_None;
+        config.binaryDataEncoderConfig.numpressOverrides[MS_intensity_array] = BinaryDataEncoder::Numpress_Slof;
+        testWriteRead(msd, config, diffcfg);
+        
+        if (!zloop) // provoke numpress temp. disable
+        {
+            config.binaryDataEncoderConfig.numpressLinearErrorTolerance = .000000001; 
+            config.binaryDataEncoderConfig.numpressSlofErrorTolerance = .000000001; 
+            testWriteRead(msd, config, diffcfg);
+        }
+    }
+
 }
 
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         testWriteRead();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
-    
-    return 1;
+
+    TEST_EPILOG
 }
 

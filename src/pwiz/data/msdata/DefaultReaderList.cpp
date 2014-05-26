@@ -1,5 +1,5 @@
 //
-// $Id: DefaultReaderList.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: DefaultReaderList.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -23,8 +23,9 @@
 
 #define PWIZ_SOURCE
 
-#include "pwiz/utility/misc/Filesystem.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include "pwiz/utility/misc/Filesystem.hpp"
+#include "pwiz/utility/minimxml/SAXParser.hpp"
 #include "DefaultReaderList.hpp"
 #include "SpectrumList_mzXML.hpp"
 #include "SpectrumList_MGF.hpp"
@@ -37,59 +38,22 @@
 #include "References.hpp"
 #include "ChromatogramListBase.hpp"
 #include "pwiz/data/msdata/Version.hpp"
-#include "boost/regex.hpp"
-
 
 namespace pwiz {
 namespace msdata {
 
 
+using namespace pwiz::minimxml;
 
 
 namespace {
-
-string GetXMLRootElement(const string& fileheader)
-{
-    const static boost::regex e("<\\?xml.*?>.*?<([^?!]\\S+?)[\\s>]");
-
-    // convert Unicode to ASCII
-    string asciiheader;
-    asciiheader.reserve(fileheader.size());
-    BOOST_FOREACH(char c, fileheader)
-    {
-        if(c > 0)
-            asciiheader.push_back(c);
-    }
-
-    boost::smatch m;
-    if (boost::regex_search(asciiheader, m, e))
-        return m[1];
-    throw runtime_error("[GetXMLRootElement] Root element not found (header is not well-formed XML)");
-}
-
-string GetXMLRootElement(istream& is)
-{
-    char buf[513];
-    is.read(buf, 512);
-    return GetXMLRootElement(buf);
-}
-
-string GetXMLRootElementFromFile(const string& filepath)
-{
-    pwiz::util::random_access_compressed_ifstream file(filepath.c_str());
-    if (!file)
-        throw runtime_error("[GetXMLRootElementFromFile] Error opening file");
-    return GetXMLRootElement(file);
-}
 
 void appendSourceFile(const string& filename, MSData& msd)
 {
     SourceFilePtr sourceFile(new SourceFile);
     bfs::path p(filename);
-    sourceFile->id = sourceFile->name = p.leaf();
-    string location = bfs::complete(p.branch_path()).string();
-    if (location.empty()) location = ".";
-    sourceFile->location = string("file://") + location;
+    sourceFile->id = sourceFile->name = BFS_STRING(p.leaf());
+    sourceFile->location = "file:///" + BFS_COMPLETE(p.branch_path()).string();
     msd.fileDescription.sourceFilePtrs.push_back(sourceFile);
 }
 
@@ -133,284 +97,318 @@ void fillInCommonMetadata(const string& filename, MSData& msd)
         msd.id = msd.run.id = bfs::basename(filename);
 }
 
-class Reader_mzML : public Reader
+// return true if filename has form xxxx.ext or xxxx.ext.gz
+static bool has_extension(std::string const &test_filename,const char *ext)
 {
-    public:
+    std::string filename(test_filename);
+    if (bal::iends_with(filename, ".gz"))
+        filename.erase(filename.length()-3);
+    return bal::iends_with(filename, ext);
+}
 
-    virtual std::string identify(const std::string& filename, const std::string& head) const
-    {
-         istringstream iss(head);
-         return std::string((type(iss) != Type_Unknown)?getType():"");
-    }
-
-    virtual void read(const std::string& filename, const std::string& head, MSData& result, int runIndex = 0) const
-    {
-        if (runIndex != 0)
-            throw ReaderFail("[Reader_mzML::read] multiple runs not supported");
-
-        shared_ptr<istream> is(new pwiz::util::random_access_compressed_ifstream(filename.c_str()));
-        if (!is.get() || !*is)
-            throw runtime_error(("[Reader_mzML::read] Unable to open file " + filename).c_str());
-
-        switch (type(*is))
-        {
-            case Type_mzML:
-            {
-                Serializer_mzML::Config config;
-                config.indexed = false;
-                Serializer_mzML serializer(config);
-                serializer.read(is, result);
-                break;
-            }
-            case Type_mzML_Indexed:
-            {
-                Serializer_mzML serializer;
-                serializer.read(is, result);
-                break;
-            }
-            case Type_Unknown:
-            default:
-            {
-                throw runtime_error("[MSDataFile::Reader_mzML] This isn't happening.");
-            }
-        }
-
-        fillInCommonMetadata(filename, result);
-    }
-
-    virtual void read(const std::string& filename,
-                      const std::string& head,
-                      std::vector<MSDataPtr>& results) const
-    {
-        results.push_back(MSDataPtr(new MSData));
-        read(filename, head, *results.back());
-    }
-
-    virtual const char *getType() const {return "mzML";}
-
-    private:
-
-    enum Type { Type_mzML, Type_mzML_Indexed, Type_Unknown };
-
-    Type type(istream& is) const
-    {
-        try
-        {
-            string rootElement = GetXMLRootElement(is);
-            if (rootElement == "indexedmzML")
-                return Type_mzML_Indexed;
-            if (rootElement == "mzML")
-                return Type_mzML;
-        }
-        catch (runtime_error&)
-        {
-        }
-        return Type_Unknown;
-    }
-};
+} // namespace
 
 
-class Reader_mzXML : public Reader
+//
+// Reader_mzML
+//
+
+PWIZ_API_DECL std::string Reader_mzML::identify(const std::string& filename, const std::string& head) const
 {
-    virtual std::string identify(const std::string& filename, const std::string& head) const
+     istringstream iss(head);
+     return std::string((type(iss) != Type_Unknown)?getType():"");
+}
+
+PWIZ_API_DECL void Reader_mzML::read(const std::string& filename,
+                                     const std::string& head,
+                                     MSData& result,
+                                     int runIndex,
+                                     const Config& config) const
+{
+    if (runIndex != 0)
+        throw ReaderFail("[Reader_mzML::read] multiple runs not supported");
+
+    shared_ptr<istream> is(new pwiz::util::random_access_compressed_ifstream(filename.c_str()));
+    if (!is.get() || !*is)
+        throw runtime_error(("[Reader_mzML::read] Unable to open file " + filename).c_str());
+
+    switch (type(*is))
     {
-        std::string result;
-        try
+        case Type_mzML:
         {
-            string rootElement = GetXMLRootElement(head);
-            result = (rootElement == "mzXML" || rootElement == "msRun")?getType():"";
-        }
-        catch (runtime_error&)
-        {
-        }
-        return result;
-    }
-
-    virtual void read(const std::string& filename, const std::string& head, MSData& result, int runsIndex = 0) const
-    {
-        if (runsIndex != 0)
-            throw ReaderFail("[Reader_mzXML::read] multiple runs not supported");
-
-        shared_ptr<istream> is(new pwiz::util::random_access_compressed_ifstream(filename.c_str()));
-        if (!is.get() || !*is)
-            throw runtime_error(("[Reader_mzXML::read] Unable to open file " + filename).c_str());
-
-        try
-        {
-            // assume there is a scan index
-            Serializer_mzXML serializer;
+            Serializer_mzML::Config config;
+            config.indexed = false;
+            Serializer_mzML serializer(config);
             serializer.read(is, result);
-            fillInCommonMetadata(filename, result);
-            result.fileDescription.sourceFilePtrs.back()->set(MS_scan_number_only_nativeID_format);
-            result.fileDescription.sourceFilePtrs.back()->set(MS_ISB_mzXML_file);
-            return;
+            break;
         }
-        catch (SpectrumList_mzXML::index_not_found&)
-        {}
+        case Type_mzML_Indexed:
+        {
+            Serializer_mzML serializer;
+            serializer.read(is, result);
+            break;
+        }
+        case Type_Unknown:
+        default:
+        {
+            throw runtime_error("[MSDataFile::Reader_mzML] This isn't happening.");
+        }
+    }
 
-        // error looking for index -- try again, but generate index
-        is->seekg(0);
-        Serializer_mzXML::Config config;
-        config.indexed = false;
-        Serializer_mzXML serializer(config);
+    fillInCommonMetadata(filename, result);
+}
+
+PWIZ_API_DECL void Reader_mzML::read(const std::string& filename,
+                                     const std::string& head,
+                                     std::vector<MSDataPtr>& results,
+                                     const Config& config) const
+{
+    results.push_back(MSDataPtr(new MSData));
+    read(filename, head, *results.back(), 0, config);
+}
+
+Reader_mzML::Type Reader_mzML::type(istream& is) const
+{
+    try
+    {
+        string rootElement = xml_root_element(is);
+        if (rootElement == "indexedmzML")
+            return Type_mzML_Indexed;
+        if (rootElement == "mzML")
+            return Type_mzML;
+    }
+    catch (runtime_error&)
+    {
+    }
+    return Type_Unknown;
+}
+
+
+//
+// Reader_mzXML
+//
+
+PWIZ_API_DECL std::string Reader_mzXML::identify(const std::string& filename, const std::string& head) const
+{
+    std::string result;
+    try
+    {
+        string rootElement = xml_root_element(head);
+        result = (rootElement == "mzXML" || rootElement == "msRun")?getType():"";
+    }
+    catch (runtime_error&)
+    {
+    }
+    return result;
+}
+
+PWIZ_API_DECL void Reader_mzXML::read(const std::string& filename,
+                                      const std::string& head,
+                                      MSData& result,
+                                      int runsIndex,
+                                      const Config& config) const
+{
+    if (runsIndex != 0)
+        throw ReaderFail("[Reader_mzXML::read] multiple runs not supported");
+
+    shared_ptr<istream> is(new pwiz::util::random_access_compressed_ifstream(filename.c_str()));
+    if (!is.get() || !*is)
+        throw runtime_error(("[Reader_mzXML::read] Unable to open file " + filename).c_str());
+
+    try
+    {
+        // assume there is a scan index
+        Serializer_mzXML serializer;
         serializer.read(is, result);
         fillInCommonMetadata(filename, result);
         result.fileDescription.sourceFilePtrs.back()->set(MS_scan_number_only_nativeID_format);
-        result.fileDescription.sourceFilePtrs.back()->set(MS_ISB_mzXML_file);
+        result.fileDescription.sourceFilePtrs.back()->set(MS_ISB_mzXML_format);
         return;
     }
+    catch (SpectrumList_mzXML::index_not_found&)
+    {}
 
-    virtual void read(const std::string& filename,
-                      const std::string& head,
-                      std::vector<MSDataPtr>& results) const
-    {
-        results.push_back(MSDataPtr(new MSData));
-        read(filename, head, *results.back());
-    }
+    // error looking for index -- try again, but generate index
+    is->seekg(0);
+    Serializer_mzXML::Config serializerConfig;
+    serializerConfig.indexed = false;
+    Serializer_mzXML serializer(serializerConfig);
+    serializer.read(is, result);
+    fillInCommonMetadata(filename, result);
+    result.fileDescription.sourceFilePtrs.back()->set(MS_scan_number_only_nativeID_format);
+    result.fileDescription.sourceFilePtrs.back()->set(MS_ISB_mzXML_format);
+    return;
+}
 
-    virtual const char *getType() const {return "mzXML";}
-};
-
-
-class Reader_MGF : public Reader
+PWIZ_API_DECL void Reader_mzXML::read(const std::string& filename,
+                                      const std::string& head,
+                                      std::vector<MSDataPtr>& results,
+                                      const Config& config) const
 {
-    virtual std::string identify(const string& filename, const string& head) const
-    {
-        return std::string(((bal::to_lower_copy(bfs::extension(filename)) == ".mgf"))?getType():"");
-    }
+    results.push_back(MSDataPtr(new MSData));
+    read(filename, head, *results.back(), 0, config);
+}
 
-    virtual void read(const string& filename, const string& head, MSData& result, int runIndex = 0) const
-    {
-        if (runIndex != 0)
-            throw ReaderFail("[Reader_MGF::read] multiple runs not supported");
 
-        shared_ptr<istream> is(new pwiz::util::random_access_compressed_ifstream(filename.c_str()));
-        if (!is.get() || !*is)
-            throw runtime_error(("[Reader_MGF::read] Unable to open file " + filename));
+//
+// Reader_MGF
+//
 
-        Serializer_MGF serializer;
-        serializer.read(is, result);
-        fillInCommonMetadata(filename, result);
-        result.fileDescription.sourceFilePtrs.back()->set(MS_multiple_peak_list_nativeID_format);
-        result.fileDescription.sourceFilePtrs.back()->set(MS_Mascot_MGF_file);
-        return;
-    }
-
-    virtual void read(const std::string& filename,
-                      const std::string& head,
-                      std::vector<MSDataPtr>& results) const
-    {
-        results.push_back(MSDataPtr(new MSData));
-        read(filename, head, *results.back());
-    }
-
-    virtual const char *getType() const {return "Mascot Generic";}
-};
-
-class Reader_MSn : public Reader
+PWIZ_API_DECL std::string Reader_MGF::identify(const string& filename, const string& head) const
 {
-  virtual std::string identify(const string& filename, const string& head) const
-  {
-    bool isOK = (bal::to_lower_copy(bfs::extension(filename)) == ".ms2") ||
-                (bal::to_lower_copy(bfs::extension(filename)) == ".cms2") ||
-                (bal::to_lower_copy(bfs::extension(filename)) == ".bms2");
- 
+    return std::string(((bal::to_lower_copy(bfs::extension(filename)) == ".mgf"))?getType():"");
+}
+
+PWIZ_API_DECL void Reader_MGF::read(const string& filename,
+                                    const string& head,
+                                    MSData& result,
+                                    int runIndex,
+                                    const Config& config) const
+{
+    if (runIndex != 0)
+        throw ReaderFail("[Reader_MGF::read] multiple runs not supported");
+
+    shared_ptr<istream> is(new pwiz::util::random_access_compressed_ifstream(filename.c_str()));
+    if (!is.get() || !*is)
+        throw runtime_error(("[Reader_MGF::read] Unable to open file " + filename));
+
+    Serializer_MGF serializer;
+    serializer.read(is, result);
+    fillInCommonMetadata(filename, result);
+    result.fileDescription.sourceFilePtrs.back()->set(MS_multiple_peak_list_nativeID_format);
+    result.fileDescription.sourceFilePtrs.back()->set(MS_Mascot_MGF_format);
+    return;
+}
+
+PWIZ_API_DECL void Reader_MGF::read(const std::string& filename,
+                                    const std::string& head,
+                                    std::vector<MSDataPtr>& results,
+                                    const Config& config) const
+{
+    results.push_back(MSDataPtr(new MSData));
+    read(filename, head, *results.back());
+}
+
+
+//
+// Reader_MSn
+//
+
+PWIZ_API_DECL std::string Reader_MSn::identify(const string& filename, const string& head) const
+{
+    bool isOK = has_extension(filename, ".ms1") ||
+                has_extension(filename, ".cms1") ||
+                has_extension(filename, ".bms1") ||
+                has_extension(filename, ".ms2") ||
+                has_extension(filename, ".cms2") ||
+                has_extension(filename, ".bms2");
+
     return std::string( isOK ? getType() : "" );
-  }
+}
 
-  virtual void read(const string& filename, const string& head, MSData& result, int runIndex = 0) const
-  {
-      if (runIndex != 0)
-          throw ReaderFail("[Reader_MSn::read] multiple runs not supported");
-      
-      MSn_Type filetype = MSn_Type_UNKNOWN;
-      if( (bal::to_lower_copy(bfs::extension(filename)) == ".ms2" )){
-        filetype = MSn_Type_MS2;
-      }else if( (bal::to_lower_copy(bfs::extension(filename)) == ".cms2" )){
-        filetype = MSn_Type_CMS2;
-      }else if( (bal::to_lower_copy(bfs::extension(filename)) == ".bms2" )){
-        filetype = MSn_Type_BMS2;
-      }
-
-     shared_ptr<istream> is(new pwiz::util::random_access_compressed_ifstream(filename.c_str()));
-     if (!is.get() || !*is)
-       throw runtime_error(("[Reader_MSn::read] Unable to open file " + filename));
-
-     Serializer_MSn serializer(filetype);
-     serializer.read(is, result);
-     fillInCommonMetadata(filename, result);
-     result.fileDescription.sourceFilePtrs.back()->set(MS_scan_number_only_nativeID_format);
-     result.fileDescription.sourceFilePtrs.back()->set(MS_MS2_file);
-     return;
-  }
-
-  virtual void read(const std::string& filename,
-                    const std::string& head,
-                    std::vector<MSDataPtr>& results) const
-  {
-      results.push_back(MSDataPtr(new MSData));
-      read(filename, head, *results.back());
-  }
-
-  virtual const char *getType() const {return "MSn";}
-};
-
-class Reader_BTDX : public Reader
+PWIZ_API_DECL void Reader_MSn::read(const string& filename,
+                                    const string& head,
+                                    MSData& result,
+                                    int runIndex,
+                                    const Config& config) const
 {
-    virtual std::string identify(const string& filename, const string& head) const
+    if (runIndex != 0)
+        throw ReaderFail("[Reader_MSn::read] multiple runs not supported");
+
+    MSn_Type filetype = MSn_Type_UNKNOWN;
+    if (has_extension(filename, ".ms1"))
+        filetype = MSn_Type_MS1;
+    else if (has_extension(filename, ".cms1"))
+        filetype = MSn_Type_CMS1;
+    else if (has_extension(filename, ".bms1"))
+        filetype = MSn_Type_BMS1;
+    else if (has_extension(filename, ".ms2"))
+        filetype = MSn_Type_MS2;
+    else if (has_extension(filename, ".cms2"))
+        filetype = MSn_Type_CMS2;
+    else if (has_extension(filename, ".bms2"))
+        filetype = MSn_Type_BMS2;
+
+    shared_ptr<istream> is(new pwiz::util::random_access_compressed_ifstream(filename.c_str()));
+    if (!is.get() || !*is)
+        throw runtime_error(("[Reader_MSn::read] Unable to open file " + filename));
+
+    Serializer_MSn serializer(filetype);
+    serializer.read(is, result);
+    fillInCommonMetadata(filename, result);
+    result.fileDescription.sourceFilePtrs.back()->set(MS_scan_number_only_nativeID_format);
+    result.fileDescription.sourceFilePtrs.back()->set(MS_MS2_format);
+}
+
+PWIZ_API_DECL void Reader_MSn::read(const std::string& filename,
+                                    const std::string& head,
+                                    std::vector<MSDataPtr>& results,
+                                    const Config& config) const
+{
+    results.push_back(MSDataPtr(new MSData));
+    read(filename, head, *results.back());
+}
+
+
+//
+// Reader_BTDX
+//
+
+PWIZ_API_DECL std::string Reader_BTDX::identify(const string& filename, const string& head) const
+{
+    std::string result;
+    try
     {
-        std::string result;
-        try
-        {
-            // TODO: congratulate Bruker for their unique root element name
-            string rootElement = GetXMLRootElement(head);
-            result = (rootElement == "root")?getType():"";
-        }
-        catch (runtime_error&)
-        {
-        }
-        return result;
+        // TODO: congratulate Bruker for their unique root element name
+        string rootElement = xml_root_element(head);
+        result = (rootElement == "root")?getType():"";
     }
-
-    virtual void read(const string& filename, const string& head, MSData& result, int runIndex = 0) const
+    catch (runtime_error&)
     {
-        if (runIndex != 0)
-            throw ReaderFail("[Reader_BTDX::read] multiple runs not supported");
-
-        shared_ptr<istream> is(new pwiz::util::random_access_compressed_ifstream(filename.c_str()));
-        if (!is.get() || !*is)
-            throw runtime_error(("[Reader_BTDX::read] Unable to open file " + filename));
-
-        result.fileDescription.fileContent.set(MS_MSn_spectrum);
-        result.fileDescription.fileContent.set(MS_centroid_spectrum);
-        SourceFilePtr sourceFile(new SourceFile);
-        sourceFile->id = "BTDX1";
-        bfs::path p(filename);
-        sourceFile->name = p.leaf();
-        string location = bfs::complete(p.branch_path()).string();
-        if (location.empty()) location = ".";
-        sourceFile->location = string("file:///") + location;
-        result.fileDescription.sourceFilePtrs.push_back(sourceFile);
-
-        result.id = result.run.id = bfs::basename(filename);
-        result.run.spectrumListPtr = SpectrumListPtr(SpectrumList_BTDX::create(is, result));
-        result.run.chromatogramListPtr = ChromatogramListPtr(new ChromatogramListSimple);
-        return;
     }
+    return result;
+}
 
-    virtual void read(const std::string& filename,
-                      const std::string& head,
-                      std::vector<MSDataPtr>& results) const
-    {
-        results.push_back(MSDataPtr(new MSData));
-        read(filename, head, *results.back());
-    }
+PWIZ_API_DECL void Reader_BTDX::read(const string& filename,
+                                     const string& head,
+                                     MSData& result,
+                                     int runIndex,
+                                     const Config& config) const
+{
+    if (runIndex != 0)
+        throw ReaderFail("[Reader_BTDX::read] multiple runs not supported");
 
-    virtual const char *getType() const {return "Bruker Data Exchange";}
-};
+    shared_ptr<istream> is(new pwiz::util::random_access_compressed_ifstream(filename.c_str()));
+    if (!is.get() || !*is)
+        throw runtime_error(("[Reader_BTDX::read] Unable to open file " + filename));
+
+    result.fileDescription.fileContent.set(MS_MSn_spectrum);
+    result.fileDescription.fileContent.set(MS_centroid_spectrum);
+    SourceFilePtr sourceFile(new SourceFile);
+    sourceFile->id = "BTDX1";
+    bfs::path p(filename);
+    sourceFile->name = BFS_STRING(p.leaf());
+    sourceFile->location = "file:///" + BFS_COMPLETE(p.branch_path()).string();
+    result.fileDescription.sourceFilePtrs.push_back(sourceFile);
+
+    result.id = result.run.id = bfs::basename(filename);
+    result.run.spectrumListPtr = SpectrumListPtr(SpectrumList_BTDX::create(is, result));
+    result.run.chromatogramListPtr = ChromatogramListPtr(new ChromatogramListSimple);
+    return;
+}
+
+PWIZ_API_DECL void Reader_BTDX::read(const std::string& filename,
+                                     const std::string& head,
+                                     std::vector<MSDataPtr>& results,
+                                     const Config& config) const
+{
+    results.push_back(MSDataPtr(new MSData));
+    read(filename, head, *results.back());
+}
 
 
-} // namespace
+//
+
 
 
 /// default Reader list

@@ -1,5 +1,5 @@
-//  Copyright (c) 2001-2010 Hartmut Kaiser
-//  Copyright (c) 2001-2010 Joel de Guzman
+//  Copyright (c) 2001-2011 Hartmut Kaiser
+//  Copyright (c) 2001-2011 Joel de Guzman
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -75,7 +75,7 @@ namespace boost { namespace spirit { namespace karma
                 return false;
 
             Attr ch = Attr();
-            if (!this->derived().test(traits::extract_from(attr, context), ch, context))
+            if (!this->derived().test(traits::extract_from<Attr>(attr, context), ch, context))
                 return false;
 
             return karma::detail::generate_to(sink, ch, char_encoding(), tag()) &&
