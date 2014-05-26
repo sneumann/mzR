@@ -1,5 +1,5 @@
 //
-// $Id: IterationListener.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id: IterationListener.hpp 2626 2011-04-12 15:18:16Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -27,6 +27,7 @@
 
 #include "pwiz/utility/misc/Export.hpp"
 #include "boost/shared_ptr.hpp"
+#include <string>
 
 
 namespace pwiz {
@@ -44,9 +45,10 @@ class PWIZ_API_DECL IterationListener
     {
         size_t iterationIndex;
         size_t iterationCount; // 0 == unknown
+        const std::string& message;
 
-        UpdateMessage(size_t index, size_t count) 
-        :   iterationIndex(index), iterationCount(count)
+        UpdateMessage(size_t index, size_t count, const std::string& message = std::string()) 
+        :   iterationIndex(index), iterationCount(count), message(message)
         {}
     };
 
@@ -55,6 +57,8 @@ class PWIZ_API_DECL IterationListener
     virtual ~IterationListener(){}
 };
 
+typedef boost::shared_ptr<IterationListener> IterationListenerPtr;
+
 
 /// handles registration of IterationListeners and broadcast of update messages
 class PWIZ_API_DECL IterationListenerRegistry
@@ -62,9 +66,9 @@ class PWIZ_API_DECL IterationListenerRegistry
     public:
 
     IterationListenerRegistry();
-    void addListener(IterationListener& listener, size_t iterationPeriod);
-    void addListenerWithTimer(IterationListener& listener, double timePeriod); // seconds
-    void removeListener(IterationListener& listener);
+    void addListener(const IterationListenerPtr& listener, size_t iterationPeriod);
+    void addListenerWithTimer(const IterationListenerPtr& listener, double timePeriod); // seconds
+    void removeListener(const IterationListenerPtr& listener);
 
     IterationListener::Status broadcastUpdateMessage(
         const IterationListener::UpdateMessage& updateMessage) const;

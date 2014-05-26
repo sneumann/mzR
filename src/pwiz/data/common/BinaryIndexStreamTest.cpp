@@ -1,5 +1,5 @@
 //
-// $Id: BinaryIndexStreamTest.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: BinaryIndexStreamTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -210,21 +210,22 @@ void testThreadSafety()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
         testThreadSafety();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception." << endl;
+        TEST_FAILED("Caught unknown exception.")
     }
-    
-    return 1;
+
+    TEST_EPILOG
 }

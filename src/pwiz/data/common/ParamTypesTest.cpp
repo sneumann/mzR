@@ -1,5 +1,5 @@
 //
-// $Id: ParamTypesTest.cpp 2283 2010-09-29 17:00:24Z chambm $
+// $Id: ParamTypesTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -259,6 +259,8 @@ void testParamContainer()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
@@ -266,13 +268,16 @@ int main(int argc, char* argv[])
         testIs();
         testIsChildOf();
         testParamContainer();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
-    
-    return 1;
+    catch (...)
+    {
+        TEST_FAILED("Caught unknown exception.")
+    }
+
+    TEST_EPILOG
 }
 

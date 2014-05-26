@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2001-2010 Joel de Guzman
+    Copyright (c) 2001-2011 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -284,7 +284,7 @@ namespace boost { namespace spirit { namespace ucd
 
     inline properties::script get_script(::boost::uint32_t ch)
     {
-        return static_cast<properties::script>(detail::script_lookup(ch) & 0x3F);
+        return static_cast<properties::script>(detail::script_lookup(ch) & 0x7F);
     }
 
     inline ::boost::uint32_t to_lowercase(::boost::uint32_t ch)

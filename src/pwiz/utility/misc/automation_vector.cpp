@@ -1,5 +1,5 @@
 //
-// $Id: automation_vector.cpp 1807 2010-02-12 16:32:36Z chambm $
+// $Id: automation_vector.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Andrei Alexandrescu
@@ -12,6 +12,7 @@
 // No license was specified in the article or in the download... permission pending?
 //
 
+#include "Std.hpp"
 #define PWIZ_SOURCE
 
 #include "automation_vector.h"

@@ -27,7 +27,7 @@ struct temme_root_finder
 {
    temme_root_finder(const T t_, const T a_) : t(t_), a(a_) {}
 
-   std::tr1::tuple<T, T> operator()(T x)
+   boost::math::tuple<T, T> operator()(T x)
    {
       BOOST_MATH_STD_USING // ADL of std names
 
@@ -35,16 +35,16 @@ struct temme_root_finder
       if(y == 0)
       {
          T big = tools::max_value<T>() / 4;
-         return std::tr1::make_tuple(-big, -big);
+         return boost::math::make_tuple(static_cast<T>(-big), static_cast<T>(-big));
       }
       if(x == 0)
       {
          T big = tools::max_value<T>() / 4;
-         return std::tr1::make_tuple(-big, big);
+         return boost::math::make_tuple(static_cast<T>(-big), big);
       }
       T f = log(x) + a * log(y) + t;
       T f1 = (1 / x) - (a / (y));
-      return std::tr1::make_tuple(f, f1);
+      return boost::math::make_tuple(f, f1);
    }
 private:
    T t, a;
@@ -416,7 +416,7 @@ struct ibeta_roots
    ibeta_roots(T _a, T _b, T t, bool inv = false)
       : a(_a), b(_b), target(t), invert(inv) {}
 
-   std::tr1::tuple<T, T, T> operator()(T x)
+   boost::math::tuple<T, T, T> operator()(T x)
    {
       BOOST_MATH_STD_USING // ADL of std names
 
@@ -442,7 +442,7 @@ struct ibeta_roots
       if(f1 == 0)
          f1 = (invert ? -1 : 1) * tools::min_value<T>() * 64;
 
-      return std::tr1::make_tuple(f, f1, f2);
+      return boost::math::make_tuple(f, f1, f2);
    }
 private:
    T a, b, target;
@@ -459,6 +459,31 @@ T ibeta_inv_imp(T a, T b, T p, T q, const Policy& pol, T* py)
    // in which case the result has to be subtracted from 1:
    //
    bool invert = false;
+   //
+   // Handle trivial cases first:
+   //
+   if(q == 0)
+   {
+      if(py) *py = 0;
+      return 1;
+   }
+   else if(p == 0)
+   {
+      if(py) *py = 1;
+      return 0;
+   }
+   else if(a == 1)
+   {
+      if(b == 1)
+      {
+         if(py) *py = 1 - p;
+         return p;
+      }
+      // Change things around so we can handle as b == 1 special case below:
+      std::swap(a, b);
+      std::swap(p, q);
+      invert = true;
+   }
    //
    // Depending upon which approximation method we use, we may end up
    // calculating either x or y initially (where y = 1-x):
@@ -479,33 +504,58 @@ T ibeta_inv_imp(T a, T b, T p, T q, const Policy& pol, T* py)
    //
    if(a == 0.5f)
    {
-      std::swap(a, b);
-      std::swap(p, q);
-      invert = !invert;
+      if(b == 0.5f)
+      {
+         x = sin(p * constants::half_pi<T>());
+         x *= x;
+         if(py)
+         {
+            *py = sin(q * constants::half_pi<T>());
+            *py *= *py;
+         }
+         return x;
+      }
+      else if(b > 0.5f)
+      {
+         std::swap(a, b);
+         std::swap(p, q);
+         invert = !invert;
+      }
    }
    //
-   // Handle trivial cases first:
+   // Select calculation method for the initial estimate:
    //
-   if(q == 0)
-   {
-      if(py) *py = 0;
-      return 1;
-   }
-   else if(p == 0)
-   {
-      if(py) *py = 1;
-      return 0;
-   }
-   else if((a == 1) && (b == 1))
-   {
-      if(py) *py = 1 - p;
-      return p;
-   }
-   else if((b == 0.5f) && (a >= 0.5f))
+   if((b == 0.5f) && (a >= 0.5f) && (p != 1))
    {
       //
       // We have a Student's T distribution:
       x = find_ibeta_inv_from_t_dist(a, p, q, &y, pol);
+   }
+   else if(b == 1)
+   {
+      if(p < q)
+      {
+         if(a > 1)
+         {
+            x = pow(p, 1 / a);
+            y = -expm1(log(p) / a);
+         }
+         else
+         {
+            x = pow(p, 1 / a);
+            y = 1 - x;
+         }
+      }
+      else
+      {
+         x = exp(log1p(-q) / a);
+         y = -expm1(log1p(-q) / a);
+      }
+      if(invert)
+         std::swap(x, y);
+      if(py)
+         *py = y;
+      return x;
    }
    else if(a + b > 5)
    {
@@ -541,7 +591,7 @@ T ibeta_inv_imp(T a, T b, T p, T q, const Policy& pol, T* py)
          T r = a + b;
          T theta = asin(sqrt(a / r));
          T lambda = minv / r;
-         if((lambda >= 0.2) && (lambda <= 0.8) && (lambda >= 10))
+         if((lambda >= 0.2) && (lambda <= 0.8) && (r >= 10))
          {
             //
             // The second error function case is the next cheapest
@@ -620,7 +670,7 @@ T ibeta_inv_imp(T a, T b, T p, T q, const Policy& pol, T* py)
       {
          std::swap(a, b);
          std::swap(p, q);
-         invert = true;
+         invert = !invert;
          xs = 1 - xs;
       }
       T xg = pow(a * p * boost::math::beta(a, b, pol), 1/a);
@@ -652,7 +702,7 @@ T ibeta_inv_imp(T a, T b, T p, T q, const Policy& pol, T* py)
          std::swap(a, b);
          std::swap(p, q);
          std::swap(xs, xs2);
-         invert = true;
+         invert = !invert;
       }
       //
       // Estimate x and y, using expm1 to get a good estimate
@@ -716,7 +766,7 @@ T ibeta_inv_imp(T a, T b, T p, T q, const Policy& pol, T* py)
       {
          std::swap(a, b);
          std::swap(p, q);
-         invert = true;
+         invert = !invert;
       }
       if(pow(p, 1/a) < 0.5)
       {
@@ -798,7 +848,7 @@ T ibeta_inv_imp(T a, T b, T p, T q, const Policy& pol, T* py)
    boost::uintmax_t max_iter = policies::get_max_root_iterations<Policy>();
    x = boost::math::tools::halley_iterate(
       boost::math::detail::ibeta_roots<T, Policy>(a, b, (p < q ? p : q), (p < q ? false : true)), x, lower, upper, digits, max_iter);
-   policies::check_root_iterations("boost::math::ibeta<%1%>(%1%, %1%, %1%)", max_iter, pol);
+   policies::check_root_iterations<T>("boost::math::ibeta<%1%>(%1%, %1%, %1%)", max_iter, pol);
    //
    // We don't really want these asserts here, but they are useful for sanity
    // checking that we have the limits right, uncomment if you suspect bugs *only*.
@@ -863,14 +913,16 @@ template <class T1, class T2, class T3>
 inline typename tools::promote_args<T1, T2, T3>::type 
    ibeta_inv(T1 a, T2 b, T3 p)
 {
-   return ibeta_inv(a, b, p, static_cast<T1*>(0), policies::policy<>());
+   typedef typename tools::promote_args<T1, T2, T3>::type result_type;
+   return ibeta_inv(a, b, p, static_cast<result_type*>(0), policies::policy<>());
 }
 
 template <class T1, class T2, class T3, class Policy>
 inline typename tools::promote_args<T1, T2, T3>::type 
    ibeta_inv(T1 a, T2 b, T3 p, const Policy& pol)
 {
-   return ibeta_inv(a, b, p, static_cast<T1*>(0), pol);
+   typedef typename tools::promote_args<T1, T2, T3>::type result_type;
+   return ibeta_inv(a, b, p, static_cast<result_type*>(0), pol);
 }
 
 template <class T1, class T2, class T3, class T4, class Policy>
@@ -919,16 +971,16 @@ template <class RT1, class RT2, class RT3>
 inline typename tools::promote_args<RT1, RT2, RT3>::type 
    ibetac_inv(RT1 a, RT2 b, RT3 q)
 {
-   typedef typename remove_cv<RT1>::type dummy;
-   return ibetac_inv(a, b, q, static_cast<dummy*>(0), policies::policy<>());
+   typedef typename tools::promote_args<RT1, RT2, RT3>::type result_type;
+   return ibetac_inv(a, b, q, static_cast<result_type*>(0), policies::policy<>());
 }
 
 template <class RT1, class RT2, class RT3, class Policy>
 inline typename tools::promote_args<RT1, RT2, RT3>::type
    ibetac_inv(RT1 a, RT2 b, RT3 q, const Policy& pol)
 {
-   typedef typename remove_cv<RT1>::type dummy;
-   return ibetac_inv(a, b, q, static_cast<dummy*>(0), pol);
+   typedef typename tools::promote_args<RT1, RT2, RT3>::type result_type;
+   return ibetac_inv(a, b, q, static_cast<result_type*>(0), pol);
 }
 
 } // namespace math

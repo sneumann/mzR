@@ -1,5 +1,5 @@
 //
-// $Id: MZTolerance.hpp 2469 2011-01-18 19:27:57Z chambm $
+// $Id: MZTolerance.hpp 3317 2012-02-27 16:36:06Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -50,6 +50,7 @@ struct PWIZ_API_DECL MZTolerance
 PWIZ_API_DECL std::ostream& operator<<(std::ostream& os, const MZTolerance& mzt);
 PWIZ_API_DECL std::istream& operator>>(std::istream& is, MZTolerance& mzt);
 PWIZ_API_DECL bool operator==(const MZTolerance& a, const MZTolerance& b);
+PWIZ_API_DECL bool operator!=(const MZTolerance& a, const MZTolerance& b);
 
 
 PWIZ_API_DECL double& operator+=(double& d, const MZTolerance& tolerance);

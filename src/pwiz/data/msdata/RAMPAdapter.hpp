@@ -1,5 +1,5 @@
 //
-// $Id: RAMPAdapter.hpp 2374 2010-11-16 23:19:48Z chambm $
+// $Id: RAMPAdapter.hpp 3003 2011-09-21 21:43:45Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -26,7 +26,7 @@
 
 #include <stdlib.h>
 #include "pwiz/utility/misc/Export.hpp"
-#include "ramp.h"
+#include "pwiz/data/msdata/ramp/ramp.h"
 #include "boost/shared_ptr.hpp"
 #include <string>
 #include <vector>
@@ -55,7 +55,12 @@ class PWIZ_API_DECL RAMPAdapter
     int getScanNumber(size_t index) const;
 
     /// fills in RAMP ScanHeaderStruct for a specified scan
-    void getScanHeader(size_t index, ScanHeaderStruct& result, bool reservePeaks = true) const;
+    ///
+    /// you can optionally preload the peaklists too, but the 
+    /// RAMP interface this emulates doesn't normally do that,
+    /// so defaulting reservePeaks to true would be a nasty surprise
+    /// performance-wise to anyone switching over from actual RAMP
+    void getScanHeader(size_t index, ScanHeaderStruct& result, bool reservePeaks = false) const;
 
     /// fills in m/z-intensity pair array for a specified scan 
     void getScanPeaks(size_t index, std::vector<double>& result) const;

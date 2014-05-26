@@ -1,5 +1,5 @@
 //
-// $Id: erf.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id: erf.hpp 4151 2012-11-28 18:32:03Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -41,7 +41,7 @@ PWIZ_API_DECL std::complex<double> erf(const std::complex<double>& z);
 
 
 /// series implementation for testing
-std::complex<double> erf_series2(const std::complex<double>& z);
+PWIZ_API_DECL std::complex<double> erf_series2(const std::complex<double>& z);
 
 
 } // namespace math

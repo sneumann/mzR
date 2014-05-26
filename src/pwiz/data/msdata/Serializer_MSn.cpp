@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_MSn.cpp 2112 2010-07-09 00:09:28Z pcbrefugee $
+// $Id: Serializer_MSn.cpp 5245 2013-12-09 22:53:47Z kaipot $
 //
 //
 // Original author: Barbara Frewen <ferwen@u.washington.edu>
@@ -61,19 +61,24 @@ class Serializer_MSn::Impl
         void read(shared_ptr<istream> is, MSData& msd) const;
 
     private: 
-        MSn_Type _filetype; // .ms2, .cms2, .bms2
+        MSn_Type _filetype; // .ms1, .cms1, .bms1, .ms2, .cms2, .bms2
 };
 
 namespace 
 {
-    void writeBinaryFileHeader(MSn_Type filetype, int version, ostream& os)
+    void writeBinaryFileHeader(MSn_Type filetype, int version, const MSData& msd, ostream& os)
     {
+        time_t rawtime;
+        time (&rawtime);
+
         os.write(reinterpret_cast<char *>(&filetype), sizeIntMSn);
         os.write(reinterpret_cast<char *>(&version), sizeIntMSn);
 
-        // Just write out NULL's for the header since we don't save
-        // this information, and it's not really used
         MSnHeader header;
+        sprintf(header.header[0], "CreationDate %s", ctime(&rawtime));
+        sprintf(header.header[1], "Extractor\tProteoWizard\n");
+        sprintf(header.header[2], "Extractor version\t%s\n", (msd.softwarePtrs.empty() ? "unknown" : msd.softwarePtrs.at(0)->id.c_str()));
+        sprintf(header.header[3], "Source file\t%s\n", (msd.fileDescription.sourceFilePtrs.empty() ? "unknown" : msd.fileDescription.sourceFilePtrs.at(0)->name.c_str()));
         os.write(reinterpret_cast<char *>(&header), sizeof(MSnHeader));
     }
    
@@ -90,17 +95,17 @@ namespace
           msd.fileDescription.sourceFilePtrs.at(0)->name ) << endl;
     }
 
-    // Could be one charge state, with our without accurate mass
+    // Could be one charge state, with or without accurate mass
     // or could be multiple possible charge states without accurate mass
     // if no accurate mass, compute it from mz and charge
     double calculateMass(double mz, int charge)
     {
-        return (mz * charge) - ((charge - 1)*Proton);
+        return (mz * charge) - (charge * Proton);
     }
 
     size_t getChargeStates(const SelectedIon& si, vector<int>& charges, vector<double>& masses)
     {
-      int startingChargesCount = charges.size();
+        int startingChargesCount = charges.size();
         CVParam chargeParam = si.cvParam(MS_charge_state);
         CVParam massParam = si.cvParam(MS_accurate_mass);
         double mz = si.cvParam(MS_selected_ion_m_z).valueAs<double>();
@@ -145,47 +150,82 @@ namespace
 
     void writeSpectrumText(SpectrumPtr s, ostream& os)
     {
-        os << std::setprecision(7); // 124.4567
+        os << std::setprecision(7); // 123.4567
+        bool ms1File = s->cvParam(MS_ms_level).valueAs<int>() == 1;
         
         // Write the scan numbers 
         os << "S\t";
         int scanNum = getScanNumber(s);
-        os << scanNum <<  "\t" << scanNum << "\t";
+        os << scanNum <<  "\t" << scanNum;
 
-        // Write the precursor mz
-        Precursor& precur = s->precursors[0];
-        SelectedIon& si = precur.selectedIons[0];
-        double mz = si.cvParam(MS_selected_ion_m_z).valueAs<double>();
-        os << mz << "\n";
+        if (!ms1File)
+        {
+            // Write the precursor mz
+            Precursor& precur = s->precursors[0];
+            double mz = precur.isolationWindow.cvParam(MS_isolation_window_target_m_z).valueAs<double>();
+            os << "\t" << mz;
+        }
+        os << "\n";
         
         // Write the scan time, if available
-        if( s->scanList.scans[0].cvParam(MS_scan_start_time).timeInSeconds() )
-          os << "I\tRTime\t" << s->scanList.scans[0].cvParam(MS_scan_start_time).timeInSeconds() << "\n";
+        if( !(s->scanList.empty()) && s->scanList.scans[0].cvParam(MS_scan_start_time).timeInSeconds() )
+          os << "I\tRTime\t" << s->scanList.scans[0].cvParam(MS_scan_start_time).timeInSeconds()/60 << "\n";
 
-        // Collect charge and mass info
-        vector<int> charges;
-        vector<double> masses;
-        int numChargeStates = 0;
-        // for each selected ion
-        BOOST_FOREACH(const SelectedIon& curIon, precur.selectedIons){
-          numChargeStates += getChargeStates(curIon, charges, masses);
-        }
-
-        // Write EZ lines if accurate masses are available
-        CVParam massParam = si.cvParam(MS_accurate_mass);
-        if( !massParam.empty() ){
-          for(int i=0; i < numChargeStates; i++){
-            os << "I\tEZ\t" << charges[i] << "\t" << masses[i] << "\t0\t0" << endl; // pad last two fields with 0
-          }
-        }
-
-        // For each charge, write the charge and mass
-        for(int i = 0; i < numChargeStates; i++)
+        if (s->defaultArrayLength > 0)
         {
-            os << "Z\t" << charges[i] << "\t" << masses[i] << "\n"; 
+            // Write the base peak intensity and base peak m/z
+            if (s->hasCVParam(MS_base_peak_intensity))
+            {
+                double bpi = s->cvParam(MS_base_peak_intensity).valueAs<double>();
+                os << "I\tBPI\t" << bpi << "\n";
+            }
+            if (s->hasCVParam(MS_base_peak_m_z))
+            {
+                double bpm = s->cvParam(MS_base_peak_m_z).valueAs<double>();
+                os << "I\tBPM\t" << bpm << "\n";
+            }
+
+            // Write the total ion current
+            if (s->hasCVParam(MS_total_ion_current))
+            {
+                double tic = s->cvParam(MS_total_ion_current).valueAs<double>();
+                os << "I\tTIC\t" << tic << "\n";
+            }
         }
 
-        
+        //TODO 
+        // Write ConvA/ConvB information
+        // Write the ion injection time
+        //os << "I\tIIT\t" << s->scanList.scans[0].cvParam(MS_ion_injection_time).timeInSeconds()/60 << "\n";
+
+        if (!ms1File)
+        {
+            Precursor& precur = s->precursors[0];
+            SelectedIon& si = precur.selectedIons[0];
+            // Collect charge and mass info
+            vector<int> charges;
+            vector<double> masses;
+            int numChargeStates = 0;
+            // for each selected ion
+            BOOST_FOREACH(const SelectedIon& curIon, precur.selectedIons){
+              numChargeStates += getChargeStates(curIon, charges, masses);
+            }
+
+            // Write EZ lines if accurate masses are available
+            CVParam massParam = si.cvParam(MS_accurate_mass);
+            if( !massParam.empty() ){
+              for(int i=0; i < numChargeStates; i++){
+                os << "I\tEZ\t" << charges[i] << "\t" << masses[i] << "\t0\t0" << endl; // pad last two fields with 0
+              }
+            }
+
+            // For each charge, write the charge and mass
+            for(int i = 0; i < numChargeStates; i++)
+            {
+              os << "Z\t" << charges[i] << "\t" << masses[i] << "\n"; 
+            }
+        }
+
         // Write each mz, intensity pair
         const BinaryDataArray& mzArray = *s->getMZArray();
         const BinaryDataArray& intensityArray = *s->getIntensityArray();
@@ -253,20 +293,33 @@ namespace
 
     void writeSpectrumBinary(SpectrumPtr s, int version, bool compress, ostream& os)
     {
-      // todo
-      // MSnScanInfo header(s);
-      // header.writeSpectrumHeader(version, compress, os);
+        bool ms1File = s->cvParam(MS_ms_level).valueAs<int>() == 1;
 
         int scanNum = getScanNumber(s);
         os.write(reinterpret_cast<char *>(&scanNum), sizeIntMSn);
         os.write(reinterpret_cast<char *>(&scanNum), sizeIntMSn); // Yes, there are two
 
-        Precursor& precur = s->precursors[0];
-        SelectedIon& si = precur.selectedIons[0];
-        double mz = si.cvParam(MS_selected_ion_m_z).valueAs<double>();
-        os.write(reinterpret_cast<char *>(&mz), sizeDoubleMSn);
+        Precursor precur;
+        SelectedIon si;
+        if (!ms1File)
+        {
+            precur = s->precursors[0];
+            si = precur.selectedIons[0];
+            double mz = precur.isolationWindow.cvParam(MS_isolation_window_target_m_z).valueAs<double>();
+            os.write(reinterpret_cast<char *>(&mz), sizeDoubleMSn);
+        }
+        else
+        {
+            double mz = 0;
+            os.write(reinterpret_cast<char *>(&mz), sizeDoubleMSn);
+        }
 
-        float rt = (float) s->scanList.scans[0].cvParam(MS_scan_start_time).timeInSeconds();
+        float rt = 0.0;
+        if( !(s->scanList.empty()) && s->scanList.scans[0].cvParam(MS_scan_start_time).timeInSeconds() )
+        {
+            rt = (float) s->scanList.scans[0].cvParam(MS_scan_start_time).timeInSeconds()/60;
+        }
+
         os.write(reinterpret_cast<char *>(&rt), sizeFloatMSn);
         
         if (version >= 2)
@@ -295,9 +348,12 @@ namespace
         vector<int> charges;
         vector<double> masses;
         int numChargeStates = 0;
-        BOOST_FOREACH(const SelectedIon& curIon, precur.selectedIons)
+        if (!ms1File)
         {
-            numChargeStates += getChargeStates(curIon, charges, masses);
+            BOOST_FOREACH(const SelectedIon& curIon, precur.selectedIons)
+            {
+                numChargeStates += getChargeStates(curIon, charges, masses);
+            }
         }
         os.write(reinterpret_cast<char *>(&numChargeStates), sizeIntMSn);
         
@@ -365,27 +421,40 @@ void Serializer_MSn::Impl::write(ostream& os, const MSData& msd,
     const pwiz::util::IterationListenerRegistry* iterationListenerRegistry) const
 {
     // Write the header
-    if ((MSn_Type_BMS2 == _filetype) ||
+    if ((MSn_Type_BMS1 == _filetype) ||
+        (MSn_Type_CMS1 == _filetype) ||
+        (MSn_Type_BMS2 == _filetype) ||
         (MSn_Type_CMS2 == _filetype))
     {
-        writeBinaryFileHeader(_filetype, 3 /* version */, os);
+        writeBinaryFileHeader(_filetype, 3 /* version */, msd, os);
     } 
-    else if (MSn_Type_MS2 == _filetype)
+    else if ((MSn_Type_MS1 == _filetype) ||
+             (MSn_Type_MS2 == _filetype))
     {
       writeTextFileHeader(msd, os);
     }
 
     // Go through the spectrum list and write each spectrum
+    bool ms1File = MSn_Type_MS1 == _filetype || MSn_Type_BMS1 == _filetype || MSn_Type_CMS1 == _filetype;
     SpectrumList& sl = *msd.run.spectrumListPtr;
     for (size_t i=0, end=sl.size(); i < end; ++i)
     {
         SpectrumPtr s = sl.spectrum(i, true);
-        if (s->cvParam(MS_ms_level).valueAs<int>() > 1 &&
-            !s->precursors.empty() &&
-            !s->precursors[0].selectedIons.empty())
+        int msLevel = s->cvParam(MS_ms_level).valueAs<int>();
+        if ((ms1File && msLevel == 1) ||
+            (!ms1File && msLevel == 2 && !s->precursors.empty() && !s->precursors[0].selectedIons.empty()))
         {
             switch (_filetype)
             {
+            case MSn_Type_MS1:
+                writeSpectrumText(s, os);
+                break;
+            case MSn_Type_CMS1:
+                writeSpectrumBinary(s, 3 /* version */, true, os);
+                break;
+            case MSn_Type_BMS1:
+                writeSpectrumBinary(s, 3 /* version */, false, os);
+                break;
             case MSn_Type_MS2:
                 writeSpectrumText(s, os);
                 break;

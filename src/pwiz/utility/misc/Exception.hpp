@@ -1,5 +1,5 @@
 //
-// $Id: Exception.hpp 2008 2010-05-29 02:46:49Z brendanx $
+// $Id: Exception.hpp 4976 2013-09-19 21:55:32Z donmarsh $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -26,42 +26,71 @@
 
 
 #include <stdexcept>
+#include <string>
 
 
-using std::exception;
-using std::runtime_error;
-using std::out_of_range;
-using std::domain_error;
-using std::invalid_argument;
-using std::length_error;
-using std::logic_error;
-using std::overflow_error;
-using std::range_error;
-using std::underflow_error;
+namespace pwiz {
+namespace util {
+
+class usage_exception : public std::runtime_error
+{
+    public: usage_exception(const std::string& usage) : std::runtime_error(usage) {}
+};
+
+class user_error : public std::runtime_error
+{
+    public: user_error(const std::string& what) : std::runtime_error(what) {}
+};
+
+} // namespace util
+} // namespace pwiz
 
 
 // make debug assertions throw exceptions in MSVC
 #ifdef _DEBUG
 #include <crtdbg.h>
 #include <iostream>
+#include <locale>
+#include <sstream>
+
+// preprocessed prototype of SetErrorMode so windows.h doesn't have to be included;
+// this requires linking to the shared runtime but pwiz always does that on Windows
+extern "C" __declspec(dllimport) unsigned int __stdcall SetErrorMode(unsigned int uMode);
+
+namespace {
+
+inline std::string narrow(const std::wstring& str)
+{
+    std::ostringstream oss;
+    const std::ctype<wchar_t>& ctfacet = std::use_facet< std::ctype<wchar_t> >(oss.getloc());
+    for (size_t i=0; i < str.size(); ++i)
+        oss << ctfacet.narrow(str[i], 0);
+    return oss.str();
+}
+
 inline int CrtReportHook(int reportType, char *message, int *returnValue)
 {
-    std::cerr << message;
-    if (returnValue) *returnValue = 0;
-    return 1;
+    if (reportType == _CRT_ERROR || reportType == _CRT_ASSERT)
+        throw std::runtime_error(message);
+    return 0;
 }
 
 inline int CrtReportHookW(int reportType, wchar_t *message, int *returnValue)
 {
-    std::wcerr << message;
-    if (returnValue) *returnValue = 0;
-    return 1;
+    if (reportType == _CRT_ERROR || reportType == _CRT_ASSERT)
+        throw std::runtime_error(narrow(message));
+    return 0;
 }
+
+} // namespace
 
 struct ReportHooker
 {
     ReportHooker()
     {
+        SetErrorMode(SetErrorMode(0) | 0x0002); // SEM_NOGPFAULTERRORBOX
+        _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+        _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
         _CrtSetReportHook2(_CRT_RPTHOOK_INSTALL, &CrtReportHook);
         _CrtSetReportHookW2(_CRT_RPTHOOK_INSTALL, &CrtReportHookW);
     }
@@ -71,27 +100,28 @@ struct ReportHooker
         _CrtSetReportHook2(_CRT_RPTHOOK_REMOVE, &CrtReportHook);
         _CrtSetReportHookW2(_CRT_RPTHOOK_REMOVE, &CrtReportHookW);
     }
-
-    // TODO: redesign to support once-per-process (or once-per-thread?) initialization
-    //private:
-    //bool isReportHookSet;
 };
-
 static ReportHooker reportHooker;
-
 #endif // _DEBUG
 
 
-// handle Boost assertions with a message to stderr
+// make Boost assertions throw exceptions
 #if !defined(NDEBUG)
-#include <sstream>
 #define BOOST_ENABLE_ASSERT_HANDLER
+#include <sstream>
 namespace boost
 {
     inline void assertion_failed(char const * expr, char const * function, char const * file, long line) // user defined
     {
         std::ostringstream oss;
         oss << "[" << file << ":" << line << "] Assertion failed: " << expr;
+        throw std::runtime_error(oss.str());
+    }
+
+    inline void assertion_failed_msg(char const * expr, char const * msg, char const * function, char const * file, long line) // user defined
+    {
+        std::ostringstream oss;
+        oss << "[" << file << ":" << line << "] Assertion failed: " << expr << " (" << msg << ")";
         throw std::runtime_error(oss.str());
     }
 } // namespace boost

@@ -1,5 +1,5 @@
 //
-// $Id: cvtest.cpp 2161 2010-07-29 16:33:06Z chambm $
+// $Id: cvtest.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -43,14 +43,14 @@ void test()
         *os_ << "name: " << cvTermInfo(MS_sample_number).name << endl
              << "def: " << cvTermInfo(MS_sample_number).def << "\n\n";
 
-        *os_ << "name: " << cvTermInfo(MS_polarity).name << endl
-             << "def: " << cvTermInfo(MS_polarity).def << endl; 
+        *os_ << "name: " << cvTermInfo(MS_scan_polarity).name << endl
+             << "def: " << cvTermInfo(MS_scan_polarity).def << endl;
     }
 
     // some simple tests
     unit_assert(cvTermInfo(MS_sample_number).name == "sample number");
     unit_assert(cvTermInfo(MS_contact_email).name == "contact email");
-    unit_assert(cvTermInfo(MS_contact_email).def == "Email adress of the contact person.");
+    unit_assert(cvTermInfo(MS_contact_email).def == "Email address of the contact person or organization.");
 
     unit_assert(cvTermInfo(MS_zlib_compression).parentsIsA.size() == 1 &&
                 cvTermInfo(MS_zlib_compression).parentsIsA[0] == MS_binary_data_compression_type);
@@ -58,7 +58,7 @@ void test()
     unit_assert(cvTermInfo(MS_instrument_model).parentsPartOf.size() == 1 &&
                 cvTermInfo(MS_instrument_model).parentsPartOf[0] == MS_instrument);
 
-    unit_assert(cvTermInfo(MS_None_____OBSOLETE).isObsolete);
+    unit_assert(cvTermInfo(MS_None____OBSOLETE).isObsolete);
 }
 
 
@@ -70,6 +70,12 @@ void testIsA()
     unit_assert(!cvIsA(UO_dalton, UO_energy_unit));
     unit_assert(cvIsA(MS_m_z, MS_m_z));
     unit_assert(cvIsA(MS_FT_ICR, MS_mass_analyzer_type));
+    unit_assert(cvIsA(MS_ion_trap, MS_mass_analyzer_type));
+    unit_assert(cvIsA(MS_linear_ion_trap, MS_mass_analyzer_type));
+    unit_assert(cvIsA(MS_linear_ion_trap, MS_ion_trap));
+    unit_assert(cvIsA(MS_radial_ejection_linear_ion_trap, MS_mass_analyzer_type));
+    unit_assert(cvIsA(MS_radial_ejection_linear_ion_trap, MS_ion_trap));
+    unit_assert(cvIsA(MS_radial_ejection_linear_ion_trap, MS_linear_ion_trap));
 }
 
 
@@ -110,6 +116,25 @@ void testIDTranslation()
     unit_assert(cvTermInfo("MS:1000042").cvid == MS_peak_intensity);
     unit_assert(cvTermInfo("UO:0000231").cvid == UO_information_unit);
     unit_assert(cvTermInfo("XX:0000231").cvid == CVID_Unknown);
+    unit_assert(cvTermInfo("FOO:").cvid == CVID_Unknown);
+    unit_assert(cvTermInfo(":FOO").cvid == CVID_Unknown);
+    unit_assert(cvTermInfo("MS").cvid == CVID_Unknown);
+}
+
+
+void testPropertyValues()
+{
+    CVTermInfo phospho = cvTermInfo(UNIMOD_Phospho);
+
+    unit_assert_operator_equal(1, phospho.propertyValues.count("delta_composition"));
+    unit_assert_operator_equal("H O(3) P", phospho.propertyValues.find("delta_composition")->second);
+
+    unit_assert_operator_equal(2, phospho.propertyValues.count("spec_1_site"));
+    unit_assert_operator_equal("T", phospho.propertyValues.equal_range("spec_1_site").first->second);
+    unit_assert_operator_equal("S", (--phospho.propertyValues.equal_range("spec_1_site").second)->second);
+
+    unit_assert_operator_equal(1, phospho.propertyValues.count("spec_2_site"));
+    unit_assert_operator_equal("Y", phospho.propertyValues.find("spec_2_site")->second);
 }
 
 
@@ -124,6 +149,7 @@ void testThreadSafetyWorker(boost::barrier* testBarrier)
         testOtherRelations();
         testSynonyms();
         testIDTranslation();
+        testPropertyValues();
     }
     catch (exception& e)
     {
@@ -147,6 +173,8 @@ void testThreadSafety(const int& testThreadCount)
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout; 
 
     try
@@ -156,17 +184,16 @@ int main(int argc, char* argv[])
         testThreadSafety(4);
         testThreadSafety(8);
         testThreadSafety(16);
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
 
-    return 1; 
+    TEST_EPILOG
 }
 

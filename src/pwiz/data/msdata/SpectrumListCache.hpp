@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumListCache.hpp 1188 2009-08-14 17:19:55Z chambm $
+// $Id: SpectrumListCache.hpp 2691 2011-05-13 15:56:52Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -39,7 +39,9 @@ class PWIZ_API_DECL SpectrumListCache : public SpectrumListWrapper
     public:
 
     /// a cache mapping spectrum indices to SpectrumPtrs
-    typedef MemoryMRUCache<std::pair<size_t, SpectrumPtr> > CacheType;
+    typedef std::pair<size_t, SpectrumPtr> KeyValuePair;
+    BOOST_STATIC_CONSTANT(unsigned, first_offset = offsetof(KeyValuePair, first));
+    typedef MemoryMRUCache<KeyValuePair, boost::multi_index::member_offset<KeyValuePair, size_t, first_offset> > CacheType;
 
     SpectrumListCache(const SpectrumListPtr& inner,
                       MemoryMRUCacheMode cacheMode,

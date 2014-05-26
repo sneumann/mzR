@@ -1,5 +1,5 @@
 //
-// $Id: ParamTypes.hpp 2283 2010-09-29 17:00:24Z chambm $
+// $Id: ParamTypes.hpp 4008 2012-10-16 17:16:55Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -112,7 +112,7 @@ struct PWIZ_API_DECL CVParam
     value_type valueAs() const
     {
         return !value.empty() ? boost::lexical_cast<value_type>(value) 
-                              : boost::lexical_cast<value_type>(0);
+                             : boost::lexical_cast<value_type>(0);
     } 
 
     /// convenience function to return string for the cvid 
@@ -123,6 +123,9 @@ struct PWIZ_API_DECL CVParam
 
     /// convenience function to return time in seconds (throws if units not a time unit)
     double timeInSeconds() const;
+
+    /// convenience function to return value without scientific notation (throws if not a double)
+    std::string valueFixedNotation() const;
 
     /// equality operator
     bool operator==(const CVParam& that) const
@@ -277,6 +280,12 @@ struct PWIZ_API_DECL ParamContainer
 
     /// set/add a CVParam (not recursive)
     void set(CVID cvid, const std::string& value = "", CVID units = CVID_Unknown);
+
+    /// set/add a CVParam (not recursive)
+    void set(CVID cvid, double value, CVID units = CVID_Unknown);
+
+    /// set/add a CVParam (not recursive)
+    void set(CVID cvid, int value, CVID units = CVID_Unknown);
 
     /// set/add a CVParam (not recursive)
     template <typename value_type>

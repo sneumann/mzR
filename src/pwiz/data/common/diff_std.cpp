@@ -43,6 +43,43 @@ void diff(const std::string& a,
 }
 
 
+// special string matching for ids, which
+// tend to have versions embedded at the end
+PWIZ_API_DECL
+void diff_ids(const std::string& a,
+              const std::string& b,
+              std::string& a_b,
+              std::string& b_a,
+              const BaseDiffConfig& config)
+{
+    if (config.ignoreVersions && (a != b))
+    {
+        // look for x.x.x at the of each string
+        int aa,bb;
+        int ndotsa=0;
+        int ndotsb=0;
+        for (aa=a.length();aa--;)
+        {
+            if (a[aa]=='.')
+                ndotsa++;
+            else if (!isdigit(a[aa]))
+                break;
+        }
+        for (bb=b.length();bb--;)
+        {
+            if (b[bb]=='.')
+                ndotsb++;
+            else if (!isdigit(b[bb]))
+                break;
+        }
+        if ((2==ndotsa) && (2==ndotsb) && 
+            (bb > 0) && (aa > 0) &&
+            (a.substr(0,aa) == b.substr(0,bb)))
+            return;
+    }
+    diff_string(a, b, a_b, b_a);
+}
+
 PWIZ_API_DECL
 void diff(const boost::logic::tribool& a, 
           const boost::logic::tribool& b, 
@@ -50,14 +87,17 @@ void diff(const boost::logic::tribool& a,
           boost::logic::tribool& b_a,
           const BaseDiffConfig& config)
 {
-    a_b = boost::logic::indeterminate;
-    b_a = boost::logic::indeterminate;
-    
     if (a != b)
     {
         a_b = a;
         b_a = b;
     }
+    else
+    {
+        a_b = boost::logic::indeterminate;
+        b_a = boost::logic::indeterminate;
+    }    
+
 }
 
 
@@ -71,7 +111,8 @@ void diff(const CV& a,
     diff_string(a.URI, b.URI, a_b.URI, b_a.URI);
     diff_string(a.id, b.id, a_b.id, b_a.id);
     diff_string(a.fullName, b.fullName, a_b.fullName, b_a.fullName);
-    diff_string(a.version, b.version, a_b.version, b_a.version);
+	if (!config.ignoreVersions)
+        diff_string(a.version, b.version, a_b.version, b_a.version);
 }
 
 
@@ -82,11 +123,14 @@ void diff(CVID a,
           CVID& b_a,
           const BaseDiffConfig& config)
 {
-    a_b = b_a = CVID_Unknown;
     if (a!=b)  
     {
         a_b = a;
         b_a = b;
+    }
+    else
+    {
+        a_b = b_a = CVID_Unknown;
     }
 }
 
@@ -100,29 +144,78 @@ void diff(const CVParam& a,
 {
     diff(a.cvid, b.cvid, a_b.cvid, b_a.cvid, config);
 
-    // use precision to compare floating point values
-    try
+    // start with a cheap string compare
+    if (a.value==b.value)
     {
-        lexical_cast<int>(a.value);
-        lexical_cast<int>(b.value);
-    }
-    catch (boost::bad_lexical_cast&)
+        a_b.value.clear();
+        b_a.value.clear();
+    } 
+    else
     {
-        try
-        {
-            double aValue = lexical_cast<double>(a.value);
-            double bValue = lexical_cast<double>(b.value);
-            double a_bValue, b_aValue;
-            diff_floating<double>(aValue, bValue, a_bValue, b_aValue, config);
-            a_b.value = lexical_cast<string>(a_bValue);
-            b_a.value = lexical_cast<string>(b_aValue);
+        bool asString = false;
+        // lexical_cast<int> is happy to read "1.1" as "1" - and "1.9" the same way
+        if ((std::string::npos == a.value.find_first_of(".eE")) &&
+            (std::string::npos == b.value.find_first_of(".eE")))  // any float-like chars?
+        {   
+            try
+            {
+                // compare as ints if possible
+                int ia = lexical_cast<int>(a.value);
+                int ib = lexical_cast<int>(b.value);
+                if (ia != ib) 
+                {
+                    a_b.value = lexical_cast<string>(ia);
+                    b_a.value = lexical_cast<string>(ib);
+                }
+                else // watch for something like "1a" vs "1b"
+                {
+                    if ((std::string::npos == a.value.find_first_not_of("0123456789")) &&
+                        (std::string::npos == b.value.find_first_not_of("0123456789")))
+                    { 
+                        a_b.value.clear();
+                        b_a.value.clear();
+                    }
+                    else
+                    {
+                        asString = true;
+                    }
+                }
+            }
+            catch (boost::bad_lexical_cast&)
+            {
+                asString = true;
+            }
         }
-        catch (boost::bad_lexical_cast&)
+        else
         {
-            diff_string(a.value, b.value, a_b.value, b_a.value);
+            // use precision to compare floating point values
+            try
+            {
+                double aValue = lexical_cast<double>(a.value);
+                double bValue = lexical_cast<double>(b.value);
+                double a_bValue, b_aValue;
+                diff_floating<double>(aValue, bValue, a_bValue, b_aValue, config);
+                if (a_bValue || b_aValue)
+                {
+                    a_b.value = lexical_cast<string>(a_bValue);
+                    b_a.value = lexical_cast<string>(b_aValue);
+                }
+                else
+                {
+                    a_b.value.clear();
+                    b_a.value.clear();
+                }
+            }
+            catch (boost::bad_lexical_cast&)
+            {
+                asString = true;
+            }
+        }
+        if (asString)
+        {
+             diff_string(a.value, b.value, a_b.value, b_a.value);
         }
     }
-
     diff(a.units, b.units, a_b.units, b_a.units, config);
 
     // provide names for context
@@ -157,8 +250,8 @@ void diff(const ParamContainer& a,
           const BaseDiffConfig& config)
 {
     vector_diff_deep(a.paramGroupPtrs, b.paramGroupPtrs, a_b.paramGroupPtrs, b_a.paramGroupPtrs, config);
-    vector_diff(a.cvParams, b.cvParams, a_b.cvParams, b_a.cvParams);
-    vector_diff(a.userParams, b.userParams, a_b.userParams, b_a.userParams);
+    vector_diff_diff(a.cvParams, b.cvParams, a_b.cvParams, b_a.cvParams, config);
+    vector_diff_diff(a.userParams, b.userParams, a_b.userParams, b_a.userParams, config);
 }
 
 
@@ -170,7 +263,7 @@ void diff(const ParamGroup& a,
           const BaseDiffConfig& config)
 {
     diff(static_cast<const ParamContainer&>(a), b, a_b, b_a, config);
-    diff_string(a.id, b.id, a_b.id, b_a.id);
+    diff_ids(a.id, b.id, a_b.id, b_a.id, config);
 
     // provide id for context
     if (!a_b.empty() || !b_a.empty()) 

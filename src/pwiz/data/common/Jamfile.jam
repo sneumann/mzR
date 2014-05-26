@@ -1,5 +1,5 @@
 #
-# $Id: Jamfile.jam 2304 2010-10-20 16:50:47Z chambm $
+# $Id: Jamfile.jam 4151 2012-11-28 18:32:03Z chambm $
 #
 #
 # Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -53,20 +53,23 @@ lib pwiz_data_common
         ParamTypes.cpp
         diff_std.cpp
         CVTranslator.cpp
+        Unimod.cpp
     : # requirements
         <library>/ext/boost//thread
         <library>$(PWIZ_ROOT_PATH)/pwiz/utility/misc//pwiz_utility_misc
+        <library>$(PWIZ_ROOT_PATH)/pwiz/utility/chemistry//pwiz_utility_chemistry
     : # default-build
     : # usage-requirements
         <library>/ext/boost//thread
         <library>$(PWIZ_ROOT_PATH)/pwiz/utility/misc//pwiz_utility_misc
+        <library>$(PWIZ_ROOT_PATH)/pwiz/utility/chemistry//pwiz_utility_chemistry
     ;
 
 
 #
 # cvgen is a program that generates cv.hpp/cpp from .obo files (passed as args)
 # usage:
-#  bjam cv.hpp (creates cv.hpp and cv.cpp in the source directory)
+#  bjam <full_path_to_this_directory>/cv.hpp (creates cv.hpp and cv.cpp in the source directory)
 #
 
 exe cvgen
@@ -91,7 +94,10 @@ actions do_cvgen
    "$(>[1]:P)/cvgen" $(>)
 }
 
-make cv.hpp : psi-ms.obo unit.obo unimod.obo : do_cvgen : <dependency>install_cvgen ;
+
+import path ;
+path-constant PWIZ_DATA_COMMON_PATH : . ;
+make cv.hpp : [ path.glob $(PWIZ_DATA_COMMON_PATH) : *.obo ] : do_cvgen : <dependency>install_cvgen ;
 explicit cv.hpp ;
 
 
@@ -101,8 +107,9 @@ explicit cv.hpp ;
 
 unit-test-if-exists BinaryIndexStreamTest : BinaryIndexStreamTest.cpp pwiz_data_common ;
 unit-test-if-exists MemoryIndexTest : MemoryIndexTest.cpp pwiz_data_common ;
-unit-test-if-exists obotest : obotest.cpp pwiz_data_obo /ext/boost//filesystem ;
+unit-test-if-exists obotest : obotest.cpp pwiz_data_obo $(PWIZ_ROOT_PATH)/pwiz/utility/misc//pwiz_utility_misc ;
 unit-test-if-exists cvtest : cvtest.cpp pwiz_data_common ;
 unit-test-if-exists diff_std_test : diff_std_test.cpp pwiz_data_common ;
 unit-test-if-exists ParamTypesTest : ParamTypesTest.cpp pwiz_data_common ;
 unit-test-if-exists CVTranslatorTest : CVTranslatorTest.cpp pwiz_data_common ;
+unit-test-if-exists UnimodTest : UnimodTest.cpp pwiz_data_common ;

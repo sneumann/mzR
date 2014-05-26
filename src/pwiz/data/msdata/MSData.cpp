@@ -1,5 +1,5 @@
 //
-// $Id: MSData.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: MSData.cpp 4585 2013-05-24 20:20:42Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -24,13 +24,16 @@
 
 #include "MSData.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include <boost/lexical_cast.hpp>
 #include "Diff.hpp"
+#include <boost/functional/hash.hpp>
 
+#include <Rcpp.h>
 
 namespace pwiz {
 namespace msdata {
 
-
+using namespace Rcpp;
 using namespace pwiz::cv;
 using namespace pwiz::data;
 
@@ -318,7 +321,7 @@ PWIZ_API_DECL
 SelectedIon::SelectedIon(double mz, int chargeState)
 {
     set(MS_selected_ion_m_z, mz, MS_m_z);
-    set(MS_charge_state, chargeState);
+    set(MS_charge_state, boost::lexical_cast<string>(chargeState));
 }
 
 
@@ -327,7 +330,7 @@ SelectedIon::SelectedIon(double mz, double intensity, int chargeState, CVID inte
 {
     set(MS_selected_ion_m_z, mz, MS_m_z);
     set(MS_peak_intensity, intensity, intensityUnit);
-    set(MS_charge_state, chargeState);
+    set(MS_charge_state, boost::lexical_cast<string>(chargeState));
 }
 
 
@@ -395,8 +398,8 @@ PWIZ_API_DECL bool Product::operator==(const Product& that) const
 
 PWIZ_API_DECL ScanWindow::ScanWindow(double low, double high, CVID unit)
 {
-    cvParams.push_back(CVParam(MS_scan_window_lower_limit, low, unit));
-    cvParams.push_back(CVParam(MS_scan_window_upper_limit, high, unit));
+    set(MS_scan_window_lower_limit, low, unit);
+    set(MS_scan_window_upper_limit, high, unit);
 }
 
 
@@ -512,7 +515,7 @@ PWIZ_API_DECL string value(const string& id, const string& name)
 
 PWIZ_API_DECL CVID getDefaultNativeIDFormat(const MSData& msd)
 {
-	CVID result = CVID_Unknown;
+    CVID result = CVID_Unknown;
     if (msd.run.defaultSourceFilePtr.get())
         result = msd.run.defaultSourceFilePtr->cvParamChild(MS_nativeID_format).cvid;
     else if (!msd.fileDescription.sourceFilePtrs.empty())
@@ -575,6 +578,8 @@ PWIZ_API_DECL string translateNativeIDToScanNumber(CVID nativeIdFormat, const st
             return value(id, "scan");
 
         default:
+            if (bal::starts_with(id, "scan=")) return value(id, "scan");
+            else if (bal::starts_with(id, "index=")) return value(id, "index");
             return "";
     }
 }
@@ -613,7 +618,7 @@ string abbreviate(const string& id, char delimiter /*= '.'*/)
 
 PWIZ_API_DECL bool Spectrum::empty() const
 {
-    return index==0 &&
+    return index==IDENTITY_INDEX_NONE &&
            id.empty() &&
            defaultArrayLength==0 &&
            (!dataProcessingPtr.get() || dataProcessingPtr->empty()) && 
@@ -636,7 +641,7 @@ getMZIntensityArrays(const vector<BinaryDataArrayPtr>& ptrs)
 
     for (vector<BinaryDataArrayPtr>::const_iterator it=ptrs.begin(); it!=ptrs.end(); ++it)
     {
-        if ((*it)->hasCVParam(MS_m_z_array) && !mzArray.get()) mzArray = *it;
+        if (((*it)->hasCVParam(MS_m_z_array) || (*it)->hasCVParam(MS_wavelength_array)) && !mzArray.get()) mzArray = *it;
         if ((*it)->hasCVParam(MS_intensity_array) && !intensityArray.get()) intensityArray = *it;
     }
 
@@ -714,7 +719,7 @@ PWIZ_API_DECL BinaryDataArrayPtr Spectrum::getMZArray() const
          it != binaryDataArrayPtrs.end();
          ++it)
     {
-        if ((*it)->hasCVParam(MS_m_z_array)) return *it;
+        if ((*it)->hasCVParam(MS_m_z_array) || (*it)->hasCVParam(MS_wavelength_array)) return *it;
     }
     return BinaryDataArrayPtr();
 }
@@ -734,9 +739,10 @@ PWIZ_API_DECL BinaryDataArrayPtr Spectrum::getIntensityArray() const
 
 PWIZ_API_DECL void Spectrum::setMZIntensityPairs(const vector<MZIntensityPair>& input, CVID intensityUnits)
 {
-    // TODO: setting the arrays with an empty vector is a valid use case!
     if (!input.empty())    
         setMZIntensityPairs(&input[0], input.size(), intensityUnits);
+    else
+        setMZIntensityArrays(vector<double>(), vector<double>(), intensityUnits);
 }
 
 
@@ -831,7 +837,7 @@ PWIZ_API_DECL void Spectrum::setMZIntensityArrays(const std::vector<double>& mzA
 
 PWIZ_API_DECL bool Chromatogram::empty() const
 {
-    return index==0 &&
+    return index==IDENTITY_INDEX_NONE &&
            id.empty() &&
            defaultArrayLength==0 &&
            (!dataProcessingPtr.get() || dataProcessingPtr->empty()) &&
@@ -1035,6 +1041,14 @@ PWIZ_API_DECL const shared_ptr<const DataProcessing> SpectrumList::dataProcessin
     return shared_ptr<const DataProcessing>();
 }
 
+PWIZ_API_DECL void SpectrumList::warn_once(const char *msg) const
+{
+    boost::hash<const char*> H;
+    if (warn_msg_hashes.insert(H(msg)).second) // .second is true iff value is new
+    {
+        Rcerr << msg << endl;
+    }
+}
 
 //
 // SpectrumListSimple
@@ -1147,7 +1161,7 @@ PWIZ_API_DECL bool Run::empty() const
 //
 
 
-PWIZ_API_DECL MSData::MSData() : version_("1.1.0") {}
+PWIZ_API_DECL MSData::MSData() : version_("1.1.0"),nFiltersApplied_(0) {}
 PWIZ_API_DECL MSData::~MSData() {}
 
 
@@ -1184,14 +1198,6 @@ struct HasID
     }
 };
 
-string makeUniqueID(const vector<DataProcessingPtr>& dpList, const string& id)
-{
-    string result = id;
-    while (std::find_if(dpList.begin(), dpList.end(), HasID<DataProcessing>(result)) != dpList.end())
-        result = "more_" + result;
-    return result;
-}
-
 } // namespace
 
 
@@ -1203,40 +1209,16 @@ PWIZ_API_DECL vector<DataProcessingPtr> MSData::allDataProcessingPtrs() const
     {
         // if SpectrumList::dataProcessingPtr() is not in MSData::dataProcessingPtrs, add it
         const shared_ptr<const DataProcessing> sldp = run.spectrumListPtr->dataProcessingPtr();
-        if (sldp.get() && std::find(result.begin(), result.end(), sldp) == result.end())
-        {
-            string uniqueID = makeUniqueID(dataProcessingPtrs, sldp->id);
-            DataProcessingPtr addedDP;
-            if (uniqueID != sldp->id)
-            {
-                addedDP = DataProcessingPtr(new DataProcessing(*sldp));
-                addedDP->id = uniqueID;
-            }
-            else
-                addedDP = boost::const_pointer_cast<DataProcessing>(sldp);
-
-            result.push_back(addedDP);
-        }
+        if (sldp.get() && std::find_if(result.begin(), result.end(), HasID<DataProcessing>(sldp->id)) == result.end())
+            result.push_back(boost::const_pointer_cast<DataProcessing>(sldp));
     }
 
     if (run.chromatogramListPtr.get())
     {
         // if ChromatogramList::dataProcessingPtr() is not in MSData::dataProcessingPtrs, add it
         const shared_ptr<const DataProcessing> cldp = run.chromatogramListPtr->dataProcessingPtr();
-        if (cldp.get() && std::find(result.begin(), result.end(), cldp) == result.end())
-        {
-            string uniqueID = makeUniqueID(dataProcessingPtrs, cldp->id);
-            DataProcessingPtr addedDP;
-            if (uniqueID != cldp->id)
-            {
-                addedDP = DataProcessingPtr(new DataProcessing(*cldp));
-                addedDP->id = uniqueID;
-            }
-            else
-                addedDP = boost::const_pointer_cast<DataProcessing>(cldp);
-
-            result.push_back(addedDP);
-        }
+        if (cldp.get() && std::find_if(result.begin(), result.end(), HasID<DataProcessing>(cldp->id)) == result.end())
+            result.push_back(boost::const_pointer_cast<DataProcessing>(cldp));
     }
 
     return result;

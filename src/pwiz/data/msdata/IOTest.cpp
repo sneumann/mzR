@@ -1,5 +1,5 @@
 //
-// $Id: IOTest.cpp 2237 2010-09-10 18:23:09Z chambm $
+// $Id: IOTest.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -217,7 +217,7 @@ void testFileDescription()
     a.fileContent.cvParams.push_back(MS_MSn_spectrum);
     
     SourceFilePtr sf(new SourceFile("1", "tiny1.RAW", "file://F:/data/Exp01"));
-    sf->cvParams.push_back(MS_Thermo_RAW_file);
+    sf->cvParams.push_back(MS_Thermo_RAW_format);
     sf->cvParams.push_back(MS_SHA_1);
     a.sourceFilePtrs.push_back(sf);
 
@@ -737,9 +737,10 @@ void testSpectrumListWriteProgress()
     ostringstream oss;
     XMLWriter writer(oss);
 
-    TestIterationListener listener;
+    IterationListenerPtr listenerPtr(new TestIterationListener);
+    TestIterationListener& listener = *boost::static_pointer_cast<TestIterationListener>(listenerPtr);
     IterationListenerRegistry registry;
-    registry.addListener(listener, 3); // callbacks: 0,2,5,8,10
+    registry.addListener(listenerPtr, 3); // callbacks: 0,2,5,8,10
 
     MSData dummy;
     IO::write(writer, a, dummy, BinaryDataEncoder::Config(), 0, &registry);
@@ -761,9 +762,10 @@ void testSpectrumListWriteProgress()
 
     // test #2, this time with cancel at index 6
 
-    TestIterationListener_WithCancel cancelListener;
+    IterationListenerPtr cancelListenerPtr(new TestIterationListener_WithCancel);
+    TestIterationListener_WithCancel& cancelListener = *boost::static_pointer_cast<TestIterationListener_WithCancel>(cancelListenerPtr);
     IterationListenerRegistry registry2;
-    registry2.addListener(cancelListener, 3); // callbacks: 0,2, cancel at 5
+    registry2.addListener(cancelListenerPtr, 3); // callbacks: 0,2, cancel at 5
     
     ostringstream oss2;
     XMLWriter writer2(oss2);
@@ -963,7 +965,7 @@ void initializeTestData(MSData& msd)
     sfp->id = "1";
     sfp->name = "tiny1.RAW";
     sfp->location = "file://F:/data/Exp01";
-    sfp->cvParams.push_back(MS_Thermo_RAW_file);
+    sfp->cvParams.push_back(MS_Thermo_RAW_format);
     sfp->cvParams.push_back(CVParam(MS_SHA_1,"71be39fb2700ab2f3c8b2234b91274968b6899b1"));
     msd.fileDescription.sourceFilePtrs.push_back(sfp);
 
@@ -1301,22 +1303,23 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG_EX(argc, argv, "_MSData")
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
         if (os_) *os_ << "ok\n";
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n"; 
+        TEST_FAILED("Caught unknown exception.")
     }
-    
-    return 1;
+
+    TEST_EPILOG
 }
 

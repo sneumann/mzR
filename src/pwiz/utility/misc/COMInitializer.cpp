@@ -1,5 +1,5 @@
 //
-// $Id: COMInitializer.cpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id: COMInitializer.cpp 2901 2011-08-03 20:16:57Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -26,6 +26,7 @@
 #include "COMInitializer.hpp"
 #include "ObjBase.h" // basic COM declarations
 #include "boost/utility/thread_specific_singleton.hpp"
+#include "pwiz/utility/misc/Singleton.hpp"
 
 
 namespace pwiz {

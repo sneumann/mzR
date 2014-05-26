@@ -1,5 +1,5 @@
 //
-// $Id: Reader.hpp 1189 2009-08-14 17:36:06Z chambm $
+// $Id: Reader.hpp 5120 2013-11-05 23:00:13Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -39,6 +39,21 @@ class PWIZ_API_DECL Reader
     public:
 
 
+    /// Reader configuration
+    struct PWIZ_API_DECL Config
+    {
+        /// when true, sets certain vendor readers to produce SIM/SRM transitions as spectra instead of chromatograms
+        bool simAsSpectra;
+        bool srmAsSpectra;
+
+		/// when true, allows for skipping 0 length checks (and thus skip re-reading data for ABI)
+		bool acceptZeroLengthSpectra;
+
+        Config();
+        Config(const Config& rhs);
+    };
+
+
     /// return true iff Reader recognizes the file as one it should handle
 	/// that's not to say one it CAN handle, necessarily, as in Thermo on linux,
 	/// see comment for identify() below
@@ -60,19 +75,23 @@ class PWIZ_API_DECL Reader
     virtual void read(const std::string& filename,
                       const std::string& head,
                       MSData& result,
-                      int runIndex = 0) const = 0;
+                      int runIndex = 0,
+                      const Config& config = Config()) const = 0;
 
     /// fill in a vector of MSData structures; provides support for multi-run input files
     virtual void read(const std::string& filename,
                       const std::string& head,
-                      std::vector<MSDataPtr>& results) const = 0;
+                      std::vector<MSDataPtr>& results,
+                      const Config& config = Config()) const = 0;
 
     /// fill in a vector of MSData.Id values; provides support for multi-run input files
     virtual void readIds(const std::string& filename,
                          const std::string& head,
-                         std::vector<std::string>& dataIds) const;
+                         std::vector<std::string>& dataIds,
+                         const Config& config = Config()) const;
 
-	virtual const char *getType() const = 0; // what kind of reader are you?
+    /// returns a unique string identifying the reader type
+	virtual const char* getType() const = 0;
 
     virtual ~Reader(){}
 };
@@ -117,35 +136,41 @@ class PWIZ_API_DECL ReaderList : public Reader,
     /// delegates to first child that identifies
     virtual void read(const std::string& filename,
                       MSData& result,
-                      int runIndex = 0) const;
+                      int runIndex = 0,
+                      const Config& config = Config()) const;
 
     /// delegates to first child that identifies
     virtual void read(const std::string& filename,
                       const std::string& head,
                       MSData& result,
-                      int runIndex = 0) const;
+                      int runIndex = 0,
+                      const Config& config = Config()) const;
 
     /// delegates to first child that identifies;
     /// provides support for multi-run input files
     virtual void read(const std::string& filename,
-                      std::vector<MSDataPtr>& results) const;
+                      std::vector<MSDataPtr>& results,
+                      const Config& config = Config()) const;
 
     /// delegates to first child that identifies;
     /// provides support for multi-run input files
     virtual void read(const std::string& filename,
                       const std::string& head,
-                      std::vector<MSDataPtr>& results) const;
+                      std::vector<MSDataPtr>& results,
+                      const Config& config = Config()) const;
 
     /// delegates to first child that identifies;
     /// provides support for multi-run input files
     virtual void readIds(const std::string& filename,
-                         std::vector<std::string>& results) const;
+                         std::vector<std::string>& results,
+                         const Config& config = Config()) const;
 
     /// delegates to first child that identifies;
     /// provides support for multi-run input files
     virtual void readIds(const std::string& filename,
                          const std::string& head,
-                         std::vector<std::string>& results) const;
+                         std::vector<std::string>& results,
+                         const Config& config = Config()) const;
 
     /// appends all of the rhs operand's Readers to the list
     ReaderList& operator +=(const ReaderList& rhs);
@@ -179,13 +204,18 @@ class PWIZ_API_DECL ReaderList : public Reader,
         return const_cast<ReaderList*>(this)->get<reader_type>();
     }
 
-	virtual const char *getType() const {return "ReaderList";} // satisfy inheritance
-
+	virtual const char* getType() const {return "ReaderList";} // satisfy inheritance
 };
 
 
 /// returns a list containing the lhs and rhs as readers
 PWIZ_API_DECL ReaderList operator +(const ReaderPtr& lhs, const ReaderPtr& rhs);
+
+
+/// tries to identify a filepath using the provided Reader or ReaderList;
+/// returns the CVID file format of the specified filepath,
+/// or CVID_Unknown if the file format has no CV term or the filepath doesn't exist
+PWIZ_API_DECL CVID identifyFileFormat(const ReaderPtr& reader, const std::string& filepath);
 
 
 } // namespace msdata

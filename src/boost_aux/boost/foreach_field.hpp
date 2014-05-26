@@ -1,4 +1,4 @@
-// $Id: foreach_field.hpp 2601 2011-03-29 20:56:25Z chambm $
+// $Id: foreach_field.hpp 5091 2013-10-30 20:02:10Z chambm $
 //
 // Copyright 2009 Chris Purcell.
 // Distributed under the Boost Software License, Version 1.0.
@@ -13,6 +13,7 @@
 #include <boost/preprocessor/seq/for_each_i.hpp>
 #include <boost/fusion/include/at_c.hpp>
 #include <boost/fusion/include/std_pair.hpp> 
+#include <boost/fusion/container/generation/ignore.hpp> // for boost::fusion::ignore
 
 #define BOOST_FOREACH_ASSIGN_VAR(R, ROW, I, VAR) \
     for (VAR = boost::fusion::at_c<I>(ROW); \

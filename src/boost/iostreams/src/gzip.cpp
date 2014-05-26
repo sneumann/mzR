@@ -62,7 +62,7 @@ void gzip_header::process(char c)
     case s_os:
         os_ = value;
         if (flags_ & gzip::flags::extra) {
-            state_ = s_extra;
+            state_ = s_xlen;
         } else if (flags_ & gzip::flags::name) {
             state_ = s_name;
         } else if (flags_ & gzip::flags::comment) {
@@ -124,7 +124,7 @@ void gzip_header::process(char c)
         }
         break;
     default:
-        assert(0);
+        BOOST_ASSERT(0);
     }
 }
 
@@ -159,7 +159,7 @@ void gzip_footer::process(char c)
             ++offset_;
         }
     } else {
-        assert(0);
+        BOOST_ASSERT(0);
     }
 }
 

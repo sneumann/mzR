@@ -1,5 +1,5 @@
 //  Copyright (c) 2001 Daniel C. Nuffer
-//  Copyright (c) 2001-2010 Hartmut Kaiser
+//  Copyright (c) 2001-2011 Hartmut Kaiser
 // 
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -48,14 +48,19 @@ namespace boost { namespace spirit { namespace iterator_policies
             static typename MultiPass::reference get_input(MultiPass& mp)
             {
                 if (!mp.shared()->initialized_)
-                    advance_input(mp);
+                    mp.shared()->read_one();
                 return mp.shared()->curtok_;
             }
 
             template <typename MultiPass>
             static void advance_input(MultiPass& mp)
             {
-                mp.shared()->read_one();
+                // We invalidate the currently cached input character to avoid
+                // reading more input from the underlying iterator than 
+                // required. Without this we would always read ahead one 
+                // character, even if this character never gets consumed by the 
+                // client.
+                mp.shared()->peek_one();
             }
 
             // test, whether we reached the end of the underlying stream
@@ -66,7 +71,7 @@ namespace boost { namespace spirit { namespace iterator_policies
             }
 
             template <typename MultiPass>
-            static bool input_is_valid(MultiPass const& mp, value_type const& t) 
+            static bool input_is_valid(MultiPass const& mp, value_type const&) 
             {
                 return mp.shared()->initialized_;
             }
@@ -85,13 +90,26 @@ namespace boost { namespace spirit { namespace iterator_policies
             explicit shared(T& input) 
               : input_(input), curtok_(-1)
               , initialized_(false), eof_reached_(false) 
-            {}
+            {
+                peek_one();   // istreams may be at eof right in the beginning
+            }
 
             void read_one()
             {
-                if (!(input_ >> curtok_))
+                if (!(input_ >> curtok_)) {
+                    initialized_ = false;
                     eof_reached_ = true;
-                initialized_ = true;
+                }
+                else {
+                    initialized_ = true;
+                }
+            }
+
+            void peek_one()
+            {
+                input_.peek();    // try for eof
+                initialized_ = false;
+                eof_reached_ = input_.eof();
             }
 
             T& input_;

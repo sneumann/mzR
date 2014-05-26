@@ -1,5 +1,5 @@
 //
-// $Id: OrderedPairTest.cpp 1316 2009-09-14 23:09:59Z dkessner $
+// $Id: OrderedPairTest.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -22,15 +22,11 @@
 
 
 #include "OrderedPair.hpp"
+#include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/utility/misc/unit.hpp"
 #include "boost/static_assert.hpp"
-#include <iostream>
-#include <algorithm>
-#include <iterator>
-#include <cstring>
 
 
-using namespace std;
 using namespace pwiz::util;
 using namespace pwiz::math;
 
@@ -183,16 +179,22 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
-    catch (exception &e)
+    catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
+    catch (...)
+    {
+        TEST_FAILED("Caught unknown exception.")
+    }
+
+    TEST_EPILOG
 }
 

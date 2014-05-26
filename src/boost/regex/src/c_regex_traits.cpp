@@ -21,6 +21,7 @@
 
 #include <boost/config.hpp>
 #include <boost/detail/workaround.hpp>
+#include "internals.hpp"
 
 #if !BOOST_WORKAROUND(__BORLANDC__, < 0x560)
 
@@ -107,26 +108,6 @@ c_regex_traits<char>::string_type BOOST_REGEX_CALL c_regex_traits<char>::transfo
    return result;
 }
 
-enum
-{
-   char_class_space=1<<0, 
-   char_class_print=1<<1, 
-   char_class_cntrl=1<<2, 
-   char_class_upper=1<<3, 
-   char_class_lower=1<<4,
-   char_class_alpha=1<<5, 
-   char_class_digit=1<<6, 
-   char_class_punct=1<<7, 
-   char_class_xdigit=1<<8,
-   char_class_alnum=char_class_alpha|char_class_digit, 
-   char_class_graph=char_class_alnum|char_class_punct,
-   char_class_blank=1<<9,
-   char_class_word=1<<10,
-   char_class_unicode=1<<11,
-   char_class_horizontal=1<<12,
-   char_class_vertical=1<<13
-};
-
 c_regex_traits<char>::char_class_type BOOST_REGEX_CALL c_regex_traits<char>::lookup_classname(const char* p1, const char* p2)
 {
    static const char_class_type masks[] = 
@@ -155,16 +136,16 @@ c_regex_traits<char>::char_class_type BOOST_REGEX_CALL c_regex_traits<char>::loo
       char_class_xdigit,
    };
 
-   int id = ::boost::re_detail::get_default_class_id(p1, p2);
-   if(id < 0)
+   int idx = ::boost::re_detail::get_default_class_id(p1, p2);
+   if(idx < 0)
    {
       std::string s(p1, p2);
       for(std::string::size_type i = 0; i < s.size(); ++i)
          s[i] = static_cast<char>((std::tolower)(static_cast<unsigned char>(s[i])));
-      id = ::boost::re_detail::get_default_class_id(&*s.begin(), &*s.begin() + s.size());
+      idx = ::boost::re_detail::get_default_class_id(&*s.begin(), &*s.begin() + s.size());
    }
-   BOOST_ASSERT(std::size_t(id+1) < sizeof(masks) / sizeof(masks[0]));
-   return masks[id+1];
+   BOOST_ASSERT(std::size_t(idx+1) < sizeof(masks) / sizeof(masks[0]));
+   return masks[idx+1];
 }
 
 bool BOOST_REGEX_CALL c_regex_traits<char>::isctype(char c, char_class_type mask)

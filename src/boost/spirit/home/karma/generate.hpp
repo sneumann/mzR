@@ -1,4 +1,4 @@
-//  Copyright (c) 2001-2010 Hartmut Kaiser
+//  Copyright (c) 2001-2011 Hartmut Kaiser
 // 
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying 
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -10,6 +10,8 @@
 #pragma once
 #endif
 
+#include <boost/spirit/home/support/context.hpp>
+#include <boost/spirit/home/support/nonterminal/locals.hpp>
 #include <boost/spirit/home/karma/detail/generate.hpp>
 
 namespace boost { namespace spirit { namespace karma
@@ -24,27 +26,30 @@ namespace boost { namespace spirit { namespace karma
         return detail::generate_impl<Expr>::call(sink, expr);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename OutputIterator, typename Expr, typename Attr>
+    template <typename OutputIterator, typename Expr>
     inline bool
     generate(
-        OutputIterator& target_sink
-      , Expr const& expr
-      , Attr const& attr)
+        OutputIterator const& sink_
+      , Expr const& expr)
     {
-        // Report invalid expression error as early as possible.
-        // If you got an error_invalid_expression error message here,
-        // then the expression (expr) is not a valid spirit karma expression.
-        BOOST_SPIRIT_ASSERT_MATCH(karma::domain, Expr);
+        OutputIterator sink = sink_;
+        return karma::generate(sink, expr);
+    }
 
-        typedef traits::properties_of<
-            typename result_of::compile<karma::domain, Expr>::type
-        > properties;
+    ///////////////////////////////////////////////////////////////////////////
+    namespace detail
+    {
+        template <typename T>
+        struct make_context
+        {
+            typedef context<fusion::cons<T const&>, locals<> > type;
+        };
 
-        // wrap user supplied iterator into our own output iterator
-        detail::output_iterator<OutputIterator
-          , mpl::int_<properties::value> > sink(target_sink);
-        return compile<karma::domain>(expr).generate(sink, unused, unused, attr);
+        template <>
+        struct make_context<unused_type>
+        {
+            typedef unused_type type;
+        };
     }
 
     template <typename OutputIterator, typename Properties, typename Expr
@@ -60,7 +65,41 @@ namespace boost { namespace spirit { namespace karma
         // then the expression (expr) is not a valid spirit karma expression.
         BOOST_SPIRIT_ASSERT_MATCH(karma::domain, Expr);
 
-        return compile<karma::domain>(expr).generate(sink, unused, unused, attr);
+        typename detail::make_context<Attr>::type context(attr);
+        return compile<karma::domain>(expr).generate(sink, context, unused, attr);
+    }
+
+    template <typename OutputIterator, typename Expr, typename Attr>
+    inline bool
+    generate(
+        OutputIterator& sink_
+      , Expr const& expr
+      , Attr const& attr)
+    {
+        // Report invalid expression error as early as possible.
+        // If you got an error_invalid_expression error message here,
+        // then the expression (expr) is not a valid spirit karma expression.
+        BOOST_SPIRIT_ASSERT_MATCH(karma::domain, Expr);
+
+        typedef traits::properties_of<
+            typename result_of::compile<karma::domain, Expr>::type
+        > properties;
+
+        // wrap user supplied iterator into our own output iterator
+        detail::output_iterator<OutputIterator
+          , mpl::int_<properties::value> > sink(sink_);
+        return karma::generate(sink, expr, attr);
+    }
+
+    template <typename OutputIterator, typename Expr, typename Attr>
+    inline bool
+    generate(
+        OutputIterator const& sink_
+      , Expr const& expr
+      , Attr const& attr)
+    {
+        OutputIterator sink = sink_;
+        return karma::generate(sink, expr, attr);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -75,6 +114,19 @@ namespace boost { namespace spirit { namespace karma
     {
         return detail::generate_delimited_impl<Expr>::call(
             sink, expr, delimiter, pre_delimit);
+    }
+
+    template <typename OutputIterator, typename Expr, typename Delimiter>
+    inline bool
+    generate_delimited(
+        OutputIterator const& sink_
+      , Expr const& expr
+      , Delimiter const& delimiter
+      , BOOST_SCOPED_ENUM(delimit_flag) pre_delimit = 
+            delimit_flag::dont_predelimit)
+    {
+        OutputIterator sink = sink_;
+        return karma::generate_delimited(sink, expr, delimiter, pre_delimit);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -103,16 +155,17 @@ namespace boost { namespace spirit { namespace karma
         {
             return false;
         }
+
+        typename detail::make_context<Attribute>::type context(attr);
         return compile<karma::domain>(expr).
-            generate(sink, unused, delimiter_, attr);
+            generate(sink, context, delimiter_, attr);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
     template <typename OutputIterator, typename Expr, typename Delimiter
       , typename Attribute>
     inline bool
     generate_delimited(
-        OutputIterator& target_sink
+        OutputIterator& sink_
       , Expr const& expr
       , Delimiter const& delimiter
       , BOOST_SCOPED_ENUM(delimit_flag) pre_delimit
@@ -128,13 +181,27 @@ namespace boost { namespace spirit { namespace karma
         // wrap user supplied iterator into our own output iterator
         detail::output_iterator<OutputIterator
           , mpl::int_<properties::value | delimiter_properties::value>
-        > sink(target_sink);
+        > sink(sink_);
+        return karma::generate_delimited(sink, expr, delimiter, pre_delimit, attr);
+    }
+
+    template <typename OutputIterator, typename Expr, typename Delimiter
+      , typename Attribute>
+    inline bool
+    generate_delimited(
+        OutputIterator const& sink_
+      , Expr const& expr
+      , Delimiter const& delimiter
+      , BOOST_SCOPED_ENUM(delimit_flag) pre_delimit
+      , Attribute const& attr)
+    {
+        OutputIterator sink = sink_;
         return karma::generate_delimited(sink, expr, delimiter, pre_delimit, attr);
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    template <typename OutputIterator, typename Expr, typename Attribute
-      , typename Delimiter>
+    template <typename OutputIterator, typename Expr, typename Delimiter
+      , typename Attribute>
     inline bool
     generate_delimited(
         OutputIterator& sink
@@ -146,6 +213,19 @@ namespace boost { namespace spirit { namespace karma
           , delimit_flag::dont_predelimit, attr);
     }
 
+    template <typename OutputIterator, typename Expr, typename Delimiter
+      , typename Attribute>
+    inline bool
+    generate_delimited(
+        OutputIterator const& sink_
+      , Expr const& expr
+      , Delimiter const& delimiter
+      , Attribute const& attr)
+    {
+        OutputIterator sink = sink_;
+        return karma::generate_delimited(sink, expr, delimiter
+          , delimit_flag::dont_predelimit, attr);
+    }
 }}}
 
 #endif

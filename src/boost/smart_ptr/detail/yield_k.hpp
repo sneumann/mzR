@@ -30,7 +30,6 @@
 #if defined(_MSC_VER) && _MSC_VER >= 1310 && ( defined(_M_IX86) || defined(_M_X64) )
 
 extern "C" void _mm_pause();
-#pragma intrinsic( _mm_pause )
 
 #define BOOST_SMT_PAUSE _mm_pause();
 
@@ -55,7 +54,7 @@ namespace detail
 {
 
 #if !defined( BOOST_USE_WINDOWS_H )
-  extern "C" void __stdcall Sleep( unsigned ms );
+  extern "C" void __stdcall Sleep( unsigned long ms );
 #endif
 
 inline void yield( unsigned k )

@@ -1,5 +1,5 @@
 //
-// $Id: SHA1CalculatorTest.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: SHA1CalculatorTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -21,10 +21,10 @@
 //
 
 
+#include "Std.hpp"
 #include "SHA1Calculator.hpp"
 #include "unit.hpp"
 #include <boost/filesystem/operations.hpp>
-#include "pwiz/utility/misc/Std.hpp"
 #include <cstring>
 
 
@@ -72,7 +72,7 @@ void testStream()
 {
     istringstream is(textBrown_);
     string hash = SHA1Calculator::hash(is);
-    if (os_) *os_ << "hash file: " << hash << endl;
+    if (os_) *os_ << "hash stream: " << hash << endl;
     unit_assert(hash == "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12");
 }
 
@@ -84,9 +84,18 @@ void testFile()
     os << textBrown_; 
     os.close();
 
-    string hash = SHA1Calculator::hashFile(filename);
-    if (os_) *os_ << "hash file: " << hash << endl;
-    unit_assert(hash == "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12");
+    {
+        string hash = SHA1Calculator::hashFile(filename);
+        if (os_) *os_ << "hash file: " << hash << endl;
+        unit_assert(hash == "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12");
+    }
+
+    {
+        ifstream filestream(filename, ios::binary);
+        string hash = SHA1Calculator::hash(filestream);
+        if (os_) *os_ << "hash stream: " << hash << endl;
+        unit_assert(hash == "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12");
+    }
 
     boost::filesystem::remove(filename);
 }
@@ -142,6 +151,8 @@ void testProjected()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) // verbose
@@ -155,12 +166,16 @@ int main(int argc, char* argv[])
         testStatic();
         testMillion();
         testProjected();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
+    catch (...)
+    {
+        TEST_FAILED("Caught unknown exception.")
+    }
+
+    TEST_EPILOG
 }
 
