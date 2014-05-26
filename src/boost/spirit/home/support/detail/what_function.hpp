@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2001-2010 Joel de Guzman
+    Copyright (c) 2001-2011 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -20,8 +20,8 @@ namespace boost { namespace spirit { namespace detail
     template <typename Context>
     struct what_function
     {
-        what_function(info& what, Context& context)
-          : what(what), context(context)
+        what_function(info& what_, Context& context_)
+          : what(what_), context(context_)
         {
             what.value = std::list<info>();
         }
@@ -32,7 +32,8 @@ namespace boost { namespace spirit { namespace detail
 #if BOOST_WORKAROUND(BOOST_MSVC, BOOST_TESTED_AT(1600))
             component; // suppresses warning: C4100: 'component' : unreferenced formal parameter
 #endif
-            get<std::list<info> >(what.value).push_back(component.what(context));
+            boost::get<std::list<info> >(what.value).
+                push_back(component.what(context));
         }
 
         info& what;

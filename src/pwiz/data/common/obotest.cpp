@@ -1,5 +1,5 @@
 //
-// $Id: obotest.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: obotest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -42,16 +42,16 @@ const char* oboText_ =
     "auto-generated-by: OBO-Edit 1.101\n"
     "default-namespace: PSI-MS\n"
     "\n"
-    "[Term]\n"
-    "id: MS:0000000\n"
-    "name: MZ controlled vocabularies\n"
-    "def: \"MZ controlled vocabularies.\" [PSI:MS]\n"
+    "[Term]\t\n"
+    "id: MS:0000000\t\n"
+    "name: MZ controlled vocabularies\t\n"
+    "def: \"MZ controlled vocabularies.\" [PSI:MS]\t\n"
     "\n"
-    "[Term]\n"
-    "id: MS:0000001\n"
-    "name: sample number\n"
-    "def: \"A reference number relevant to the sample under study.\" [PSI:MS]\n"
-    "relationship: part_of MS:1000548 ! sample attribute\n"
+    "[Term]\r\n"
+    "id: MS:0000001\r\n"
+    "name: sample number\r\n"
+    "def: \"A reference number relevant to the sample under study.\" [PSI:MS]\r\n"
+    "relationship: part_of MS:1000548 ! sample attribute\r\n"
     "\n"
     "[Term]\n"
     "id: MS:0000011\n"
@@ -112,6 +112,21 @@ const char* oboText_ =
     "namespace: unit.ontology\n"
     "def: \"description\" [ignore this Wikipedia:Wikipedia \"http://www.wikipedia.org/\"]\n"
     "\n"
+    "[Term]\n"
+    "id: MS:99999999\n"
+    "name: Label:2H(4)+GlyGly\n"
+    "def: \"Ubiquitination 2H4 lysine\" []\n"
+    "property_value: record_id=\"853\"\n"
+    "property_value: delta_mono_mass=\"118.068034\"\n"
+    "property_value: delta_avge_mass=\"118.1273\"\n"
+    "property_value: delta_composition=\"H(2) 2H(4) C(4) N(2) O(2)\"\n"
+    "property_value: spec_group1=\"1\"\n"
+    "property_value: spec_hidden_1=\"1\"\n"
+    "property_value: spec_site_1=\"K\"\n"
+    "property_value: spec_position_1=\"Anywhere\"\n"
+    "property_value: spec_classification_1=\"Post-translational\"\n"
+    "is_a: MS:0 ! unimod root node\n"
+    "\n"
 ;
 
 
@@ -129,7 +144,7 @@ void test()
     unit_assert(obo.filename == filename);    
     unit_assert(obo.header.size() == 5); 
     unit_assert(obo.prefix == "MS");
-    unit_assert(obo.terms.size() == 11); // including obsolete terms
+    unit_assert(obo.terms.size() == 12); // including obsolete terms
 
     set<Term>::const_iterator term = obo.terms.begin();
     unit_assert(term->prefix == "MS");
@@ -198,28 +213,41 @@ void test()
     unit_assert(term->id == 9999999);
     unit_assert(term->def == "description");
  
+    ++term;
+    // test property values
+    unit_assert(term->id == 99999999);
+    unit_assert(term->name == "Label:2H(4)+GlyGly");
+    unit_assert(term->def == "Ubiquitination 2H4 lysine");
+    unit_assert(term->propertyValues.size() == 9);
+    unit_assert(term->propertyValues.find("record_id")->second == "853");
+    unit_assert(term->propertyValues.find("delta_mono_mass")->second == "118.068034");
+    unit_assert(term->propertyValues.find("delta_avge_mass")->second == "118.1273");
+    unit_assert(term->propertyValues.find("delta_composition")->second == "H(2) 2H(4) C(4) N(2) O(2)");
+    unit_assert(term->propertyValues.find("spec_classification_1")->second == "Post-translational");
+
     boost::filesystem::remove(filename); 
 }
 
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
 
-    return 1; 
+    TEST_EPILOG
 }
 
 

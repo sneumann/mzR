@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2010 Christopher Schmidt
+    Copyright (c) 2010-2011 Christopher Schmidt
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,6 +17,7 @@
 #include <boost/fusion/adapted/struct/detail/namespace.hpp>
 #include <boost/preprocessor/inc.hpp>
 #include <boost/preprocessor/if.hpp>
+#include <boost/preprocessor/expr_if.hpp>
 #include <boost/preprocessor/dec.hpp>
 #include <boost/preprocessor/logical/not.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
@@ -42,7 +43,7 @@
 #define BOOST_FUSION_DEFINE_STRUCT_ASSIGN_FILLER_I(                             \
     R, ATTRIBUTE_TUPEL_SIZE, I_, ATTRIBUTE)                                     \
                                                                                 \
-    BOOST_PP_IF(                                                                \
+    BOOST_PP_EXPR_IF(                                                           \
         I_,                                                                     \
         typedef typename                                                        \
             boost::fusion::result_of::next<                                     \
@@ -50,9 +51,8 @@
             >::type                                                             \
         BOOST_PP_CAT(I,I_);                                                     \
         BOOST_PP_CAT(I,I_) BOOST_PP_CAT(i,I_)=                                  \
-            boost::fusion::next(BOOST_PP_CAT(i,BOOST_PP_DEC(I_)));,             \
-        BOOST_PP_EMPTY()                                                        \
-        )                                                                       \
+                boost::fusion::next(BOOST_PP_CAT(i,BOOST_PP_DEC(I_)));          \
+    )                                                                           \
                                                                                 \
     BOOST_PP_TUPLE_ELEM(ATTRIBUTE_TUPEL_SIZE,1,ATTRIBUTE)=                      \
         boost::fusion::deref(BOOST_PP_CAT(i,I_));
@@ -201,7 +201,7 @@
         >::param_type BOOST_PP_CAT(_,I)
 
 #define BOOST_FUSION_DEFINE_TPL_STRUCT_CTOR_N(                                  \
-        TEMPLATE_PARAMS_SEQ, NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)        \
+    TEMPLATE_PARAMS_SEQ, NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)            \
                                                                                 \
         NAME(BOOST_PP_SEQ_FOR_EACH_I_R(                                         \
                 1,                                                              \
@@ -228,7 +228,7 @@
         >::param_type BOOST_PP_CAT(_,I)
 
 #define BOOST_FUSION_DEFINE_STRUCT_CTOR_N(                                      \
-        NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)                             \
+    NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)                                 \
                                                                                 \
         NAME(BOOST_PP_SEQ_FOR_EACH_I_R(                                         \
                 1,                                                              \
@@ -242,15 +242,44 @@
                 ATTRIBUTES_SEQ)                                                 \
         {}
 
-#define BOOST_FUSION_DEFINE_STRUCT_CTOR(ATTRIBUTES_SEQ)                         \
+#define BOOST_FUSION_DEFINE_STRUCT_CTOR(                                        \
+    NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)                                 \
+                                                                                \
     BOOST_PP_IF(BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(ATTRIBUTES_SEQ)),                \
         BOOST_FUSION_DEFINE_STRUCT_CTOR_N,                                      \
-        BOOST_FUSION_DEFINE_STRUCT_CTOR_1)
+        BOOST_FUSION_DEFINE_STRUCT_CTOR_1)(                                     \
+            NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)
 
-#define BOOST_FUSION_DEFINE_TPL_STRUCT_CTOR(ATTRIBUTES_SEQ)                     \
+#define BOOST_FUSION_DEFINE_TPL_STRUCT_CTOR(                                    \
+    TEMPLATE_PARAMS_SEQ, NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)            \
+                                                                                \
     BOOST_PP_IF(BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(ATTRIBUTES_SEQ)),                \
         BOOST_FUSION_DEFINE_TPL_STRUCT_CTOR_N,                                  \
-        BOOST_FUSION_DEFINE_TPL_STRUCT_CTOR_1)
+        BOOST_FUSION_DEFINE_TPL_STRUCT_CTOR_1)(                                 \
+            TEMPLATE_PARAMS_SEQ, NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)
+
+#define BOOST_FUSION_DEFINE_NONEMPTY_STRUCT_IMPL(                               \
+    NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)                                 \
+                                                                                \
+        BOOST_FUSION_DEFINE_STRUCT_IMPL_IMPL(                                   \
+            NAME, BOOST_PP_SEQ_TAIL(ATTRIBUTES_SEQ), ATTRIBUTE_TUPEL_SIZE)      \
+                                                                                \
+        BOOST_FUSION_DEFINE_STRUCT_CTOR(                                        \
+            NAME, BOOST_PP_SEQ_TAIL(ATTRIBUTES_SEQ), ATTRIBUTE_TUPEL_SIZE)
+
+#define BOOST_FUSION_DEFINE_EMPTY_STRUCT_IMPL(                                  \
+    NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)                                 \
+                                                                                \
+        template<typename Seq>                                                  \
+        NAME(Seq const&)                                                        \
+        {}                                                                      \
+                                                                                \
+        template<typename Seq>                                                  \
+        self_type&                                                              \
+        operator=(Seq const& seq)                                               \
+        {                                                                       \
+            return *this;                                                       \
+        }
 
 #define BOOST_FUSION_DEFINE_STRUCT_IMPL(                                        \
     NAMESPACE_SEQ, NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)                  \
@@ -261,14 +290,31 @@
     {                                                                           \
         typedef NAME self_type;                                                 \
                                                                                 \
-        BOOST_FUSION_DEFINE_STRUCT_IMPL_IMPL(                                   \
-            NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)                         \
-                                                                                \
-        BOOST_FUSION_DEFINE_STRUCT_CTOR(ATTRIBUTES_SEQ)(                        \
-            NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)                         \
+        BOOST_PP_IF(BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(ATTRIBUTES_SEQ)),            \
+            BOOST_FUSION_DEFINE_NONEMPTY_STRUCT_IMPL,                           \
+            BOOST_FUSION_DEFINE_EMPTY_STRUCT_IMPL)(                             \
+                NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)                     \
     };                                                                          \
                                                                                 \
     BOOST_FUSION_ADAPT_STRUCT_NAMESPACE_DEFINITION_END(NAMESPACE_SEQ)
+
+#define BOOST_FUSION_DEFINE_NONEMPTY_TPL_STRUCT_IMPL(                           \
+    TEMPLATE_PARAMS_SEQ, NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)            \
+                                                                                \
+        BOOST_FUSION_DEFINE_STRUCT_IMPL_IMPL(                                   \
+            NAME, BOOST_PP_SEQ_TAIL(ATTRIBUTES_SEQ), ATTRIBUTE_TUPEL_SIZE)      \
+                                                                                \
+        BOOST_FUSION_DEFINE_TPL_STRUCT_CTOR(                                    \
+            TEMPLATE_PARAMS_SEQ,                                                \
+            NAME,                                                               \
+            BOOST_PP_SEQ_TAIL(ATTRIBUTES_SEQ),                                  \
+            ATTRIBUTE_TUPEL_SIZE)
+
+#define BOOST_FUSION_DEFINE_EMPTY_TPL_STRUCT_IMPL(                              \
+    TEMPLATE_PARAMS_SEQ, NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)            \
+                                                                                \
+        BOOST_FUSION_DEFINE_EMPTY_STRUCT_IMPL(                                  \
+            NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)
 
 #define BOOST_FUSION_DEFINE_TPL_STRUCT_IMPL(                                    \
     TEMPLATE_PARAMS_SEQ,                                                        \
@@ -287,11 +333,10 @@
     {                                                                           \
         typedef NAME self_type;                                                 \
                                                                                 \
-        BOOST_FUSION_DEFINE_STRUCT_IMPL_IMPL(                                   \
-            NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)                         \
-                                                                                \
-        BOOST_FUSION_DEFINE_TPL_STRUCT_CTOR(ATTRIBUTES_SEQ)(                    \
-            TEMPLATE_PARAMS_SEQ, NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)    \
+        BOOST_PP_IF(BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(ATTRIBUTES_SEQ)),            \
+            BOOST_FUSION_DEFINE_NONEMPTY_TPL_STRUCT_IMPL,                       \
+            BOOST_FUSION_DEFINE_EMPTY_TPL_STRUCT_IMPL)(                         \
+                TEMPLATE_PARAMS_SEQ, NAME, ATTRIBUTES_SEQ, ATTRIBUTE_TUPEL_SIZE)\
     };                                                                          \
                                                                                 \
     BOOST_FUSION_ADAPT_STRUCT_NAMESPACE_DEFINITION_END(NAMESPACE_SEQ)

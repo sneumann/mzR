@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumInfo.hpp 1873 2010-03-08 16:58:05Z chambm $
+// $Id: SpectrumInfo.hpp 2842 2011-07-07 22:11:07Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -62,6 +62,7 @@ struct PWIZ_API_DECL SpectrumInfo
     double basePeakIntensity;
     double totalIonCurrent;
     double thermoMonoisotopicMZ;
+    double ionInjectionTime;
     std::vector<PrecursorInfo> precursors;
     size_t dataSize;
     std::vector<MZIntensityPair> data;

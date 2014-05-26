@@ -1,5 +1,5 @@
-//  Copyright (c) 2001-2010 Hartmut Kaiser
-//  Copyright (c) 2001-2010 Joel de Guzman
+//  Copyright (c) 2001-2011 Hartmut Kaiser
+//  Copyright (c) 2001-2011 Joel de Guzman
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,18 +12,21 @@
 #endif
 
 #include <boost/spirit/home/karma/detail/alternative_function.hpp>
-#include <boost/spirit/home/karma/detail/extract_from.hpp>
+#include <boost/spirit/home/karma/detail/get_stricttag.hpp>
 #include <boost/spirit/home/karma/domain.hpp>
 #include <boost/spirit/home/karma/generator.hpp>
 #include <boost/spirit/home/karma/meta_compiler.hpp>
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/spirit/home/support/unused.hpp>
+#include <boost/spirit/home/support/has_semantic_action.hpp>
+#include <boost/spirit/home/support/handles_container.hpp>
 #include <boost/spirit/home/support/detail/what_function.hpp>
 #include <boost/fusion/include/any.hpp>
 #include <boost/fusion/include/mpl.hpp>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/mpl/accumulate.hpp>
 #include <boost/mpl/bitor.hpp>
+#include <boost/config.hpp>
 
 namespace boost { namespace spirit
 {
@@ -59,9 +62,11 @@ namespace boost { namespace spirit { namespace traits
             };
 
             // never called, but needed for decltype-based result_of (C++0x)
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
             template <typename Element>
             typename result<element_properties(Element)>::type
-            operator()(Element&) const;
+            operator()(Element&&) const;
+#endif
         };
 
         typedef typename mpl::accumulate<
@@ -76,8 +81,8 @@ namespace boost { namespace spirit { namespace traits
 
 namespace boost { namespace spirit { namespace karma
 {
-    template <typename Elements>
-    struct alternative : nary_generator<alternative<Elements> >
+    template <typename Elements, typename Strict, typename Derived>
+    struct base_alternative : nary_generator<Derived>
     {
         typedef typename traits::alternative_properties<Elements>::type 
             properties;
@@ -87,7 +92,8 @@ namespace boost { namespace spirit { namespace karma
         {
             // Put all the element attributes in a tuple
             typedef typename traits::build_attribute_sequence<
-                Elements, Context, mpl::identity, Iterator
+                Elements, Context, traits::alternative_attribute_transform
+              , Iterator, karma::domain
             >::type all_attributes;
 
             // Ok, now make a variant over the attribute sequence. Note that
@@ -98,7 +104,7 @@ namespace boost { namespace spirit { namespace karma
             typedef typename traits::build_variant<all_attributes>::type type;
         };
 
-        alternative(Elements const& elements)
+        base_alternative(Elements const& elements)
           : elements(elements) {}
 
         template <
@@ -108,7 +114,7 @@ namespace boost { namespace spirit { namespace karma
           , Delimiter const& d, Attribute const& attr) const
         {
             typedef detail::alternative_generate_function<
-                OutputIterator, Context, Delimiter, Attribute
+                OutputIterator, Context, Delimiter, Attribute, Strict
             > functor;
 
             // f return true if *any* of the parser succeeds
@@ -128,22 +134,75 @@ namespace boost { namespace spirit { namespace karma
         Elements elements;
     };
 
+    template <typename Elements>
+    struct alternative 
+      : base_alternative<Elements, mpl::false_, alternative<Elements> >
+    {
+        typedef base_alternative<Elements, mpl::false_, alternative> 
+            base_alternative_;
+
+        alternative(Elements const& elements)
+          : base_alternative_(elements) {}
+    };
+
+    template <typename Elements>
+    struct strict_alternative 
+      : base_alternative<Elements, mpl::true_, strict_alternative<Elements> >
+    {
+        typedef base_alternative<Elements, mpl::true_, strict_alternative> 
+            base_alternative_;
+
+        strict_alternative(Elements const& elements)
+          : base_alternative_(elements) {}
+    };
+
     ///////////////////////////////////////////////////////////////////////////
     // Generator generators: make_xxx function (objects)
     ///////////////////////////////////////////////////////////////////////////
+    namespace detail
+    {
+        template <typename Elements, bool strict_mode = false>
+        struct make_alternative 
+          : make_nary_composite<Elements, alternative>
+        {};
+
+        template <typename Elements>
+        struct make_alternative<Elements, true> 
+          : make_nary_composite<Elements, strict_alternative>
+        {};
+    }
+
     template <typename Elements, typename Modifiers>
     struct make_composite<proto::tag::bitwise_or, Elements, Modifiers>
-      : make_nary_composite<Elements, alternative>
+      : detail::make_alternative<Elements
+          , detail::get_stricttag<Modifiers>::value>
     {};
 
 }}}
 
 namespace boost { namespace spirit { namespace traits
 {
+    ///////////////////////////////////////////////////////////////////////////
     template <typename Elements>
     struct has_semantic_action<karma::alternative<Elements> >
       : nary_has_semantic_action<Elements> {};
 
+    template <typename Elements>
+    struct has_semantic_action<karma::strict_alternative<Elements> >
+      : nary_has_semantic_action<Elements> {};
+
+    ///////////////////////////////////////////////////////////////////////////
+    template <typename Elements, typename Attribute, typename Context
+      , typename Iterator>
+    struct handles_container<karma::alternative<Elements>
+          , Attribute, Context, Iterator>
+      : nary_handles_container<Elements, Attribute, Context, Iterator> {};
+
+    template <typename Elements, typename Attribute, typename Context
+      , typename Iterator>
+    struct handles_container<karma::strict_alternative<Elements>
+          , Attribute, Context, Iterator>
+      : nary_handles_container<Elements, Attribute, Context, Iterator> {};
 }}}
 
 #endif

@@ -1,5 +1,5 @@
 //
-// $Id: DiffTest.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: DiffTest.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -105,7 +105,7 @@ void testFileDescription()
     SourceFilePtr source1(new SourceFile("id1"));
     SourceFilePtr source2a(new SourceFile("id2"));
     SourceFilePtr source2b(new SourceFile("id2"));
-    source2a->cvParams.push_back(MS_Thermo_RAW_file);
+    source2a->cvParams.push_back(MS_Thermo_RAW_format);
 
     a.sourceFilePtrs.push_back(source1);
     b.sourceFilePtrs.push_back(source1);
@@ -129,9 +129,9 @@ void testFileDescription()
     unit_assert(diff.b_a.contacts[0].cvParam(MS_contact_name).value == "Isabelle Lynn");
 
     unit_assert(diff.a_b.sourceFilePtrs.size() == 1);
-    unit_assert(diff.a_b.sourceFilePtrs[0]->hasCVParam(MS_Thermo_RAW_file));
+    unit_assert(diff.a_b.sourceFilePtrs[0]->hasCVParam(MS_Thermo_RAW_format));
     unit_assert(diff.b_a.sourceFilePtrs.size() == 1);
-    unit_assert(!diff.b_a.sourceFilePtrs[0]->hasCVParam(MS_Thermo_RAW_file));
+    unit_assert(!diff.b_a.sourceFilePtrs[0]->hasCVParam(MS_Thermo_RAW_format));
 }
 
 
@@ -948,36 +948,6 @@ void testMSData()
 }
 
 
-void testMSData_allDataProcessingPtrs()
-{
-    if (os_) *os_ << "testMSData_allDataProcessingPtrs()\n";
-
-    MSData a, b;
-   
-    a.id = "goober";
-    b.id = "goober";
-
-    SpectrumListSimplePtr sl1(new SpectrumListSimple), sl2(new SpectrumListSimple);
-
-    sl1->dp = DataProcessingPtr(new DataProcessing("dp"));
-    b.dataProcessingPtrs.push_back(DataProcessingPtr(new DataProcessing("dp")));
-
-    a.run.spectrumListPtr = sl1;
-    b.run.spectrumListPtr = sl2;
-
-    Diff<MSData, DiffConfig> diff(a, b);
-    if (os_ && diff) *os_ << diff << endl;
-    unit_assert(!diff);
-
-    a.dataProcessingPtrs.push_back(DataProcessingPtr(new DataProcessing("dp")));
-
-    diff(a, b);
-    unit_assert(diff);
-    unit_assert(diff.a_b.dataProcessingPtrs.size() == 1 &&
-                diff.a_b.dataProcessingPtrs[0]->id == "more_dp");
-}
-
-
 void testBinaryDataOnly()
 {
     MSData tiny;
@@ -1361,7 +1331,6 @@ void test()
     testChromatogramList();
     testRun();
     testMSData();
-    testMSData_allDataProcessingPtrs();
     testBinaryDataOnly();
     testMaxPrecisionDiff();
     testMSDiffUpdate();
@@ -1370,21 +1339,22 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG_EX(argc, argv, "_MSData")
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
-    
-    return 1;
+
+    TEST_EPILOG
 }
 

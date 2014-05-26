@@ -15,6 +15,7 @@
 
 #include <boost/config.hpp>
 #include <boost/detail/workaround.hpp>
+#include <boost/utility/result_of.hpp>
 
 #if BOOST_WORKAROUND(BOOST_MSVC, == 1310)
 
@@ -161,6 +162,25 @@ public:
     inherited::template sig<null_type>::type
       nullary_return_type;
 
+  // Support for boost::result_of.
+  template <class Sig> struct result;
+  template <class F>
+  struct result<F()> {
+    typedef nullary_return_type type;
+  };
+  template <class F, class A>
+  struct result<F(A)> {
+    typedef typename sig<tuple<F, A> >::type type;
+  };
+  template <class F, class A, class B>
+  struct result<F(A, B)> {
+    typedef typename sig<tuple<F, A, B> >::type type;
+  };
+  template <class F, class A, class B, class C>
+  struct result<F(A, B, C)> {
+    typedef typename sig<tuple<F, A, B, C> >::type type;
+  };
+
   nullary_return_type operator()() const { 
     return inherited::template 
       call<nullary_return_type>
@@ -277,6 +297,38 @@ public:
 
 } // namespace lambda
 } // namespace boost
+
+namespace boost {
+
+#if !defined(BOOST_RESULT_OF_USE_DECLTYPE) || defined(BOOST_NO_DECLTYPE)
+
+template<class T>
+struct result_of<boost::lambda::lambda_functor<T>()>
+{
+    typedef typename boost::lambda::lambda_functor<T>::nullary_return_type type;
+};
+
+template<class T>
+struct result_of<const boost::lambda::lambda_functor<T>()>
+{
+    typedef typename boost::lambda::lambda_functor<T>::nullary_return_type type;
+};
+
+#endif
+
+template<class T>
+struct tr1_result_of<boost::lambda::lambda_functor<T>()>
+{
+    typedef typename boost::lambda::lambda_functor<T>::nullary_return_type type;
+};
+
+template<class T>
+struct tr1_result_of<const boost::lambda::lambda_functor<T>()>
+{
+    typedef typename boost::lambda::lambda_functor<T>::nullary_return_type type;
+};
+
+}
 
 // is_placeholder
 

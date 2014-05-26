@@ -1,5 +1,5 @@
 //
-// $Id: MSDataFile.hpp 2131 2010-07-19 16:58:27Z chambm $
+// $Id: MSDataFile.hpp 4009 2012-10-17 18:40:44Z kaipot $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -46,7 +46,7 @@ struct PWIZ_API_DECL MSDataFile : public MSData
                bool calculateSourceFileChecksum = false);
 
     /// data format for write()
-    enum PWIZ_API_DECL Format {Format_Text, Format_mzML, Format_mzXML, Format_MGF, Format_MS2, Format_CMS2};
+    enum PWIZ_API_DECL Format {Format_Text, Format_mzML, Format_mzXML, Format_MGF, Format_MS1, Format_CMS1, Format_MS2, Format_CMS2};
 
     /// configuration for write()
     struct PWIZ_API_DECL WriteConfig
@@ -89,6 +89,9 @@ struct PWIZ_API_DECL MSDataFile : public MSData
 
 /// calculates and adds a CV term for the SHA1 checksum of a source file element
 PWIZ_API_DECL void calculateSourceFileSHA1(SourceFile& sourceFile);
+
+/// Iterate and calculate SHA-1 for all source files
+PWIZ_API_DECL void calculateSHA1Checksums(const MSData& msd);
 
 PWIZ_API_DECL std::ostream& operator<<(std::ostream& os, MSDataFile::Format format);
 PWIZ_API_DECL std::ostream& operator<<(std::ostream& os, const MSDataFile::WriteConfig& config);

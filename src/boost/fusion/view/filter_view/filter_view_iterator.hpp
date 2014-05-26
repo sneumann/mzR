@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2001-2006 Joel de Guzman
+    Copyright (c) 2001-2011 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -54,10 +54,14 @@ namespace boost { namespace fusion
         typedef last_iter last_type;
         typedef Pred pred_type;
 
-        filter_iterator(First const& first)
-            : first(filter::call(first_converter::call(first))) {}
+        filter_iterator(First const& in_first)
+            : first(filter::iter_call(first_converter::call(in_first))) {}
 
         first_type first;
+
+    private:
+        // silence MSVC warning C4512: assignment operator could not be generated
+        filter_iterator& operator= (filter_iterator const&);
     };
 }}
 

@@ -8,7 +8,7 @@ RcppRamp::RcppRamp() {
   isInCacheRunInfo = FALSE;
   instrumentInfo = Rcpp::List::create( );
   isInCacheInstrumentInfo = FALSE;
-  allScanHeaderInfo = Rcpp::List::create( );
+  allScanHeaderInfo = Rcpp::DataFrame::create( );
   isInCacheAllScanHeaderInfo = FALSE;
   filename = Rcpp::StringVector::create( );
 }

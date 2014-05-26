@@ -1,5 +1,5 @@
 //
-// $Id: IO.hpp 2237 2010-09-10 18:23:09Z chambm $
+// $Id: IO.hpp 3013 2011-09-27 06:57:13Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -35,6 +35,28 @@
 
 namespace pwiz {
 namespace msdata {
+
+
+
+/// Identifying information for a spectrum
+/// subclassed to add private information for faster file IO in mzML and mzXML
+struct PWIZ_API_DECL SpectrumIdentityFromXML : SpectrumIdentity
+{
+    /// for efficient read of peak lists after previous read of
+    /// scan header in mzML and mzXML - avoids reparsing the header
+    mutable boost::iostreams::stream_offset sourceFilePositionForBinarySpectrumData;
+    SpectrumIdentityFromXML() : SpectrumIdentity(), sourceFilePositionForBinarySpectrumData((boost::iostreams::stream_offset)-1) {}
+};
+
+/// Identifying information for a spectrum as read from mzML or mzXML
+/// subclassed to add private information for faster file IO in mzXML
+struct PWIZ_API_DECL SpectrumIdentityFromMzXML : SpectrumIdentityFromXML
+{
+    /// for efficient read of peak lists after previous read of
+    /// scan header in mzXML - avoids reparsing the header
+    mutable unsigned int peaksCount;
+    SpectrumIdentityFromMzXML() : SpectrumIdentityFromXML(), peaksCount(0) {}
+};
 
 
 namespace IO {
@@ -145,8 +167,10 @@ void write(minimxml::XMLWriter& writer, const BinaryDataArray& binaryDataArray,
            const BinaryDataEncoder::Config& config = BinaryDataEncoder::Config());
 PWIZ_API_DECL void read(std::istream& is, BinaryDataArray& binaryDataArray, const MSData* msd = 0);
     
-
-enum PWIZ_API_DECL BinaryDataFlag {IgnoreBinaryData, ReadBinaryData};
+//
+// enum for preference in binary data read - ignore, read, read only binary if possible
+//
+enum PWIZ_API_DECL BinaryDataFlag {IgnoreBinaryData, ReadBinaryData, ReadBinaryDataOnly };
 
 
 PWIZ_API_DECL
@@ -157,7 +181,8 @@ void read(std::istream& is, Spectrum& spectrum,
           BinaryDataFlag binaryDataFlag = IgnoreBinaryData,
           int version = 0,
           const std::map<std::string,std::string>* legacyIdRefToNativeId = 0,
-          const MSData* msd = 0);
+          const MSData* msd = 0,
+          const SpectrumIdentityFromXML *id = 0);
 
 
 PWIZ_API_DECL

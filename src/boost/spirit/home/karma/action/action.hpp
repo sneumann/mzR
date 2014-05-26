@@ -1,4 +1,4 @@
-//  Copyright (c) 2001-2010 Hartmut Kaiser
+//  Copyright (c) 2001-2011 Hartmut Kaiser
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -10,12 +10,14 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/support/attributes.hpp>
+#include <boost/spirit/home/karma/detail/attributes.hpp>
 #include <boost/spirit/home/support/argument.hpp>
 #include <boost/spirit/home/support/context.hpp>
 #include <boost/spirit/home/support/unused.hpp>
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/spirit/home/support/action_dispatch.hpp>
+#include <boost/spirit/home/support/has_semantic_action.hpp>
+#include <boost/spirit/home/support/handles_container.hpp>
 #include <boost/spirit/home/karma/domain.hpp>
 #include <boost/spirit/home/karma/meta_compiler.hpp>
 #include <boost/spirit/home/karma/generator.hpp>
@@ -56,7 +58,11 @@ namespace boost { namespace spirit { namespace karma
             // create a attribute if none is supplied
             // this creates a _copy_ of the attribute because the semantic
             // action will likely change parts of this
-            typename make_attribute::value_type attr = make_attribute::call(attr_);
+            typedef traits::transform_attribute<
+                typename make_attribute::type, attr_type, domain> transform;
+
+            typename transform::type attr = 
+                traits::pre_transform<domain, attr_type>(make_attribute::call(attr_));
 
             // call the function, passing the attribute, the context and a bool 
             // flag that the client can set to false to fail generating.
@@ -115,9 +121,17 @@ namespace boost { namespace spirit
 
 namespace boost { namespace spirit { namespace traits
 {
+    ///////////////////////////////////////////////////////////////////////////
     template <typename Subject, typename Action>
     struct has_semantic_action<karma::action<Subject, Action> >
       : mpl::true_ {};
+
+    ///////////////////////////////////////////////////////////////////////////
+    template <typename Subject, typename Action, typename Attribute
+      , typename Context, typename Iterator>
+    struct handles_container<karma::action<Subject, Action>, Attribute
+      , Context, Iterator>
+      : unary_handles_container<Subject, Attribute, Context, Iterator> {};
 }}}
 
 #endif

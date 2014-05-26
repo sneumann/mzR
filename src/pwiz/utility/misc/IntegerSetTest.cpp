@@ -1,5 +1,5 @@
 //
-// $Id: IntegerSetTest.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: IntegerSetTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -21,9 +21,9 @@
 //
 
 
+#include "Std.hpp"
 #include "IntegerSet.hpp"
 #include "pwiz/utility/misc/unit.hpp"
-#include "pwiz/utility/misc/Std.hpp"
 #include <cstring>
 #include <limits>
 
@@ -240,6 +240,8 @@ void testParse2()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
@@ -252,13 +254,13 @@ int main(int argc, char* argv[])
         testIntExtraction();
         testParse();
         testParse2();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
+
+    TEST_EPILOG
 }
 
 

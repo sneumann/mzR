@@ -1,4 +1,5 @@
-/*
+/* $Id: SHA1.h 3300 2012-02-15 22:38:20Z chambm $
+
 	100% free public domain implementation of the SHA-1 algorithm
 	by Dominik Reichl <dominik.reichl@t-online.de>
 	Web: http://www.dominik-reichl.de/

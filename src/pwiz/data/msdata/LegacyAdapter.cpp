@@ -1,5 +1,5 @@
 //
-// $Id: LegacyAdapter.cpp 2273 2010-09-20 22:01:41Z chambm $
+// $Id: LegacyAdapter.cpp 5152 2013-11-14 18:28:17Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -35,7 +35,6 @@ namespace pwiz {
 namespace msdata {
 
 
-using namespace boost::lambda;
 using namespace pwiz::data;
 
 
@@ -79,6 +78,8 @@ void removeCVParams(vector<CVParam>& cvParams, CVID cvid)
 
 void removeUserParams(vector<UserParam>& userParams, const string& name)
 {
+    using boost::lambda::_1;
+
     userParams.erase(
     remove_if(userParams.begin(), 
               userParams.end(), 

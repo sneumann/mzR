@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2001-2010 Joel de Guzman
+    Copyright (c) 2001-2011 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -22,7 +22,7 @@ namespace boost { namespace spirit { namespace support { namespace detail
         typedef T value_type;
 
         range() : first(), last() {}
-        range(T first, T last) : first(first), last(last) {}
+        range(T first_, T last_) : first(first_), last(last_) {}
 
         T first;
         T last;

@@ -1,5 +1,5 @@
 //
-// $Id: CVTranslator.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: CVTranslator.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -95,8 +95,8 @@ namespace {
 
 inline char alnum_lower(char c)
 {
-    // c -> lower-case or whitespace 
-    return isalnum(c) ? static_cast<char>(tolower(c)) : ' ';
+    // c -> lower-case, whitespace, or +
+    return isalnum(c) ? static_cast<char>(tolower(c)) : c == '+' ? c : ' ';
 }
 
 
@@ -130,7 +130,7 @@ string canonicalize(const string& s)
 
 bool shouldIgnore(const string& key, CVID value, CVID cvid)
 {
-    return (key=="unit_" && value==MS_unit && cvid==UO_unit ||
+    return (key=="unit_" && value==MS_unit_OBSOLETE && cvid==UO_unit ||
             key=="pi_" && value==MS_PI && cvid==UO_pi || // MS_PI==photoionization, UO_pi==3.14
             key=="pi_" && value==MS_PI && cvid==MS_pI || // MS_pI==isoelectric point
             key=="de_" && value==MS_DE && cvid==1001274); // conflict between 1000246 and 1001274

@@ -1,5 +1,5 @@
 //
-// $Id: MZToleranceTest.cpp 2778 2011-06-14 16:08:39Z chambm $
+// $Id: MZToleranceTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -97,26 +97,70 @@ void testIO()
     if (os_) *os_ << "temp: " << temp << endl; 
 
     MZTolerance fiveppm(5, MZTolerance::PPM);
-    ostringstream oss;
-    oss << fiveppm;
-    if (os_) *os_ << "fiveppm: " << oss.str() << endl;
-
-    istringstream iss(oss.str());
-    iss >> temp;
-    if (os_) *os_ << "temp: " << temp << endl; 
-
-    unit_assert(temp == fiveppm);
-
     MZTolerance blackbirds(4.20, MZTolerance::MZ);
-    ostringstream oss2;
-    oss2 << blackbirds;
-    if (os_) *os_ << "blackbirds: " << oss2.str() << endl;
 
-    istringstream iss2(oss2.str());
-    iss2 >> temp;
-    if (os_) *os_ << "temp: " << temp << endl; 
+    {
+        ostringstream oss;
+        oss << fiveppm;
+        if (os_) *os_ << "fiveppm: " << oss.str() << endl;
 
-    unit_assert(temp == blackbirds);
+        {
+            istringstream iss(oss.str());
+            iss >> temp;
+            if (os_) *os_ << "temp: " << temp << endl;
+            unit_assert(temp == fiveppm);
+            unit_assert(temp != blackbirds);
+        }
+
+        {
+            istringstream iss("5.0 PPM");
+            iss >> temp;
+            if (os_) *os_ << "temp: " << temp << endl;
+            unit_assert(temp == fiveppm);
+        }
+
+        {
+            istringstream iss("5ppm");
+            iss >> temp;
+            if (os_) *os_ << "temp: " << temp << endl;
+            unit_assert(temp == fiveppm);
+        }
+    }
+
+    {
+        ostringstream oss;
+        oss << blackbirds;
+        if (os_) *os_ << "blackbirds: " << oss.str() << endl;
+
+        {
+            istringstream iss(oss.str());
+            iss >> temp;
+            if (os_) *os_ << "temp: " << temp << endl; 
+            unit_assert(temp == blackbirds);
+            unit_assert(temp != fiveppm);
+        }
+
+        {
+            istringstream iss("4.2mz");
+            iss >> temp;
+            if (os_) *os_ << "temp: " << temp << endl; 
+            unit_assert(temp == blackbirds);
+        }
+
+        {
+            istringstream iss("4.20 da");
+            iss >> temp;
+            if (os_) *os_ << "temp: " << temp << endl; 
+            unit_assert(temp == blackbirds);
+        }
+
+        {
+            istringstream iss("4.2 DALTONS");
+            iss >> temp;
+            if (os_) *os_ << "temp: " << temp << endl; 
+            unit_assert(temp == blackbirds);
+        }
+    }
 }
 
 
@@ -131,16 +175,22 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
+    catch (...)
+    {
+        TEST_FAILED("Caught unknown exception.")
+    }
+
+    TEST_EPILOG
 }
 

@@ -1,5 +1,5 @@
 //
-// $Id: MSDataFileTest.cpp 2131 2010-07-19 16:58:27Z chambm $
+// $Id: MSDataFileTest.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -63,6 +63,40 @@ void hackInMemoryMSData(MSData& msd)
     if (cl) cl->setDataProcessingPtr(DataProcessingPtr());
 }
 
+void validateMmgfMzxmlRoundTrip()
+{
+    string filename1 = filenameBase_ + ".mgf";
+    string filename2 = filenameBase_ + ".mzXML";
+
+    ofstream ofs(filename1.c_str());
+    string mgf = "CHARGE=2+ and 3+\nBEGIN IONS\nPEPMASS=952.924194 145032.0000\nCHARGE=2+\nRTINSECONDS=301.48\n271.0874 2\n298.1747 4\nEND IONS\nBEGIN IONS\nPEPMASS=503.800000 67522.2000\nCHARGE=2+\nRTINSECONDS=302.51\n147.1840 3\n154.3668 3\n162.2118 2\n162.9007 1\n167.3297 1\n175.2387 2\n184.9460 3\nEND IONS\n";
+    ofs.write(mgf.c_str(), mgf.length());
+    ofs.close();
+
+    // make sure that round trip doesn't systematically increase converted scan numbers
+    for (int loop = 3; loop--; )
+    {
+        MSDataFile msd1(filename1); // read back the MGF
+        const SpectrumList& sl = *msd1.run.spectrumListPtr;
+        SpectrumPtr spectrum = sl.spectrum(0);
+        unit_assert(spectrum->id == "index=0");
+        MSDataFile::WriteConfig writeConfig;
+        writeConfig.format = MSDataFile::Format_mzXML;
+        MSDataFile::write(msd1, filename2, writeConfig); // write as mzXML
+        MSDataFile msd2(filename2); // read back the mzXML
+        const SpectrumList& sl2= *msd2.run.spectrumListPtr;
+        SpectrumPtr spectrum2 = sl2.spectrum(0);
+        unit_assert(spectrum2->id == "index=1"); // mzXML is 1-based
+        MSDataFile::WriteConfig writeConfig2;
+        writeConfig2.format = MSDataFile::Format_MGF;
+        MSDataFile::write(msd2, filename1, writeConfig2); // write as mgf
+    }
+
+    // remove temp files
+    boost::filesystem::remove(filename1);
+    boost::filesystem::remove(filename2);
+}
+
 
 void validateWriteRead(const MSDataFile::WriteConfig& writeConfig,
                        const DiffConfig diffConfig)
@@ -72,6 +106,8 @@ void validateWriteRead(const MSDataFile::WriteConfig& writeConfig,
     string filename1 = filenameBase_ + ".1";
     string filename2 = filenameBase_ + ".2";
     string filename3 = filenameBase_ + ".3";
+    string filename4 = filenameBase_ + ".\xE4\xB8\x80\xE4\xB8\xAA\xE8\xAF\x95.4";
+    // FIXME: 4-byte UTF-8 not working: string filename5 = filenameBase_ + ".\x01\x04\xA4\x01\x04\xA2.5";
 
     {
         // create MSData object in memory
@@ -86,6 +122,19 @@ void validateWriteRead(const MSDataFile::WriteConfig& writeConfig,
 
         // write to file #1 (static)
         MSDataFile::write(tiny, filename1, writeConfig);
+
+        // simulate CLI garbage collect behavior, wherein delayed deletes stress
+        // memory and file handle usage
+        {
+            std::vector< boost::shared_ptr< MSDataFile > > msds; 
+            for (int i=0;i<100;i++) 
+            {
+                boost::shared_ptr<MSDataFile> msd1(new MSDataFile(filename1));
+                msds.push_back(msd1);
+                hackInMemoryMSData(*msd1);
+                Diff<MSData, DiffConfig> diff(tiny, *msd1, diffConfig);
+            }
+        }
 
         // read back into an MSDataFile object
         MSDataFile msd1(filename1);
@@ -136,6 +185,32 @@ void validateWriteRead(const MSDataFile::WriteConfig& writeConfig,
         diff(tiny, msd4);
         if (diff && os_) *os_ << diff << endl;
         unit_assert(!diff);
+
+
+        // write to file #4 (testing two byte UTF-8 code points)
+        msd1.write(filename4, writeConfig);
+
+        // read back into another MSDataFile object
+        MSDataFile msd5(filename4);
+        hackInMemoryMSData(msd5);
+
+        // compare
+        diff(tiny, msd5);
+        if (diff && os_) *os_ << diff << endl;
+        unit_assert(!diff);
+
+
+        // write to file #5 (testing four byte UTF-8 code points)
+        /*msd1.write(filename5, writeConfig);
+
+        // read back into another MSDataFile object
+        MSDataFile msd6(filename5);
+        hackInMemoryMSData(msd6);
+
+        // compare
+        diff(tiny, msd6);
+        if (diff && os_) *os_ << diff << endl;
+        unit_assert(!diff);*/
 	}
 
     // remove temp files
@@ -143,12 +218,16 @@ void validateWriteRead(const MSDataFile::WriteConfig& writeConfig,
     boost::filesystem::remove(filename2);
     boost::filesystem::remove(filename1 + ".gz");
     boost::filesystem::remove(filename3);
+    boost::filesystem::remove(filename4);
+    //boost::filesystem::remove(filename5);
 }
 
 void test()
 {
     MSDataFile::WriteConfig writeConfig;
     DiffConfig diffConfig;
+
+    validateMmgfMzxmlRoundTrip();
 
     // mzML 64-bit, full diff
     validateWriteRead(writeConfig, diffConfig);
@@ -223,17 +302,19 @@ class TestReader : public Reader
         return filename;
     }
 
-    virtual void read(const std::string& filename, const std::string& head, MSData& result, int runIndex = 0) const
+    virtual void read(const std::string& filename, const std::string& head, MSData& result, int runIndex = 0,
+                      const Config& config = Config()) const
     {
         count++;
     }
 
     virtual void read(const std::string& filename,
                       const std::string& head,
-                      std::vector<MSDataPtr>& results) const
+                      std::vector<MSDataPtr>& results,
+                      const Config& config = Config()) const
     {
         results.push_back(MSDataPtr(new MSData));
-        read(filename, head, *results.back());
+        read(filename, head, *results.back(), 0, config);
     }
 
     const char *getType() const {return "testReader";} // satisfy inheritance
@@ -313,6 +394,8 @@ void testSHA1()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
@@ -320,17 +403,16 @@ int main(int argc, char* argv[])
         //demo();
         testReader();
         testSHA1();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        TEST_FAILED("Caught unknown exception.")
     }
-    
-    return 1;
+
+    TEST_EPILOG
 }
 

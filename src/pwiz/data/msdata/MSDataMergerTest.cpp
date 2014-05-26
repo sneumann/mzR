@@ -1,5 +1,5 @@
 //
-// $Id: MSDataMergerTest.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: MSDataMergerTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -38,7 +38,7 @@ void test()
     MSData tinyReference;
     examples::initializeTiny(tinyReference);
 
-    const int tinyCopyCount = 3;
+    const size_t tinyCopyCount = 3;
 
     vector<MSDataPtr> tinyExamples;
     for (size_t i=0; i < tinyCopyCount; ++i)
@@ -103,20 +103,21 @@ void test()
 
 int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
         test();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
-        return 1;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
-        return 1;
+        TEST_FAILED("Caught unknown exception.")
     }
+
+    TEST_EPILOG
 }

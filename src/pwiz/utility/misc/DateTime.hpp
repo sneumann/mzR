@@ -1,5 +1,5 @@
 //
-// $Id: DateTime.hpp 1821 2010-02-19 17:00:05Z chambm $
+// $Id: DateTime.hpp 2616 2011-04-07 22:26:33Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -77,18 +77,70 @@ namespace pwiz {
 namespace util {
 
 
-/// returns a string representation suitable for an xsd:datetime attribute;
-/// output string is UTC time (as denoted by the 'Z' suffix)
-template<class time_type>
-inline
-std::string encode_xml_datetime(const time_type& t)
+/// formats a boost ptime according to a custom format string
+inline std::string format_date_time(const std::string& format, const bpt::ptime& t)
+{
+    bpt::time_facet* output_facet = new bpt::time_facet;
+    output_facet->format(format.c_str());
+    std::ostringstream ss;
+    ss.imbue(std::locale(std::locale::classic(), output_facet));
+    return static_cast<std::ostringstream&>(ss << t).str();
+}
+
+
+/// formats a boost local_date_time according to a custom format string
+inline std::string format_date_time(const std::string& format, const blt::local_date_time& t)
 {
     blt::local_time_facet* output_facet = new blt::local_time_facet;
-    output_facet->format("%Y-%m-%dT%H:%M:%SZ"); // 2007-06-27T15:23:45Z
-    std::stringstream ss;
+    output_facet->format(format.c_str());
+    std::ostringstream ss;
     ss.imbue(std::locale(std::locale::classic(), output_facet));
-    ss << blt::local_date_time(t.utc_time(), blt::time_zone_ptr());
-    return ss.str();
+    return static_cast<std::ostringstream&>(ss << t).str();
+}
+
+
+/// formats a boost time duration according to a custom format string
+inline std::string format_date_time(const std::string& format, const bpt::time_duration& t)
+{
+    bpt::time_facet* output_facet = new bpt::time_facet;
+    output_facet->format(format.c_str());
+    std::ostringstream ss;
+    ss.imbue(std::locale(std::locale::classic(), output_facet));
+    return static_cast<std::ostringstream&>(ss << t).str();
+}
+
+
+/// converts a custom formatted datetime string to a boost local_date_time
+inline blt::local_date_time parse_date_time(const std::string& format, const std::string& t)
+{
+    blt::local_time_input_facet* input_facet = new blt::local_time_input_facet;
+    input_facet->format(format.c_str());
+    std::istringstream ss(t);
+    ss.imbue(std::locale(std::locale::classic(), input_facet));
+
+    blt::local_date_time result(bdt::not_a_date_time);
+    ss >> result;
+    return result;
+}
+
+
+/// returns a string representation suitable for an xsd:datetime attribute;
+/// input is assumed to be UTC time;
+/// output string is UTC time (as denoted by the 'Z' suffix)
+inline std::string encode_xml_datetime(const bpt::ptime& t)
+{
+    // 2007-06-27T15:23:45Z
+    return format_date_time("%Y-%m-%dT%H:%M:%SZ", t);
+}
+
+
+/// returns a string representation suitable for an xsd:datetime attribute;
+/// time zone is assumed to be correct;
+/// output string is UTC time (as denoted by the 'Z' suffix)
+inline std::string encode_xml_datetime(const blt::local_date_time& t)
+{
+    // 2007-06-27T15:23:45Z
+    return encode_xml_datetime(t.utc_time());
 }
 
 

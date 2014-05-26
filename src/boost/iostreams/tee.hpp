@@ -12,7 +12,7 @@
 # pragma once
 #endif
 
-#include <cassert>
+#include <boost/assert.hpp>
 #include <boost/config.hpp>  // BOOST_DEDUCE_TYPENAME.
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/detail/adapter/device_adapter.hpp>
@@ -31,7 +31,7 @@ namespace boost { namespace iostreams {
 
 //
 // Template name: tee_filter.
-// Template paramters:
+// Template parameters:
 //      Device - A blocking Sink.
 //
 template<typename Device>
@@ -66,7 +66,7 @@ public:
         if (result != -1) {
             std::streamsize result2 = iostreams::write(this->component(), s, result);
             (void) result2; // Suppress 'unused variable' warning.
-            assert(result == result2);
+            BOOST_ASSERT(result == result2);
         }
         return result;
     }
@@ -77,7 +77,7 @@ public:
         std::streamsize result = iostreams::write(snk, s, n);
         std::streamsize result2 = iostreams::write(this->component(), s, result);
         (void) result2; // Suppress 'unused variable' warning.
-        assert(result == result2);
+        BOOST_ASSERT(result == result2);
         return result;
     }
 
@@ -99,7 +99,7 @@ BOOST_IOSTREAMS_PIPABLE(tee_filter, 1)
 
 //
 // Template name: tee_device.
-// Template paramters:
+// Template parameters:
 //      Device - A blocking Device.
 //      Sink - A blocking Sink.
 //
@@ -158,7 +158,7 @@ public:
             std::streamsize result2 = iostreams::write(sink_, s, result1);
             (void) result1; // Suppress 'unused variable' warning.
             (void) result2;
-            assert(result1 == result2);
+            BOOST_ASSERT(result1 == result2);
         }
         return result1;
     }
@@ -173,7 +173,7 @@ public:
         std::streamsize result2 = iostreams::write(sink_, s, n);
         (void) result1; // Suppress 'unused variable' warning.
         (void) result2;
-        assert(result1 == n && result2 == n);
+        BOOST_ASSERT(result1 == n && result2 == n);
         return n;
     }
     void close()
@@ -204,8 +204,24 @@ private:
 };
 
 template<typename Sink>
+tee_filter<Sink> tee(Sink& snk) 
+{ return tee_filter<Sink>(snk); }
+
+template<typename Sink>
 tee_filter<Sink> tee(const Sink& snk) 
 { return tee_filter<Sink>(snk); }
+
+template<typename Device, typename Sink>
+tee_device<Device, Sink> tee(Device& dev, Sink& sink) 
+{ return tee_device<Device, Sink>(dev, sink); }
+
+template<typename Device, typename Sink>
+tee_device<Device, Sink> tee(const Device& dev, Sink& sink) 
+{ return tee_device<Device, Sink>(dev, sink); }
+
+template<typename Device, typename Sink>
+tee_device<Device, Sink> tee(Device& dev, const Sink& sink) 
+{ return tee_device<Device, Sink>(dev, sink); }
 
 template<typename Device, typename Sink>
 tee_device<Device, Sink> tee(const Device& dev, const Sink& sink) 

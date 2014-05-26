@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2001-2006 Joel de Guzman
+    Copyright (c) 2001-2011 Joel de Guzman
     Copyright (c) 2005-2006 Dan Marsden
     Copyright (c) 2009-2010 Christopher Schmidt
 
@@ -9,8 +9,6 @@
 
 #ifndef BOOST_FUSION_ADAPTED_STRUCT_DETAIL_IS_VIEW_IMPL_HPP
 #define BOOST_FUSION_ADAPTED_STRUCT_DETAIL_IS_VIEW_IMPL_HPP
-
-#include <boost/mpl/bool.hpp>
 
 namespace boost { namespace fusion { namespace extension
 {
@@ -22,7 +20,7 @@ namespace boost { namespace fusion { namespace extension
     {
         template<typename Seq>
         struct apply
-          : mpl::false_
+          : struct_is_view<typename remove_const<Seq>::type>
         {};
     };
 

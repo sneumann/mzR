@@ -1,5 +1,5 @@
 //
-// $Id: FilesystemTest.cpp 2288 2010-09-30 18:37:12Z chambm $
+// $Id: FilesystemTest.cpp 6141 2014-05-05 21:03:47Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -21,17 +21,21 @@
 // limitations under the License.
 //
 
+#include "Std.hpp"
 #include "Filesystem.hpp"
-#include "Stream.hpp"
-#include "Container.hpp"
-#include "Exception.hpp"
-#include "pwiz/utility/misc/unit.hpp"
+#include "unit.hpp"
 
 
 using namespace pwiz::util;
 using boost::system::error_code;
 using boost::system::system_category;
 using boost::system::system_error;
+
+#if (BOOST_VERSION/100) >= 1044 
+#   define SYSTEMCATEGORY system_category()
+#else // exported library symbol used to be a global variable, now its a function. Okeedokee, then.
+#   define SYSTEMCATEGORY system_category
+#endif
 
 
 // platform-specific path elements
@@ -111,9 +115,9 @@ const int testPathmaskArraySize = sizeof(testPathmaskArray) / sizeof(TestPathmas
 
 void create_file(const bfs::path& ph, const string& contents)
 {
-    ofstream f(ph.file_string().c_str());
+    ofstream f(ph.string().c_str());
     if (!f)
-        throw bfs::filesystem_error("create_file", ph, error_code(errno, system_category));
+        throw bfs::filesystem_error("create_file", ph, error_code(errno, SYSTEMCATEGORY));
     if (!contents.empty()) f << contents;
 }
 
@@ -227,23 +231,24 @@ void testAbbreviateByteSize()
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
+    TEST_PROLOG(argc, argv)
+
     try
     {
         testExpandPathmask();
         testAbbreviateByteSize();
-        return 0;
     }
     catch (exception& e)
     {
-        cerr << "Caught exception: " << e.what() << endl;
+        TEST_FAILED(e.what())
     }
     catch (...)
     {
-        cerr << "Caught unknown exception" << endl;
+        TEST_FAILED("Caught unknown exception.")
     }
 
     deleteTestPath();
-    return 1;
+    TEST_EPILOG
 }

@@ -1,4 +1,4 @@
-//  Copyright (c) 2001-2010 Hartmut Kaiser
+//  Copyright (c) 2001-2011 Hartmut Kaiser
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -11,8 +11,12 @@
 #endif
 
 #include <boost/config/no_tr1/cmath.hpp>
+#include <boost/config.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <boost/spirit/home/support/common_terminals.hpp>
 #include <boost/spirit/home/support/string_traits.hpp>
+#include <boost/spirit/home/support/numeric_traits.hpp>
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/spirit/home/support/char_class.hpp>
 #include <boost/spirit/home/support/container.hpp>
@@ -23,6 +27,7 @@
 #include <boost/spirit/home/karma/auxiliary/lazy.hpp>
 #include <boost/spirit/home/karma/detail/get_casetag.hpp>
 #include <boost/spirit/home/karma/detail/extract_from.hpp>
+#include <boost/spirit/home/karma/detail/enable_lit.hpp>
 #include <boost/spirit/home/karma/domain.hpp>
 #include <boost/spirit/home/karma/numeric/real_policies.hpp>
 #include <boost/spirit/home/karma/numeric/detail/real_utils.hpp>
@@ -30,7 +35,7 @@
 #include <boost/fusion/include/value_at.hpp>
 #include <boost/fusion/include/vector.hpp>
 
-namespace boost { namespace spirit 
+namespace boost { namespace spirit
 {
     namespace karma
     {
@@ -40,11 +45,11 @@ namespace boost { namespace spirit
         struct real_policies;
 
         ///////////////////////////////////////////////////////////////////////
-        // This one is the class that the user can instantiate directly in 
+        // This is the class that the user can instantiate directly in
         // order to create a customized real generator
         template <typename T = double, typename Policies = real_policies<T> >
         struct real_generator
-          : spirit::terminal<tag::stateful_tag<Policies, tag::double_, T> > 
+          : spirit::terminal<tag::stateful_tag<Policies, tag::double_, T> >
         {
             typedef tag::stateful_tag<Policies, tag::double_, T> tag_type;
 
@@ -71,7 +76,7 @@ namespace boost { namespace spirit
 
     ///////////////////////////////////////////////////////////////////////////
     template <>
-    struct use_terminal<karma::domain, float>             // enables lit(1.of)
+    struct use_terminal<karma::domain, float>             // enables lit(1.0f)
       : mpl::true_ {};
 
     template <>
@@ -100,15 +105,15 @@ namespace boost { namespace spirit
 
     // lazy float_(...), double_(...), long_double(...)
     template <>
-    struct use_lazy_terminal<karma::domain, tag::float_, 1> 
+    struct use_lazy_terminal<karma::domain, tag::float_, 1>
       : mpl::true_ {};
 
     template <>
-    struct use_lazy_terminal<karma::domain, tag::double_, 1> 
+    struct use_lazy_terminal<karma::domain, tag::double_, 1>
       : mpl::true_ {};
 
     template <>
-    struct use_lazy_terminal<karma::domain, tag::long_double, 1> 
+    struct use_lazy_terminal<karma::domain, tag::long_double, 1>
       : mpl::true_ {};
 
     ///////////////////////////////////////////////////////////////////////////
@@ -132,16 +137,25 @@ namespace boost { namespace spirit
       , 1 // arity
     > : mpl::true_ {};
 
+    // enables lit(double)
+    template <typename A0>
+    struct use_terminal<karma::domain
+          , terminal_ex<tag::lit, fusion::vector1<A0> >
+          , typename enable_if<traits::is_real<A0> >::type>
+      : mpl::true_ {};
 }}
 
 ///////////////////////////////////////////////////////////////////////////////
 namespace boost { namespace spirit { namespace karma
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::float_;
-    using spirit::float__type;
     using spirit::double_;
-    using spirit::double__type;
     using spirit::long_double;
+#endif
+
+    using spirit::float_type;
+    using spirit::double_type;
     using spirit::long_double_type;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -175,7 +189,7 @@ namespace boost { namespace spirit { namespace karma
                 return false;       // fail if it's an uninitialized optional
 
             typedef real_inserter<T, Policies, CharEncoding, Tag> inserter_type;
-            return inserter_type::call(sink, traits::extract_from(attr, context), p_) &&
+            return inserter_type::call(sink, traits::extract_from<T>(attr, context), p_) &&
                    karma::delimit_out(sink, d);    // always do post-delimiting
         }
 
@@ -183,13 +197,14 @@ namespace boost { namespace spirit { namespace karma
         // been initialized from a direct literal
         template <typename OutputIterator, typename Context, typename Delimiter>
         static bool generate(OutputIterator&, Context&, Delimiter const&
-          , unused_type) 
+          , unused_type)
         {
-            // It is not possible (doesn't make sense) to use numeric generators 
-            // without providing any attribute, as the generator doesn't 'know' 
+            // It is not possible (doesn't make sense) to use numeric generators
+            // without providing any attribute, as the generator doesn't 'know'
             // what to output. The following assertion fires if this situation
             // is detected in your code.
-            BOOST_SPIRIT_ASSERT_MSG(false, real_not_usable_without_attribute, ());            return false;
+            BOOST_SPIRIT_ASSERT_FAIL(OutputIterator, real_not_usable_without_attribute, ());
+            return false;
         }
 
         template <typename Context>
@@ -214,7 +229,7 @@ namespace boost { namespace spirit { namespace karma
     {
         typedef typename Policies::properties properties;
 
-        template <typename Context, typename Unused>
+        template <typename Context, typename Unused = unused_type>
         struct attribute
           : mpl::if_c<no_attribute, unused_type, T>
         {};
@@ -231,8 +246,9 @@ namespace boost { namespace spirit { namespace karma
         bool generate(OutputIterator& sink, Context& context
           , Delimiter const& d, Attribute const& attr) const
         {
-            if (!traits::has_optional_value(attr) || 
-                n_ != traits::extract_from(attr, context))
+            typedef typename attribute<Context>::type attribute_type;
+            if (!traits::has_optional_value(attr) ||
+                n_ != traits::extract_from<attribute_type>(attr, context))
             {
                 return false;
             }
@@ -242,7 +258,7 @@ namespace boost { namespace spirit { namespace karma
                    karma::delimit_out(sink, d);    // always do post-delimiting
         }
 
-        // A double_(1.0) without any associated attribute just emits its 
+        // A double_(1.0) without any associated attribute just emits its
         // immediate literal
         template <typename OutputIterator, typename Context, typename Delimiter>
         bool generate(OutputIterator& sink, Context&, Delimiter const& d
@@ -272,9 +288,9 @@ namespace boost { namespace spirit { namespace karma
           , typename Policies = real_policies<T> >
         struct make_real
         {
-            static bool const lower = 
+            static bool const lower =
                 has_modifier<Modifiers, tag::char_code_base<tag::lower> >::value;
-            static bool const upper = 
+            static bool const upper =
                 has_modifier<Modifiers, tag::char_code_base<tag::upper> >::value;
 
             typedef any_real_generator<
@@ -295,22 +311,23 @@ namespace boost { namespace spirit { namespace karma
     }
 
     template <typename Modifiers>
-    struct make_primitive<tag::float_, Modifiers> 
+    struct make_primitive<tag::float_, Modifiers>
       : detail::make_real<float, Modifiers> {};
 
     template <typename Modifiers>
-    struct make_primitive<tag::double_, Modifiers> 
+    struct make_primitive<tag::double_, Modifiers>
       : detail::make_real<double, Modifiers> {};
 
     template <typename Modifiers>
-    struct make_primitive<tag::long_double, Modifiers> 
+    struct make_primitive<tag::long_double, Modifiers>
       : detail::make_real<long double, Modifiers> {};
 
     ///////////////////////////////////////////////////////////////////////////
     template <typename T, typename Policies, typename Modifiers>
     struct make_primitive<
-            tag::stateful_tag<Policies, tag::double_, T>, Modifiers> 
-      : detail::make_real<T, Modifiers, Policies> {};
+            tag::stateful_tag<Policies, tag::double_, T>, Modifiers>
+      : detail::make_real<typename remove_const<T>::type
+          , Modifiers, Policies> {};
 
     ///////////////////////////////////////////////////////////////////////////
     namespace detail
@@ -319,9 +336,9 @@ namespace boost { namespace spirit { namespace karma
           , typename Policies = real_policies<T> >
         struct make_real_direct
         {
-            static bool const lower = 
+            static bool const lower =
                 has_modifier<Modifiers, tag::char_code_base<tag::lower> >::value;
-            static bool const upper = 
+            static bool const upper =
                 has_modifier<Modifiers, tag::char_code_base<tag::upper> >::value;
 
             typedef literal_real_generator<
@@ -364,7 +381,8 @@ namespace boost { namespace spirit { namespace karma
         terminal_ex<tag::stateful_tag<Policies, tag::double_, T>
           , fusion::vector1<A0> >
           , Modifiers>
-      : detail::make_real_direct<T, Modifiers, Policies> {};
+      : detail::make_real_direct<typename remove_const<T>::type
+          , Modifiers, Policies> {};
 
     ///////////////////////////////////////////////////////////////////////////
     namespace detail
@@ -394,17 +412,43 @@ namespace boost { namespace spirit { namespace karma
     }
 
     template <typename Modifiers>
-    struct make_primitive<float, Modifiers> 
+    struct make_primitive<float, Modifiers>
       : detail::basic_real_literal<float, Modifiers> {};
 
     template <typename Modifiers>
-    struct make_primitive<double, Modifiers> 
+    struct make_primitive<double, Modifiers>
       : detail::basic_real_literal<double, Modifiers> {};
 
     template <typename Modifiers>
-    struct make_primitive<long double, Modifiers> 
+    struct make_primitive<long double, Modifiers>
       : detail::basic_real_literal<long double, Modifiers> {};
 
+    // lit(double)
+    template <typename Modifiers, typename A0>
+    struct make_primitive<
+            terminal_ex<tag::lit, fusion::vector1<A0> >
+          , Modifiers
+          , typename enable_if<traits::is_real<A0> >::type>
+    {
+        static bool const lower =
+            has_modifier<Modifiers, tag::char_code_base<tag::lower> >::value;
+        static bool const upper =
+            has_modifier<Modifiers, tag::char_code_base<tag::upper> >::value;
+
+        typedef literal_real_generator<
+            typename remove_const<A0>::type, real_policies<A0>
+          , typename spirit::detail::get_encoding_with_case<
+                Modifiers, unused_type, lower || upper>::type
+          , typename detail::get_casetag<Modifiers, lower || upper>::type
+          , true
+        > result_type;
+
+        template <typename Terminal>
+        result_type operator()(Terminal const& term, unused_type) const
+        {
+            return result_type(fusion::at_c<0>(term.args));
+        }
+    };
 }}}
 
 #endif // defined(BOOST_SPIRIT_KARMA_REAL_FEB_26_2007_0512PM)

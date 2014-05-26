@@ -21,8 +21,7 @@
   \item{filename}{ Path name of the netCDF, mzData, mzXML or mzML file to
     read. }
   \item{backend}{ A \code{character} specifiying with backend API to
-    use. Currently only 'Ramp' and 'netCDF' are available. 'pwiz' will be
-    added in future version. }
+    use. Currently 'Ramp' and 'netCDF' are available.}
   \item{object}{ An instantiated mzR object. }
   \item{verbose}{ Enable verbose output. }
 }
@@ -41,7 +40,7 @@
 }
 
 \author{
-  Steffen Neumann and Laurent Gatto
+  Steffen Neumann, Laurent Gatto, Qiang Kou
 }
 
 \examples{

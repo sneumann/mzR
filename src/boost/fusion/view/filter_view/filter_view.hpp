@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2001-2006 Joel de Guzman
+    Copyright (c) 2001-2011 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying 
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -20,7 +20,6 @@
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/inherit.hpp>
 #include <boost/mpl/identity.hpp>
-
 
 namespace boost { namespace fusion
 {
@@ -46,8 +45,8 @@ namespace boost { namespace fusion
         typedef typename result_of::end<Sequence>::type last_type;
         typedef Pred pred_type;
 
-        filter_view(Sequence& seq)
-            : seq(seq)
+        filter_view(Sequence& in_seq)
+            : seq(in_seq)
         {}
 
         first_type first() const { return fusion::begin(seq); }

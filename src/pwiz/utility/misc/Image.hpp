@@ -1,5 +1,5 @@
 //
-// $Id: Image.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id: Image.hpp 4072 2012-11-02 21:00:39Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -65,7 +65,10 @@ class PWIZ_API_DECL Image
     enum PWIZ_API_DECL Size {Tiny, Small, MediumBold, Large, Giant};
 
     /// create an instance
-    static std::auto_ptr<Image> create(int width, int height);
+    /// optional output_width and output_height allows easy scaling to a desired output 
+    /// image size without complicating the drawing code (default is to use logical width and height)
+    static std::auto_ptr<Image> create(int logical_width, int logical_height, 
+                                       int output_width=-1, int output_height=-1); // -1 means use logical
 
     /// draw pixel
     virtual void pixel(const Point& point, const Color& color) = 0;
@@ -91,9 +94,6 @@ class PWIZ_API_DECL Image
 
     /// set clipping rectangle 
     virtual void clip(const Point& point1, const Point& point2) = 0;
-
-    /// write jpeg file 
-    virtual bool writeJpg(const char* filename) const = 0;
 
     /// write png file
     virtual bool writePng(const char* filename) const = 0;

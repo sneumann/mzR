@@ -1,5 +1,5 @@
 //
-// $Id: Reader.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id: Reader.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -35,8 +35,24 @@ namespace msdata {
 using namespace pwiz::util;
 
 
+
+Reader::Config::Config()
+    : simAsSpectra(false)
+    , srmAsSpectra(false)
+    , acceptZeroLengthSpectra(false)
+{
+}
+
+/// copy constructor
+Reader::Config::Config(const Config& rhs)
+{
+    simAsSpectra = rhs.simAsSpectra;
+    srmAsSpectra = rhs.srmAsSpectra;
+	acceptZeroLengthSpectra = rhs.acceptZeroLengthSpectra;
+}
+
 // default implementation; most Readers don't need to worry about multi-run input files
-PWIZ_API_DECL void Reader::readIds(const string& filename, const string& head, vector<string>& results) const
+PWIZ_API_DECL void Reader::readIds(const string& filename, const string& head, vector<string>& results, const Config& config) const
 {
     MSData data;
     read(filename, head, data);
@@ -65,18 +81,18 @@ PWIZ_API_DECL std::string ReaderList::identify(const string& filename, const str
 }
 
 
-PWIZ_API_DECL void ReaderList::read(const string& filename, MSData& result, int sampleIndex /* = 0 */) const
+PWIZ_API_DECL void ReaderList::read(const string& filename, MSData& result, int sampleIndex /* = 0 */, const Config& config) const
 {
-    read(filename, read_file_header(filename, 512), result, sampleIndex);
+    read(filename, read_file_header(filename, 512), result, sampleIndex, config);
 }
 
 
-PWIZ_API_DECL void ReaderList::read(const string& filename, const string& head, MSData& result, int sampleIndex /* = 0 */) const
+PWIZ_API_DECL void ReaderList::read(const string& filename, const string& head, MSData& result, int sampleIndex /* = 0 */, const Config& config) const
 {
     for (const_iterator it=begin(); it!=end(); ++it)
         if ((*it)->accept(filename, head))
         {
-            (*it)->read(filename, head, result, sampleIndex);
+            (*it)->read(filename, head, result, sampleIndex, config);
             return;
         }
     throw ReaderFail((" don't know how to read " +
@@ -84,18 +100,18 @@ PWIZ_API_DECL void ReaderList::read(const string& filename, const string& head, 
 }
 
 
-PWIZ_API_DECL void ReaderList::read(const string& filename, vector<MSDataPtr>& results) const
+PWIZ_API_DECL void ReaderList::read(const string& filename, vector<MSDataPtr>& results, const Config& config) const
 {
-    read(filename, read_file_header(filename, 512), results);
+    read(filename, read_file_header(filename, 512), results, config);
 }
 
 
-PWIZ_API_DECL void ReaderList::read(const string& filename, const string& head, vector<MSDataPtr>& results) const
+PWIZ_API_DECL void ReaderList::read(const string& filename, const string& head, vector<MSDataPtr>& results, const Config& config) const
 {
     for (const_iterator it=begin(); it!=end(); ++it)
         if ((*it)->accept(filename, head))
         {
-            (*it)->read(filename, head, results);
+            (*it)->read(filename, head, results, config);
             return;
         }
     throw ReaderFail((" don't know how to read " +
@@ -103,18 +119,18 @@ PWIZ_API_DECL void ReaderList::read(const string& filename, const string& head, 
 }
 
 
-PWIZ_API_DECL void ReaderList::readIds(const string& filename, vector<string>& results) const
+PWIZ_API_DECL void ReaderList::readIds(const string& filename, vector<string>& results, const Config& config) const
 {
-    readIds(filename, read_file_header(filename, 512), results);
+    readIds(filename, read_file_header(filename, 512), results, config);
 }
 
 
-PWIZ_API_DECL void ReaderList::readIds(const string& filename, const string& head, vector<string>& results) const
+PWIZ_API_DECL void ReaderList::readIds(const string& filename, const string& head, vector<string>& results, const Config& config) const
 {
     for (const_iterator it=begin(); it!=end(); ++it)
         if ((*it)->accept(filename, head))
         {
-            (*it)->readIds(filename, head, results);
+            (*it)->readIds(filename, head, results, config);
             return;
         }
     throw ReaderFail((" don't know how to read " +
@@ -158,6 +174,34 @@ PWIZ_API_DECL ReaderList operator +(const ReaderPtr& lhs, const ReaderPtr& rhs)
     readerList.push_back(lhs);
     readerList.push_back(rhs);
     return readerList;
+}
+
+
+PWIZ_API_DECL CVID identifyFileFormat(const ReaderPtr& reader, const std::string& filepath)
+{
+    try
+    {
+        string head = read_file_header(filepath, 512);
+        string type = reader->identify(filepath, head);
+        if (type == "mzML") return MS_mzML_format;
+        else if (type == "mzXML") return MS_ISB_mzXML_format;
+	//        else if (type == "MZ5") return MS_mz5_format;
+        else if (type == "Mascot Generic") return MS_Mascot_MGF_format;
+        else if (type == "MSn") return MS_MS2_format;
+        else if (type == "ABSciex WIFF") return MS_ABI_WIFF_format;
+        else if (type == "ABSciex T2D") return MS_AB_SCIEX_TOF_TOF_T2D_format;
+        else if (type == "Agilent MassHunter") return MS_Agilent_MassHunter_format;
+        else if (type == "Thermo RAW") return MS_Thermo_RAW_format;
+        else if (type == "Waters RAW") return MS_Waters_raw_format;
+        else if (type == "Bruker FID") return MS_Bruker_FID_format;
+        else if (type == "Bruker YEP") return MS_Bruker_Agilent_YEP_format;
+        else if (type == "Bruker BAF") return MS_Bruker_BAF_format;
+    }
+    catch (exception&)
+    {
+        // the filepath is missing or inaccessible
+    }
+    return CVID_Unknown;
 }
 
 
