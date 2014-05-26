@@ -71,7 +71,7 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/sha1calc.o \
 ./random_access_gzFile.o
 
-MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o
+MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o 
 
 OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 
