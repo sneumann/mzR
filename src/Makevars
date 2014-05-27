@@ -17,7 +17,6 @@ PWIZOBJECTS=\
 ./boost/regex/src/cpp_regex_traits.o \
 ./boost/regex/src/static_mutex.o \
 ./boost/regex/src/w32_regex_traits.o \
-./boost/smart_ptr/detail/sp_nullptr_t.o \
 ./pwiz/data/msdata/Version.o \
 ./pwiz/utility/minimxml/XMLWriter.o \
 ./pwiz/utility/minimxml/SAXParser.o \
