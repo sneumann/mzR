@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.11.2
+-------------------------
+ o adding missed src files [2014-05-28 Tue]
+
 CHANGES IN VERSION 1.11.1
 -------------------------
  o update pwiz/boost to support Maverick [2014-05-26 Mon]
