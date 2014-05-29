@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "ramp.h"
+#include "pwiz/data/msdata/ramp/ramp.h"
 
 #include <R.h>
 #include <Rdefines.h>

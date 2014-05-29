@@ -31,6 +31,7 @@ and gzipped versions of all of these if you have pwiz
 #define RAMP_HOME
 
 #include "ramp.h"
+#include "Rcpp.h"
 
 #undef SIZE_BUF
 #define SIZE_BUF 512
@@ -44,7 +45,7 @@ and gzipped versions of all of these if you have pwiz
 #include <pwiz/data/vendor_readers/Reader_Thermo.hpp>
 #endif
 #define MZML_TRYBLOCK try {
-#define MZML_CATCHBLOCK } catch (std::exception& e) { std::cout << e.what() << std::endl;  } catch (...) { std::cout << "Caught unknown exception." << std::endl;  }
+#define MZML_CATCHBLOCK } catch (std::exception& e) { Rcpp::Rcout << e.what() << std::endl;  } catch (...) { Rcpp::Rcout << "Caught unknown exception." << std::endl;  }
 #endif
 #ifdef RAMP_HAVE_GZ_INPUT
 #include "pwiz/utility/misc/random_access_compressed_ifstream.hpp"  // for reading mzxml.gz
@@ -238,14 +239,14 @@ RAMPFILE *rampOpenFile(const char *filename) {
 			  result->mzML = new pwiz::msdata::RAMPAdapter(std::string(filename));
 		      } 
 			  catch (std::exception& e) { 
-				  std::cout << e.what() << std::endl;  
+				  Rcpp::Rcout << e.what() << std::endl;  
 			  } catch (...) { 
-				  std::cout << "Caught unknown exception." << std::endl;  
+				  Rcpp::Rcout << "Caught unknown exception." << std::endl;  
 			  }
 			  if (!result->mzML) {
 #ifdef HAVE_PWIZ_RAW_LIB  // use RAMP+pwiz+xcalibur to read .raw
 				  if (pwiz::msdata::Reader_Thermo::hasRAWHeader(std::string(buf,sizeof(buf)))) {
-					  std::cout << "could not read .raw file - missing Xcalibur DLLs?" << std::endl;
+					  Rcpp::Rcout << "could not read .raw file - missing Xcalibur DLLs?" << std::endl;
 				  }
 #endif
 				  bRecognizedFormat = false; // something's amiss
@@ -1101,7 +1102,7 @@ void readHeader(RAMPFILE *pFI,
 		      //printf("found %d\n", curCharge);
 		      if (curCharge > (CHARGEARRAY_LENGTH-1)) {
 			printf("error, cannot handle precursor charges > %d (got %d)\n", CHARGEARRAY_LENGTH-1, curCharge);
-			exit(-1);
+			//exit(-1);
 		      }
 		      scanHeader->possibleChargesArray[curCharge] = true;
 		      scanHeader->numPossibleCharges++;
