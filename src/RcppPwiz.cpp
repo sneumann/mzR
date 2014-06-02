@@ -2,11 +2,12 @@
 
 RcppPwiz::RcppPwiz() {
   msd = NULL;
-  runInfo = Rcpp::List::create( );
+  runInfo = Rcpp::List::create();
   isInCacheRunInfo = FALSE;
-  instrumentInfo = Rcpp::List::create( );
+  instrumentInfo = Rcpp::List::create();
+  chromatogramsInfo = Rcpp::List::create();
   isInCacheInstrumentInfo = FALSE;
-  allScanHeaderInfo = Rcpp::List::create( );
+  allScanHeaderInfo = Rcpp::List::create();
   isInCacheAllScanHeaderInfo = FALSE;
 }
 
@@ -241,6 +242,37 @@ Rcpp::List RcppPwiz::getPeakList ( int whichScan ) {
   return Rcpp::List::create( );
 }
 
+Rcpp::List RcppPwiz::getChromatogramsInfo() {
+  if (msd != NULL) {
+	  
+	
+    ChromatogramListPtr clp = msd.run.chromatogramListPtr;
+            
+    for(int ci = 0; ci < clp->size(); ci++){
+      ChromatogramPtr c = clp->chromatogram(ci, true);  
+      vector<TimeIntensityPair> pairs;
+      c->getTimeIntensityPairs (pairs);
+      
+      int N = pairs.size();
+      Rcpp::NumericVector time(N);
+	  Rcpp::NumericVector intensity(N); 
+      
+      for(int i = 0; i < pairs.size(); i++)
+      {
+        TimeIntensityPair p = pairs.at(i);
+        time[i] = p.time;
+        intensity[i] = p.intensity;                   
+      }
+
+    }
+    return Rcpp::List::create(
+				Rcpp::_["time"]	      = time,
+			    Rcpp::_["intensity"]  = intensity);
+    
+  }
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return Rcpp::List::create( );
+}
 
 Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz ) {
 	if (msd != NULL) {

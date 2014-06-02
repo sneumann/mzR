@@ -15,6 +15,7 @@
 #include "Rcpp.h"
 
 using namespace pwiz::msdata;
+using namespace pwiz::cv;
 
 class RcppPwiz {
 
@@ -23,6 +24,7 @@ private:
   Rcpp::List runInfo;
   bool isInCacheRunInfo;
   Rcpp::List instrumentInfo;
+  Rcpp::List chromatogramsInfo;
   bool isInCacheInstrumentInfo;
   Rcpp::DataFrame allScanHeaderInfo;
   bool isInCacheAllScanHeaderInfo;
@@ -41,6 +43,8 @@ public:
   Rcpp::List getInstrumentInfo();
   
   Rcpp::List getScanHeaderInfo(int whichScan);
+  
+  Rcpp::List getChromatogramsInfo();
   
   Rcpp::DataFrame getAllScanHeaderInfo();
   
