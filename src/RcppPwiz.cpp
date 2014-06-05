@@ -245,33 +245,25 @@ Rcpp::List RcppPwiz::getPeakList ( int whichScan ) {
 Rcpp::List RcppPwiz::getChromatogramsInfo() {
   if (msd != NULL) {
 	  
-    ChromatogramListPtr clp = msd.run.chromatogramListPtr;
-            
-    for(int ci = 0; ci < clp->size(); ci++){
-      ChromatogramPtr c = clp->chromatogram(ci, true);  
-      vector<TimeIntensityPair> pairs;
-      c->getTimeIntensityPairs (pairs);
+    ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+    SpectrumListPtr slp = msd->run.spectrumListPtr;
+    SpectrumPtr ptr = slp->spectrum(0, true);
+    ChromatogramPtr c = clp->chromatogram(0, true);  
+    vector<TimeIntensityPair> pairs;
+    c->getTimeIntensityPairs (pairs);
       
-      int N = pairs.size();
-      Rcpp::NumericVector time(N);
-      Rcpp::NumericVector intensity(N); 
-      Rcpp::NumericVector totalIonCurrent(N);
-      for(int i = 0; i < pairs.size(); i++)
-      {
+    int N = pairs.size();
+    Rcpp::NumericVector time(N);
+    Rcpp::NumericVector intensity(N); 
+    Rcpp::NumericVector totalIonCurrent(N);
+    for(int i = 0; i < pairs.size(); i++)
+    {
         TimeIntensityPair p = pairs.at(i);
         time[i] = p.time;
-        intensity[i] = p.intensity;                   
+        intensity[i] = p.intensity;     
+        totalIonCurrent[i]  = ptr->cvParam(MS_TIC).valueAs<double>();              
       }
 
-    }
-    SpectrumListPtr slp = msd.run.spectrumListPtr;
-    SpectrumPtr ptr;
-    for(int i = 0; i < slp->size(); i++) {
-           ptr = slp->spectrum(i, true);
-           totalIonCurrent[i]  = ptr->cvParam(MS_TIC).valueAs<double>();
-           
-
-       }
     return Rcpp::List::create(
 			    Rcpp::_["time"]	  = time,
 			    Rcpp::_["intensity"]  = intensity,

@@ -9,7 +9,7 @@ setMethod("length",
 
 setMethod("instrumentInfo",
           signature="mzRpwiz",
-          function(object) 
+          function(object)
           return(object@backend$getInstrumentInfo()))
           
 setMethod("chromatogramsInfo",

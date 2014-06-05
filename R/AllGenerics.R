@@ -1,5 +1,6 @@
 setGeneric("runInfo", function(object) standardGeneric("runInfo"))
 setGeneric("instrumentInfo", function(object) standardGeneric("instrumentInfo"))
+setGeneric("chromatogramsInfo", function(object) standardGeneric("chromatogramsInfo"))
 setGeneric("fileName", function(object) standardGeneric("fileName"))
 setGeneric("manufacturer", function(object) standardGeneric("manufacturer"))
 setGeneric("model", function(object) standardGeneric("model"))
