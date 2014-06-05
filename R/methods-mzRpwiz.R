@@ -11,7 +11,13 @@ setMethod("instrumentInfo",
           signature="mzRpwiz",
           function(object) 
           return(object@backend$getInstrumentInfo()))
-
+          
+setMethod("chromatogramsInfo",
+          signature="mzRpwiz",
+          function(object) 
+          return(object@backend$getChromatogramsInfo()))          
+          
+          
 setMethod("manufacturer",
           signature="mzRpwiz",
           function(object) {
