@@ -246,28 +246,25 @@ Rcpp::List RcppPwiz::getChromatogramsInfo() {
   if (msd != NULL) {
 	  
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
-    SpectrumListPtr slp = msd->run.spectrumListPtr;
-    SpectrumPtr ptr = slp->spectrum(0, true);
     ChromatogramPtr c = clp->chromatogram(0, true);  
     vector<TimeIntensityPair> pairs;
-    c->getTimeIntensityPairs (pairs);
+    c->getTimeIntensityPairs(pairs);
       
     int N = pairs.size();
     Rcpp::NumericVector time(N);
     Rcpp::NumericVector intensity(N); 
-    Rcpp::NumericVector totalIonCurrent(N);
+
     for(int i = 0; i < pairs.size(); i++)
     {
         TimeIntensityPair p = pairs.at(i);
         time[i] = p.time;
         intensity[i] = p.intensity;     
-        totalIonCurrent[i]  = ptr->cvParam(MS_TIC).valueAs<double>();              
+          
       }
 
     return Rcpp::List::create(
 			    Rcpp::_["time"]	  = time,
-			    Rcpp::_["intensity"]  = intensity,
-			    Rcpp::_["totalIonCurrent"] = totalIonCurrent);
+			    Rcpp::_["intensity"]  = intensity);
     
   }
   Rprintf("Warning: pwiz not yet initialized.\n ");
