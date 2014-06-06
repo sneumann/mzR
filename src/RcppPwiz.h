@@ -4,8 +4,11 @@
 #include "pwiz/data/msdata/RAMPAdapter.hpp"
 #include "pwiz/data/msdata/MSDataFile.hpp"
 #include "pwiz/data/msdata/LegacyAdapter.hpp"
+#include "pwiz/data/msdata/Serializer_mz5.hpp"
+#include "pwiz/data/msdata/Serializer_mzML.hpp"
 #include "pwiz/data/common/CVTranslator.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include "pwiz/utility/misc/Filesystem.hpp"
 
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
@@ -14,8 +17,10 @@
 
 #include "Rcpp.h"
 
-using namespace pwiz::msdata;
 using namespace pwiz::cv;
+using namespace pwiz::msdata;
+using namespace pwiz::util;
+//using namespace pwiz::minimxml;
 
 class RcppPwiz {
 

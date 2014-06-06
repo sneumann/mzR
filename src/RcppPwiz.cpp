@@ -244,8 +244,8 @@ Rcpp::List RcppPwiz::getPeakList ( int whichScan ) {
 
 Rcpp::List RcppPwiz::getChromatogramsInfo() {
   if (msd != NULL) {
-	  
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+
     ChromatogramPtr c = clp->chromatogram(0, true);  
     vector<TimeIntensityPair> pairs;
     c->getTimeIntensityPairs(pairs);
