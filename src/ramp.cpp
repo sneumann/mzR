@@ -54,7 +54,8 @@ using namespace Rcpp;
 #include "pwiz/utility/misc/random_access_compressed_ifstream.hpp"  // for reading mzxml.gz
 #endif
 #ifdef WINDOWS_NATIVE
-#include "wglob.h"		//glob for windows
+// #include "wglob.h"		//glob for windows
+#include "pwiz/data/msdata/ramp/wglob.h"
 #else
 #include <glob.h>		//glob for real
 #endif
