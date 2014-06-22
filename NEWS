@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.11.3
+-------------------------
+ o Updated pwiz and fixed building on all platforms [2014-06-22 Sun]
+
 CHANGES IN VERSION 1.11.2
 -------------------------
  o adding missed src files [2014-05-28 Tue]

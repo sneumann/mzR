@@ -22,11 +22,13 @@ PWIZOBJECTS=\
 ./pwiz/utility/minimxml/SAXParser.o \
 ./boost/iostreams/src/zlib.o \
 ./boost/iostreams/src/file_descriptor.o \
-./boost/thread/src/pthread/once.o \
-./boost/thread/src/pthread/thread.o \
 ./boost/filesystem/src/operations.o \
 ./boost/filesystem/src/path.o \
+./boost/filesystem/src/path_traits.o \
 ./boost/filesystem/src/utf8_codecvt_facet.o \
+./boost/filesystem/src/windows_file_codecvt.o \
+./boost/filesystem/src/codecvt_error_category.o \
+./boost/thread/src/win32/thread.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
@@ -53,7 +55,6 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/SpectrumList_BTDX.o \
 ./pwiz/data/msdata/SpectrumInfo.o \
 ./pwiz/data/msdata/RAMPAdapter.o \
-#./pwiz/data/msdata/ramp/wglob.o \
 ./pwiz/data/msdata/LegacyAdapter.o \
 ./pwiz/data/msdata/SpectrumIterator.o \
 ./pwiz/data/msdata/MSDataFile.o \
@@ -70,21 +71,21 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
 ./pwiz/utility/misc/sha1calc.o \
+./pwiz/data/msdata/ramp/wglob.o \
 ./random_access_gzFile.o
 
-MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o
 
-OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
+MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o 
 
-PWIZ_LDFLAGS= -lpwiz
-PWIZ_LDFLAGS=-lpthread 
-PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB # -DWINDOWS_NATIVE
+OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) R_init_mzR.o
+
+PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB -fpermissive -DWINDOWS_NATIVE
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)
-PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -D_MSC_VER -DWIN32_LEAN_AND_MEAN -fgnu89-inline
+PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
+PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -D_MSC_VER  -fgnu89-inline
 
-PKG_LIBS = $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lz
+PKG_LIBS = $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lz 
 
 all: clean $(SHLIB)
 

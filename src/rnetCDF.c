@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <netcdf.h>
 #include <string.h>
 #include "rnetCDF.h"
 

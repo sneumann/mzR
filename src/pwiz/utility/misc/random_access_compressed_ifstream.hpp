@@ -60,6 +60,12 @@ Version 1.0  29 May 2005  Mark Adler */
 #ifndef RANDOM_ACCESS_COMPRESSED_IFSTREAM_INCL
 #define RANDOM_ACCESS_COMPRESSED_IFSTREAM_INCL
 
+#include<Rcpp.h>
+#ifdef __MINGW32__
+#undef Realloc
+#undef Free
+#include <winsock2.h>
+#endif
 
 #include "pwiz/utility/misc/Export.hpp"
 #ifdef WIN32

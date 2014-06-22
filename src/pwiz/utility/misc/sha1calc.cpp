@@ -25,6 +25,8 @@
 #include "unit.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 
+#include <Rcpp.h>
+#include <Rcpp/iostream/Rstreambuf.h>
 
 using namespace pwiz::util;
 
@@ -34,17 +36,17 @@ int main(int argc, char* argv[])
     try
     {
         if (argc<2) throw runtime_error("Usage: sha1calc filename"); 
-        Rcout << SHA1Calculator::hashFile(argv[1]) << endl;
+        Rcpp::Rcout << SHA1Calculator::hashFile(argv[1]) << endl;
         return 0;
     }
     catch (exception& e)
     {
-        Rcerr << e.what() << endl;
+        Rcpp::Rcout << e.what() << endl;
         return 1;
     }
     catch (...)
     {
-        Rcerr << "Caught unknown exception.\n";
+        Rcpp::Rcout << "Caught unknown exception.\n";
         return 1;
     }
 }
