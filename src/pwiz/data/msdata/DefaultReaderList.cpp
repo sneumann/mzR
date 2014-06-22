@@ -22,9 +22,9 @@
 
 
 #define PWIZ_SOURCE
-
-#include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/utility/misc/Filesystem.hpp"
+#include "pwiz/utility/misc/Std.hpp"
+
 #include "pwiz/utility/minimxml/SAXParser.hpp"
 #include "DefaultReaderList.hpp"
 #include "SpectrumList_mzXML.hpp"

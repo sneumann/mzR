@@ -1,5 +1,5 @@
 //
-// $Id: SHA1Calculator.cpp 2468 2011-01-18 19:27:45Z chambm $
+// $Id: SHA1Calculator.cpp 2051 2010-06-15 18:39:13Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -140,9 +140,9 @@ PWIZ_API_DECL string SHA1Calculator::hash(istream& is)
     is.clear();
     is.seekg(0);
     unsigned char buffer[65535];
-    while (is && is.read(reinterpret_cast<char*>(buffer), 65535))
-        sha1.Update(buffer, 65535u);
-    sha1.Update(buffer, is.gcount());
+    size_t bytesRead;
+    while (is && (bytesRead = is.readsome(reinterpret_cast<char*>(buffer), 65535)) > 0)
+        sha1.Update(buffer, static_cast<UINT_32>(bytesRead));
     sha1.Final();
     return formatHash(sha1);
 }

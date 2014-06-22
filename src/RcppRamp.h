@@ -1,8 +1,21 @@
 #ifndef _mzR_RCPP_RAMP_H
 #define _mzR_RCPP_RAMP_H
 
-#include "cramp.h"
 #include "Rcpp.h"
+// Taken from http://tolstoy.newcastle.edu.au/R/e2/devel/06/11/1242.html
+// and http://stackoverflow.com/questions/11588765/using-rcpp-with-windows-specific-includes
+// Undefine the Realloc macro, which is defined by both R and by Windows stuff
+// Also need to undefine the Free macro
+#if defined(__MINGW32__)
+#undef Realloc
+#undef Free
+#endif
+
+#include "cramp.h"
+
+#if defined(__MINGW32__)
+#include <windows.h>
+#endif
 
 class RcppRamp {
 
