@@ -18,6 +18,8 @@ before_install:
 
 install:
   - ./travis-tool.sh install_aptget r-cran-runit
+  - ./travis-tool.sh install_aptget libnetcdf-dev
+  - ./travis-tool.sh install_aptget netcdf-bin
   - ./travis-tool.sh install_r Rcpp
   - ./travis-tool.sh install_bioc msdata
   - ./travis-tool.sh install_bioc faahKO
