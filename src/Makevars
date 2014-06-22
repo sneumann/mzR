@@ -73,7 +73,7 @@ PWIZOBJECTS=\
 
 MZROBJECTS=cramp.o  ramp_base64.o  ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o 
 
-OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
+OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) R_init_mzR.o
 
 ##
 ## R complains about assert(), hence -D_NODEBUG
