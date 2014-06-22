@@ -24,10 +24,10 @@
 //
 
 #define PWIZ_SOURCE
-
+#include "pwiz/utility/misc/random_access_compressed_ifstream.hpp"
 #include "SAXParser.hpp"
 #include "pwiz/utility/misc/Std.hpp"
-#include "pwiz/utility/misc/random_access_compressed_ifstream.hpp"
+
 #include "boost/regex.hpp"
 
 

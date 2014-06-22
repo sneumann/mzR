@@ -185,7 +185,7 @@ PWIZ_API_DECL CVID identifyFileFormat(const ReaderPtr& reader, const std::string
         string type = reader->identify(filepath, head);
         if (type == "mzML") return MS_mzML_format;
         else if (type == "mzXML") return MS_ISB_mzXML_format;
-        else if (type == "MZ5") return MS_mz5_format;
+	//        else if (type == "MZ5") return MS_mz5_format;
         else if (type == "Mascot Generic") return MS_Mascot_MGF_format;
         else if (type == "MSn") return MS_MS2_format;
         else if (type == "ABSciex WIFF") return MS_ABI_WIFF_format;

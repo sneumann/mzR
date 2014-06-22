@@ -30,9 +30,25 @@ and gzipped versions of all of these if you have pwiz
 
 #define RAMP_HOME
 
+#include <Rcpp.h>
+
+// Taken from http://tolstoy.newcastle.edu.au/R/e2/devel/06/11/1242.html
+// and http://stackoverflow.com/questions/11588765/using-rcpp-with-windows-specific-includes
+// Undefine the Realloc macro, which is defined by both R and by Windows stuff
+// Also need to undefine the Free macro
+#if defined(__MINGW32__)
+#undef Realloc
+#undef Free
+#endif
+
 #include "ramp.h"
-#include "Rcpp.h"
-#include "R.h"
+#include <string>
+
+#if defined(__MINGW32__)
+#include <windows.h>
+#endif
+
+using namespace Rcpp;
 
 #undef SIZE_BUF
 #define SIZE_BUF 512
@@ -46,13 +62,14 @@ and gzipped versions of all of these if you have pwiz
 #include <pwiz/data/vendor_readers/Reader_Thermo.hpp>
 #endif
 #define MZML_TRYBLOCK try {
-#define MZML_CATCHBLOCK } catch (std::exception& e) { Rcpp::Rcout << e.what() << std::endl;  } catch (...) { Rcpp::Rcout << "Caught unknown exception." << std::endl;  }
+#define MZML_CATCHBLOCK } catch (std::exception& e) { Rcout << e.what() << std::endl;  } catch (...) { Rcout << "Caught unknown exception." << std::endl;  }
 #endif
 #ifdef RAMP_HAVE_GZ_INPUT
 #include "pwiz/utility/misc/random_access_compressed_ifstream.hpp"  // for reading mzxml.gz
 #endif
 #ifdef WINDOWS_NATIVE
-#include "wglob.h"		//glob for windows
+// #include "wglob.h"		//glob for windows
+#include "pwiz/data/msdata/ramp/wglob.h"
 #else
 #include <glob.h>		//glob for real
 #endif
@@ -240,14 +257,14 @@ RAMPFILE *rampOpenFile(const char *filename) {
 			  result->mzML = new pwiz::msdata::RAMPAdapter(std::string(filename));
 		      } 
 			  catch (std::exception& e) { 
-				  Rcpp::Rcout << e.what() << std::endl;  
+				  Rcout << e.what() << std::endl;  
 			  } catch (...) { 
-				  Rcpp::Rcout << "Caught unknown exception." << std::endl;  
+				  Rcout << "Caught unknown exception." << std::endl;  
 			  }
 			  if (!result->mzML) {
 #ifdef HAVE_PWIZ_RAW_LIB  // use RAMP+pwiz+xcalibur to read .raw
 				  if (pwiz::msdata::Reader_Thermo::hasRAWHeader(std::string(buf,sizeof(buf)))) {
-					  Rcpp::Rcout << "could not read .raw file - missing Xcalibur DLLs?" << std::endl;
+					  Rcout << "could not read .raw file - missing Xcalibur DLLs?" << std::endl;
 				  }
 #endif
 				  bRecognizedFormat = false; // something's amiss
@@ -813,6 +830,7 @@ void readHeader(RAMPFILE *pFI,
    memset(scanHeader,0,sizeof(struct ScanHeaderStruct)); // mostly we want 0's
 #define LOWMZ_UNINIT 1.111E6
    scanHeader->lowMZ =  LOWMZ_UNINIT;
+   //scanHeader->filterLine = "test";
    scanHeader->acquisitionNum = -1;
    scanHeader->seqNum = -1;
    scanHeader->retentionTime = -1;
@@ -1102,7 +1120,7 @@ void readHeader(RAMPFILE *pFI,
 		      int curCharge = atoi(token);
 		      //printf("found %d\n", curCharge);
 		      if (curCharge > (CHARGEARRAY_LENGTH-1)) {
-			Rprintf("error, cannot handle precursor charges > %d (got %d)\n", CHARGEARRAY_LENGTH-1, curCharge);
+			REprintf("error, cannot handle precursor charges > %d (got %d)\n", CHARGEARRAY_LENGTH-1, curCharge);
 			//exit(-1);
 		      }
 		      scanHeader->possibleChargesArray[curCharge] = true;

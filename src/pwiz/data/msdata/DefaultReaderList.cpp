@@ -22,9 +22,9 @@
 
 
 #define PWIZ_SOURCE
-
-#include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/utility/misc/Filesystem.hpp"
+#include "pwiz/utility/misc/Std.hpp"
+
 #include "pwiz/utility/minimxml/SAXParser.hpp"
 #include "DefaultReaderList.hpp"
 #include "SpectrumList_mzXML.hpp"
@@ -35,15 +35,9 @@
 #include "Serializer_mzXML.hpp"
 #include "Serializer_MGF.hpp"
 #include "Serializer_MSn.hpp"
-#ifndef WITHOUT_MZ5
-#include "Serializer_mz5.hpp"
-#endif
 #include "References.hpp"
 #include "ChromatogramListBase.hpp"
 #include "pwiz/data/msdata/Version.hpp"
-#ifndef WITHOUT_MZ5
-#include "mz5/Connection_mz5.hpp"
-#endif
 
 namespace pwiz {
 namespace msdata {
@@ -414,73 +408,7 @@ PWIZ_API_DECL void Reader_BTDX::read(const std::string& filename,
 
 
 //
-// Reader_mz5
-//
 
-// TODO: add mz5 specific header and check this. This version only checks whether the file is a HDF5 file.
-namespace {
-
-const char mz5Header[] = {'\x89', '\x48', '\x44', '\x46', '\x0d', '\x0a', '\x1a', '\x0a'};
-const size_t mz5HeaderSize = sizeof(mz5Header) / sizeof(char);
-
-} // namespace
-
-PWIZ_API_DECL std::string Reader_mz5::identify(const string& filename, const string& head) const
-{
-    if (head.length() < mz5HeaderSize)
-        return "";
-
-    for (size_t i=0; i < mz5HeaderSize; ++i)
-        if (head[i] != mz5Header[i])
-            return "";
-
-    try
-    {
-#ifndef WITHOUT_MZ5
-        mz5::Connection_mz5 c(filename, mz5::Connection_mz5::ReadOnly);
-#endif
-        return getType();
-    }
-    catch (std::runtime_error&)
-    {
-        return "";
-    }
-
-    return "";
-}
-
-PWIZ_API_DECL void Reader_mz5::read(const string& filename,
-                                    const string& head,
-                                    MSData& result,
-                                    int runIndex,
-                                    const Config& config) const
-{
-#ifdef WITHOUT_MZ5
-    throw ReaderFail("[Reader_mz5::read] library was not built with mz5 support.");
-#else
-    if (runIndex != 0)
-        throw ReaderFail("[Reader_mz5::read] multiple runs not supported, yet...");
-
-    Serializer_mz5 serializer;
-    serializer.read(filename, result);
-
-    // TODO: add "conversion to mz5 tag", sourceFile history and pwiz
-
-    // the file-level ids can't be empty
-    if (result.id.empty() || result.run.id.empty())
-        result.id = result.run.id = bfs::basename(filename);
-#endif
-}
-
-PWIZ_API_DECL void Reader_mz5::read(const std::string& filename,
-                                    const std::string& head,
-                                    std::vector<MSDataPtr>& results,
-                                    const Config& config) const
-{
-    // TODO multiple read mz5
-    results.push_back(MSDataPtr(new MSData));
-    read(filename, head, *results.back());
-}
 
 
 /// default Reader list
@@ -491,7 +419,6 @@ PWIZ_API_DECL DefaultReaderList::DefaultReaderList()
     push_back(ReaderPtr(new Reader_MGF));
     push_back(ReaderPtr(new Reader_MSn));
     push_back(ReaderPtr(new Reader_BTDX));
-    push_back(ReaderPtr(new Reader_mz5));
 }
 
 
