@@ -6,6 +6,7 @@
 \alias{manufacturer}
 \alias{model}
 \alias{runInfo}
+\alias{chromatogramsInfo}
 
 \title{
   Access the metadata from an \code{mzR} object.
@@ -19,6 +20,7 @@ instrumentInfo(object)
 ionisation(object)
 manufacturer(object)
 model(object)
+chromatogramsInfo(object)
 }
 \arguments{
   \item{object}{An instantiated \code{mzR} object.}
