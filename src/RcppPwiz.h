@@ -6,6 +6,7 @@
 #include "pwiz/data/msdata/LegacyAdapter.hpp"
 #include "pwiz/data/msdata/Serializer_mz5.hpp"
 #include "pwiz/data/msdata/Serializer_mzML.hpp"
+#include "pwiz/data/msdata/SpectrumInfo.hpp"
 #include "pwiz/data/common/CVTranslator.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/utility/misc/Filesystem.hpp"

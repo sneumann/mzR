@@ -14,8 +14,13 @@ setMethod("instrumentInfo",
           
 setMethod("chromatogramsInfo",
           signature="mzRpwiz",
-          function(object) 
-          return(object@backend$getChromatogramsInfo()))          
+          function(object) {
+          filename <- fileName(object)
+          if(grepl('\\.mzXML$', filename, ignore.case=TRUE, perl=TRUE)){
+            stop("No direct chromatogram support for mzXML format.")
+          }else
+			return(object@backend$getChromatogramsInfo())
+          })          
           
           
 setMethod("manufacturer",

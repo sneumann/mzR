@@ -252,18 +252,21 @@ Rcpp::List RcppPwiz::getChromatogramsInfo() {
     int N = pairs.size();
     Rcpp::NumericVector time(N);
     Rcpp::NumericVector intensity(N); 
-
+    Rcpp::NumericVector base(N);
+	SpectrumInfo info;
     for(int i = 0; i < pairs.size(); i++)
-    {
+    {	
         TimeIntensityPair p = pairs.at(i);
         time[i] = p.time;
         intensity[i] = p.intensity;     
-          
+        info.update(*msd->run.spectrumListPtr->spectrum(i));
+        base[i] = info.basePeakIntensity;
     }
 
     return Rcpp::List::create(
-			    Rcpp::_["time"]	  = time,
-			    Rcpp::_["intensity"]  = intensity);
+			    Rcpp::_["retentionTime"]	= time,
+			    Rcpp::_["totIonCurrent"]	= intensity,
+			    Rcpp::_["basePeakIntensity"]= base);
     
   }
   Rprintf("Warning: pwiz not yet initialized.\n ");
