@@ -8,6 +8,8 @@
 *.dll
 *.a
 
+src/symbols.rds
+
 # SVN stuff
 .svn
 
@@ -16,3 +18,4 @@ inst/unitTests/report*
 
 # configure generated stuff:
 R/zzz.R
+
