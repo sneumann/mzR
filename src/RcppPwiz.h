@@ -20,7 +20,6 @@
 using namespace pwiz::cv;
 using namespace pwiz::msdata;
 using namespace pwiz::util;
-//using namespace pwiz::minimxml;
 
 class RcppPwiz {
 
