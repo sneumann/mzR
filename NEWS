@@ -1,6 +1,6 @@
-CHANGES IN VERSION 1.11.3
+CHANGES IN VERSION 1.11.4
 -------------------------
- o Updated pwiz and fixed building on all platforms [2014-06-22 Sun]
+ o restored the old ramp Interface
 
 CHANGES IN VERSION 1.11.2
 -------------------------
