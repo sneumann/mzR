@@ -17,7 +17,13 @@ setMethod("chromatogramsInfo",
           function(object) {
           filename <- fileName(object)
           if(grepl('\\.mzXML$', filename, ignore.case=TRUE, perl=TRUE)){
-            stop("No direct chromatogram support for mzXML format.")
+			hd <- header(object)
+            chro <- list()
+            chro$'retentionTime' <- hd$retentionTime
+            chro$'totIonCurrent' <- hd$totIonCurrent
+            chro$'basePeakIntensity' <- hd$basePeakIntensity
+            chro$'msLevel' <- hd$msLevel
+            return(chro)
           }else
 			return(object@backend$getChromatogramsInfo())
           })          
