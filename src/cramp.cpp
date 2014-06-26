@@ -1,7 +1,7 @@
 /***************************************************************************
 cramp.cpp
 
-***************************************************************************
+/***************************************************************************
 cramp.hpp -- renamed cramp.h to avoid R checker warning 
 
   A C++ wrapper for the RAMP code.
@@ -28,16 +28,7 @@ cramp.hpp -- renamed cramp.h to avoid R checker warning
 *																								  *
 ***************************************************************************/
 
-#include<Rcpp.h>
 
-// Taken from http://tolstoy.newcastle.edu.au/R/e2/devel/06/11/1242.html
-// and http://stackoverflow.com/questions/11588765/using-rcpp-with-windows-specific-includes
-// Undefine the Realloc macro, which is defined by both R and by Windows stuff
-// Also need to undefine the Free macro
-#if defined(__MINGW32__)
-#undef Realloc
-#undef Free
-#endif
 
 #include <stdlib.h>
 #include <iostream>
@@ -48,10 +39,6 @@ cramp.hpp -- renamed cramp.h to avoid R checker warning
 #endif
 #include "cramp.h"
 #include<R.h>
-
-#if defined(__MINGW32__)
-#include <windows.h>
-#endif
 
 /**
  * This function performs a non-sequential parsing operation on an indexed

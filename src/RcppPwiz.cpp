@@ -245,6 +245,9 @@ Rcpp::List RcppPwiz::getPeakList ( int whichScan ) {
 Rcpp::List RcppPwiz::getChromatogramsInfo() {
   if (msd != NULL) {
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+	
+	if(clp->size() == 0)
+		Rcpp::Rcerr << "No direct chromatogram information available. Please check the file!" << endl;
     ChromatogramPtr c = clp->chromatogram(0, true);  
     vector<TimeIntensityPair> pairs;
     c->getTimeIntensityPairs(pairs);
@@ -252,24 +255,17 @@ Rcpp::List RcppPwiz::getChromatogramsInfo() {
     int N = pairs.size();
     Rcpp::NumericVector time(N);
     Rcpp::NumericVector intensity(N); 
-    Rcpp::NumericVector base(N);
-    Rcpp::NumericVector msLevel(N);
-	SpectrumInfo info;
+
     for(int i = 0; i < pairs.size(); i++)
-    {	
+    {
         TimeIntensityPair p = pairs.at(i);
         time[i] = p.time;
         intensity[i] = p.intensity;     
-        info.update(*msd->run.spectrumListPtr->spectrum(i));
-        base[i] = info.basePeakIntensity;
-        msLevel[i] = info.msLevel;
-    }
+	}
 
     return Rcpp::List::create(
-			    Rcpp::_["retentionTime"]	= time,
-			    Rcpp::_["totIonCurrent"]	= intensity,
-			    Rcpp::_["basePeakIntensity"]= base,
-			    Rcpp::_["msLevel"]= msLevel);
+			    Rcpp::_["retentionTime"] = time,
+			    Rcpp::_["totIonCurrent"] = intensity);
     
   }
   Rprintf("Warning: pwiz not yet initialized.\n ");

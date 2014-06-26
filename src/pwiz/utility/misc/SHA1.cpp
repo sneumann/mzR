@@ -1,4 +1,4 @@
-/* $Id: SHA1.cpp 2029 2010-06-10 02:18:59Z chambm $
+/* $Id: SHA1.cpp 6141 2014-05-05 21:03:47Z chambm $
 	100% free public domain implementation of the SHA-1 algorithm
 	by Dominik Reichl <dominik.reichl@t-online.de>
 	Web: http://www.dominik-reichl.de/
@@ -14,6 +14,9 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "SHA1.h"
+#include <boost/nowide/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
 
 #ifdef SHA1_UTILITY_FUNCTIONS
 #define SHA1_MAX_FILE_BUFFER 8000
@@ -141,19 +144,18 @@ void CSHA1::Update(const UINT_8* pbData, UINT_32 uLen)
 
 #ifdef SHA1_UTILITY_FUNCTIONS
 // Hash in file contents
-bool CSHA1::HashFile(const char* tszFileName)
+bool CSHA1::HashFile(const TCHAR* tszFileName)
 {
 	if(tszFileName == NULL) return false;
 
-	FILE* fpIn = _tfopen(tszFileName, _T("rb"));
-	if(fpIn == NULL) return false;
+	using namespace boost::nowide;
 
-	_fseeki64(fpIn, 0, SEEK_END);
-	const INT_64 lFileSize = _ftelli64(fpIn);
-	_fseeki64(fpIn, 0, SEEK_SET);
+	ifstream fpIn(tszFileName, std::ios::binary);
+	if (!fpIn) return false;
 
+	const INT_64 lFileSize = boost::filesystem::file_size(boost::filesystem::path(tszFileName, boost::filesystem::detail::utf8_codecvt_facet()));
 	const INT_64 lMaxBuf = SHA1_MAX_FILE_BUFFER;
-	UINT_8 vData[SHA1_MAX_FILE_BUFFER];
+	char vData[SHA1_MAX_FILE_BUFFER];
 	INT_64 lRemaining = lFileSize;
 
 	while(lRemaining > 0)
@@ -161,19 +163,16 @@ bool CSHA1::HashFile(const char* tszFileName)
 		const size_t uMaxRead = static_cast<size_t>((lRemaining > lMaxBuf) ?
 			lMaxBuf : lRemaining);
 
-		const size_t uRead = fread(vData, 1, uMaxRead, fpIn);
+		fpIn.read(vData, uMaxRead);
+		const size_t uRead = fpIn ? uMaxRead : fpIn.gcount();
 		if(uRead == 0)
-		{
-			fclose(fpIn);
 			return false;
-		}
 
-		Update(vData, static_cast<UINT_32>(uRead));
+		Update(reinterpret_cast<unsigned char*>(vData), static_cast<UINT_32>(uRead));
 
 		lRemaining -= static_cast<INT_64>(uRead);
 	}
 
-	fclose(fpIn);
 	return (lRemaining == 0);
 }
 #endif
@@ -209,18 +208,18 @@ void CSHA1::Final()
 
 #ifdef SHA1_UTILITY_FUNCTIONS
 // Get the final hash as a pre-formatted string
-bool CSHA1::ReportHash(char* tszReport, REPORT_TYPE rtReportType) const
+bool CSHA1::ReportHash(TCHAR* tszReport, REPORT_TYPE rtReportType) const
 {
 	if(tszReport == NULL) return false;
 
-	char tszTemp[16];
+	TCHAR tszTemp[16];
 
 	if((rtReportType == REPORT_HEX) || (rtReportType == REPORT_HEX_SHORT))
 	{
 		_sntprintf(tszTemp, 15, _T("%02X"), m_digest[0]);
 		_tcscpy(tszReport, tszTemp);
 
-		const char* lpFmt = ((rtReportType == REPORT_HEX) ? _T(" %02X") : _T("%02X"));
+		const TCHAR* lpFmt = ((rtReportType == REPORT_HEX) ? _T(" %02X") : _T("%02X"));
 		for(size_t i = 1; i < 20; ++i)
 		{
 			_sntprintf(tszTemp, 15, lpFmt, m_digest[i]);
@@ -245,9 +244,9 @@ bool CSHA1::ReportHash(char* tszReport, REPORT_TYPE rtReportType) const
 #endif
 
 #ifdef SHA1_STL_FUNCTIONS
-bool CSHA1::ReportHashStl(std::basic_string<char>& strOut, REPORT_TYPE rtReportType) const
+bool CSHA1::ReportHashStl(std::basic_string<TCHAR>& strOut, REPORT_TYPE rtReportType) const
 {
-	char tszOut[84];
+	TCHAR tszOut[84];
 	const bool bResult = ReportHash(tszOut, rtReportType);
 	if(bResult) strOut = tszOut;
 	return bResult;

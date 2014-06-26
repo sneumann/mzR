@@ -1,4 +1,5 @@
-/*
+/* $Id: SHA1.h 3300 2012-02-15 22:38:20Z chambm $
+
 	100% free public domain implementation of the SHA-1 algorithm
 	by Dominik Reichl <dominik.reichl@t-online.de>
 	Web: http://www.dominik-reichl.de/
@@ -121,9 +122,9 @@
 #ifdef _MSC_VER
 #include <tchar.h>
 #else
-//#ifndef TCHAR
-//#define TCHAR char
-//#endif
+#ifndef TCHAR
+#define TCHAR char
+#endif
 #ifndef _T
 #define _T(__x) (__x)
 #define _tmain main
@@ -228,18 +229,18 @@ public:
 
 #ifdef SHA1_UTILITY_FUNCTIONS
 	// Hash in file contents
-	bool HashFile(const char* tszFileName);
+	bool HashFile(const TCHAR* tszFileName);
 #endif
 
 	// Finalize hash, call before using ReportHash(Stl)
 	void Final();
 
 #ifdef SHA1_UTILITY_FUNCTIONS
-	bool ReportHash(char* tszReport, REPORT_TYPE rtReportType = REPORT_HEX) const;
+	bool ReportHash(TCHAR* tszReport, REPORT_TYPE rtReportType = REPORT_HEX) const;
 #endif
 
 #ifdef SHA1_STL_FUNCTIONS
-	bool ReportHashStl(std::basic_string<char>& strOut, REPORT_TYPE rtReportType =
+	bool ReportHashStl(std::basic_string<TCHAR>& strOut, REPORT_TYPE rtReportType =
 		REPORT_HEX) const;
 #endif
 

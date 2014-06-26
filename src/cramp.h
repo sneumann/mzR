@@ -29,14 +29,12 @@ cramp.hpp -- renamed cramp.h to avoid R checker warning
 #ifndef CRAMP_H_INCLUDED 
 #define CRAMP_H_INCLUDED 
 
-
-#include "pwiz/data/msdata/ramp/ramp.h" // stuff we expose to C, structs etc
-
 #include <iostream>
 #include <string.h>
 #include <string>
 #include <stdlib.h>
 
+#include "pwiz/data/msdata/ramp/ramp.h" // stuff we expose to C, structs etc
 
 enum eWhatToRead { RAMP_RUNINFO, RAMP_HEADER , RAMP_PEAKS, RAMP_INSTRUMENT };
 
