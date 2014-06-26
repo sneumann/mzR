@@ -115,7 +115,7 @@ Rcpp::List RcppPwiz::getScanHeaderInfo ( int whichScan  ) {
 			    Rcpp::_["massAnalyzerType"]	= info.massAnalyzerTypeAbbreviation(),
 			    Rcpp::_["basePeakMZ"]		= info.basePeakMZ,
 			    Rcpp::_["basePeakIntensity"]= info.basePeakIntensity,
-			    Rcpp::_["totalIonCurrent"]	= info.totalIonCurrent,
+			    Rcpp::_["totIonCurrent"]	= info.totalIonCurrent,
 			    Rcpp::_["thermoMonoisotopicMZ"]	= info.thermoMonoisotopicMZ,
 			    Rcpp::_["ionInjectionTime"]	= info.ionInjectionTime,
 			    Rcpp::_["precursorIndex"]	= info.precursors[0].index,
@@ -210,7 +210,7 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( ) {
 								Rcpp::_["massAnalyzerType"] = massAnalyzerType,
 								Rcpp::_["basePeakMZ"] = basePeakMZ,
 								Rcpp::_["basePeakIntensity"] = basePeakIntensity,
-								Rcpp::_["totalIonCurrent"] = totalIonCurrent,
+								Rcpp::_["totIonCurrent"] = totalIonCurrent,
 								Rcpp::_["thermoMonoisotopicMZ"] = thermoMonoisotopicMZ,
 								Rcpp::_["ionInjectionTime"] = ionInjectionTime,
 								Rcpp::_["precursorIndex"] = precursorIndex,
@@ -286,7 +286,7 @@ Rcpp::DataFrame RcppPwiz::getChromatogramsInfo() {
 								Rcpp::_["msLevel"] = msLevel,
 								Rcpp::_["retentionTime"] = retentionTime,
 								Rcpp::_["basePeakIntensity"] = basePeakIntensity,
-								Rcpp::_["totalIonCurrent"] = totalIonCurrent);
+								Rcpp::_["totIonCurrent"] = totalIonCurrent);
 			  isInCacheAllScanHeaderInfo = TRUE;
 		}
 		return(allScanHeaderInfo);
