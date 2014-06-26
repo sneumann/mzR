@@ -136,85 +136,87 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( ) {
 			SpectrumListPtr slp = msd->run.spectrumListPtr;
 			int N = slp->size();
 			
-			ScanHeaderStruct scanHeader;
-			RAMPAdapter * adapter = new  RAMPAdapter(filename);
-			Rcpp::IntegerVector seqNum(N); // number in sequence observed file (1-based)
-			Rcpp::IntegerVector acquisitionNum(N); // scan number as declared in File (may be gaps)
+			Rcpp::StringVector id(N);
+			Rcpp::IntegerVector index(N);
+			Rcpp::IntegerVector scanNumber(N);
 			Rcpp::IntegerVector msLevel(N);
-			Rcpp::IntegerVector peaksCount(N);
-			Rcpp::NumericVector totIonCurrent(N);
-			Rcpp::NumericVector retentionTime(N);        /* in seconds */
-			Rcpp::NumericVector basePeakMZ(N);
-			Rcpp::NumericVector basePeakIntensity(N);
-			Rcpp::NumericVector collisionEnergy(N);
-			Rcpp::NumericVector ionisationEnergy(N);
+			Rcpp::NumericVector retentionTime(N);
+			Rcpp::LogicalVector isZoomScan(N);
 			Rcpp::NumericVector lowMZ(N);
 			Rcpp::NumericVector highMZ(N);
-			Rcpp::IntegerVector precursorScanNum(N); /* only if MS level > 1 */
-			Rcpp::NumericVector precursorMZ(N);  /* only if MS level > 1 */
-			Rcpp::IntegerVector precursorCharge(N);  /* only if MS level > 1 */
-			Rcpp::NumericVector precursorIntensity(N);  /* only if MS level > 1 */
-			//char scanType[SCANTYPE_LENGTH];
-			//char activationMethod[SCANTYPE_LENGTH];
-			//char possibleCharges[SCANTYPE_LENGTH];
-			//int numPossibleCharges;
-			//bool possibleChargesArray[CHARGEARRAY_LENGTH]; /* NOTE: does NOT include "precursorCharge" information; only from "possibleCharges" */
-			Rcpp::IntegerVector mergedScan(N);  /* only if MS level > 1 */
-			Rcpp::IntegerVector mergedResultScanNum(N); /* scan number of the resultant merged scan */
-			Rcpp::IntegerVector mergedResultStartScanNum(N); /* smallest scan number of the scanOrigin for merged scan */
-			Rcpp::IntegerVector mergedResultEndScanNum(N); /* largest scan number of the scanOrigin for merged scan */
-			  
+			Rcpp::NumericVector peaksCount(N);
+			Rcpp::StringVector filterString(N);
+			Rcpp::StringVector massAnalyzerType(N);
+			Rcpp::NumericVector basePeakMZ(N);
+			Rcpp::NumericVector basePeakIntensity(N);
+			Rcpp::NumericVector totalIonCurrent(N);
+			Rcpp::NumericVector thermoMonoisotopicMZ(N);
+			Rcpp::NumericVector ionInjectionTime(N);
+			Rcpp::NumericVector precursorIndex(N);
+			Rcpp::NumericVector precursorMZ(N);
+			Rcpp::NumericVector precursorCharge(N);
+			Rcpp::NumericVector precursorIntensity(N);
+			
+			SpectrumInfo info;
+			SpectrumPtr s;
+			vector<MZIntensityPair> pairs;
+			
 			for (int whichScan=1; whichScan <= N; whichScan++) {
-				adapter->getScanHeader(whichScan - 1, scanHeader);
-				seqNum[whichScan-1] = scanHeader.seqNum;
-				acquisitionNum[whichScan-1] = scanHeader.acquisitionNum;
-				msLevel[whichScan-1] = scanHeader.msLevel;
-				peaksCount[whichScan-1] = scanHeader.peaksCount;
-				totIonCurrent[whichScan-1] = scanHeader.totIonCurrent;
-				retentionTime[whichScan-1] = scanHeader.retentionTime;
-				basePeakMZ[whichScan-1] = scanHeader.basePeakMZ;
-				basePeakIntensity[whichScan-1] = scanHeader.basePeakIntensity;
-				collisionEnergy[whichScan-1] = scanHeader.collisionEnergy;
-				ionisationEnergy[whichScan-1] = scanHeader.ionisationEnergy;
-				lowMZ[whichScan-1] = scanHeader.lowMZ;
-				highMZ[whichScan-1] = scanHeader.highMZ;
-				precursorScanNum[whichScan-1] = scanHeader.precursorScanNum;
-				precursorMZ[whichScan-1] = scanHeader.precursorMZ;
-				precursorCharge[whichScan-1] = scanHeader.precursorCharge;
-				precursorIntensity[whichScan-1] = scanHeader.precursorIntensity;
-				mergedScan[whichScan-1] = scanHeader.mergedScan;
-				mergedResultScanNum[whichScan-1] = scanHeader.mergedResultScanNum;
-				mergedResultStartScanNum[whichScan-1] = scanHeader.mergedResultStartScanNum;
-				mergedResultEndScanNum[whichScan-1] = scanHeader.mergedResultEndScanNum;
+				info.update(*msd->run.spectrumListPtr->spectrum(whichScan - 1));
+				s = slp->spectrum(whichScan - 1, true);
+				s->getMZIntensityPairs(pairs);
+				id[whichScan-1] = info.id;
+				index[whichScan-1] = info.index;
+				scanNumber[whichScan-1] = info.scanNumber;
+				msLevel[whichScan-1] = info.msLevel;
+				retentionTime[whichScan-1] = info.retentionTime;
+				isZoomScan[whichScan-1] = info.isZoomScan;
+				lowMZ[whichScan-1] = info.mzLow;
+				highMZ[whichScan-1] = info.mzHigh;
+				peaksCount[whichScan-1] = pairs.size();
+				filterString[whichScan-1] = info.filterString;
+				massAnalyzerType[whichScan-1] = info.massAnalyzerTypeAbbreviation();
+				basePeakMZ[whichScan-1] = info.basePeakMZ;
+				basePeakIntensity[whichScan-1] = info.basePeakIntensity;
+				totalIonCurrent[whichScan-1] = info.totalIonCurrent;
+				thermoMonoisotopicMZ[whichScan-1] = info.thermoMonoisotopicMZ;
+				ionInjectionTime[whichScan-1] = info.ionInjectionTime;
+
+				if(info.msLevel > 1){
+					precursorIndex[whichScan-1] = info.precursors[0].index;
+					precursorMZ[whichScan-1] = info.precursors[0].mz;
+					precursorCharge[whichScan-1] = info.precursors[0].charge;
+					precursorIntensity[whichScan-1] = info.precursors[0].intensity;
+				}else {
+					precursorIndex[whichScan-1] = 0;
+					precursorMZ[whichScan-1] = 0;
+					precursorCharge[whichScan-1] = 0;
+					precursorIntensity[whichScan-1] = 0;
+				}
+
 			}
 			
 			allScanHeaderInfo = Rcpp::DataFrame::create( 
-								Rcpp::_["seqNum"]                   = seqNum,
-								Rcpp::_["acquisitionNum"]           = acquisitionNum,
-								Rcpp::_["msLevel"]                  = msLevel,
-								Rcpp::_["peaksCount"]               = peaksCount,
-								Rcpp::_["totIonCurrent"]            = totIonCurrent,
-								Rcpp::_["retentionTime"]            = retentionTime,
-								Rcpp::_["basePeakMZ"]               = basePeakMZ,
-								Rcpp::_["basePeakIntensity"]        = basePeakIntensity,
-								Rcpp::_["collisionEnergy"]          = collisionEnergy,
-								Rcpp::_["ionisationEnergy"]         = ionisationEnergy,
-								Rcpp::_["lowMZ"]                    = lowMZ,
-								Rcpp::_["highMZ"]                   = highMZ,
-								Rcpp::_["precursorScanNum"]         = precursorScanNum,
-								Rcpp::_["precursorMZ"]              = precursorMZ,
-								Rcpp::_["precursorCharge"]          = precursorCharge,
-								Rcpp::_["precursorIntensity"]       = precursorIntensity,
-								//Rcpp::_["scanType"]              	= scanType,
-								//Rcpp::_["activationMethod"]       = activationMethod,
-								//Rcpp::_["possibleCharges"]        = possibleCharges,
-								//Rcpp::_["numPossibleCharges"]     = numPossibleCharges,
-								//Rcpp::_["possibleChargesArray"]   = possibleChargesArray,
-								Rcpp::_["mergedScan"]               = mergedScan,
-								Rcpp::_["mergedResultScanNum"]      = mergedResultScanNum,
-								Rcpp::_["mergedResultStartScanNum"] = mergedResultStartScanNum,
-								Rcpp::_["mergedResultEndScanNum"]   = mergedResultEndScanNum
-								);
+								Rcpp::_["id"] = id,
+								Rcpp::_["index"] = index,
+								Rcpp::_["scanNumber"] = scanNumber,
+								Rcpp::_["msLevel"] = msLevel,
+								Rcpp::_["retentionTime"] = retentionTime,
+								Rcpp::_["isZoomScan"] = isZoomScan,
+								Rcpp::_["lowMZ"] = lowMZ,
+								Rcpp::_["highMZ"] = highMZ,
+								Rcpp::_["peaksCount"] = peaksCount,
+								Rcpp::_["filterString"] = filterString,
+								Rcpp::_["massAnalyzerType"] = massAnalyzerType,
+								Rcpp::_["basePeakMZ"] = basePeakMZ,
+								Rcpp::_["basePeakIntensity"] = basePeakIntensity,
+								Rcpp::_["totalIonCurrent"] = totalIonCurrent,
+								Rcpp::_["thermoMonoisotopicMZ"] = thermoMonoisotopicMZ,
+								Rcpp::_["ionInjectionTime"] = ionInjectionTime,
+								Rcpp::_["precursorIndex"] = precursorIndex,
+								Rcpp::_["precursorMZ"] = precursorMZ,
+								Rcpp::_["precursorCharge"] = precursorCharge,
+								Rcpp::_["precursorIntensity"] = precursorIntensity);
 			  isInCacheAllScanHeaderInfo = TRUE;
 		}
 		return(allScanHeaderInfo);
