@@ -17,6 +17,9 @@ PWIZOBJECTS=\
 ./boost/regex/src/cpp_regex_traits.o \
 ./boost/regex/src/static_mutex.o \
 ./boost/regex/src/w32_regex_traits.o \
+./pwiz/data/msdata/Version.o \
+./pwiz/utility/minimxml/XMLWriter.o \
+./pwiz/utility/minimxml/SAXParser.o \
 ./boost/iostreams/src/zlib.o \
 ./boost/iostreams/src/file_descriptor.o \
 ./boost/thread/src/pthread/once.o \
@@ -24,7 +27,6 @@ PWIZOBJECTS=\
 ./boost/filesystem/src/operations.o \
 ./boost/filesystem/src/path.o \
 ./boost/filesystem/src/utf8_codecvt_facet.o \
-./pwiz/data/msdata/Version.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
@@ -34,8 +36,10 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/SpectrumList_MGF.o \
 ./pwiz/data/msdata/DefaultReaderList.o \
 ./pwiz/data/msdata/ChromatogramList_mzML.o \
+./pwiz/data/msdata/ChromatogramList_mz5.o \
 ./pwiz/data/msdata/examples.o \
 ./pwiz/data/msdata/Serializer_mzML.o \
+./pwiz/data/msdata/Serializer_mz5.o \
 ./pwiz/data/msdata/Serializer_MSn.o \
 ./pwiz/data/msdata/Reader.o \
 ./pwiz/data/msdata/Serializer_MGF.o \
@@ -47,6 +51,7 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSData.o \
 ./pwiz/data/msdata/References.o \
 ./pwiz/data/msdata/SpectrumList_mzXML.o \
+./pwiz/data/msdata/SpectrumList_mz5.o \
 ./pwiz/data/msdata/IO.o \
 ./pwiz/data/msdata/SpectrumList_BTDX.o \
 ./pwiz/data/msdata/SpectrumInfo.o \
@@ -57,9 +62,14 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
 ./pwiz/data/msdata/Index_mzML.o \
+./pwiz/data/msdata/mz5/Connection_mz5.o \
+./pwiz/data/msdata/mz5/Configuration_mz5.o \
+./pwiz/data/msdata/mz5/Datastructures_mz5.o \
+./pwiz/data/msdata/mz5/ReferenceRead_mz5.o \
+./pwiz/data/msdata/mz5/ReferenceWrite_mz5.o \
+./pwiz/data/msdata/mz5/Translator_mz5.o \
 ./pwiz/data/msdata/ramp/ramp.o \
-./pwiz/utility/minimxml/XMLWriter.o \
-./pwiz/utility/minimxml/SAXParser.o \
+./pwiz/data/msdata/ramp/ramp_base64.o \
 ./pwiz/utility/misc/IntegerSet.o \
 ./pwiz/utility/misc/Base64.o \
 ./pwiz/utility/misc/IterationListener.o \
@@ -99,17 +109,17 @@ PWIZOBJECTS=\
 ./hdf5/src/H5FDmulti.o \
 ./random_access_gzFile.o
 
-MZROBJECTS=cramp.o  ramp_base64.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o
+MZROBJECTS=cramp.o   RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o
 
-OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) R_init_mzR.o
+OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 
 ##
 ## R complains about assert(), hence -D_NODEBUG
 ##  http://www.gamedev.net/topic/555511-is-there-a-way-to-only-disable-boost-debug-checks/
 ##
-
+PWIZ_LDFLAGS=-L./pwiz
 PWIZ_LDFLAGS=-lpthread 
-PWIZ_CPPFLAGS= -I. -I./boost_aux/ -I./boost -I./hdf5/src -I./hdf5/c++/src -I./hdf5/src/posix -DHAVE_PWIZ_MZML_LIB -D_NODEBUG 
+PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./hdf5/src -I./hdf5/c++/src -I./hdf5/src/posix
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)

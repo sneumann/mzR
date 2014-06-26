@@ -52,7 +52,6 @@
 \alias{peaks,mzRnetCDF,numeric-method}
 \alias{runInfo,mzRramp-method}
 \alias{runInfo,mzRpwiz-method}
-\alias{chromatogramsInfo,mzRpwiz-method}
 
 \title{Class \code{mzR} and sub-classes}
 \description{
@@ -134,7 +133,6 @@
     \item{manufacturer}{\code{signature(object = "mzRpwiz")}: ... }
     \item{model}{\code{signature(object = "mzRpwiz")}: ... }
     \item{runInfo}{\code{signature(object = "mzRpwiz")}: ... }
-    \item{chromatogramsInfo}{\code{signature(object = "mzRpwiz")}: ... }
   }
 }
 
