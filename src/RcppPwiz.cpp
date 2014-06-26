@@ -78,21 +78,51 @@ Rcpp::List RcppPwiz::getScanHeaderInfo ( int whichScan  ) {
 		}
 		SpectrumInfo info;
 		info.update(*msd->run.spectrumListPtr->spectrum(whichScan - 1));
-//		if(info.msLevel = 1){
-//			
-//		}else{/
-//		}
-		return Rcpp::List::create(
+		SpectrumPtr s = slp->spectrum(whichScan - 1, true);
+		vector<MZIntensityPair> pairs;
+		s->getMZIntensityPairs(pairs);
+		
+		if(info.msLevel == 1){
+			return Rcpp::List::create(
 				Rcpp::_["id"]				= info.id,
+				Rcpp::_["index"]			= info.index,
 			    Rcpp::_["scanNumber"]		= info.scanNumber,
 			    Rcpp::_["msLevel"]			= info.msLevel,
 			    Rcpp::_["retentionTime"]    = info.retentionTime,
 			    Rcpp::_["isZoomScan"]      	= info.isZoomScan,
 			    Rcpp::_["filterString"]     = info.filterString,
+			    Rcpp::_["peaksCount"]     	= pairs.size(),
 			    Rcpp::_["lowMZ"]   			= info.mzLow,
-			    Rcpp::_["highMZ"]      		= info.mzHigh);
-
-		
+			    Rcpp::_["highMZ"]      		= info.mzHigh,
+			    Rcpp::_["massAnalyzerType"]	= info.massAnalyzerTypeAbbreviation(),
+			    Rcpp::_["basePeakMZ"]		= info.basePeakMZ,
+			    Rcpp::_["basePeakIntensity"]= info.basePeakIntensity,
+			    Rcpp::_["totalIonCurrent"]	= info.totalIonCurrent,
+			    Rcpp::_["thermoMonoisotopicMZ"]	= info.thermoMonoisotopicMZ,
+			    Rcpp::_["ionInjectionTime"]	= info.ionInjectionTime);
+		}else{
+			return Rcpp::List::create(
+				Rcpp::_["id"]				= info.id,
+				Rcpp::_["index"]			= info.index,
+			    Rcpp::_["scanNumber"]		= info.scanNumber,
+			    Rcpp::_["msLevel"]			= info.msLevel,
+			    Rcpp::_["retentionTime"]    = info.retentionTime,
+			    Rcpp::_["isZoomScan"]      	= info.isZoomScan,
+			    Rcpp::_["filterString"]     = info.filterString,
+			    Rcpp::_["peaksCount"]     	= pairs.size(),
+			    Rcpp::_["lowMZ"]   			= info.mzLow,
+			    Rcpp::_["highMZ"]      		= info.mzHigh,
+			    Rcpp::_["massAnalyzerType"]	= info.massAnalyzerTypeAbbreviation(),
+			    Rcpp::_["basePeakMZ"]		= info.basePeakMZ,
+			    Rcpp::_["basePeakIntensity"]= info.basePeakIntensity,
+			    Rcpp::_["totalIonCurrent"]	= info.totalIonCurrent,
+			    Rcpp::_["thermoMonoisotopicMZ"]	= info.thermoMonoisotopicMZ,
+			    Rcpp::_["ionInjectionTime"]	= info.ionInjectionTime,
+			    Rcpp::_["precursorIndex"]	= info.precursors[0].index,
+			    Rcpp::_["precursorMZ"]		= info.precursors[0].mz,
+			    Rcpp::_["precursorCharge"]	= info.precursors[0].charge,
+			    Rcpp::_["precursorIntensity"]=info.precursors[0].intensity);
+		}	
 	}else{
 		Rprintf("Warning: pwiz not yet initialized.\n ");
 		return Rcpp::List::create( );
