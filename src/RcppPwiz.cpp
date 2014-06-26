@@ -245,9 +245,7 @@ Rcpp::List RcppPwiz::getPeakList ( int whichScan ) {
 Rcpp::List RcppPwiz::getChromatogramsInfo() {
   if (msd != NULL) {
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
-	
-	if(clp->size() == 0)
-		Rcpp::Rcerr << "No direct chromatogram information available. Please check the file!" << endl;
+	Rcpp::Rcout << clp->size() << endl;
     ChromatogramPtr c = clp->chromatogram(0, true);  
     vector<TimeIntensityPair> pairs;
     c->getTimeIntensityPairs(pairs);
@@ -261,11 +259,12 @@ Rcpp::List RcppPwiz::getChromatogramsInfo() {
         TimeIntensityPair p = pairs.at(i);
         time[i] = p.time;
         intensity[i] = p.intensity;     
-	}
+          
+      }
 
     return Rcpp::List::create(
-			    Rcpp::_["retentionTime"] = time,
-			    Rcpp::_["totIonCurrent"] = intensity);
+			    Rcpp::_["time"]	  = time,
+			    Rcpp::_["intensity"]  = intensity);
     
   }
   Rprintf("Warning: pwiz not yet initialized.\n ");

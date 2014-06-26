@@ -14,19 +14,8 @@ setMethod("instrumentInfo",
           
 setMethod("chromatogramsInfo",
           signature="mzRpwiz",
-          function(object) {
-          filename <- fileName(object)
-          if(grepl('\\.mzXML$', filename, ignore.case=TRUE, perl=TRUE)){
-			hd <- header(object)
-            chro <- list()
-            chro$'retentionTime' <- hd$retentionTime
-            chro$'totIonCurrent' <- hd$totIonCurrent
-            chro$'basePeakIntensity' <- hd$basePeakIntensity
-            chro$'msLevel' <- hd$msLevel
-            return(chro)
-          }else
-			return(object@backend$getChromatogramsInfo())
-          })          
+          function(object) 
+          return(object@backend$getChromatogramsInfo()))          
           
           
 setMethod("manufacturer",
