@@ -38,6 +38,3 @@ openMSfile <- function(filename,
     stop("No valid backend", backend )
   }  
 }
-
-
-

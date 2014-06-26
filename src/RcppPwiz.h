@@ -6,6 +6,8 @@
 #include "pwiz/data/msdata/LegacyAdapter.hpp"
 #include "pwiz/data/msdata/Serializer_mz5.hpp"
 #include "pwiz/data/msdata/Serializer_mzML.hpp"
+#include "pwiz/data/msdata/Serializer_mzXML.hpp"
+#include "pwiz/data/msdata/Serializer_MGF.hpp"
 #include "pwiz/data/msdata/SpectrumInfo.hpp"
 #include "pwiz/data/common/CVTranslator.hpp"
 #include "pwiz/utility/misc/Std.hpp"
@@ -15,6 +17,10 @@
 #include <boost/iostreams/filter/gzip.hpp>
 #include <boost/iostreams/device/file_descriptor.hpp>
 #include <boost/iostreams/copy.hpp>
+
+#include <fstream>
+#include <string>
+#include <iostream>
 
 #include "Rcpp.h"
 
@@ -43,6 +49,8 @@ public:
     RcppPwiz();
 
     void open(const string& fileNames);
+    
+    void writeMSfile(const string& filenames, const string& format);
 
     string getFilename();
 

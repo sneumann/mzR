@@ -9,6 +9,7 @@ RCPP_MODULE(Pwiz){
   class_<RcppPwiz>( "Pwiz" )
     .constructor("Initialises a new Rccp pwiz object.")
     .method( "open", &RcppPwiz::open, "Opens a mass spec file (mzXML, mzData, etc.) and creates a pwiz object" )
+    .method( "writeMSfile", &RcppPwiz::writeMSfile, "Write a pwiz object into files (mzXML, mzData, etc.)" )
     .method( "getFilename", &RcppPwiz::getFilename, "Returns the mass spec filename.")
     .method( "getInstrumentInfo", &RcppPwiz::getInstrumentInfo, "Reads the instrument information from the mzXML header." )
     .method( "getScanHeaderInfo", &RcppPwiz::getScanHeaderInfo, "Reads the header info for one mass spectrum." )

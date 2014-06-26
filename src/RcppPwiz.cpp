@@ -20,6 +20,36 @@ void RcppPwiz::open(const string& fileName)
 
 }
 
+void RcppPwiz::writeMSfile(const string& file, const string& format)
+{
+	if (msd != NULL){
+		if(format == "mgf"){
+			MSDataFile::WriteConfig writeConfig;
+			Serializer_mz5 serializer(writeConfig);
+			IterationListenerRegistry ilr;
+			serializer.write(file, *msd, &ilr);
+		}else if(format == "mz5"){
+
+			Serializer_mz5 serializerMz5;
+			serializerMz5.write(file, *msd);
+		}else if(format == "mzxml"){
+			std::ofstream mzXMLOutFileP(file.c_str()); 
+			Serializer_mzXML::Config config;
+			config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
+			Serializer_mzXML serializerMzXML(config);
+			serializerMzXML.write(mzXMLOutFileP, *msd);
+		}else if(format == "mzml"){
+			std::ofstream mzXMLOutFileP(file.c_str()); 
+			Serializer_mzML::Config config;
+			config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
+			Serializer_mzML mzmlSerializer(config);
+			mzmlSerializer.write(mzXMLOutFileP, *msd);
+		}else
+			Rcpp::Rcerr << format << " format not supported! Please try mgf, mzML, mzXML or mz5." << std::endl;
+	}else
+		Rcpp::Rcerr << "No pwiz object available! Please open a file first!" << std::endl;
+}
+
 
 string RcppPwiz::getFilename (  )
 {

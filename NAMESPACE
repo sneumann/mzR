@@ -24,7 +24,8 @@ exportMethods(close,
               header,
               peaksCount,
               peaks,
-              get3Dmap)
+              get3Dmap,
+              writeMSfile)
 
 exportClasses("mzR",
               "mzRramp",
