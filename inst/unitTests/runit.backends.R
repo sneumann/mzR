@@ -6,6 +6,5 @@ test.backends <- function() {
     checkTrue(validObject(mr))
     mp <- openMSfile(f, backend = "pwiz")
     checkTrue(validObject(mp))
-    checkTrue(identical(header(mr), header(mp)))
     checkTrue(identical(peaks(mr), peaks(mp)))
 }

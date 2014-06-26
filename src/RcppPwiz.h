@@ -30,7 +30,7 @@ private:
   Rcpp::List runInfo;
   bool isInCacheRunInfo;
   Rcpp::List instrumentInfo;
-  Rcpp::List chromatogramsInfo;
+  Rcpp::DataFrame chromatogramsInfo;
   bool isInCacheInstrumentInfo;
   Rcpp::DataFrame allScanHeaderInfo;
   bool isInCacheAllScanHeaderInfo;
@@ -50,7 +50,7 @@ public:
   
   Rcpp::List getScanHeaderInfo(int whichScan);
   
-  Rcpp::List getChromatogramsInfo();
+  Rcpp::DataFrame getChromatogramsInfo();
   
   Rcpp::DataFrame getAllScanHeaderInfo();
   

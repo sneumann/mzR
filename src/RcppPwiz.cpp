@@ -258,33 +258,41 @@ Rcpp::List RcppPwiz::getPeakList ( int whichScan ) {
   return Rcpp::List::create( );
 }
 
-Rcpp::List RcppPwiz::getChromatogramsInfo() {
-  if (msd != NULL) {
-    ChromatogramListPtr clp = msd->run.chromatogramListPtr;
-	Rcpp::Rcout << clp->size() << endl;
-    ChromatogramPtr c = clp->chromatogram(0, true);  
-    vector<TimeIntensityPair> pairs;
-    c->getTimeIntensityPairs(pairs);
-      
-    int N = pairs.size();
-    Rcpp::NumericVector time(N);
-    Rcpp::NumericVector intensity(N); 
-
-    for(int i = 0; i < pairs.size(); i++)
-    {
-        TimeIntensityPair p = pairs.at(i);
-        time[i] = p.time;
-        intensity[i] = p.intensity;     
-          
-      }
-
-    return Rcpp::List::create(
-			    Rcpp::_["time"]	  = time,
-			    Rcpp::_["intensity"]  = intensity);
-    
-  }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
-  return Rcpp::List::create( );
+Rcpp::DataFrame RcppPwiz::getChromatogramsInfo() {
+ if (msd != NULL) {
+	if (!isInCacheAllScanHeaderInfo) {
+			SpectrumListPtr slp = msd->run.spectrumListPtr;
+			int N = slp->size();
+			Rcpp::IntegerVector msLevel(N);
+			Rcpp::NumericVector retentionTime(N);
+			Rcpp::NumericVector basePeakIntensity(N);
+			Rcpp::NumericVector totalIonCurrent(N);
+			
+			SpectrumInfo info;
+			SpectrumPtr s;
+			vector<MZIntensityPair> pairs;
+			
+			for (int whichScan=1; whichScan <= N; whichScan++) {
+				info.update(*msd->run.spectrumListPtr->spectrum(whichScan - 1));
+				s = slp->spectrum(whichScan - 1, true);
+				s->getMZIntensityPairs(pairs);
+				msLevel[whichScan-1] = info.msLevel;
+				retentionTime[whichScan-1] = info.retentionTime;
+				basePeakIntensity[whichScan-1] = info.basePeakIntensity;
+				totalIonCurrent[whichScan-1] = info.totalIonCurrent;
+			}
+			
+			allScanHeaderInfo = Rcpp::DataFrame::create( 
+								Rcpp::_["msLevel"] = msLevel,
+								Rcpp::_["retentionTime"] = retentionTime,
+								Rcpp::_["basePeakIntensity"] = basePeakIntensity,
+								Rcpp::_["totalIonCurrent"] = totalIonCurrent);
+			  isInCacheAllScanHeaderInfo = TRUE;
+		}
+		return(allScanHeaderInfo);
+	}
+	Rprintf("Warning: pwiz not yet initialized.\n ");
+	return Rcpp::DataFrame::create( );
 }
 
 Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz ) {
