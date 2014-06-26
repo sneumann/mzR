@@ -76,39 +76,23 @@ Rcpp::List RcppPwiz::getScanHeaderInfo ( int whichScan  ) {
 			Rprintf("Index out of bounds [1 ... %d].\n", slp->size());
 			return Rcpp::List::create( );
 		}
-
-		RAMPAdapter * adapter = new  RAMPAdapter(filename);
-		ScanHeaderStruct header;
-		adapter->getScanHeader(whichScan - 1, header);
-
+		SpectrumInfo info;
+		info.update(*msd->run.spectrumListPtr->spectrum(whichScan - 1));
+//		if(info.msLevel = 1){
+//			
+//		}else{/
+//		}
 		return Rcpp::List::create(
-				Rcpp::_["seqNum"]				= header.seqNum,
-			    Rcpp::_["acquisitionNum"]		= header.acquisitionNum,
-			    Rcpp::_["msLevel"]				= header.msLevel,
-			    Rcpp::_["peaksCount"]     		= header.peaksCount,
-			    Rcpp::_["totIonCurrent"]      	= header.totIonCurrent,
-			    Rcpp::_["retentionTime"]      	= header.retentionTime,
-			    Rcpp::_["basePeakMZ"]      		= header.basePeakMZ,
-			    Rcpp::_["basePeakIntensity"]  	= header.basePeakIntensity,
-			    Rcpp::_["collisionEnergy"]    	= header.collisionEnergy,
-			    Rcpp::_["ionisationEnergy"]  	= header.ionisationEnergy,
-			    Rcpp::_["lowMZ"]   				= header.lowMZ,
-			    Rcpp::_["highMZ"]      			= header.highMZ,
-			    Rcpp::_["precursorScanNum"]   	= header.precursorScanNum,
-			    Rcpp::_["precursorMZ"]     		= header.precursorMZ,
-			    Rcpp::_["precursorCharge"]      = header.precursorCharge,
-			    Rcpp::_["precursorIntensity"] 	= header.precursorIntensity,
-			    //Rcpp::_["scanType"]     		= header.scanType,
-			    //Rcpp::_["activationMethod"]  	= header.activationMethod,
-			    //Rcpp::_["possibleCharges"]   	= header.possibleCharges,
-			    //Rcpp::_["numPossibleCharges"]	= header.numPossibleCharges,
-			    //Rcpp::_["possibleChargesArray"]	= header.possibleChargesArray,
-			    Rcpp::_["mergedScan"]      		= header.mergedScan,
-			    Rcpp::_["mergedResultScanNum"]	= header.mergedResultScanNum,
-			    Rcpp::_["mergedResultStartScanNum"] = header.mergedResultStartScanNum,
-			    Rcpp::_["mergedResultEndScanNum"]   = header.mergedResultEndScanNum
-			    //Rcpp::_["filePosition"]      	= header.filePosition
-			    );
+				Rcpp::_["id"]				= info.id,
+			    Rcpp::_["scanNumber"]		= info.scanNumber,
+			    Rcpp::_["msLevel"]			= info.msLevel,
+			    Rcpp::_["retentionTime"]    = info.retentionTime,
+			    Rcpp::_["isZoomScan"]      	= info.isZoomScan,
+			    Rcpp::_["filterString"]     = info.filterString,
+			    Rcpp::_["lowMZ"]   			= info.mzLow,
+			    Rcpp::_["highMZ"]      		= info.mzHigh);
+
+		
 	}else{
 		Rprintf("Warning: pwiz not yet initialized.\n ");
 		return Rcpp::List::create( );
