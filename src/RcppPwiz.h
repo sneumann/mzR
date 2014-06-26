@@ -23,41 +23,43 @@ using namespace pwiz::msdata;
 using namespace pwiz::util;
 //using namespace pwiz::minimxml;
 
-class RcppPwiz {
+class RcppPwiz
+{
 
 private:
-  MSDataFile *msd;
-  Rcpp::List runInfo;
-  bool isInCacheRunInfo;
-  Rcpp::List instrumentInfo;
-  Rcpp::DataFrame chromatogramsInfo;
-  bool isInCacheInstrumentInfo;
-  Rcpp::DataFrame allScanHeaderInfo;
-  bool isInCacheAllScanHeaderInfo;
-  string filename;
+    MSDataFile *msd;
+    Rcpp::List runInfo;
+    bool isInCacheRunInfo;
+    Rcpp::List instrumentInfo;
+    Rcpp::DataFrame chromatogramsInfo;
+    bool isInCacheInstrumentInfo;
+    Rcpp::DataFrame allScanHeaderInfo;
+    bool isInCacheAllScanHeaderInfo;
+    bool isInCacheChromatogramsInfo;
+    string filename;
 
-public: 
+public:
 
-  RcppPwiz();
+    RcppPwiz();
 
-  void open(const string& fileNames);
+    void open(const string& fileNames);
 
-  string getFilename();
-  
-  int getLastScan() const;
-  
-  Rcpp::List getInstrumentInfo();
-  
-  Rcpp::List getScanHeaderInfo(int whichScan);
-  
-  Rcpp::DataFrame getChromatogramsInfo();
-  
-  Rcpp::DataFrame getAllScanHeaderInfo();
-  
-  Rcpp::List getPeakList(int whichScan);
-  
-  Rcpp::NumericMatrix get3DMap(std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz);
-    
+    string getFilename();
+
+    int getLastScan() const;
+
+    Rcpp::List getInstrumentInfo();
+
+    Rcpp::List getScanHeaderInfo(int whichScan);
+
+    Rcpp::DataFrame getChromatogramsInfo();
+
+    Rcpp::DataFrame getAllScanHeaderInfo();
+
+    Rcpp::List getPeakList(int whichScan);
+
+    Rcpp::NumericMatrix get3DMap(std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz);
+
 };
 
 #endif

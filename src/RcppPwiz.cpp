@@ -1,340 +1,362 @@
 #include "RcppPwiz.h"
 
-RcppPwiz::RcppPwiz() {
-  msd = NULL;
-  runInfo = Rcpp::List::create();
-  isInCacheRunInfo = FALSE;
-  instrumentInfo = Rcpp::List::create();
-  chromatogramsInfo = Rcpp::List::create();
-  isInCacheInstrumentInfo = FALSE;
-  allScanHeaderInfo = Rcpp::List::create();
-  isInCacheAllScanHeaderInfo = FALSE;
+RcppPwiz::RcppPwiz()
+{
+    msd = NULL;
+    runInfo = Rcpp::List::create();
+    isInCacheRunInfo = FALSE;
+    instrumentInfo = Rcpp::List::create();
+    chromatogramsInfo = Rcpp::List::create();
+    isInCacheInstrumentInfo = FALSE;
+    allScanHeaderInfo = Rcpp::List::create();
+    isInCacheAllScanHeaderInfo = FALSE;
 }
 
-void RcppPwiz::open(const string& fileName) {
+void RcppPwiz::open(const string& fileName)
+{
 
-	filename = fileName;
-	msd = new MSDataFile(fileName);
+    filename = fileName;
+    msd = new MSDataFile(fileName);
 
-}
-
-
-string RcppPwiz::getFilename (  ) {
-
-  return filename;
-}
-
-int RcppPwiz::getLastScan() const {
-  if (msd != NULL) {
-	  SpectrumListPtr slp = msd->run.spectrumListPtr;
-	  return slp->size();
-  }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
-  return -1;
-}
-
-Rcpp::List RcppPwiz::getInstrumentInfo ( ) {
-  if (msd != NULL) {
-    if (!isInCacheInstrumentInfo) {
-
-      vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs; // NULL for mzData
-
-      if (icp.size() != 0) { 
-      
-      CVTranslator cvTranslator;
-      LegacyAdapter_Instrument adapter(*icp[0], cvTranslator);
-      
-      instrumentInfo = Rcpp::List::create(
-					  Rcpp::_["manufacturer"]  = std::string(adapter.manufacturer()),
-					  Rcpp::_["model"]         = std::string(adapter.model()),
-					  Rcpp::_["ionisation"]    = std::string(adapter.ionisation()),
-					  Rcpp::_["analyzer"]      = std::string(adapter.analyzer()),
-					  Rcpp::_["detector"]      = std::string(adapter.detector() )
-					  ) ;
-
-      } else {
-      instrumentInfo = Rcpp::List::create(
-					  Rcpp::_["manufacturer"]  = "",
-					  Rcpp::_["model"]         = "",
-					  Rcpp::_["ionisation"]    = "",
-					  Rcpp::_["analyzer"]      = "",
-					  Rcpp::_["detector"]      = ""
-					  ) ;
-      }
-      isInCacheInstrumentInfo = TRUE;
-    } 
-    return(instrumentInfo);
-  }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
-  return instrumentInfo;
-}
-
-Rcpp::List RcppPwiz::getScanHeaderInfo ( int whichScan  ) {
-	if (msd != NULL) {
-		SpectrumListPtr slp = msd->run.spectrumListPtr;
-		if ((whichScan <= 0) || (whichScan > slp->size())) {
-			Rprintf("Index out of bounds [1 ... %d].\n", slp->size());
-			return Rcpp::List::create( );
-		}
-		SpectrumInfo info;
-		info.update(*msd->run.spectrumListPtr->spectrum(whichScan - 1));
-		SpectrumPtr s = slp->spectrum(whichScan - 1, true);
-		vector<MZIntensityPair> pairs;
-		s->getMZIntensityPairs(pairs);
-		
-		if(info.msLevel == 1){
-			return Rcpp::List::create(
-				Rcpp::_["id"]				= info.id,
-				Rcpp::_["index"]			= info.index,
-			    Rcpp::_["scanNumber"]		= info.scanNumber,
-			    Rcpp::_["msLevel"]			= info.msLevel,
-			    Rcpp::_["retentionTime"]    = info.retentionTime,
-			    Rcpp::_["isZoomScan"]      	= info.isZoomScan,
-			    Rcpp::_["filterString"]     = info.filterString,
-			    Rcpp::_["peaksCount"]     	= pairs.size(),
-			    Rcpp::_["lowMZ"]   			= info.mzLow,
-			    Rcpp::_["highMZ"]      		= info.mzHigh,
-			    Rcpp::_["massAnalyzerType"]	= info.massAnalyzerTypeAbbreviation(),
-			    Rcpp::_["basePeakMZ"]		= info.basePeakMZ,
-			    Rcpp::_["basePeakIntensity"]= info.basePeakIntensity,
-			    Rcpp::_["totIonCurrent"]	= info.totalIonCurrent,
-			    Rcpp::_["thermoMonoisotopicMZ"]	= info.thermoMonoisotopicMZ,
-			    Rcpp::_["ionInjectionTime"]	= info.ionInjectionTime);
-		}else{
-			return Rcpp::List::create(
-				Rcpp::_["id"]				= info.id,
-				Rcpp::_["index"]			= info.index,
-			    Rcpp::_["scanNumber"]		= info.scanNumber,
-			    Rcpp::_["msLevel"]			= info.msLevel,
-			    Rcpp::_["retentionTime"]    = info.retentionTime,
-			    Rcpp::_["isZoomScan"]      	= info.isZoomScan,
-			    Rcpp::_["filterString"]     = info.filterString,
-			    Rcpp::_["peaksCount"]     	= pairs.size(),
-			    Rcpp::_["lowMZ"]   			= info.mzLow,
-			    Rcpp::_["highMZ"]      		= info.mzHigh,
-			    Rcpp::_["massAnalyzerType"]	= info.massAnalyzerTypeAbbreviation(),
-			    Rcpp::_["basePeakMZ"]		= info.basePeakMZ,
-			    Rcpp::_["basePeakIntensity"]= info.basePeakIntensity,
-			    Rcpp::_["totIonCurrent"]	= info.totalIonCurrent,
-			    Rcpp::_["thermoMonoisotopicMZ"]	= info.thermoMonoisotopicMZ,
-			    Rcpp::_["ionInjectionTime"]	= info.ionInjectionTime,
-			    Rcpp::_["precursorIndex"]	= info.precursors[0].index,
-			    Rcpp::_["precursorMZ"]		= info.precursors[0].mz,
-			    Rcpp::_["precursorCharge"]	= info.precursors[0].charge,
-			    Rcpp::_["precursorIntensity"]=info.precursors[0].intensity);
-		}	
-	}else{
-		Rprintf("Warning: pwiz not yet initialized.\n ");
-		return Rcpp::List::create( );
-	}
 }
 
 
-Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( ) {
-	if (msd != NULL) {
-		if (!isInCacheAllScanHeaderInfo) {
-			SpectrumListPtr slp = msd->run.spectrumListPtr;
-			int N = slp->size();
-			
-			Rcpp::StringVector id(N);
-			Rcpp::IntegerVector index(N);
-			Rcpp::IntegerVector scanNumber(N);
-			Rcpp::IntegerVector msLevel(N);
-			Rcpp::NumericVector retentionTime(N);
-			Rcpp::LogicalVector isZoomScan(N);
-			Rcpp::NumericVector lowMZ(N);
-			Rcpp::NumericVector highMZ(N);
-			Rcpp::NumericVector peaksCount(N);
-			Rcpp::StringVector filterString(N);
-			Rcpp::StringVector massAnalyzerType(N);
-			Rcpp::NumericVector basePeakMZ(N);
-			Rcpp::NumericVector basePeakIntensity(N);
-			Rcpp::NumericVector totalIonCurrent(N);
-			Rcpp::NumericVector thermoMonoisotopicMZ(N);
-			Rcpp::NumericVector ionInjectionTime(N);
-			Rcpp::NumericVector precursorIndex(N);
-			Rcpp::NumericVector precursorMZ(N);
-			Rcpp::NumericVector precursorCharge(N);
-			Rcpp::NumericVector precursorIntensity(N);
-			
-			SpectrumInfo info;
-			SpectrumPtr s;
-			vector<MZIntensityPair> pairs;
-			
-			for (int whichScan=1; whichScan <= N; whichScan++) {
-				info.update(*msd->run.spectrumListPtr->spectrum(whichScan - 1));
-				s = slp->spectrum(whichScan - 1, true);
-				s->getMZIntensityPairs(pairs);
-				id[whichScan-1] = info.id;
-				index[whichScan-1] = info.index;
-				scanNumber[whichScan-1] = info.scanNumber;
-				msLevel[whichScan-1] = info.msLevel;
-				retentionTime[whichScan-1] = info.retentionTime;
-				isZoomScan[whichScan-1] = info.isZoomScan;
-				lowMZ[whichScan-1] = info.mzLow;
-				highMZ[whichScan-1] = info.mzHigh;
-				peaksCount[whichScan-1] = pairs.size();
-				filterString[whichScan-1] = info.filterString;
-				massAnalyzerType[whichScan-1] = info.massAnalyzerTypeAbbreviation();
-				basePeakMZ[whichScan-1] = info.basePeakMZ;
-				basePeakIntensity[whichScan-1] = info.basePeakIntensity;
-				totalIonCurrent[whichScan-1] = info.totalIonCurrent;
-				thermoMonoisotopicMZ[whichScan-1] = info.thermoMonoisotopicMZ;
-				ionInjectionTime[whichScan-1] = info.ionInjectionTime;
+string RcppPwiz::getFilename (  )
+{
 
-				if(info.msLevel > 1){
-					precursorIndex[whichScan-1] = info.precursors[0].index;
-					precursorMZ[whichScan-1] = info.precursors[0].mz;
-					precursorCharge[whichScan-1] = info.precursors[0].charge;
-					precursorIntensity[whichScan-1] = info.precursors[0].intensity;
-				}else {
-					precursorIndex[whichScan-1] = 0;
-					precursorMZ[whichScan-1] = 0;
-					precursorCharge[whichScan-1] = 0;
-					precursorIntensity[whichScan-1] = 0;
-				}
-
-			}
-			
-			allScanHeaderInfo = Rcpp::DataFrame::create( 
-								Rcpp::_["id"] = id,
-								Rcpp::_["index"] = index,
-								Rcpp::_["scanNumber"] = scanNumber,
-								Rcpp::_["msLevel"] = msLevel,
-								Rcpp::_["retentionTime"] = retentionTime,
-								Rcpp::_["isZoomScan"] = isZoomScan,
-								Rcpp::_["lowMZ"] = lowMZ,
-								Rcpp::_["highMZ"] = highMZ,
-								Rcpp::_["peaksCount"] = peaksCount,
-								Rcpp::_["filterString"] = filterString,
-								Rcpp::_["massAnalyzerType"] = massAnalyzerType,
-								Rcpp::_["basePeakMZ"] = basePeakMZ,
-								Rcpp::_["basePeakIntensity"] = basePeakIntensity,
-								Rcpp::_["totIonCurrent"] = totalIonCurrent,
-								Rcpp::_["thermoMonoisotopicMZ"] = thermoMonoisotopicMZ,
-								Rcpp::_["ionInjectionTime"] = ionInjectionTime,
-								Rcpp::_["precursorIndex"] = precursorIndex,
-								Rcpp::_["precursorMZ"] = precursorMZ,
-								Rcpp::_["precursorCharge"] = precursorCharge,
-								Rcpp::_["precursorIntensity"] = precursorIntensity);
-			  isInCacheAllScanHeaderInfo = TRUE;
-		}
-		return(allScanHeaderInfo);
-	}
-	Rprintf("Warning: pwiz not yet initialized.\n ");
-	return Rcpp::DataFrame::create( );
+    return filename;
 }
 
-Rcpp::List RcppPwiz::getPeakList ( int whichScan ) {
-	if (msd != NULL) {
-		SpectrumListPtr slp = msd->run.spectrumListPtr;
-
-		if ((whichScan <= 0) || (whichScan > slp->size())) {
-			Rprintf("Index whichScan out of bounds [1 ... %d].\n", slp->size());
-			return Rcpp::List::create( );
-		}
-		
-		SpectrumPtr s = slp->spectrum(whichScan - 1, true);
-		vector<MZIntensityPair> pairs;
-		s->getMZIntensityPairs(pairs);
-
-		Rcpp::NumericMatrix peaks(pairs.size(), 2);
-		
-		if(pairs.size()!=0){
-			for (int i = 0; i < pairs.size(); i++) {
-				MZIntensityPair p = pairs.at(i);
-				peaks(i,0) = p.mz;
-				peaks(i,1) = p.intensity;
-			}
-			
-		}
-
-    return Rcpp::List::create(
-			      Rcpp::_["peaksCount"]  = pairs.size(),
-			      Rcpp::_["peaks"]  = peaks
-			     ) ;
-  }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
-  return Rcpp::List::create( );
+int RcppPwiz::getLastScan() const
+{
+    if (msd != NULL)
+    {
+        SpectrumListPtr slp = msd->run.spectrumListPtr;
+        return slp->size();
+    }
+    Rprintf("Warning: pwiz not yet initialized.\n ");
+    return -1;
 }
 
-Rcpp::DataFrame RcppPwiz::getChromatogramsInfo() {
- if (msd != NULL) {
-	if (!isInCacheAllScanHeaderInfo) {
-			SpectrumListPtr slp = msd->run.spectrumListPtr;
-			int N = slp->size();
-			Rcpp::IntegerVector msLevel(N);
-			Rcpp::NumericVector retentionTime(N);
-			Rcpp::NumericVector basePeakIntensity(N);
-			Rcpp::NumericVector totalIonCurrent(N);
-			
-			SpectrumInfo info;
-			SpectrumPtr s;
-			vector<MZIntensityPair> pairs;
-			
-			for (int whichScan=1; whichScan <= N; whichScan++) {
-				info.update(*msd->run.spectrumListPtr->spectrum(whichScan - 1));
-				s = slp->spectrum(whichScan - 1, true);
-				s->getMZIntensityPairs(pairs);
-				msLevel[whichScan-1] = info.msLevel;
-				retentionTime[whichScan-1] = info.retentionTime;
-				basePeakIntensity[whichScan-1] = info.basePeakIntensity;
-				totalIonCurrent[whichScan-1] = info.totalIonCurrent;
-			}
-			
-			allScanHeaderInfo = Rcpp::DataFrame::create( 
-								Rcpp::_["msLevel"] = msLevel,
-								Rcpp::_["retentionTime"] = retentionTime,
-								Rcpp::_["basePeakIntensity"] = basePeakIntensity,
-								Rcpp::_["totIonCurrent"] = totalIonCurrent);
-			  isInCacheAllScanHeaderInfo = TRUE;
-		}
-		return(allScanHeaderInfo);
-	}
-	Rprintf("Warning: pwiz not yet initialized.\n ");
-	return Rcpp::DataFrame::create( );
+Rcpp::List RcppPwiz::getInstrumentInfo ( )
+{
+    if (msd != NULL)
+    {
+        if (!isInCacheInstrumentInfo)
+        {
+
+            vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs; // NULL for mzData
+
+            if (icp.size() != 0)
+            {
+
+                CVTranslator cvTranslator;
+                LegacyAdapter_Instrument adapter(*icp[0], cvTranslator);
+
+                instrumentInfo = Rcpp::List::create(
+                                     Rcpp::_["manufacturer"]  = std::string(adapter.manufacturer()),
+                                     Rcpp::_["model"]         = std::string(adapter.model()),
+                                     Rcpp::_["ionisation"]    = std::string(adapter.ionisation()),
+                                     Rcpp::_["analyzer"]      = std::string(adapter.analyzer()),
+                                     Rcpp::_["detector"]      = std::string(adapter.detector() )
+                                 ) ;
+
+            }
+            else
+            {
+                instrumentInfo = Rcpp::List::create(
+                                     Rcpp::_["manufacturer"]  = "",
+                                     Rcpp::_["model"]         = "",
+                                     Rcpp::_["ionisation"]    = "",
+                                     Rcpp::_["analyzer"]      = "",
+                                     Rcpp::_["detector"]      = ""
+                                 ) ;
+            }
+            isInCacheInstrumentInfo = TRUE;
+        }
+        return(instrumentInfo);
+    }
+    Rprintf("Warning: pwiz not yet initialized.\n ");
+    return instrumentInfo;
 }
 
-Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz ) {
-	if (msd != NULL) {
-		
-		SpectrumListPtr slp = msd->run.spectrumListPtr;
-		double f = 1 / resMz;
-		int low = round(whichMzLow * f);
-		int high = round(whichMzHigh * f);
-		int dmz = high - low + 1;
-		int drt = scanNumbers.size();
-		
-		Rcpp::NumericMatrix map3d(drt, dmz);
-		
-		for (int i = 0; i < drt; i++) {
-			for (int j = 0; j < dmz; j++) {
-				map3d(i,j) = 0.0;
-			}
-		}
 
-		int j=0;
-		Rprintf("%d\n",1);
-		for (int i = 0; i < scanNumbers.size(); i++) {
-			SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, true);
-			vector<MZIntensityPair> pairs;
-			s->getMZIntensityPairs(pairs);
+Rcpp::List RcppPwiz::getScanHeaderInfo ( int whichScan  )
+{
+    if (msd != NULL)
+    {
+        SpectrumListPtr slp = msd->run.spectrumListPtr;
+        if ((whichScan <= 0) || (whichScan > slp->size()))
+        {
+            Rprintf("Index out of bounds [1 ... %d].\n", slp->size());
+            return Rcpp::List::create( );
+        }
+
+        RAMPAdapter * adapter = new  RAMPAdapter(filename);
+        ScanHeaderStruct header;
+        adapter->getScanHeader(whichScan - 1, header);
+
+        return Rcpp::List::create(
+                   Rcpp::_["seqNum"]				= header.seqNum,
+                   Rcpp::_["acquisitionNum"]		= header.acquisitionNum,
+                   Rcpp::_["msLevel"]				= header.msLevel,
+                   Rcpp::_["peaksCount"]     		= header.peaksCount,
+                   Rcpp::_["totIonCurrent"]      	= header.totIonCurrent,
+                   Rcpp::_["retentionTime"]      	= header.retentionTime,
+                   Rcpp::_["basePeakMZ"]      		= header.basePeakMZ,
+                   Rcpp::_["basePeakIntensity"]  	= header.basePeakIntensity,
+                   Rcpp::_["collisionEnergy"]    	= header.collisionEnergy,
+                   Rcpp::_["ionisationEnergy"]  	= header.ionisationEnergy,
+                   Rcpp::_["lowMZ"]   				= header.lowMZ,
+                   Rcpp::_["highMZ"]      			= header.highMZ,
+                   Rcpp::_["precursorScanNum"]   	= header.precursorScanNum,
+                   Rcpp::_["precursorMZ"]     		= header.precursorMZ,
+                   Rcpp::_["precursorCharge"]      = header.precursorCharge,
+                   Rcpp::_["precursorIntensity"] 	= header.precursorIntensity,
+                   //Rcpp::_["scanType"]     		= header.scanType,
+                   //Rcpp::_["activationMethod"]  	= header.activationMethod,
+                   //Rcpp::_["possibleCharges"]   	= header.possibleCharges,
+                   //Rcpp::_["numPossibleCharges"]	= header.numPossibleCharges,
+                   //Rcpp::_["possibleChargesArray"]	= header.possibleChargesArray,
+                   Rcpp::_["mergedScan"]      		= header.mergedScan,
+                   Rcpp::_["mergedResultScanNum"]	= header.mergedResultScanNum,
+                   Rcpp::_["mergedResultStartScanNum"] = header.mergedResultStartScanNum,
+                   Rcpp::_["mergedResultEndScanNum"]   = header.mergedResultEndScanNum
+                   //Rcpp::_["filePosition"]      	= header.filePosition
+               );
+    }
+    else
+    {
+        Rprintf("Warning: pwiz not yet initialized.\n ");
+        return Rcpp::List::create( );
+    }
+}
+
+Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( )
+{
+    if (msd != NULL)
+    {
+        if (!isInCacheAllScanHeaderInfo)
+        {
+            SpectrumListPtr slp = msd->run.spectrumListPtr;
+            int N = slp->size();
+
+            ScanHeaderStruct scanHeader;
+            RAMPAdapter * adapter = new  RAMPAdapter(filename);
+            Rcpp::IntegerVector seqNum(N); // number in sequence observed file (1-based)
+            Rcpp::IntegerVector acquisitionNum(N); // scan number as declared in File (may be gaps)
+            Rcpp::IntegerVector msLevel(N);
+            Rcpp::IntegerVector peaksCount(N);
+            Rcpp::NumericVector totIonCurrent(N);
+            Rcpp::NumericVector retentionTime(N);        /* in seconds */
+            Rcpp::NumericVector basePeakMZ(N);
+            Rcpp::NumericVector basePeakIntensity(N);
+            Rcpp::NumericVector collisionEnergy(N);
+            Rcpp::NumericVector ionisationEnergy(N);
+            Rcpp::NumericVector lowMZ(N);
+            Rcpp::NumericVector highMZ(N);
+            Rcpp::IntegerVector precursorScanNum(N); /* only if MS level > 1 */
+            Rcpp::NumericVector precursorMZ(N);  /* only if MS level > 1 */
+            Rcpp::IntegerVector precursorCharge(N);  /* only if MS level > 1 */
+            Rcpp::NumericVector precursorIntensity(N);  /* only if MS level > 1 */
+            //char scanType[SCANTYPE_LENGTH];
+            //char activationMethod[SCANTYPE_LENGTH];
+            //char possibleCharges[SCANTYPE_LENGTH];
+            //int numPossibleCharges;
+            //bool possibleChargesArray[CHARGEARRAY_LENGTH]; /* NOTE: does NOT include "precursorCharge" information; only from "possibleCharges" */
+            Rcpp::IntegerVector mergedScan(N);  /* only if MS level > 1 */
+            Rcpp::IntegerVector mergedResultScanNum(N); /* scan number of the resultant merged scan */
+            Rcpp::IntegerVector mergedResultStartScanNum(N); /* smallest scan number of the scanOrigin for merged scan */
+            Rcpp::IntegerVector mergedResultEndScanNum(N); /* largest scan number of the scanOrigin for merged scan */
+
+            for (int whichScan=1; whichScan <= N; whichScan++)
+            {
+                adapter->getScanHeader(whichScan - 1, scanHeader);
+                seqNum[whichScan-1] = scanHeader.seqNum;
+                acquisitionNum[whichScan-1] = scanHeader.acquisitionNum;
+                msLevel[whichScan-1] = scanHeader.msLevel;
+                peaksCount[whichScan-1] = scanHeader.peaksCount;
+                totIonCurrent[whichScan-1] = scanHeader.totIonCurrent;
+                retentionTime[whichScan-1] = scanHeader.retentionTime;
+                basePeakMZ[whichScan-1] = scanHeader.basePeakMZ;
+                basePeakIntensity[whichScan-1] = scanHeader.basePeakIntensity;
+                collisionEnergy[whichScan-1] = scanHeader.collisionEnergy;
+                ionisationEnergy[whichScan-1] = scanHeader.ionisationEnergy;
+                lowMZ[whichScan-1] = scanHeader.lowMZ;
+                highMZ[whichScan-1] = scanHeader.highMZ;
+                precursorScanNum[whichScan-1] = scanHeader.precursorScanNum;
+                precursorMZ[whichScan-1] = scanHeader.precursorMZ;
+                precursorCharge[whichScan-1] = scanHeader.precursorCharge;
+                precursorIntensity[whichScan-1] = scanHeader.precursorIntensity;
+                mergedScan[whichScan-1] = scanHeader.mergedScan;
+                mergedResultScanNum[whichScan-1] = scanHeader.mergedResultScanNum;
+                mergedResultStartScanNum[whichScan-1] = scanHeader.mergedResultStartScanNum;
+                mergedResultEndScanNum[whichScan-1] = scanHeader.mergedResultEndScanNum;
+            }
+
+            allScanHeaderInfo = Rcpp::DataFrame::create(
+                                    Rcpp::_["seqNum"]                   = seqNum,
+                                    Rcpp::_["acquisitionNum"]           = acquisitionNum,
+                                    Rcpp::_["msLevel"]                  = msLevel,
+                                    Rcpp::_["peaksCount"]               = peaksCount,
+                                    Rcpp::_["totIonCurrent"]            = totIonCurrent,
+                                    Rcpp::_["retentionTime"]            = retentionTime,
+                                    Rcpp::_["basePeakMZ"]               = basePeakMZ,
+                                    Rcpp::_["basePeakIntensity"]        = basePeakIntensity,
+                                    Rcpp::_["collisionEnergy"]          = collisionEnergy,
+                                    Rcpp::_["ionisationEnergy"]         = ionisationEnergy,
+                                    Rcpp::_["lowMZ"]                    = lowMZ,
+                                    Rcpp::_["highMZ"]                   = highMZ,
+                                    Rcpp::_["precursorScanNum"]         = precursorScanNum,
+                                    Rcpp::_["precursorMZ"]              = precursorMZ,
+                                    Rcpp::_["precursorCharge"]          = precursorCharge,
+                                    Rcpp::_["precursorIntensity"]       = precursorIntensity,
+                                    //Rcpp::_["scanType"]              	= scanType,
+                                    //Rcpp::_["activationMethod"]       = activationMethod,
+                                    //Rcpp::_["possibleCharges"]        = possibleCharges,
+                                    //Rcpp::_["numPossibleCharges"]     = numPossibleCharges,
+                                    //Rcpp::_["possibleChargesArray"]   = possibleChargesArray,
+                                    Rcpp::_["mergedScan"]               = mergedScan,
+                                    Rcpp::_["mergedResultScanNum"]      = mergedResultScanNum,
+                                    Rcpp::_["mergedResultStartScanNum"] = mergedResultStartScanNum,
+                                    Rcpp::_["mergedResultEndScanNum"]   = mergedResultEndScanNum
+                                );
+            isInCacheAllScanHeaderInfo = TRUE;
+        }
+        return(allScanHeaderInfo);
+    }
+    Rprintf("Warning: pwiz not yet initialized.\n ");
+    return Rcpp::DataFrame::create( );
+}
+
+Rcpp::List RcppPwiz::getPeakList ( int whichScan )
+{
+    if (msd != NULL)
+    {
+        SpectrumListPtr slp = msd->run.spectrumListPtr;
+
+        if ((whichScan <= 0) || (whichScan > slp->size()))
+        {
+            Rprintf("Index whichScan out of bounds [1 ... %d].\n", slp->size());
+            return Rcpp::List::create( );
+        }
+
+        SpectrumPtr s = slp->spectrum(whichScan - 1, true);
+        vector<MZIntensityPair> pairs;
+        s->getMZIntensityPairs(pairs);
+
+        Rcpp::NumericMatrix peaks(pairs.size(), 2);
+
+        if(pairs.size()!=0)
+        {
+            for (int i = 0; i < pairs.size(); i++)
+            {
+                MZIntensityPair p = pairs.at(i);
+                peaks(i,0) = p.mz;
+                peaks(i,1) = p.intensity;
+            }
+
+        }
+
+        return Rcpp::List::create(
+                   Rcpp::_["peaksCount"]  = pairs.size(),
+                   Rcpp::_["peaks"]  = peaks
+               ) ;
+    }
+    Rprintf("Warning: pwiz not yet initialized.\n ");
+    return Rcpp::List::create( );
+}
+
+Rcpp::DataFrame RcppPwiz::getChromatogramsInfo()
+{
+    if (msd != NULL)
+    {
+        if (!isInCacheChromatogramsInfo)
+        {
+            SpectrumListPtr slp = msd->run.spectrumListPtr;
+            int N = slp->size();
+            ScanHeaderStruct scanHeader;
+			RAMPAdapter * adapter = new  RAMPAdapter(filename);
 			
+            Rcpp::IntegerVector msLevel(N);
+            Rcpp::NumericVector retentionTime(N);
+            Rcpp::NumericVector basePeakIntensity(N);
+            Rcpp::NumericVector totIonCurrent(N);
 
-			for (int k=0; k < pairs.size(); k++) {
-				MZIntensityPair p = pairs.at(k);
-				j = round(p.mz * f) - low;
-				if ((j >= 0) & (j < dmz)) {
-					if (p.intensity > map3d(i,j)) {
-						map3d(i,j) = p.intensity;
-					}
-				}
-			}
+            SpectrumInfo info;
+            SpectrumPtr s;
+            vector<MZIntensityPair> pairs;
 
-		}
-		return(map3d);
-	}
-	
-	Rprintf("Warning: pwiz not yet initialized.\n ");
-	return Rcpp::NumericMatrix(0,0);
+            for (int whichScan=1; whichScan <= N; whichScan++)
+            {
+				adapter->getScanHeader(whichScan - 1, scanHeader);
+                msLevel[whichScan-1] = scanHeader.msLevel;
+                retentionTime[whichScan-1] = scanHeader.retentionTime;
+                basePeakIntensity[whichScan-1] = scanHeader.basePeakIntensity;
+                totIonCurrent[whichScan-1] = scanHeader.totIonCurrent;
+            }
+
+            chromatogramsInfo = Rcpp::DataFrame::create(
+                                    Rcpp::_["msLevel"] = msLevel,
+                                    Rcpp::_["retentionTime"] = retentionTime,
+                                    Rcpp::_["basePeakIntensity"] = basePeakIntensity,
+                                    Rcpp::_["totIonCurrent"] = totIonCurrent);
+            isInCacheChromatogramsInfo = TRUE;
+        }
+        return(chromatogramsInfo);
+    }
+    Rprintf("Warning: pwiz not yet initialized.\n ");
+    return Rcpp::DataFrame::create( );
+}
+
+Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz )
+{
+    if (msd != NULL)
+    {
+
+        SpectrumListPtr slp = msd->run.spectrumListPtr;
+        double f = 1 / resMz;
+        int low = round(whichMzLow * f);
+        int high = round(whichMzHigh * f);
+        int dmz = high - low + 1;
+        int drt = scanNumbers.size();
+
+        Rcpp::NumericMatrix map3d(drt, dmz);
+
+        for (int i = 0; i < drt; i++)
+        {
+            for (int j = 0; j < dmz; j++)
+            {
+                map3d(i,j) = 0.0;
+            }
+        }
+
+        int j=0;
+        Rprintf("%d\n",1);
+        for (int i = 0; i < scanNumbers.size(); i++)
+        {
+            SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, true);
+            vector<MZIntensityPair> pairs;
+            s->getMZIntensityPairs(pairs);
+
+
+            for (int k=0; k < pairs.size(); k++)
+            {
+                MZIntensityPair p = pairs.at(k);
+                j = round(p.mz * f) - low;
+                if ((j >= 0) & (j < dmz))
+                {
+                    if (p.intensity > map3d(i,j))
+                    {
+                        map3d(i,j) = p.intensity;
+                    }
+                }
+            }
+
+        }
+        return(map3d);
+    }
+
+    Rprintf("Warning: pwiz not yet initialized.\n ");
+    return Rcpp::NumericMatrix(0,0);
 }
