@@ -97,7 +97,7 @@ Rcpp::List RcppPwiz::getScanHeaderInfo ( int whichScan  ) {
 			    Rcpp::_["massAnalyzerType"]	= info.massAnalyzerTypeAbbreviation(),
 			    Rcpp::_["basePeakMZ"]		= info.basePeakMZ,
 			    Rcpp::_["basePeakIntensity"]= info.basePeakIntensity,
-			    Rcpp::_["totalIonCurrent"]	= info.totalIonCurrent,
+			    Rcpp::_["totIonCurrent"]	= info.totalIonCurrent,
 			    Rcpp::_["thermoMonoisotopicMZ"]	= info.thermoMonoisotopicMZ,
 			    Rcpp::_["ionInjectionTime"]	= info.ionInjectionTime);
 		}else{

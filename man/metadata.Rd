@@ -13,6 +13,7 @@
 
 \usage{
 runInfo(object)
+chromatogramsInfo(object)
 analyzer(object)
 detector(object)
 instrumentInfo(object)

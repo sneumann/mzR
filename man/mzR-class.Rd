@@ -52,6 +52,7 @@
 \alias{peaks,mzRnetCDF,numeric-method}
 \alias{runInfo,mzRramp-method}
 \alias{runInfo,mzRpwiz-method}
+\alias{chromatogramsInfo,mzRpwiz-method}
 
 \title{Class \code{mzR} and sub-classes}
 \description{
@@ -122,6 +123,7 @@
     \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "missing")}: ... }
     \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
     \item{runInfo}{\code{signature(object = "mzRramp")}: ... }
+
   }
   Methods currently implemented for \code{mzRpwiz}
   \describe{
@@ -133,6 +135,7 @@
     \item{manufacturer}{\code{signature(object = "mzRpwiz")}: ... }
     \item{model}{\code{signature(object = "mzRpwiz")}: ... }
     \item{runInfo}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{chromatogramsInfo}{\code{signature(object = "mzRpwiz")}: ... }
   }
 }
 
