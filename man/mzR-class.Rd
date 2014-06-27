@@ -53,6 +53,7 @@
 \alias{runInfo,mzRramp-method}
 \alias{runInfo,mzRpwiz-method}
 \alias{chromatogramsInfo,mzRpwiz-method}
+\alias{writeMSfile,mzRpwiz-method}
 
 \title{Class \code{mzR} and sub-classes}
 \description{
@@ -136,6 +137,7 @@
     \item{model}{\code{signature(object = "mzRpwiz")}: ... }
     \item{runInfo}{\code{signature(object = "mzRpwiz")}: ... }
     \item{chromatogramsInfo}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{writeMSfile}{\code{signature(object = "mzRpwiz")}: ... }
   }
 }
 
