@@ -83,13 +83,17 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
                 CVTranslator cvTranslator;
                 LegacyAdapter_Instrument adapter(*icp[0], cvTranslator);
 				vector<SoftwarePtr> sp = msd->softwarePtrs;
+				std::vector<SamplePtr> sample = msd->samplePtrs;
+				std::vector<ScanSettingsPtr> scansetting = msd->scanSettingsPtrs;
                 instrumentInfo = Rcpp::List::create(
                                      Rcpp::_["manufacturer"]  = std::string(adapter.manufacturer()),
                                      Rcpp::_["model"]         = std::string(adapter.model()),
                                      Rcpp::_["ionisation"]    = std::string(adapter.ionisation()),
                                      Rcpp::_["analyzer"]      = std::string(adapter.analyzer()),
                                      Rcpp::_["detector"]      = std::string(adapter.detector()),
-                                     Rcpp::_["software"]      = sp[0]->id + " " + sp[0]->version
+                                     Rcpp::_["software"]      = sp[0]->id + " " + sp[0]->version,
+                                     Rcpp::_["sample"]		  = sample[0]->name,
+                                     Rcpp::_["source"]        = scansetting[0]->sourceFilePtrs[0]->location
                                  ) ;
 
             }
@@ -101,7 +105,9 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
                                      Rcpp::_["ionisation"]    = "",
                                      Rcpp::_["analyzer"]      = "",
                                      Rcpp::_["detector"]      = "",
-                                     Rcpp::_["software"]      = ""
+                                     Rcpp::_["software"]      = "",
+                                     Rcpp::_["sample"]		  = "",
+                                     Rcpp::_["source"]		  = ""
                                  ) ;
             }
            

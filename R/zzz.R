@@ -19,4 +19,4 @@ BUILT_RCPP_VERSION = package_version("0.11.1")
       require2("methods", character.only = TRUE, quietly = TRUE)
       loadRcppModules()
       Sys.setenv("HDF5_DISABLE_VERSION_CHECK"=2)
-    }
+}
