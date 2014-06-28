@@ -7,7 +7,7 @@ importFrom(Biobase, validMsg)
 ##importFrom(Rcpp, "loadRcppModules")
 import(Rcpp)
 
-export(openMSfile)
+export(openMSfile, openIDfile)
 
 exportMethods(close,
               isInitialized,
@@ -28,10 +28,12 @@ exportMethods(close,
               writeMSfile,
               softwareInfo,
               sampleInfo,
-              sourceInfo)
+              sourceInfo,
+              dateInfo)
 
 exportClasses("mzR",
               "mzRramp",
               "mzRnetCDF",
-              "mzRpwiz")
+              "mzRpwiz",
+              "mzRident")
 

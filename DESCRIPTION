@@ -19,7 +19,7 @@ Depends: Rcpp (>= 0.10.1), methods, utils
 Imports: Biobase
 Suggests: msdata (>= 0.1.9), RUnit, faahKO
 LinkingTo: Rcpp
-RcppModules: Ramp, Pwiz
+RcppModules: Ramp, Pwiz, Ident
 SystemRequirements: GNU make, NetCDF, zlib
 biocViews: Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry

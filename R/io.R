@@ -38,3 +38,17 @@ openMSfile <- function(filename,
     stop("No valid backend", backend )
   }  
 }
+
+openIDfile <- function(filename, verbose = FALSE) {
+  if (!file.exists(filename))
+    stop("File ",filename," not found.\n")
+    
+  filename <- path.expand(filename)
+  
+  identModule <- new(Ident) 
+  identModule$open(filename)
+
+    return(new("mzRident",
+               backend=pwizModule,
+               fileName=filename))
+}
