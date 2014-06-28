@@ -13,7 +13,7 @@ void RcppIdent::open(const string& fileName)
 
 Rcpp::List RcppIdent::getIDInfo(  )
 {
-	provider = mzid->provider.contactRolePtr.get()->name();
+	provider = (mzid->provider.contactRolePtr.get()!=0?mzid->provider.contactRolePtr.get()->name():"");
     date = mzid->creationDate;
     
 	return Rcpp::List::create(
