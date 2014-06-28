@@ -49,6 +49,6 @@ openIDfile <- function(filename, verbose = FALSE) {
   identModule$open(filename)
 
     return(new("mzRident",
-               backend=pwizModule,
+               backend=identModule,
                fileName=filename))
 }
