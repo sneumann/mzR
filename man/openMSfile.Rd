@@ -3,6 +3,7 @@
 \alias{initializeRamp}
 \alias{isInitialized}
 \alias{fileName}
+\alias{writeMSfile}
 
 \title{
   Create and check mzR objects from netCDF, mzXML, mzData or mzML files.
@@ -15,21 +16,24 @@
  isInitialized(object)
 
  fileName(object)
+ 
+ writeMSfile(object, filename, outformat)
 
 }
 \arguments{
   \item{filename}{ Path name of the netCDF, mzData, mzXML or mzML file to
-    read. }
+    read/write. }
   \item{backend}{ A \code{character} specifiying with backend API to
     use. Currently 'Ramp', 'netCDF'  and 'pwiz' are available.}
   \item{object}{ An instantiated mzR object. }
   \item{verbose}{ Enable verbose output. }
+  \item{outformat}{The output format.}
 }
 
 \description{
   The \code{openMSfile} constructor will create a new format-specifc
   \code{mzR} object, open 'filename' file and all header information is
-  loaded as a Rcpp module and made accessible through the \code{ramp}
+  loaded as a Rcpp module and made accessible through the \code{ramp} or \code{pwiz}
   slot of the resulting object. 
 
   % If the object was created manually with e.g. new("mzR"), then
@@ -48,7 +52,7 @@
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
                     full.names=TRUE, recursive = TRUE)
-  mz <- openMSfile(file)
+  mz <- openMSfile(file, "pwiz")
   fileName(mz)
   isInitialized(mz)
   runInfo(mz)

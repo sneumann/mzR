@@ -34,8 +34,6 @@ class RcppPwiz
 
 private:
     MSDataFile *msd;
-    Rcpp::List runInfo;
-    bool isInCacheRunInfo;
     Rcpp::List instrumentInfo;
     Rcpp::DataFrame chromatogramsInfo;
     bool isInCacheInstrumentInfo;
@@ -57,6 +55,8 @@ public:
     int getLastScan() const;
 
     Rcpp::List getInstrumentInfo();
+    
+    Rcpp::List getRunInfo();
 
     Rcpp::List getScanHeaderInfo(int whichScan);
 

@@ -1,5 +1,8 @@
 setGeneric("runInfo", function(object) standardGeneric("runInfo"))
 setGeneric("instrumentInfo", function(object) standardGeneric("instrumentInfo"))
+setGeneric("softwareInfo", function(object) standardGeneric("instrumentInfo"))
+setGeneric("sampleInfo", function(object) standardGeneric("instrumentInfo"))
+setGeneric("sourceInfo", function(object) standardGeneric("instrumentInfo"))
 setGeneric("writeMSfile", function(object, filename, outformat) standardGeneric("writeMSfile"))
 setGeneric("chromatogramsInfo", function(object) standardGeneric("chromatogramsInfo"))
 setGeneric("fileName", function(object) standardGeneric("fileName"))

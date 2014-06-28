@@ -121,3 +121,24 @@ setMethod("runInfo",
             ll$'msLevels' <- unique(hd$msLevel)
             return(ll)
           })
+          
+setMethod("softwareInfo",
+          signature="mzRpwiz",
+          function(object) {
+            hd <- header(object)      
+            return(hd$software)
+          })
+          
+setMethod("sampleInfo",
+          signature="mzRpwiz",
+          function(object) {
+            hd <- header(object)      
+            return(hd$sample)
+          })
+          
+setMethod("sourceInfo",
+          signature="mzRpwiz",
+          function(object) {
+            hd <- header(object)      
+            return(hd$source)
+          })

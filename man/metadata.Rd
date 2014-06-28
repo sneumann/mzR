@@ -6,6 +6,10 @@
 \alias{manufacturer}
 \alias{model}
 \alias{runInfo}
+\alias{chromatogramsInfo}
+\alias{softwareInfo}
+\alias{sampleInfo}
+\alias{sourceInfo}
 
 \title{
   Access the metadata from an \code{mzR} object.
@@ -18,7 +22,9 @@ analyzer(object)
 detector(object)
 instrumentInfo(object)
 ionisation(object)
-manufacturer(object)
+softwareInfo(object)
+sampleInfo(object)
+sourceInfo(object)
 model(object)
 }
 \arguments{
@@ -32,7 +38,9 @@ model(object)
   \code{dStartTime} and \code{dEndTime}.
   The \code{instrumentInfo} method returns a named \code{list} including
   instrument manufacturer, model, ionisation technique, analyzer and
-  detector. These individual pieces of information can also be directly
+  detector. \code{mzRpwiz} will give more additional information including
+  information on sample, software using and original source file. 
+  These individual pieces of information can also be directly
   accessed by the specific methods.
 }
 
@@ -51,7 +59,7 @@ model(object)
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
                     full.names=TRUE, recursive = TRUE)
-  mz <- openMSfile(file, backend = "pwiz")
+  mz <- openMSfile(file, backend = "ramp")
   fileName(mz)
   instrumentInfo(mz)
 }

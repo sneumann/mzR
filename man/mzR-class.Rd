@@ -54,6 +54,9 @@
 \alias{runInfo,mzRpwiz-method}
 \alias{chromatogramsInfo,mzRpwiz-method}
 \alias{writeMSfile,mzRpwiz-method}
+\alias{softwareInfo,mzRpwiz-method}
+\alias{sampleInfo,mzRpwiz-method}
+\alias{sourceInfo,mzRpwiz-method}
 
 \title{Class \code{mzR} and sub-classes}
 \description{
@@ -62,10 +65,11 @@
   directly.
 
   The sub-classes implement specific APIs to access the underlying data
-  and metadata in the files. Currently, \code{mzRramp} is the only
-  available implementation. It uses the ISB 'RAMP' random access C/C++
-  API to access the relevant information in \code{mzData}, \code{mzXML}
-  and \code{mzML} files.
+  and metadata in the files. Currently, \code{mzRramp} and \code{mzRpwiz}
+  are available implementations. \code{mzRramp} uses the ISB 'RAMP' random access C/C++
+  API, and \code{mzRpwiz} uses Proteowizard to access the relevant
+  information in \code{mzData}, \code{mzXML}
+  and \code{mzML} files. You can also open \code{mz5} file by using \code{mzRpwiz}.
 
   Additional sub-classes using the proteowizard API and netCDF are
   planned.
@@ -77,6 +81,9 @@
   Objects can be created by calls of the form \code{new("mzRramp",
     ...)}, but more often they will be created with
   \code{\link{openMSfile}}.  
+  
+  After creating a \code{mzR}, you can write it into a file.
+  mzXML, mzML, mz5, mgf formats are supported. 
 }
 
 \section{Slots}{

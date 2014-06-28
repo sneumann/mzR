@@ -3,8 +3,6 @@
 RcppPwiz::RcppPwiz()
 {
     msd = NULL;
-    runInfo = Rcpp::List::create();
-    isInCacheRunInfo = FALSE;
     instrumentInfo = Rcpp::List::create();
     chromatogramsInfo = Rcpp::List::create();
     isInCacheInstrumentInfo = FALSE;

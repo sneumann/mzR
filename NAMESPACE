@@ -25,7 +25,10 @@ exportMethods(close,
               peaksCount,
               peaks,
               get3Dmap,
-              writeMSfile)
+              writeMSfile,
+              softwareInfo,
+              sampleInfo,
+              sourceInfo)
 
 exportClasses("mzR",
               "mzRramp",
