@@ -9,6 +9,6 @@ RCPP_MODULE(Ident){
   class_<RcppIdent>( "Ident" )
     .constructor("Initialises a new Rccp ident object.")
     .method( "open", &RcppIdent::open, "Opens a mass spec file (mzXML, mzData, etc.) and creates a pwiz object" )
-    .method( "getCreationDate", &RcppIdent::getCreationDate, "Opens a mass spec file (mzXML, mzData, etc.) and creates a pwiz object" )
+    .method( "getIDInfo", &RcppIdent::getIDInfo, "Opens a mass spec file (mzXML, mzData, etc.) and creates a pwiz object" )
     ;
 }

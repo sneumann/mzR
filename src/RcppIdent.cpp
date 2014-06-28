@@ -7,15 +7,19 @@ RcppIdent::RcppIdent()
 
 void RcppIdent::open(const string& fileName)
 {
-
     filename = fileName;
     mzid = new IdentDataFile(fileName);
-
 }
 
-string RcppIdent::getCreationDate(  )
+Rcpp::List RcppIdent::getIDInfo(  )
 {
-
-    return mzid->creationDate;
+	provider = mzid->provider.contactRolePtr.get()->name();
+    date = mzid->creationDate;
+    
+	return Rcpp::List::create(
+                   Rcpp::_["FileProvider"]	= provider,
+                   Rcpp::_["CreationDate"]	= date
+               );
+    
 }
 

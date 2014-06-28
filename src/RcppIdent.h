@@ -19,8 +19,7 @@ class RcppIdent
 private:
 
     IdentDataFile *mzid;
-    string date;
-    string filename;
+    string date, filename, provider;
 
 public:
 
@@ -28,7 +27,7 @@ public:
 
     void open(const string& fileNames);
     
-    string getCreationDate();
+    Rcpp::List getIDInfo();
 };
 
 #endif

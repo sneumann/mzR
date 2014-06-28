@@ -29,7 +29,7 @@ exportMethods(close,
               softwareInfo,
               sampleInfo,
               sourceInfo,
-              dateInfo)
+              idInfo)
 
 exportClasses("mzR",
               "mzRramp",
