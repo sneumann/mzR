@@ -90,7 +90,7 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
                                      Rcpp::_["analyzer"]      = std::string(adapter.analyzer()),
                                      Rcpp::_["detector"]      = std::string(adapter.detector()),
                                      Rcpp::_["software"]      = sp[0]->id + " " + sp[0]->version,
-                                     Rcpp::_["sample"]		  = (sample.size()>0?sample[0]->name:"No info"),
+                                     Rcpp::_["sample"]		  = (sample.size()>0?sample[0]->name+sample[0]->id:"No info"),
                                      Rcpp::_["source"]        = (scansetting.size()>0?scansetting[0]->sourceFilePtrs[0]->location:"No info")
                                  ) ;
 

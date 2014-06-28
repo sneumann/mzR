@@ -125,20 +125,20 @@ setMethod("runInfo",
 setMethod("softwareInfo",
           signature="mzRpwiz",
           function(object) {
-            hd <- header(object)      
-            return(hd$software)
+            info <- instrumentInfo(object) 
+            return(info$software)
           })
           
 setMethod("sampleInfo",
           signature="mzRpwiz",
           function(object) {
-            hd <- header(object)      
-            return(hd$sample)
+            info <- instrumentInfo(object)  
+            return(info$sample)
           })
           
 setMethod("sourceInfo",
           signature="mzRpwiz",
           function(object) {
-            hd <- header(object)      
-            return(hd$source)
+            info <- instrumentInfo(object)   
+            return(info$source)
           })
