@@ -1,8 +1,8 @@
-library(mzR)
-require(msdata) || stop("Cannot find msdata package")
-require(RUnit)
+#library(mzR)
+#require(msdata) || stop("Cannot find msdata package")
+#require(RUnit)
 
-#test.polarity <- function()
+test.polarity <- function()
 {
 
     mzdatapath <- file.path(find.package("msdata"))
@@ -11,7 +11,7 @@ require(RUnit)
     id <- mzR:::rampOpen(ms1)
     raw <- mzR:::rampRawData(id)
 
-    checkEquals(length(raw$polarity), 17)
+    checkEquals(length(raw$polarity), 112)
 
 }
     
