@@ -31,25 +31,61 @@ Rcpp::List RcppIdent::getIDInfo(  )
     }
     
     vector<SpectrumIdentificationProtocolPtr> sip = mzid->analysisProtocolCollection.spectrumIdentificationProtocol;
-    vector<SearchModificationPtr> sm = sip[0]->modificationParams;
-    Rcpp::StringVector mod(sm.size());
     
-    for (size_t i = 0; i < sm.size(); i++)
+    vector<EnzymePtr> enz = sip[0]->enzymes.enzymes;
+    Rcpp::List enzymes;
+    Rcpp::StringVector name(enz.size());
+    Rcpp::StringVector nTermGain(enz.size());
+    Rcpp::StringVector cTermGain(enz.size());
+    Rcpp::StringVector minDistance(enz.size());
+    Rcpp::StringVector missedCleavages(enz.size());
+    
+    for (size_t i = 0; i < enz.size(); i++)
     {
-		mod[i] = lexical_cast<string>(sm[i]->massDelta) + " (";
-		for (size_t j = 0; j < sm[i]->residues.size(); j++)
-        {
-			mod[i] += sm[i]->residues[j];
-        }        
-        mod[i] += ")";
+		name[i] = cvTermInfo(cleavageAgent(*enz[i].get())).name;
+		nTermGain[i] = enz[i]->nTermGain;
+		cTermGain[i] = enz[i]->cTermGain;
+		minDistance[i] = enz[i]->minDistance;
+        missedCleavages[i] = enz[i]->missedCleavages;
     }
+    enzymes = Rcpp::List::create(
+					Rcpp::_["name"]  = name,
+					Rcpp::_["nTermGain"]  = nTermGain,
+					Rcpp::_["cTermGain"]  = cTermGain,
+					Rcpp::_["minDistance"]  = minDistance,
+					Rcpp::_["missedCleavages"]  = missedCleavages
+    );
+    
+    vector<SpectraDataPtr> sd = mzid->dataCollection.inputs.spectraData;
+    Rcpp::StringVector format(sd.size());
+    for (size_t i = 0; i < sd.size(); i++)
+    {
+        format[i] = sd[i]->fileFormat.name();
+    }
+    
+    vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
+    Rcpp::StringVector peptide(pep.size());
+
+    for (size_t i = 0; i < pep.size(); i++) {
+		peptide[i] = pep[i]->peptideSequence;
+
+        if (pep[i]->modification.size() != 0) {
+          peptide[i] += " Modification: ";
+          for (size_t j = 0; j < pep[i]->modification.size(); j++) {
+            peptide[i] += "mass: " + lexical_cast<string>(round(pep[i]->modification[j]->monoisotopicMassDelta*1000)/1000);
+            peptide[i] += " location:" +  lexical_cast<string>(pep[i]->modification[j]->location) + ";";
+          }
+        }
+      }
     
 	return Rcpp::List::create(
                    Rcpp::_["FileProvider"]	= provider,
                    Rcpp::_["CreationDate"]	= date,
                    Rcpp::_["software"]	= software,
                    Rcpp::_["database"]	= database,
-                   Rcpp::_["modification"]	= mod
+                   Rcpp::_["enzymes"]	= enzymes,
+                   Rcpp::_["SpectraDataFormat"]	= format,
+                   Rcpp::_["peptide"]	= peptide
                );
     
 }
