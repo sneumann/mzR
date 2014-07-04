@@ -1,6 +1,13 @@
 #ifndef _mzR_RCPP_IDENT_H
 #define _mzR_RCPP_IDENT_H
 
+#include "Rcpp.h"
+
+#if defined(__MINGW32__)
+#undef Realloc
+#undef Free
+#endif
+
 #include "pwiz/data/identdata/IdentDataFile.hpp"
 #include "pwiz/data/identdata/DefaultReaderList.hpp"
 #include "pwiz/data/identdata/IO.hpp"
@@ -10,7 +17,9 @@
 #include <string>
 #include <iostream>
 
-#include "Rcpp.h"
+#if defined(__MINGW32__)
+#include <windows.h>
+#endif
 
 using namespace pwiz::identdata;
 

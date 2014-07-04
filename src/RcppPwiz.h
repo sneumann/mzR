@@ -1,11 +1,20 @@
 #ifndef _mzR_RCPP_PWIZ_H
 #define _mzR_RCPP_PWIZ_H
 
+#include "Rcpp.h"
+
+#if defined(__MINGW32__)
+#undef Realloc
+#undef Free
+#endif
+
 #include "pwiz/data/msdata/RAMPAdapter.hpp"
 #include "pwiz/data/msdata/MSDataFile.hpp"
 #include "pwiz/data/msdata/LegacyAdapter.hpp"
-#include "pwiz/data/msdata/Serializer_mz5.hpp"
 #include "pwiz/data/msdata/Serializer_mzML.hpp"
+#ifndef __MINGW32__
+	#include "pwiz/data/msdata/Serializer_mz5.hpp"
+#endif
 #include "pwiz/data/msdata/Serializer_mzXML.hpp"
 #include "pwiz/data/msdata/Serializer_MGF.hpp"
 #include "pwiz/data/msdata/SpectrumInfo.hpp"
@@ -22,12 +31,14 @@
 #include <string>
 #include <iostream>
 
-#include "Rcpp.h"
+#if defined(__MINGW32__)
+#include <windows.h>
+#endif
 
 using namespace pwiz::cv;
 using namespace pwiz::msdata;
 using namespace pwiz::util;
-//using namespace pwiz::minimxml;
+
 
 class RcppPwiz
 {

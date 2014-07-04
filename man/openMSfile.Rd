@@ -52,7 +52,7 @@
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
                     full.names=TRUE, recursive = TRUE)
-  mz <- openMSfile(file, "pwiz")
+  mz <- openMSfile(file, "ramp")
   fileName(mz)
   isInitialized(mz)
   runInfo(mz)

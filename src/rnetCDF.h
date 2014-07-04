@@ -1,3 +1,5 @@
+#include <netcdf.h>
+
 void NetCDFStrError(const int *ncerr, const int *len, char *errortext[]);
 
 void NetCDFOpen(const char *fileName[], int *ncid, int *status);

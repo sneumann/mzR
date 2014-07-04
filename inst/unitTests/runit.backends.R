@@ -1,7 +1,7 @@
 test.backends <- function() {
     library("mzR")
     library("msdata")
-    f <- system.file("microtofq", "MSMSpos20_6.mzML", package = "msdata")
+    f <- system.file("lockmass", "LockMass_test.mzXML", package = "msdata")
     mr <- openMSfile(f, backend = "ramp")
     checkTrue(validObject(mr))
     mp <- openMSfile(f, backend = "pwiz")

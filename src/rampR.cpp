@@ -1,12 +1,29 @@
+#include<Rcpp.h>
+
+#ifdef __MINGW32__
+#undef Realloc
+#undef Free
+//#include <winsock2.h>
+#endif
+
+
 #include <stdio.h>
 
-#include "pwiz/data/msdata/ramp/ramp.h"
-
 #include <R.h>
-#include <Rdefines.h>
+#include <Rinternals.h>
+
+#include "ramp.h"
 
 #define MAX_RAMP_FILES 100
-
+#define NEW_LIST(n)		Rf_allocVector(VECSXP,n)
+#define NEW_CHARACTER(n)	Rf_allocVector(STRSXP,n)
+#define SET_NAMES(x, n)		Rf_setAttrib(x, R_NamesSymbol, n)
+#define SET_CLASS(x, n)		Rf_setAttrib(x, R_ClassSymbol, n)
+#define INTEGER_POINTER(x)	INTEGER(x)
+#define NEW_INTEGER(n)		Rf_allocVector(INTSXP,n)
+#define NEW_NUMERIC(n)		Rf_allocVector(REALSXP,n)
+#define NUMERIC_POINTER(x)	REAL(x)
+#define SET_LEVELS(x, l)       	Rf_setAttrib(x, R_LevelsSymbol, l)
 extern"C" {
 
 typedef struct {
@@ -159,13 +176,15 @@ void RampRNumScans(const int *rampid, int *numscans, int *status) {
 SEXP RampRScanHeaders(SEXP rampid) {
 
     int               i, j, id, numscans, ncol = 18, ntypes = 0, stlen = 10;
-    SEXP              result = PROTECT(NEW_LIST(ncol)), temp, names;
+    SEXP              result = PROTECT(NEW_LIST(ncol));
+	SEXP              temp;
+	SEXP              names;
     struct            ScanHeaderStruct scanHeader;
     RAMPFILE          *file;
     ramp_fileoffset_t *index;
     char              rowname[20], *scanTypes;
     int               *seqNum, *acquisitionNum, *msLevel, *peaksCount,
-      *precursorScanNum, *precursorCharge, *scanType;
+      *precursorScanNum, *precursorCharge, *scanType, *polarity;
     double            *totIonCurrent, *retentionTime, *basePeakMZ, 
                       *basePeakIntensity, *collisionEnergy, *ionisationEnergy,
 	              *lowMZ, *highMZ, *precursorMZ, *precursorIntensity;
@@ -173,12 +192,12 @@ SEXP RampRScanHeaders(SEXP rampid) {
     if (!rampInitalized)
         RampRInit();
     
-    if (GET_LENGTH(rampid) != 1)
-        error("rampid must be of length 1");
+    if (Rf_length(rampid) != 1)
+        Rf_error("rampid must be of length 1");
     
     id = *INTEGER_POINTER(rampid);
     if (id < 0 || id >= MAX_RAMP_FILES || !rampStructs[id].file)
-        error("invalid rampid");
+        Rf_error("invalid rampid");
     
     file = rampStructs[id].file;
     index = rampStructs[id].index;
@@ -186,86 +205,86 @@ SEXP RampRScanHeaders(SEXP rampid) {
     
     SET_NAMES(result, names = NEW_CHARACTER(ncol));
     
-    setAttrib(result, install("row.names"), temp = NEW_CHARACTER(numscans));
+    Rf_setAttrib(result, Rf_install("row.names"), temp = NEW_CHARACTER(numscans));
     for (i = 0; i < numscans; i++) {
         sprintf(rowname, "%i", i+1);
-        SET_STRING_ELT(temp, i, mkChar(rowname));
+        SET_STRING_ELT(temp, i, Rf_mkChar(rowname));
     }
     
     SET_CLASS(result, temp = NEW_CHARACTER(1));
-    SET_STRING_ELT(temp, 0, mkChar("data.frame"));
+    SET_STRING_ELT(temp, 0, Rf_mkChar("data.frame"));
     
     SET_VECTOR_ELT(result, 0, temp = NEW_INTEGER(numscans));
     seqNum = INTEGER_POINTER(temp);
-    SET_STRING_ELT(names, 0, mkChar("seqNum"));
+    SET_STRING_ELT(names, 0, Rf_mkChar("seqNum"));
     
     SET_VECTOR_ELT(result, 1, temp = NEW_INTEGER(numscans));
     acquisitionNum = INTEGER_POINTER(temp);
-    SET_STRING_ELT(names, 1, mkChar("acquisitionNum"));
+    SET_STRING_ELT(names, 1, Rf_mkChar("acquisitionNum"));
     
     SET_VECTOR_ELT(result, 2, temp = NEW_INTEGER(numscans));
     msLevel = INTEGER_POINTER(temp);
-    SET_STRING_ELT(names, 2, mkChar("msLevel"));
+    SET_STRING_ELT(names, 2, Rf_mkChar("msLevel"));
     
     SET_VECTOR_ELT(result, 3, temp = NEW_INTEGER(numscans));
     peaksCount = INTEGER_POINTER(temp);
-    SET_STRING_ELT(names, 3, mkChar("peaksCount"));
+    SET_STRING_ELT(names, 3, Rf_mkChar("peaksCount"));
     
     SET_VECTOR_ELT(result, 4, temp = NEW_NUMERIC(numscans));
     totIonCurrent = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 4, mkChar("totIonCurrent"));
+    SET_STRING_ELT(names, 4, Rf_mkChar("totIonCurrent"));
     
     SET_VECTOR_ELT(result, 5, temp = NEW_NUMERIC(numscans));
     retentionTime = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 5, mkChar("retentionTime"));
+    SET_STRING_ELT(names, 5, Rf_mkChar("retentionTime"));
     
     SET_VECTOR_ELT(result, 6, temp = NEW_NUMERIC(numscans));
     basePeakMZ = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 6, mkChar("basePeakMZ"));
+    SET_STRING_ELT(names, 6, Rf_mkChar("basePeakMZ"));
     
     SET_VECTOR_ELT(result, 7, temp = NEW_NUMERIC(numscans));
     basePeakIntensity = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 7, mkChar("basePeakIntensity"));
+    SET_STRING_ELT(names, 7, Rf_mkChar("basePeakIntensity"));
     
     SET_VECTOR_ELT(result, 8, temp = NEW_NUMERIC(numscans));
     collisionEnergy = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 8, mkChar("collisionEnergy"));
+    SET_STRING_ELT(names, 8, Rf_mkChar("collisionEnergy"));
     
     SET_VECTOR_ELT(result, 9, temp = NEW_NUMERIC(numscans));
     ionisationEnergy = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 9, mkChar("ionisationEnergy"));
+    SET_STRING_ELT(names, 9, Rf_mkChar("ionisationEnergy"));
     
     SET_VECTOR_ELT(result, 10, temp = NEW_NUMERIC(numscans));
     lowMZ = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 10, mkChar("lowMZ"));
+    SET_STRING_ELT(names, 10, Rf_mkChar("lowMZ"));
     
     SET_VECTOR_ELT(result, 11, temp = NEW_NUMERIC(numscans));
     highMZ = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 11, mkChar("highMZ"));
+    SET_STRING_ELT(names, 11, Rf_mkChar("highMZ"));
     
     SET_VECTOR_ELT(result, 12, temp = NEW_INTEGER(numscans));
     precursorScanNum = INTEGER_POINTER(temp);
-    SET_STRING_ELT(names, 12, mkChar("precursorScanNum"));
+    SET_STRING_ELT(names, 12, Rf_mkChar("precursorScanNum"));
     
     SET_VECTOR_ELT(result, 13, temp = NEW_NUMERIC(numscans));
     precursorMZ = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 13, mkChar("precursorMZ"));
+    SET_STRING_ELT(names, 13, Rf_mkChar("precursorMZ"));
     
     SET_VECTOR_ELT(result, 14, temp = NEW_INTEGER(numscans));
     precursorCharge = INTEGER_POINTER(temp);
-    SET_STRING_ELT(names, 14, mkChar("precursorCharge"));
+    SET_STRING_ELT(names, 14, Rf_mkChar("precursorCharge"));
     
     SET_VECTOR_ELT(result, 15, temp = NEW_INTEGER(numscans));
     scanType = INTEGER_POINTER(temp);
-    SET_STRING_ELT(names, 15, mkChar("scanType"));
+    SET_STRING_ELT(names, 15, Rf_mkChar("scanType"));
 
     SET_VECTOR_ELT(result, 16, temp = NEW_NUMERIC(numscans));
     precursorIntensity = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 16, mkChar("precursorIntensity"));
+    SET_STRING_ELT(names, 16, Rf_mkChar("precursorIntensity"));
 
-    //SET_VECTOR_ELT(result, 17, temp = NEW_INTEGER(numscans));
-    //polarity = INTEGER_POINTER(temp);
-    //SET_STRING_ELT(names, 17, mkChar("polarity"));
+    SET_VECTOR_ELT(result, 17, temp = NEW_INTEGER(numscans));
+    polarity = INTEGER_POINTER(temp);
+    SET_STRING_ELT(names, 17, Rf_mkChar("polarity"));
         
     scanTypes = S_alloc(stlen*SCANTYPE_LENGTH, sizeof(char));
     
@@ -286,7 +305,7 @@ SEXP RampRScanHeaders(SEXP rampid) {
         precursorScanNum[i] = scanHeader.precursorScanNum;
         precursorMZ[i] = scanHeader.precursorMZ;
         precursorIntensity[i] = scanHeader.precursorIntensity;
-	//polarity[i] = scanHeader.polarity;
+	polarity[i] = scanHeader.polarity;
         precursorCharge[i] = scanHeader.precursorCharge;
         for (j = 0; j < ntypes; j++)
             if (!strcmp(scanHeader.scanType, scanTypes+j*SCANTYPE_LENGTH)) {
@@ -307,10 +326,10 @@ SEXP RampRScanHeaders(SEXP rampid) {
     
     SET_LEVELS(VECTOR_ELT(result, 16), temp = NEW_CHARACTER(ntypes));
     for (i = 0; i < ntypes; i++)
-        SET_STRING_ELT(temp, i, mkChar(scanTypes+i*SCANTYPE_LENGTH));
+        SET_STRING_ELT(temp, i, Rf_mkChar(scanTypes+i*SCANTYPE_LENGTH));
     
     SET_CLASS(VECTOR_ELT(result, 15), temp = NEW_CHARACTER(1));
-    SET_STRING_ELT(temp, 0, mkChar("factor"));
+    SET_STRING_ELT(temp, 0, Rf_mkChar("factor"));
     
     UNPROTECT(1);
     
@@ -330,57 +349,57 @@ SEXP RampRSIPeaks(SEXP rampid, SEXP seqNum, SEXP peaksCount) {
     if (!rampInitalized)
         RampRInit();
     
-    if (GET_LENGTH(rampid) != 1)
-        error("rampid must be of length 1");
+    if (Rf_length(rampid) != 1)
+        Rf_error("rampid must be of length 1");
     
-    if (GET_LENGTH(seqNum) != GET_LENGTH(peaksCount))
-        error("seqNum and peaksCount must be the same length");
+    if (Rf_length(seqNum) != Rf_length(peaksCount))
+        Rf_error("seqNum and peaksCount must be the same length");
     
     id = *INTEGER_POINTER(rampid);
     if (id < 0 || id >= MAX_RAMP_FILES || !rampStructs[id].file)
-        error("invalid rampid");
+        Rf_error("invalid rampid");
     
     file = rampStructs[id].file;
     index = rampStructs[id].index;
     
     seqNumPtr = INTEGER_POINTER(seqNum);
     peaksCountPtr = INTEGER_POINTER(peaksCount);
-    numscans = GET_LENGTH(seqNum);
+    numscans = Rf_length(seqNum);
     
     SET_NAMES(result, names = NEW_CHARACTER(3));
     
     SET_VECTOR_ELT(result, 0, temp = NEW_INTEGER(numscans));
     scanindex = INTEGER_POINTER(temp);
-    SET_STRING_ELT(names, 0, mkChar("scanindex"));
+    SET_STRING_ELT(names, 0, Rf_mkChar("scanindex"));
     
     numpeaks = 0;
     for (i = 0; i < numscans; i++) {
         if (seqNumPtr[i] > rampStructs[id].numscans)
-            error("invalid number in seqnum");
+            Rf_error("invalid number in seqnum");
         scanindex[i] = numpeaks;
         numpeaks += peaksCountPtr[i];
     }
     
     SET_VECTOR_ELT(result, 1, temp = NEW_NUMERIC(numpeaks));
     mz = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 1, mkChar("mz"));
+    SET_STRING_ELT(names, 1, Rf_mkChar("mz"));
     
     SET_VECTOR_ELT(result, 2, temp = NEW_NUMERIC(numpeaks));
     intensity = NUMERIC_POINTER(temp);
-    SET_STRING_ELT(names, 2, mkChar("intensity"));
+    SET_STRING_ELT(names, 2, Rf_mkChar("intensity"));
     
     for (i = 0; i < numscans; i++) {
         if (peaksCountPtr[i] != readPeaksCount(file, index[seqNumPtr[i]]))
-            error("invalid number in peaksCount");
+            Rf_error("invalid number in peaksCount");
         if (peaksCountPtr[i] == 0)
             continue;
         peaks = readPeaks(file, index[seqNumPtr[i]]);
         if (!peaks)
-            error("unknown problem while reading peaks");
+            Rf_error("unknown problem while reading peaks");
         peaksPtr = peaks;
         for (j = 0; j < peaksCountPtr[i]; j++) {
             if (*peaksPtr < 0)
-                error("unexpected end of peak list");
+                Rf_error("unexpected end of peak list");
             mz[j+scanindex[i]] = *(peaksPtr++);
 		    intensity[j+scanindex[i]] = *(peaksPtr++);
         }

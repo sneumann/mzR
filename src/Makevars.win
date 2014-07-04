@@ -29,6 +29,7 @@ PWIZOBJECTS=\
 ./boost/filesystem/src/windows_file_codecvt.o \
 ./boost/filesystem/src/codecvt_error_category.o \
 ./boost/thread/src/win32/thread.o \
+./boost_aux/boost/nowide/iostream.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
@@ -38,10 +39,8 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/SpectrumList_MGF.o \
 ./pwiz/data/msdata/DefaultReaderList.o \
 ./pwiz/data/msdata/ChromatogramList_mzML.o \
-./pwiz/data/msdata/ChromatogramList_mz5.o \
 ./pwiz/data/msdata/examples.o \
 ./pwiz/data/msdata/Serializer_mzML.o \
-./pwiz/data/msdata/Serializer_mz5.o \
 ./pwiz/data/msdata/Serializer_MSn.o \
 ./pwiz/data/msdata/Reader.o \
 ./pwiz/data/msdata/Serializer_MGF.o \
@@ -53,7 +52,6 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSData.o \
 ./pwiz/data/msdata/References.o \
 ./pwiz/data/msdata/SpectrumList_mzXML.o \
-./pwiz/data/msdata/SpectrumList_mz5.o \
 ./pwiz/data/msdata/IO.o \
 ./pwiz/data/msdata/SpectrumList_BTDX.o \
 ./pwiz/data/msdata/SpectrumInfo.o \
@@ -64,15 +62,24 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
 ./pwiz/data/msdata/Index_mzML.o \
-./pwiz/data/msdata/mz5/Connection_mz5.o \
-./pwiz/data/msdata/mz5/Configuration_mz5.o \
-./pwiz/data/msdata/mz5/Datastructures_mz5.o \
-./pwiz/data/msdata/mz5/ReferenceRead_mz5.o \
-./pwiz/data/msdata/mz5/ReferenceWrite_mz5.o \
-./pwiz/data/msdata/mz5/Translator_mz5.o \
-./pwiz/data/msdata/ramp/ramp.o \
-./pwiz/data/msdata/ramp/ramp_base64.o \
-./pwiz/data/msdata/ramp/wglob.o \
+./pwiz/data/identdata/IdentDataFile.o \
+./pwiz/data/identdata/IdentData.o \
+./pwiz/data/identdata/DefaultReaderList.o \
+./pwiz/data/identdata/Reader.o \
+./pwiz/data/identdata/Serializer_protXML.o \
+./pwiz/data/identdata/Serializer_pepXML.o \
+./pwiz/data/identdata/Serializer_mzid.o \
+./pwiz/data/identdata/IO.o \
+./pwiz/data/identdata/Version.o \
+./pwiz/data/identdata/References.o \
+./pwiz/data/common/Unimod.o \
+./pwiz/data/proteome/Modification.o \
+./pwiz/data/proteome/Digestion.o \
+./pwiz/data/proteome/Peptide.o \
+./pwiz/data/proteome/AminoAcid.o \
+./pwiz/utility/chemistry/Chemistry.o \
+./pwiz/utility/chemistry/ChemistryData.o \
+./pwiz/utility/chemistry/MZTolerance.o \
 ./pwiz/utility/misc/IntegerSet.o \
 ./pwiz/utility/misc/Base64.o \
 ./pwiz/utility/misc/IterationListener.o \
@@ -83,51 +90,21 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
 ./pwiz/utility/misc/sha1calc.o \
-./hdf5/c++/src/H5AbstractDs.o \
-./hdf5/c++/src/H5ArrayType.o \
-./hdf5/c++/src/H5AtomType.o \
-./hdf5/c++/src/H5Attribute.o \
-./hdf5/c++/src/H5CommonFG.o \
-./hdf5/c++/src/H5CompType.o \
-./hdf5/c++/src/H5DataSet.o \
-./hdf5/c++/src/H5DataSpace.o \
-./hdf5/c++/src/H5DataType.o \
-./hdf5/c++/src/H5DcreatProp.o \
-./hdf5/c++/src/H5DxferProp.o \
-./hdf5/c++/src/H5EnumType.o \
-./hdf5/c++/src/H5Exception.o \
-./hdf5/c++/src/H5FaccProp.o \
-./hdf5/c++/src/H5FcreatProp.o \
-./hdf5/c++/src/H5File.o \
-./hdf5/c++/src/H5FloatType.o \
-./hdf5/c++/src/H5Group.o \
-./hdf5/c++/src/H5IdComponent.o \
-./hdf5/c++/src/H5IntType.o \
-./hdf5/c++/src/H5Library.o \
-./hdf5/c++/src/H5Object.o \
-./hdf5/c++/src/H5PredType.o \
-./hdf5/c++/src/H5PropList.o \
-./hdf5/c++/src/H5StrType.o \
-./hdf5/c++/src/H5VarLenType.o \
-./hdf5/src/H5FDmulti.o \
+./pwiz/data/msdata/ramp/wglob.o \
 ./random_access_gzFile.o
 
 
-#./boost/thread/src/pthread/once.o \
-
-MZROBJECTS=cramp.o RcppRamp.o RcppRampModule.o rnetCDF.o
+MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
 
 OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 
-PWIZ_LDFLAGS=-L./pwiz
-PWIZ_LDFLAGS=-lpthread
-PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./hdf5/src -I./hdf5/c++/src -I./hdf5/src/windows
+PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)
-PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -D_MSC_VER -DWIN32_LEAN_AND_MEAN -fgnu89-inline
+PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
+PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -D_MSC_VER  -fgnu89-inline
 
-PKG_LIBS = $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lz
+PKG_LIBS = $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lz 
 
 all: clean $(SHLIB)
 

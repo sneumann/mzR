@@ -68,8 +68,6 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/mz5/ReferenceRead_mz5.o \
 ./pwiz/data/msdata/mz5/ReferenceWrite_mz5.o \
 ./pwiz/data/msdata/mz5/Translator_mz5.o \
-./pwiz/data/msdata/ramp/ramp.o \
-./pwiz/data/msdata/ramp/ramp_base64.o \
 ./pwiz/data/identdata/IdentDataFile.o \
 ./pwiz/data/identdata/IdentData.o \
 ./pwiz/data/identdata/DefaultReaderList.o \
@@ -127,7 +125,7 @@ PWIZOBJECTS=\
 ./hdf5/src/H5FDmulti.o \
 ./random_access_gzFile.o
 
-MZROBJECTS=cramp.o   RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
+MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
 
 OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 

@@ -12,7 +12,7 @@
  * http://hdfgroup.org/HDF5/doc/Copyright.html.  If you do not have          *
  * access to either file, you may request a copy from help@hdfgroup.org.     *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+#include <Rcpp.h>
 #ifdef OLD_HEADER_FILENAME
 #include <iostream.h>
 #else
@@ -35,7 +35,6 @@
 #include "H5File.h"
 #include "H5Attribute.h"
 #include "H5private.h"		// for HDfree
-#include <Rcpp.h>
 
 
 #ifndef H5_NO_NAMESPACE

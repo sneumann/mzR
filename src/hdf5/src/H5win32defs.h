@@ -45,10 +45,10 @@ typedef __int64             h5_stat_size_t;
 #define HDgetcwd(S,Z)       _getcwd(S,Z)
 #define HDgetdcwd(D,S,Z)    _getdcwd(D,S,Z)
 
-struct timezone {
-    int tz_minuteswest;
-    int tz_dsttime;
-};
+//struct timezone {
+//    int tz_minuteswest;
+//    int tz_dsttime;
+//};
 
 #ifdef __cplusplus
         extern "C" {
