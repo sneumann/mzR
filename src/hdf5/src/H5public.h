@@ -13,6 +13,10 @@
  * access to either file, you may request a copy from help@hdfgroup.org.     *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+
+#define CLANG_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
+
 /*
  * This file contains public declarations for the HDF5 module.
  */
@@ -28,7 +32,14 @@
  * it via H5public.h.  The #ifndef _H5public_H guard above would
  * prevent repeated include.
  */
-#include "H5pubconf.h"		/*from configure                             */
+ 
+#if (GCC_VERSION >= 40603 || CLANG_VERSION >= 30000)
+	#include "./posix/H5pubconf.h"
+#else
+	#include "./darwin/H5pubconf.h"
+#endif 
+
+/*from configure                             */
 
 /* API Version macro wrapper definitions */
 #include "H5version.h"
