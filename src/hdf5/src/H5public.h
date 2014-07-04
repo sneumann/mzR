@@ -33,11 +33,8 @@
  * prevent repeated include.
  */
  
-#if (GCC_VERSION >= 40603 || CLANG_VERSION >= 30000)
-	#include "./posix/H5pubconf.h"
-#else
-	#include "./darwin/H5pubconf.h"
-#endif 
+	#include "H5pubconf.h"
+
 
 /*from configure                             */
 
