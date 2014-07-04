@@ -65,8 +65,4 @@ using std::overflow_error;
 using std::range_error;
 using std::underflow_error;
 
-
-#include <Rcpp.h>
-using Rcpp::Rcout;
-using Rcpp::Rcerr;
 #endif // _STD_HPP_
