@@ -22,11 +22,13 @@ PWIZOBJECTS=\
 ./pwiz/utility/minimxml/SAXParser.o \
 ./boost/iostreams/src/zlib.o \
 ./boost/iostreams/src/file_descriptor.o \
-./boost/thread/src/pthread/once.o \
-./boost/thread/src/pthread/thread.o \
 ./boost/filesystem/src/operations.o \
 ./boost/filesystem/src/path.o \
+./boost/filesystem/src/path_traits.o \
 ./boost/filesystem/src/utf8_codecvt_facet.o \
+./boost/filesystem/src/windows_file_codecvt.o \
+./boost/filesystem/src/codecvt_error_category.o \
+./boost/thread/src/win32/thread.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
@@ -70,6 +72,7 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/mz5/Translator_mz5.o \
 ./pwiz/data/msdata/ramp/ramp.o \
 ./pwiz/data/msdata/ramp/ramp_base64.o \
+./pwiz/data/msdata/ramp/wglob.o \
 ./pwiz/utility/misc/IntegerSet.o \
 ./pwiz/utility/misc/Base64.o \
 ./pwiz/utility/misc/IterationListener.o \
@@ -118,7 +121,7 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
 
 PWIZ_LDFLAGS=-L./pwiz
 PWIZ_LDFLAGS=-lpthread
-PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./hdf5/src -I./hdf5/c++/src -I./hdf5/src/posix
+PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -I./boost -I./hdf5/src -I./hdf5/c++/src -I./hdf5/src/windows
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)
