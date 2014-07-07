@@ -42,7 +42,7 @@
 #include "H5version.h"
 
 #ifdef H5_HAVE_FEATURES_H
-#include <features.h>           /*for setting POSIX, BSD, etc. compatibility */
+#undef H5_HAVE_FEATURES_H
 #endif
 #ifdef H5_HAVE_SYS_TYPES_H
 #include <sys/types.h>
