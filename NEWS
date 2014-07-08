@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.11.6
+-------------------------
+ o removed one redundant parser which fixes inconsistencies 
+   in the scan headers
+
 CHANGES IN VERSION 1.11.5
 -------------------------
  o restored the polarity extraction

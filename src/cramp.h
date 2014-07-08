@@ -30,7 +30,7 @@ cramp.hpp -- renamed cramp.h to avoid R checker warning
 #define CRAMP_H_INCLUDED 
 
 
-#include "ramp.h" // stuff we expose to C, structs etc
+#include "pwiz/data/msdata/ramp/ramp.h" // stuff we expose to C, structs etc
 
 #include <iostream>
 #include <string.h>
