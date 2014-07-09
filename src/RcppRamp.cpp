@@ -128,10 +128,15 @@ RcppRamp::getScanHeaderInfo ( int whichScan  ) {
     rampScanInfo *info = ramp->getScanHeaderInfo( whichScan );
     ScanHeaderStruct data = info->m_data;
     delete info;
-    return Rcpp::List::create(
+
+
+    Rcpp::List l1 = Rcpp::List::create(
 			     Rcpp::_["seqNum"]              = data.seqNum,
 			     Rcpp::_["acquisitionNum"]      = data.acquisitionNum,
 			     Rcpp::_["msLevel"]      = data.msLevel,
+			     Rcpp::_["polarity"]      = data.polarity);
+
+    Rcpp::List l2 = Rcpp::List::create(
 			     Rcpp::_["peaksCount"]      = data.peaksCount,
 			     Rcpp::_["totIonCurrent"]      = data.totIonCurrent,
 			     Rcpp::_["retentionTime"]      = data.retentionTime,
@@ -156,6 +161,8 @@ RcppRamp::getScanHeaderInfo ( int whichScan  ) {
 			     Rcpp::_["mergedResultEndScanNum"]      = data.mergedResultEndScanNum
 			     //			     Rcpp::_["filePosition"]      = data.filePosition
 			     ) ;
+
+    return  Rcpp::Language("c",l1,l2).eval() ;
   }
   Rprintf("Warning: Ramp not yet initialized.\n ");
   return Rcpp::List::create( );
@@ -172,6 +179,7 @@ RcppRamp::getAllScanHeaderInfo ( ) {
       Rcpp::IntegerVector seqNum(N); // number in sequence observed file (1-based)
       Rcpp::IntegerVector acquisitionNum(N); // scan number as declared in File (may be gaps)
       Rcpp::IntegerVector  msLevel(N);
+      Rcpp::IntegerVector  polarity(N);
       Rcpp::IntegerVector  peaksCount(N);
       Rcpp::NumericVector totIonCurrent(N);
       Rcpp::NumericVector retentionTime(N);        /* in seconds */
@@ -200,6 +208,7 @@ RcppRamp::getAllScanHeaderInfo ( ) {
 	seqNum[whichScan-1] = scanHeader.seqNum;
 	acquisitionNum[whichScan-1] = scanHeader.acquisitionNum;
 	msLevel[whichScan-1] = scanHeader.msLevel;
+	polarity[whichScan-1] = scanHeader.polarity;
 	peaksCount[whichScan-1] = scanHeader.peaksCount;
 	totIonCurrent[whichScan-1] = scanHeader.totIonCurrent;
 	retentionTime[whichScan-1] = scanHeader.retentionTime;
@@ -218,7 +227,14 @@ RcppRamp::getAllScanHeaderInfo ( ) {
 	mergedResultStartScanNum[whichScan-1] = scanHeader.mergedResultStartScanNum;
 	mergedResultEndScanNum[whichScan-1] = scanHeader.mergedResultEndScanNum;
       }
+
       allScanHeaderInfo = Rcpp::DataFrame::create( 
+						  Rcpp::_["seqNum"]                   = seqNum,
+						  Rcpp::_["acquisitionNum"]           = acquisitionNum,
+						  Rcpp::_["msLevel"]                  = msLevel,
+						  Rcpp::_["polarity"]               = polarity);
+
+      Rcpp::DataFrame allScanHeaderInfo2 = Rcpp::DataFrame::create( 
 						  Rcpp::_["seqNum"]                   = seqNum,
 						  Rcpp::_["acquisitionNum"]           = acquisitionNum,
 						  Rcpp::_["msLevel"]                  = msLevel,
@@ -245,6 +261,7 @@ RcppRamp::getAllScanHeaderInfo ( ) {
 						  Rcpp::_["mergedResultStartScanNum"] = mergedResultStartScanNum,
 						  Rcpp::_["mergedResultEndScanNum"]   = mergedResultEndScanNum
 						   );
+      Rcpp::Language("cbind", allScanHeaderInfo, allScanHeaderInfo2).eval() ;      
       isInCacheAllScanHeaderInfo = TRUE;
     } else {
       // Rprintf("Read from cache.\n ");
