@@ -85,15 +85,35 @@ Rcpp::DataFrame RcppIdent::getPepInfo(  )
     for (size_t i = 0; i < pep.size(); i++) {
 		seq[i] = pep[i]->peptideSequence;
 		modification[i] = pep[i]->modification.size();
+
+    }
+    
+	return Rcpp::DataFrame::create(
+                   Rcpp::_["sequence"]	= seq,
+                   Rcpp::_["modNum"]	= modification
+               );
+    
+}
+
+Rcpp::List RcppIdent::getModInfo(  )
+{
+	vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
+	std::vector<std::string> seq;
+	std::vector<std::string> modification;
+    		
+    for (size_t i = 0; i < pep.size(); i++) {
+		
 		if(pep[i]->modification.size() > 0){
-			
-			Rcpp::Rcout << cvTermInfo(pep[i]->modification[0]->cvParams[0].cvid).name << std::endl;
+			for(size_t j = 0 ; j < pep[i]->modification.size(); j++){
+				seq.push_back(pep[i]->peptideSequence);
+				modification.push_back(cvTermInfo(pep[i]->modification[j]->cvParams[0].cvid).name);
+			}
 		}
     }
     
 	return Rcpp::List::create(
                    Rcpp::_["sequence"]	= seq,
-                   Rcpp::_["modNum"]	= modification
+                   Rcpp::_["name"]	= modification
                );
     
 }

@@ -39,6 +39,8 @@ public:
     Rcpp::List getIDInfo();
     
     Rcpp::DataFrame getPepInfo();
+    
+    Rcpp::List getModInfo();
 };
 
 #endif

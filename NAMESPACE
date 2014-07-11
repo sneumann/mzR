@@ -30,7 +30,8 @@ exportMethods(close,
               sampleInfo,
               sourceInfo,
               mzidInfo,
-              pepInfo)
+              pepInfo,
+              modInfo)
 
 exportClasses("mzR",
               "mzRramp",
