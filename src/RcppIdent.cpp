@@ -78,19 +78,37 @@ Rcpp::List RcppIdent::getIDInfo(  )
 Rcpp::DataFrame RcppIdent::getPepInfo(  )
 {
 	vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
+	vector<PeptideEvidencePtr> peptideEvidence = mzid->sequenceCollection.peptideEvidence;
     Rcpp::StringVector seq(pep.size());
     Rcpp::NumericVector modification(pep.size());
+    Rcpp::LogicalVector isDecoy(pep.size());
+    Rcpp::StringVector post(pep.size());
+    Rcpp::StringVector pre(pep.size());
+	Rcpp::NumericVector start(pep.size());
+	Rcpp::NumericVector end(pep.size());
+	Rcpp::StringVector DBSequenceID(pep.size());
 	
-		
     for (size_t i = 0; i < pep.size(); i++) {
 		seq[i] = pep[i]->peptideSequence;
 		modification[i] = pep[i]->modification.size();
-
+		isDecoy[i] = peptideEvidence[i]->isDecoy;
+		post[i] =  string(1, peptideEvidence[i]->post);
+		pre[i] = string(1, peptideEvidence[i]->pre);
+		start[i] = peptideEvidence[i]->start;
+		end[i] = peptideEvidence[i]->end;
+		DBSequenceID[i] = peptideEvidence[i]->dbSequencePtr->id;
+		
     }
     
 	return Rcpp::DataFrame::create(
                    Rcpp::_["sequence"]	= seq,
-                   Rcpp::_["modNum"]	= modification
+                   Rcpp::_["modNum"]	= modification,
+                   Rcpp::_["isDecoy"]	= isDecoy,
+                   Rcpp::_["post"]		= post,
+                   Rcpp::_["pre"]		= pre,
+                   Rcpp::_["start"]		= start,
+                   Rcpp::_["end"]		= end,
+                   Rcpp::_["DatabaseID"]= DBSequenceID
                );
     
 }
@@ -98,6 +116,7 @@ Rcpp::DataFrame RcppIdent::getPepInfo(  )
 Rcpp::DataFrame RcppIdent::getModInfo(  )
 {
 	vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
+
 	std::vector<std::string> seq;
 	std::vector<std::string> name;
 	std::vector<double> mass;
