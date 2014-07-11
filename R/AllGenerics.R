@@ -1,5 +1,5 @@
 setGeneric("runInfo", function(object) standardGeneric("runInfo"))
-setGeneric("idInfo", function(object) standardGeneric("idInfo"))
+setGeneric("mzidInfo", function(object) standardGeneric("mzidInfo"))
 setGeneric("instrumentInfo", function(object) standardGeneric("instrumentInfo"))
 setGeneric("softwareInfo", function(object) standardGeneric("softwareInfo"))
 setGeneric("sampleInfo", function(object) standardGeneric("sampleInfo"))

@@ -3,7 +3,7 @@
 \alias{mzR}
 \docType{package}
 \title{
-parser for mzXML, mzData and mzML files (mass spectrometry data)
+parser for mzXML, mzData, mzML and mzid files (mass spectrometry data)
 }
 \description{
   The mzR package is a library purely for accessing mass spectrometry

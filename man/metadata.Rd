@@ -10,6 +10,7 @@
 \alias{softwareInfo}
 \alias{sampleInfo}
 \alias{sourceInfo}
+\alias{mzidInfo}
 
 \title{
   Access the metadata from an \code{mzR} object.
@@ -26,6 +27,7 @@ softwareInfo(object)
 sampleInfo(object)
 sourceInfo(object)
 model(object)
+mzidInfo(object)
 }
 \arguments{
   \item{object}{An instantiated \code{mzR} object.}
@@ -42,6 +44,9 @@ model(object)
   information on sample, software using and original source file. 
   These individual pieces of information can also be directly
   accessed by the specific methods.
+  \code{mzidInfo} is used for the \code{mzR} object created from a mzid file.
+  It returns basic information on this mzid file including file provider,
+  creation date, software, database, enzymes and spectra data format.
 }
 
 

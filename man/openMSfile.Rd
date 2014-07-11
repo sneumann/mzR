@@ -4,6 +4,7 @@
 \alias{isInitialized}
 \alias{fileName}
 \alias{writeMSfile}
+\alias{openIDfile}
 
 \title{
   Create and check mzR objects from netCDF, mzXML, mzData or mzML files.
@@ -19,6 +20,7 @@
  
  writeMSfile(object, filename, outformat)
 
+ openIDfile(filename, verbose = FALSE )
 }
 \arguments{
   \item{filename}{ Path name of the netCDF, mzData, mzXML or mzML file to
@@ -34,7 +36,14 @@
   The \code{openMSfile} constructor will create a new format-specifc
   \code{mzR} object, open 'filename' file and all header information is
   loaded as a Rcpp module and made accessible through the \code{ramp} or \code{pwiz}
-  slot of the resulting object. 
+  slot of the resulting object.
+  
+  The \code{writeMSfile} function will write a mzR object (\code{pwiz} backend only)
+  into a file. mgf/mzML/mzXML formats are supported.
+  
+  The \code{openIDfile} constructor will create a new format-specifc
+  \code{mzR} object, open 'filename' file and all information is
+  loaded as a Rcpp module. The mzid format is supported throught \code{pwiz} backend.
 
   % If the object was created manually with e.g. new("mzR"), then
   % initializeRamp() will open the given file. An mzR object can be

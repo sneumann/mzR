@@ -12,9 +12,6 @@
 #include "pwiz/data/msdata/MSDataFile.hpp"
 #include "pwiz/data/msdata/LegacyAdapter.hpp"
 #include "pwiz/data/msdata/Serializer_mzML.hpp"
-#ifndef __MINGW32__
-	#include "pwiz/data/msdata/Serializer_mz5.hpp"
-#endif
 #include "pwiz/data/msdata/Serializer_mzXML.hpp"
 #include "pwiz/data/msdata/Serializer_MGF.hpp"
 #include "pwiz/data/msdata/SpectrumInfo.hpp"

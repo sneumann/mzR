@@ -27,13 +27,6 @@ void RcppPwiz::writeMSfile(const string& file, const string& format)
             serializerMGF.write(*mgfOutFileP, *msd);  
             mgfOutFileP->flush();
             mgfOutFileP->close();
-		}else if(format == "mz5"){
-			#if defined(__MINGW32__)
-				Rcpp::Rcerr << "No support for mz5 format on Windows" << std::endl;
-			#else
-				Serializer_mz5 serializerMz5;
-				serializerMz5.write(file, *msd);
-			#endif
 		}else if(format == "mzxml"){
 			std::ofstream mzXMLOutFileP(file.c_str()); 
 			Serializer_mzXML::Config config;

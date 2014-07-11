@@ -63,29 +63,36 @@ Rcpp::List RcppIdent::getIDInfo(  )
         format[i] = sd[i]->fileFormat.name();
     }
     
-    vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
-    Rcpp::StringVector peptide(pep.size());
-
-    for (size_t i = 0; i < pep.size(); i++) {
-		peptide[i] = pep[i]->peptideSequence;
-
-        if (pep[i]->modification.size() != 0) {
-          peptide[i] += " Modification: ";
-          for (size_t j = 0; j < pep[i]->modification.size(); j++) {
-            peptide[i] += "mass: " + lexical_cast<string>(round(pep[i]->modification[j]->monoisotopicMassDelta*1000)/1000);
-            peptide[i] += " location:" +  lexical_cast<string>(pep[i]->modification[j]->location) + ";";
-          }
-        }
-      }
-    
 	return Rcpp::List::create(
                    Rcpp::_["FileProvider"]	= provider,
                    Rcpp::_["CreationDate"]	= date,
                    Rcpp::_["software"]	= software,
                    Rcpp::_["database"]	= database,
                    Rcpp::_["enzymes"]	= enzymes,
-                   Rcpp::_["SpectraDataFormat"]	= format,
-                   Rcpp::_["peptide"]	= peptide
+                   Rcpp::_["SpectraDataFormat"]	= format
+               );
+    
+}
+
+Rcpp::List RcppIdent::getPepInfo(  )
+{
+	vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
+    Rcpp::StringVector seq(pep.size());
+    Rcpp::LogicalVector modified(pep.size());
+
+    for (size_t i = 0; i < pep.size(); i++) {
+		seq[i] = pep[i]->peptideSequence;
+
+        if (pep[i]->modification.size() != 0) {
+          modified[i] = TRUE;
+        } else {
+			modified[i] = FALSE;
+		}
+      }
+    
+	return Rcpp::List::create(
+                   Rcpp::_["sequence"]	= seq,
+                   Rcpp::_["modified"]	= modified
                );
     
 }

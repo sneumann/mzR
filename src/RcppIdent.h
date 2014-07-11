@@ -37,6 +37,8 @@ public:
     void open(const string& fileNames);
     
     Rcpp::List getIDInfo();
+    
+    Rcpp::List getPepInfo();
 };
 
 #endif

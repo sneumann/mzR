@@ -5,10 +5,12 @@
 \alias{mzRramp-class}
 \alias{mzRnetCDF-class}
 \alias{mzRpwiz-class}
+\alias{mzRident-class}
 \alias{class:mzR}
 \alias{class:mzRramp}
 \alias{class:mzRnetCDF}
 \alias{class:mzRpwiz}
+\alias{class:mzRident}
 \alias{close,mzRramp-method}
 \alias{close,mzRnetCDF-method}
 \alias{close}
@@ -57,6 +59,9 @@
 \alias{softwareInfo,mzRpwiz-method}
 \alias{sampleInfo,mzRpwiz-method}
 \alias{sourceInfo,mzRpwiz-method}
+\alias{mzidInfo,mzRident-method}
+
+
 
 \title{Class \code{mzR} and sub-classes}
 \description{
