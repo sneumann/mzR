@@ -40,7 +40,9 @@ public:
     
     Rcpp::DataFrame getPepInfo();
     
-    Rcpp::List getModInfo();
+    Rcpp::DataFrame getModInfo();
+    
+    Rcpp::DataFrame getSubInfo();
 };
 
 #endif

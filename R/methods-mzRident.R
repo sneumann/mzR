@@ -9,3 +9,7 @@ setMethod("pepInfo",
 setMethod("modInfo",
           signature=c("mzRident"),
           function(object) return(object@backend$getModInfo()))
+          
+setMethod("subInfo",
+          signature=c("mzRident"),
+          function(object) return(object@backend$getSubInfo()))

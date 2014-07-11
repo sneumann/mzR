@@ -95,25 +95,62 @@ Rcpp::DataFrame RcppIdent::getPepInfo(  )
     
 }
 
-Rcpp::List RcppIdent::getModInfo(  )
+Rcpp::DataFrame RcppIdent::getModInfo(  )
 {
 	vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
 	std::vector<std::string> seq;
-	std::vector<std::string> modification;
+	std::vector<std::string> name;
+	std::vector<double> mass;
+	std::vector<int> loc;
+	
     		
     for (size_t i = 0; i < pep.size(); i++) {
 		
 		if(pep[i]->modification.size() > 0){
 			for(size_t j = 0 ; j < pep[i]->modification.size(); j++){
 				seq.push_back(pep[i]->peptideSequence);
-				modification.push_back(cvTermInfo(pep[i]->modification[j]->cvParams[0].cvid).name);
+				name.push_back(cvTermInfo(pep[i]->modification[j]->cvParams[0].cvid).name);
+				mass.push_back(pep[i]->modification[j]->monoisotopicMassDelta);
+				loc.push_back(pep[i]->modification[j]->location);
 			}
 		}
     }
     
-	return Rcpp::List::create(
+	return Rcpp::DataFrame::create(
                    Rcpp::_["sequence"]	= seq,
-                   Rcpp::_["name"]	= modification
+                   Rcpp::_["name"]	= name,
+                   Rcpp::_["mass"]	= mass,
+                   Rcpp::_["location"]	= loc
+               );
+    
+}
+
+Rcpp::DataFrame RcppIdent::getSubInfo(  )
+{
+	vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
+	std::vector<std::string> seq;
+	std::vector<char> originalResidue;
+	std::vector<char> replacementResidue;
+	std::vector<int> loc;
+	
+    		
+    for (size_t i = 0; i < pep.size(); i++) {
+		
+		if(pep[i]->substitutionModification.size() > 0){
+			for(size_t j = 0 ; j < pep[i]->substitutionModification.size(); j++){
+				seq.push_back(pep[i]->peptideSequence);
+				originalResidue.push_back(pep[i]->substitutionModification[j]->originalResidue);
+				replacementResidue.push_back(pep[i]->substitutionModification[j]->replacementResidue);
+				loc.push_back(pep[i]->substitutionModification[j]->location);
+			}
+		}
+    }
+    
+	return Rcpp::DataFrame::create(
+                   Rcpp::_["sequence"]	= seq,
+                   Rcpp::_["originalResidue"]	= originalResidue,
+                   Rcpp::_["replacementResidue"]	= replacementResidue,
+                   Rcpp::_["location"]	= loc
                );
     
 }
