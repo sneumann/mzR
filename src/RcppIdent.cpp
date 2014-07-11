@@ -48,6 +48,7 @@ Rcpp::List RcppIdent::getIDInfo(  )
 		minDistance[i] = enz[i]->minDistance;
         missedCleavages[i] = enz[i]->missedCleavages;
     }
+    
     enzymes = Rcpp::List::create(
 					Rcpp::_["name"]  = name,
 					Rcpp::_["nTermGain"]  = nTermGain,
@@ -74,25 +75,25 @@ Rcpp::List RcppIdent::getIDInfo(  )
     
 }
 
-Rcpp::List RcppIdent::getPepInfo(  )
+Rcpp::DataFrame RcppIdent::getPepInfo(  )
 {
 	vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
     Rcpp::StringVector seq(pep.size());
-    Rcpp::LogicalVector modified(pep.size());
-
+    Rcpp::NumericVector modification(pep.size());
+	
+		
     for (size_t i = 0; i < pep.size(); i++) {
 		seq[i] = pep[i]->peptideSequence;
-
-        if (pep[i]->modification.size() != 0) {
-          modified[i] = TRUE;
-        } else {
-			modified[i] = FALSE;
+		modification[i] = pep[i]->modification.size();
+		if(pep[i]->modification.size() > 0){
+			
+			Rcpp::Rcout << cvTermInfo(pep[i]->modification[0]->cvParams[0].cvid).name << std::endl;
 		}
-      }
+    }
     
 	return Rcpp::List::create(
                    Rcpp::_["sequence"]	= seq,
-                   Rcpp::_["modified"]	= modified
+                   Rcpp::_["modNum"]	= modification
                );
     
 }
