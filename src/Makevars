@@ -87,7 +87,6 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
 ./pwiz/utility/misc/sha1calc.o \
-./pwiz/data/msdata/ramp/wglob.o \
 ./random_access_gzFile.o
 
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
