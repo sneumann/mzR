@@ -142,27 +142,29 @@ Rcpp::DataFrame RcppIdent::getPepInfo(  )
 
 Rcpp::DataFrame RcppIdent::getModInfo(  )
 {
-	vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
-
-	std::vector<std::string> seq;
-	std::vector<std::string> name;
-	std::vector<double> mass;
-	std::vector<int> loc;
+	vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
+	vector<string> spectrumID;
+	vector<string> seq;
+	vector<string> name;
+	vector<double> mass;
+	vector<int> loc;
 	
-    		
-    for (size_t i = 0; i < pep.size(); i++) {
-		
-		if(pep[i]->modification.size() > 0){
-			for(size_t j = 0 ; j < pep[i]->modification.size(); j++){
-				seq.push_back(pep[i]->peptideSequence);
-				name.push_back(cvTermInfo(pep[i]->modification[j]->cvParams[0].cvid).name);
-				mass.push_back(pep[i]->modification[j]->monoisotopicMassDelta);
-				loc.push_back(pep[i]->modification[j]->location);
+    for (size_t i = 0; i < spectrumIdResult.size(); i++) {
+		if(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification.size()>0)
+		{
+			for(size_t j = 0 ; j < spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification.size(); j++){
+				spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+				seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->peptideSequence);
+				name.push_back(cvTermInfo(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification[j]->cvParams[0].cvid).name);
+				mass.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification[j]->monoisotopicMassDelta);
+				loc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification[j]->location);	
 			}
 		}
+		
     }
-    
+	
 	return Rcpp::DataFrame::create(
+                   Rcpp::_["spectrumID"]	= spectrumID,
                    Rcpp::_["sequence"]	= seq,
                    Rcpp::_["name"]	= name,
                    Rcpp::_["mass"]	= mass,
