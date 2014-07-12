@@ -27,7 +27,7 @@ Rcpp::List RcppIdent::getIDInfo(  )
     Rcpp::StringVector database(sdb.size());
     for (size_t i = 0; i < sdb.size(); i++)
     {
-		database = sdb[i]->name + " (" + lexical_cast<string>(sdb[i]->numDatabaseSequences) + " sequences)";
+		database = sdb[i]->location + " (" + lexical_cast<string>(sdb[i]->numDatabaseSequences) + " sequences)";
     }
     
     vector<SpectrumIdentificationProtocolPtr> sip = mzid->analysisProtocolCollection.spectrumIdentificationProtocol;
@@ -58,10 +58,10 @@ Rcpp::List RcppIdent::getIDInfo(  )
     );
     
     vector<SpectraDataPtr> sd = mzid->dataCollection.inputs.spectraData;
-    Rcpp::StringVector format(sd.size());
+    Rcpp::StringVector spectra(sd.size());
     for (size_t i = 0; i < sd.size(); i++)
     {
-        format[i] = sd[i]->fileFormat.name();
+        spectra[i] = sd[i]->location;
     }
     
 	return Rcpp::List::create(
@@ -70,7 +70,7 @@ Rcpp::List RcppIdent::getIDInfo(  )
                    Rcpp::_["software"]	= software,
                    Rcpp::_["database"]	= database,
                    Rcpp::_["enzymes"]	= enzymes,
-                   Rcpp::_["SpectraDataFormat"]	= format
+                   Rcpp::_["SpectraSource"]	= spectra
                );
     
 }

@@ -66,7 +66,7 @@
 \alias{subInfo,mzRident-method}
 \alias{database,mzRident-method}
 \alias{enzymes,mzRident-method}
-
+\alias{sourceInfo,mzRident-method}
 
 
 \title{Class \code{mzR} and sub-classes}

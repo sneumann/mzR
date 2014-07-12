@@ -34,3 +34,10 @@ setMethod("enzymes",
             info <- mzidInfo(object)           
             return(info$enzymes)
           })   
+
+setMethod("sourceInfo",
+          signature="mzRident",
+          function(object) {
+            info <- mzidInfo(object)           
+            return(info$SpectraSource)
+          })   
