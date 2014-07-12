@@ -16,6 +16,7 @@
 \alias{subInfo}
 \alias{database}
 \alias{enzymes}
+\alias{tolerance}
 
 \title{
   Access the metadata from an \code{mzR} object.
@@ -38,6 +39,7 @@ pepInfo(object)
 subInfo(object)
 database(object)
 enzymes(object)
+tolerance(object)
 }
 \arguments{
   \item{object}{An instantiated \code{mzR} object.}

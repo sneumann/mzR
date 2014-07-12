@@ -67,6 +67,7 @@
 \alias{database,mzRident-method}
 \alias{enzymes,mzRident-method}
 \alias{sourceInfo,mzRident-method}
+\alias{tolerance,mzRident-method}
 
 
 \title{Class \code{mzR} and sub-classes}

@@ -72,9 +72,7 @@ Rcpp::List RcppIdent::getIDInfo(  )
     {
         spectra[i] = sd[i]->location;
     }
-    
-    Rcpp::Rcout << mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult.size() << std::endl;
-    
+
 	return Rcpp::List::create(
                    Rcpp::_["FileProvider"]	= provider,
                    Rcpp::_["CreationDate"]	= date,
@@ -175,26 +173,29 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
 
 Rcpp::DataFrame RcppIdent::getSubInfo(  )
 {
-	vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
+	vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
+	vector<string> spectrumID;
 	std::vector<std::string> seq;
 	std::vector<char> originalResidue;
 	std::vector<char> replacementResidue;
 	std::vector<int> loc;
 	
     		
-    for (size_t i = 0; i < pep.size(); i++) {
+    for (size_t i = 0; i < spectrumIdResult.size(); i++) {
 		
-		if(pep[i]->substitutionModification.size() > 0){
-			for(size_t j = 0 ; j < pep[i]->substitutionModification.size(); j++){
-				seq.push_back(pep[i]->peptideSequence);
-				originalResidue.push_back(pep[i]->substitutionModification[j]->originalResidue);
-				replacementResidue.push_back(pep[i]->substitutionModification[j]->replacementResidue);
-				loc.push_back(pep[i]->substitutionModification[j]->location);
+		if(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->substitutionModification.size() > 0){
+			for(size_t j = 0 ; j < spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->substitutionModification.size(); j++){
+				spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+				seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->peptideSequence);
+				originalResidue.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->substitutionModification[j]->originalResidue);
+				replacementResidue.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->substitutionModification[j]->replacementResidue);
+				loc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->substitutionModification[j]->location);
 			}
 		}
     }
     
 	return Rcpp::DataFrame::create(
+	Rcpp::_["spectrumID"]	= spectrumID,
                    Rcpp::_["sequence"]	= seq,
                    Rcpp::_["originalResidue"]	= originalResidue,
                    Rcpp::_["replacementResidue"]	= replacementResidue,

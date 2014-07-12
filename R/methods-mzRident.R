@@ -40,4 +40,14 @@ setMethod("sourceInfo",
           function(object) {
             info <- mzidInfo(object)           
             return(info$SpectraSource)
-          })   
+          })  
+          
+setMethod("tolerance",
+          signature="mzRident",
+          function(object) {
+            info <- mzidInfo(object)   
+            ll <- list()
+            ll$'FragmentTolerance' <- info$FragmentTolerance
+            ll$'ParentTolerance' <- info$ParentTolerance
+            return(ll)
+          }) 
