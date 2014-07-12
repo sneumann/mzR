@@ -11,6 +11,9 @@
 \alias{sampleInfo}
 \alias{sourceInfo}
 \alias{mzidInfo}
+\alias{modInfo}
+\alias{pepInfo}
+\alias{subInfo}
 
 \title{
   Access the metadata from an \code{mzR} object.

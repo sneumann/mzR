@@ -13,3 +13,10 @@ setMethod("modInfo",
 setMethod("subInfo",
           signature=c("mzRident"),
           function(object) return(object@backend$getSubInfo()))
+          
+setMethod("softwareInfo",
+          signature="mzRident",
+          function(object) {
+            info <- mzidInfo(object)           
+            return(info$software)
+          })

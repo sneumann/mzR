@@ -57,9 +57,13 @@
 \alias{chromatogramsInfo,mzRpwiz-method}
 \alias{writeMSfile,mzRpwiz-method}
 \alias{softwareInfo,mzRpwiz-method}
+\alias{softwareInfo,mzRident-method}
 \alias{sampleInfo,mzRpwiz-method}
 \alias{sourceInfo,mzRpwiz-method}
 \alias{mzidInfo,mzRident-method}
+\alias{pepInfo,mzRident-method}
+\alias{modInfo,mzRident-method}
+\alias{subInfo,mzRident-method}
 
 
 

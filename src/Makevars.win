@@ -17,9 +17,6 @@ PWIZOBJECTS=\
 ./boost/regex/src/cpp_regex_traits.o \
 ./boost/regex/src/static_mutex.o \
 ./boost/regex/src/w32_regex_traits.o \
-./pwiz/data/msdata/Version.o \
-./pwiz/utility/minimxml/XMLWriter.o \
-./pwiz/utility/minimxml/SAXParser.o \
 ./boost/iostreams/src/zlib.o \
 ./boost/iostreams/src/file_descriptor.o \
 ./boost/filesystem/src/operations.o \
@@ -36,6 +33,8 @@ PWIZOBJECTS=\
 ./pwiz/data/common/ParamTypes.o \
 ./pwiz/data/common/BinaryIndexStream.o \
 ./pwiz/data/common/diff_std.o \
+./pwiz/data/common/Unimod.o \
+./pwiz/data/msdata/Version.o \
 ./pwiz/data/msdata/SpectrumList_MGF.o \
 ./pwiz/data/msdata/DefaultReaderList.o \
 ./pwiz/data/msdata/ChromatogramList_mzML.o \
@@ -62,6 +61,7 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
 ./pwiz/data/msdata/Index_mzML.o \
+./pwiz/data/msdata/ramp/wglob.o \
 ./pwiz/data/identdata/IdentDataFile.o \
 ./pwiz/data/identdata/IdentData.o \
 ./pwiz/data/identdata/DefaultReaderList.o \
@@ -72,7 +72,6 @@ PWIZOBJECTS=\
 ./pwiz/data/identdata/IO.o \
 ./pwiz/data/identdata/Version.o \
 ./pwiz/data/identdata/References.o \
-./pwiz/data/common/Unimod.o \
 ./pwiz/data/proteome/Modification.o \
 ./pwiz/data/proteome/Digestion.o \
 ./pwiz/data/proteome/Peptide.o \
@@ -90,7 +89,8 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
 ./pwiz/utility/misc/sha1calc.o \
-./pwiz/data/msdata/ramp/wglob.o \
+./pwiz/utility/minimxml/XMLWriter.o \
+./pwiz/utility/minimxml/SAXParser.o \
 ./random_access_gzFile.o
 
 
