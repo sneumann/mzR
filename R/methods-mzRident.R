@@ -20,3 +20,17 @@ setMethod("softwareInfo",
             info <- mzidInfo(object)           
             return(info$software)
           })
+          
+setMethod("database",
+          signature="mzRident",
+          function(object) {
+            info <- mzidInfo(object)           
+            return(info$database)
+          })
+        
+setMethod("enzymes",
+          signature="mzRident",
+          function(object) {
+            info <- mzidInfo(object)           
+            return(info$enzymes)
+          })   

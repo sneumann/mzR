@@ -64,6 +64,8 @@
 \alias{pepInfo,mzRident-method}
 \alias{modInfo,mzRident-method}
 \alias{subInfo,mzRident-method}
+\alias{database,mzRident-method}
+\alias{enzymes,mzRident-method}
 
 
 

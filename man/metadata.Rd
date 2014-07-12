@@ -14,6 +14,8 @@
 \alias{modInfo}
 \alias{pepInfo}
 \alias{subInfo}
+\alias{database}
+\alias{enzymes}
 
 \title{
   Access the metadata from an \code{mzR} object.
@@ -31,6 +33,11 @@ sampleInfo(object)
 sourceInfo(object)
 model(object)
 mzidInfo(object)
+modInfo(object)
+pepInfo(object)
+subInfo(object)
+database(object)
+enzymes(object)
 }
 \arguments{
   \item{object}{An instantiated \code{mzR} object.}
