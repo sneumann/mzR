@@ -32,6 +32,15 @@ Rcpp::List RcppIdent::getIDInfo(  )
     
     vector<SpectrumIdentificationProtocolPtr> sip = mzid->analysisProtocolCollection.spectrumIdentificationProtocol;
     
+    string fragmentTolerance = sip[0]->fragmentTolerance.cvParams[0].value + " " + sip[0]->fragmentTolerance.cvParam(MS_search_tolerance_plus_value).unitsName();
+    string parentTolerance = sip[0]->parentTolerance.cvParams[0].value + " " + sip[0]->parentTolerance.cvParam(MS_search_tolerance_plus_value).unitsName();
+    vector<SearchModificationPtr> sm = sip[0]->modificationParams;   
+    
+    Rcpp::StringVector mod(sm.size());
+    for(size_t i = 0; i < sm.size(); i++){
+		mod[i] = cvTermInfo(sm[i]->cvParams[0].cvid).name;
+	}
+    
     vector<EnzymePtr> enz = sip[0]->enzymes.enzymes;
     Rcpp::List enzymes;
     Rcpp::StringVector name(enz.size());
@@ -64,11 +73,16 @@ Rcpp::List RcppIdent::getIDInfo(  )
         spectra[i] = sd[i]->location;
     }
     
+    Rcpp::Rcout << mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult.size() << std::endl;
+    
 	return Rcpp::List::create(
                    Rcpp::_["FileProvider"]	= provider,
                    Rcpp::_["CreationDate"]	= date,
                    Rcpp::_["software"]	= software,
                    Rcpp::_["database"]	= database,
+                   Rcpp::_["ModificationSearched"]	= mod,
+                   Rcpp::_["FragmentTolerance"]	= fragmentTolerance,
+                   Rcpp::_["ParentTolerance"]	= parentTolerance,
                    Rcpp::_["enzymes"]	= enzymes,
                    Rcpp::_["SpectraSource"]	= spectra
                );
@@ -77,30 +91,43 @@ Rcpp::List RcppIdent::getIDInfo(  )
 
 Rcpp::DataFrame RcppIdent::getPepInfo(  )
 {
-	vector<PeptidePtr> pep = mzid->sequenceCollection.peptides;
-	vector<PeptideEvidencePtr> peptideEvidence = mzid->sequenceCollection.peptideEvidence;
-    Rcpp::StringVector seq(pep.size());
-    Rcpp::NumericVector modification(pep.size());
-    Rcpp::LogicalVector isDecoy(pep.size());
-    Rcpp::StringVector post(pep.size());
-    Rcpp::StringVector pre(pep.size());
-	Rcpp::NumericVector start(pep.size());
-	Rcpp::NumericVector end(pep.size());
-	Rcpp::StringVector DBSequenceID(pep.size());
+	vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
 	
-    for (size_t i = 0; i < pep.size(); i++) {
-		seq[i] = pep[i]->peptideSequence;
-		modification[i] = pep[i]->modification.size();
-		isDecoy[i] = peptideEvidence[i]->isDecoy;
-		post[i] =  string(1, peptideEvidence[i]->post);
-		pre[i] = string(1, peptideEvidence[i]->pre);
-		start[i] = peptideEvidence[i]->start;
-		end[i] = peptideEvidence[i]->end;
-		DBSequenceID[i] = peptideEvidence[i]->dbSequencePtr->id;
-		
+	Rcpp::StringVector spectrumID(spectrumIdResult.size());
+	Rcpp::NumericVector chargeState(spectrumIdResult.size());
+	Rcpp::NumericVector rank(spectrumIdResult.size());
+	Rcpp::NumericVector experimentalMassToCharge(spectrumIdResult.size());
+	Rcpp::NumericVector calculatedMassToCharge(spectrumIdResult.size());
+    Rcpp::StringVector seq(spectrumIdResult.size());
+    Rcpp::NumericVector modification(spectrumIdResult.size());
+    Rcpp::LogicalVector isDecoy(spectrumIdResult.size());
+    Rcpp::StringVector post(spectrumIdResult.size());
+    Rcpp::StringVector pre(spectrumIdResult.size());
+	Rcpp::NumericVector start(spectrumIdResult.size());
+	Rcpp::NumericVector end(spectrumIdResult.size());
+	Rcpp::StringVector DBSequenceID(spectrumIdResult.size());
+	
+    for (size_t i = 0; i < spectrumIdResult.size(); i++) {
+		spectrumID[i] = spectrumIdResult[i]->spectrumID;
+		chargeState[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->chargeState;
+		experimentalMassToCharge[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->experimentalMassToCharge;
+		calculatedMassToCharge[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->calculatedMassToCharge;
+		seq[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->peptideSequence;
+		modification[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification.size();
+		isDecoy[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->isDecoy;
+		pre[i] = string(1, spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->pre);
+		post[i] =  string(1, spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->post);
+		start[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->start;
+		end[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->end;
+		DBSequenceID[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->id;
+	
     }
     
 	return Rcpp::DataFrame::create(
+                   Rcpp::_["spectrumID"]	= spectrumID,
+                   Rcpp::_["chargeState"]	= chargeState,
+                   Rcpp::_["experimentalM/Z"]	= experimentalMassToCharge,
+                   Rcpp::_["calculatedM/Z"]	= calculatedMassToCharge,
                    Rcpp::_["sequence"]	= seq,
                    Rcpp::_["modNum"]	= modification,
                    Rcpp::_["isDecoy"]	= isDecoy,
