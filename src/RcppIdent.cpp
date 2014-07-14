@@ -117,7 +117,7 @@ Rcpp::DataFrame RcppIdent::getPepInfo(  )
 		post[i] =  string(1, spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->post);
 		start[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->start;
 		end[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->end;
-		DBSequenceID[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->id;
+		DBSequenceID[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->accession;
 	
     }
     
