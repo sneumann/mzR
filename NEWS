@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.11.9
+-------------------------
+ o Fix a bug in header() returning too few columns, introduced during 1.11.7
+
 CHANGES IN VERSION 1.11.8
 -------------------------
  o Fix a windows compile problem by early importing Rcpp.h
