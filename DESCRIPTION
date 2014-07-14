@@ -2,7 +2,7 @@ Package: mzR
 Type: Package
 Title: parser for netCDF, mzXML, mzData and mzML files (mass
         spectrometry data)
-Version: 1.11.8
+Version: 1.11.9
 Author: Bernd Fischer, Steffen Neumann, Laurent Gatto, Qiang Kou
 Maintainer: Bernd Fischer <bernd.fischer@embl.de>, Steffen Neumann
  <sneumann@ipb-halle.de>, Laurent Gatto <lg390@cam.ac.uk>,
@@ -24,4 +24,4 @@ RcppModules: Ramp
 SystemRequirements: GNU make, NetCDF, zlib
 biocViews: Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry
-Packaged: 2014-07-13; sneumann
+Packaged: 2014-07-14; sneumann
