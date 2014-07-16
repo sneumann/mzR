@@ -31,9 +31,16 @@ Rcpp::List RcppIdent::getIDInfo(  )
     }
     
     vector<SpectrumIdentificationProtocolPtr> sip = mzid->analysisProtocolCollection.spectrumIdentificationProtocol;
+    string fragmentTolerance = "";
+    string parentTolerance = "";
+    if(!sip[0]->fragmentTolerance.empty()){
+		fragmentTolerance = sip[0]->fragmentTolerance.cvParams[0].value + " " + sip[0]->fragmentTolerance.cvParam(MS_search_tolerance_plus_value).unitsName();
+	}
+	
+	if(!sip[0]->parentTolerance.empty()){
+		parentTolerance = sip[0]->parentTolerance.cvParams[0].value + " " + sip[0]->parentTolerance.cvParam(MS_search_tolerance_plus_value).unitsName();
+    }
     
-    string fragmentTolerance = sip[0]->fragmentTolerance.cvParams[0].value + " " + sip[0]->fragmentTolerance.cvParam(MS_search_tolerance_plus_value).unitsName();
-    string parentTolerance = sip[0]->parentTolerance.cvParams[0].value + " " + sip[0]->parentTolerance.cvParam(MS_search_tolerance_plus_value).unitsName();
     vector<SearchModificationPtr> sm = sip[0]->modificationParams;   
     
     Rcpp::StringVector mod(sm.size());
