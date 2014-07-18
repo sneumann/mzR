@@ -2,15 +2,15 @@ setMethod("mzidInfo",
           signature=c("mzRident"),
           function(object) return(object@backend$getIDInfo()))
           
-setMethod("pepInfo",
+setMethod("peptides",
           signature=c("mzRident"),
           function(object) return(object@backend$getPepInfo()))
 
-setMethod("modInfo",
+setMethod("modifications",
           signature=c("mzRident"),
           function(object) return(object@backend$getModInfo()))
           
-setMethod("subInfo",
+setMethod("substitutions",
           signature=c("mzRident"),
           function(object) return(object@backend$getSubInfo()))
           

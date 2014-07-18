@@ -11,9 +11,9 @@
 \alias{sampleInfo}
 \alias{sourceInfo}
 \alias{mzidInfo}
-\alias{modInfo}
-\alias{pepInfo}
-\alias{subInfo}
+\alias{modifications}
+\alias{peptides}
+\alias{substitutions}
 \alias{database}
 \alias{enzymes}
 \alias{tolerance}
@@ -34,9 +34,9 @@ sampleInfo(object)
 sourceInfo(object)
 model(object)
 mzidInfo(object)
-modInfo(object)
-pepInfo(object)
-subInfo(object)
+modifications(object)
+peptides(object)
+substitutions(object)
 database(object)
 enzymes(object)
 tolerance(object)

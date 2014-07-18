@@ -61,9 +61,9 @@
 \alias{sampleInfo,mzRpwiz-method}
 \alias{sourceInfo,mzRpwiz-method}
 \alias{mzidInfo,mzRident-method}
-\alias{pepInfo,mzRident-method}
-\alias{modInfo,mzRident-method}
-\alias{subInfo,mzRident-method}
+\alias{peptides,mzRident-method}
+\alias{modifications,mzRident-method}
+\alias{substitutions,mzRident-method}
 \alias{database,mzRident-method}
 \alias{enzymes,mzRident-method}
 \alias{sourceInfo,mzRident-method}
