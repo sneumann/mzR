@@ -76,7 +76,7 @@ tolerance(object)
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
                     full.names=TRUE, recursive = TRUE)
-  mz <- openMSfile(file, backend = "ramp")
+  mz <- openMSfile(file, backend = "Ramp")
   fileName(mz)
   instrumentInfo(mz)
 }

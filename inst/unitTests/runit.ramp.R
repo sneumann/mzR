@@ -36,6 +36,11 @@ test.mzML <- function() {
     header(mzml)
     header(mzml,1)
     header(mzml,2:3)
+
+    checkTrue(ncol(header(mzml))>4)
+    checkTrue(length(header(mzml,1))>4)
+    checkTrue(ncol(header(mzml,2:3))>4)
+
     fileName(mzml)
     close(mzml)    
 }
