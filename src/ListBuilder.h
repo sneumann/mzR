@@ -3,7 +3,8 @@
 // to Rcpp-devel on Tue, 8 Jul 2014
 //
 
-
+#ifndef LIST_BUILDER_H
+#define LIST_BUILDER_H
 
 #include <Rcpp.h>
 using namespace Rcpp;
@@ -50,10 +51,5 @@ private:
 
 };
 
-// [[Rcpp::export]]
-DataFrame test_builder(SEXP x, SEXP y, SEXP z) {
-  return ListBuilder()
-    .add("foo", x)
-    .add("bar", y)
-    .add("baz", z);
-}
+
+#endif
