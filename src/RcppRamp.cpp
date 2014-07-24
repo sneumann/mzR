@@ -230,13 +230,9 @@ RcppRamp::getAllScanHeaderInfo ( ) {
 
       ListBuilder header;
       header.add("seqNum", seqNum);
-      header.add("seqNum",                   seqNum);
       header.add("acquisitionNum",           acquisitionNum);
       header.add("msLevel",                  msLevel);
       header.add("polarity",               polarity);
-      header.add("seqNum",                   seqNum);
-      header.add("acquisitionNum",           acquisitionNum);
-      header.add("msLevel",                  msLevel);
       header.add("peaksCount",               peaksCount);
       header.add("totIonCurrent",            totIonCurrent);
       header.add("retentionTime",            retentionTime);
