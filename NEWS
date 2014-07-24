@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.11.10
+-------------------------
+ o Remove redundant columns when returning several spectra
+
 CHANGES IN VERSION 1.11.9
 -------------------------
  o Fix a bug in header() returning too few columns, introduced during 1.11.7
