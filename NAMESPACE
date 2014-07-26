@@ -35,7 +35,8 @@ exportMethods(close,
               substitutions,
               database,
               enzymes,
-              tolerance)
+              tolerance,
+              score)
 
 exportClasses("mzR",
               "mzRramp",

@@ -204,28 +204,28 @@ RcppRamp::getAllScanHeaderInfo ( ) {
       Rcpp::IntegerVector mergedResultEndScanNum(N); /* largest scan number of the scanOrigin for merged scan */
       
       for (int whichScan=1; whichScan <= N; whichScan++) {
-	readHeader(ramp->m_handle, ramp->m_scanOffsets[whichScan], &scanHeader);
-	seqNum[whichScan-1] = scanHeader.seqNum;
-	acquisitionNum[whichScan-1] = scanHeader.acquisitionNum;
-	msLevel[whichScan-1] = scanHeader.msLevel;
-	polarity[whichScan-1] = scanHeader.polarity;
-	peaksCount[whichScan-1] = scanHeader.peaksCount;
-	totIonCurrent[whichScan-1] = scanHeader.totIonCurrent;
-	retentionTime[whichScan-1] = scanHeader.retentionTime;
-	basePeakMZ[whichScan-1] = scanHeader.basePeakMZ;
-	basePeakIntensity[whichScan-1] = scanHeader.basePeakIntensity;
-	collisionEnergy[whichScan-1] = scanHeader.collisionEnergy;
-	ionisationEnergy[whichScan-1] = scanHeader.ionisationEnergy;
-	lowMZ[whichScan-1] = scanHeader.lowMZ;
-	highMZ[whichScan-1] = scanHeader.highMZ;
-	precursorScanNum[whichScan-1] = scanHeader.precursorScanNum;
-	precursorMZ[whichScan-1] = scanHeader.precursorMZ;
-	precursorCharge[whichScan-1] = scanHeader.precursorCharge;
-	precursorIntensity[whichScan-1] = scanHeader.precursorIntensity;
-	mergedScan[whichScan-1] = scanHeader.mergedScan;
-	mergedResultScanNum[whichScan-1] = scanHeader.mergedResultScanNum;
-	mergedResultStartScanNum[whichScan-1] = scanHeader.mergedResultStartScanNum;
-	mergedResultEndScanNum[whichScan-1] = scanHeader.mergedResultEndScanNum;
+		readHeader(ramp->m_handle, ramp->m_scanOffsets[whichScan], &scanHeader);
+		seqNum[whichScan-1] = scanHeader.seqNum;
+		acquisitionNum[whichScan-1] = scanHeader.acquisitionNum;
+		msLevel[whichScan-1] = scanHeader.msLevel;
+		polarity[whichScan-1] = scanHeader.polarity;
+		peaksCount[whichScan-1] = scanHeader.peaksCount;
+		totIonCurrent[whichScan-1] = scanHeader.totIonCurrent;
+		retentionTime[whichScan-1] = scanHeader.retentionTime;
+		basePeakMZ[whichScan-1] = scanHeader.basePeakMZ;
+		basePeakIntensity[whichScan-1] = scanHeader.basePeakIntensity;
+		collisionEnergy[whichScan-1] = scanHeader.collisionEnergy;
+		ionisationEnergy[whichScan-1] = scanHeader.ionisationEnergy;
+		lowMZ[whichScan-1] = scanHeader.lowMZ;
+		highMZ[whichScan-1] = scanHeader.highMZ;
+		precursorScanNum[whichScan-1] = scanHeader.precursorScanNum;
+		precursorMZ[whichScan-1] = scanHeader.precursorMZ;
+		precursorCharge[whichScan-1] = scanHeader.precursorCharge;
+		precursorIntensity[whichScan-1] = scanHeader.precursorIntensity;
+		mergedScan[whichScan-1] = scanHeader.mergedScan;
+		mergedResultScanNum[whichScan-1] = scanHeader.mergedResultScanNum;
+		mergedResultStartScanNum[whichScan-1] = scanHeader.mergedResultStartScanNum;
+		mergedResultEndScanNum[whichScan-1] = scanHeader.mergedResultEndScanNum;
       }
 
       ListBuilder header;

@@ -17,6 +17,7 @@
 \alias{database}
 \alias{enzymes}
 \alias{tolerance}
+\alias{score}
 
 \title{
   Access the metadata from an \code{mzR} object.
@@ -40,6 +41,7 @@ substitutions(object)
 database(object)
 enzymes(object)
 tolerance(object)
+score(object)
 }
 \arguments{
   \item{object}{An instantiated \code{mzR} object.}

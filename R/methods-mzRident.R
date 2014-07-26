@@ -5,6 +5,10 @@ setMethod("mzidInfo",
 setMethod("peptides",
           signature=c("mzRident"),
           function(object) return(object@backend$getPepInfo()))
+          
+setMethod("score",
+          signature=c("mzRident"),
+          function(object) return(object@backend$getScore()))
 
 setMethod("modifications",
           signature=c("mzRident"),

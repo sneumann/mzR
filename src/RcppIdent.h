@@ -43,6 +43,8 @@ public:
     Rcpp::DataFrame getModInfo();
     
     Rcpp::DataFrame getSubInfo();
+    
+    Rcpp::DataFrame getScore();
 };
 
 #endif

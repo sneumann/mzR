@@ -1,6 +1,7 @@
 setGeneric("runInfo", function(object) standardGeneric("runInfo"))
 setGeneric("mzidInfo", function(object) standardGeneric("mzidInfo"))
 setGeneric("peptides", function(object) standardGeneric("peptides"))
+setGeneric("score", function(object) standardGeneric("score"))
 setGeneric("modifications", function(object) standardGeneric("modifications"))
 setGeneric("substitutions", function(object) standardGeneric("substitutions"))
 setGeneric("database", function(object) standardGeneric("database"))

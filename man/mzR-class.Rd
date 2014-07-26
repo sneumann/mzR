@@ -68,6 +68,7 @@
 \alias{enzymes,mzRident-method}
 \alias{sourceInfo,mzRident-method}
 \alias{tolerance,mzRident-method}
+\alias{score,mzRident-method}
 
 
 \title{Class \code{mzR} and sub-classes}
@@ -157,6 +158,18 @@
     \item{runInfo}{\code{signature(object = "mzRpwiz")}: ... }
     \item{chromatogramsInfo}{\code{signature(object = "mzRpwiz")}: ... }
     \item{writeMSfile}{\code{signature(object = "mzRpwiz")}: ... }
+  }
+  Methods currently implemented for \code{mzRident}
+  \describe{
+    \item{mzidInfo}{\code{signature(object = "mzRident")}: ... }
+    \item{peptides}{\code{signature(object = "mzRident")}: ... }
+    \item{modifications}{\code{signature(object = "mzRident")}: ... }
+    \item{substitutions}{\code{signature(object = "mzRident")}: ... }
+    \item{database}{\code{signature(x = "mzRident")}: ... }
+    \item{enzymes}{\code{signature(object = "mzRident")}: ... }
+    \item{sourceInfo}{\code{signature(object = "mzRident")}: ... }
+    \item{tolerance}{\code{signature(object = "mzRident")}: ... }
+    \item{score}{\code{signature(object = "mzRident")}: ... }
   }
 }
 

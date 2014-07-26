@@ -35,11 +35,12 @@
 
 \begin{document}
 
-\title{A Parser for \texttt{mzXML}, \texttt{mzData} and \texttt{mzML} files}
+\title{A Parser for \texttt{mzXML}, \texttt{mzData}, \texttt{mzML} and \texttt{mzid} files}
 
 \author{Bernd Fischer\footnote{\email{bernd.fischer@embl.de}} \\
   Steffen Neumann\footnote{\email{sneumann@ipb-halle.de}} \\
-  Laurent Gatto\footnote{\email{lg390@cam.ac.uk}}}
+  Laurent Gatto\footnote{\email{lg390@cam.ac.uk}}\\
+  Qiang Kou\footnote{\email{qkou@umail.iu.edu}}}
 
 \maketitle
 

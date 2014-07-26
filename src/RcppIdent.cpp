@@ -1,4 +1,7 @@
+#include <boost/lexical_cast.hpp>
+
 #include "RcppIdent.h"
+#include "ListBuilder.h"
 
 RcppIdent::RcppIdent()
 {
@@ -97,7 +100,7 @@ Rcpp::List RcppIdent::getIDInfo(  )
 Rcpp::DataFrame RcppIdent::getPepInfo(  )
 {
 	vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
-	
+
 	Rcpp::StringVector spectrumID(spectrumIdResult.size());
 	Rcpp::NumericVector chargeState(spectrumIdResult.size());
 	Rcpp::NumericVector rank(spectrumIdResult.size());
@@ -113,6 +116,7 @@ Rcpp::DataFrame RcppIdent::getPepInfo(  )
 	Rcpp::StringVector DBSequenceID(spectrumIdResult.size());
 	
     for (size_t i = 0; i < spectrumIdResult.size(); i++) {
+
 		spectrumID[i] = spectrumIdResult[i]->spectrumID;
 		chargeState[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->chargeState;
 		experimentalMassToCharge[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->experimentalMassToCharge;
@@ -211,3 +215,45 @@ Rcpp::DataFrame RcppIdent::getSubInfo(  )
     
 }
 
+Rcpp::DataFrame RcppIdent::getScore(  )
+{
+	vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
+	vector<string> spectrumID;
+	vector<string> names;
+	int count = 0;
+	//names.push_back("spectrumID");
+	for(size_t i = 0; i < spectrumIdResult[0]->spectrumIdentificationItem[0]->cvParams.size(); i++){
+		if(!spectrumIdResult[0]->spectrumIdentificationItem[0]->cvParams[i].value.empty()){
+			count++;
+			names.push_back(cvTermInfo(spectrumIdResult[0]->spectrumIdentificationItem[0]->cvParams[i].cvid).name);
+		}
+	}
+	if(count == 0){
+		Rcpp::Rcout << "No scoring information available" << std::endl;
+		return Rcpp::DataFrame::create();
+	}else{
+		vector<vector<double> > score(count);
+	
+    for (size_t i = 0; i < spectrumIdResult.size(); i++) {
+		spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+		count = 0;
+		for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem[0]->cvParams.size(); j++){
+			if(!spectrumIdResult[i]->spectrumIdentificationItem[0]->cvParams[j].value.empty()){
+				score[count].push_back(lexical_cast<double>(spectrumIdResult[i]->spectrumIdentificationItem[0]->cvParams[j].value));
+				count++;
+			}
+			
+		}
+    }
+    
+    ListBuilder res;
+    res.add("spectrumID", Rcpp::wrap(spectrumID));
+    for(size_t i = 0; i < score.size(); i++){
+		res.add(names[i], Rcpp::wrap(score[i]));
+	}
+    
+	return res;
+	}
+	
+    
+}
