@@ -1,4 +1,4 @@
-%\VignetteIndexEntry{mzR, Ramp, mzXML, mzData, mzML}
+%\VignetteIndexEntry{mzR, Ramp, mzXML, mzData, mzML, mzid}
 %\VignetteKeywords{mzXML, mzData, mzML, Ramp, mass spectrometry, proteomics, metabolomics}
 %\VignettePackage{mzR}
 
@@ -50,8 +50,8 @@
 
 The \Rpackage{mzR} \citep{Chambers2012} package aims at providing a common interface to
 several mass spectrometry data formats, namely \texttt{mzData}
-\citep{Orchard2007}, \texttt{mzXML} \citep{Pedrioli2004} and the
-latest \texttt{mzML} \citep{Martens2010}, somewhat similar to the
+\citep{Orchard2007}, \texttt{mzXML} \citep{Pedrioli2004},
+\texttt{mzML} \citep{Martens2010}, and \texttt{mzid} somewhat similar to the
 Bioconductor package affyio for affymetrix raw data. No processing is
 done in mzR, which is left to packages such as 
 \Rpackage{XCMS}\footnote{\url{http://www.bioconductor.org/packages/release/bioc/html/xcms.html}} 
