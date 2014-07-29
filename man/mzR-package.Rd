@@ -8,10 +8,10 @@ parser for mzXML, mzData, mzML and mzid files (mass spectrometry data)
 \description{
   The mzR package is a library purely for accessing mass spectrometry
   data in a wide range of formats. Several backend libraries are used,
-  such as the ISB random acces parser (RAMP) for mass
-  spectrometry mzXML, mzData and mzML files. The package
+  such as the ISB random acces parser (RAMP) and ProteoWizard (pwiz) for mass
+  spectrometry mzXML, mzData, mzML and mzid files. The package
   contains the original RAMP code written by the ISB, and a
-  subset of the proteowizard library for mzML.
+  subset of the proteowizard library for mzML and mzid.
 }
 \details{
 

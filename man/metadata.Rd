@@ -61,6 +61,8 @@ score(object)
   \code{mzidInfo} is used for the \code{mzR} object created from a mzid file.
   It returns basic information on this mzid file including file provider,
   creation date, software, database, enzymes and spectra data format.
+  The \code{mzidInfo} will return the scoring results in identification.
+  It will return different results for different searching software used.
 }
 
 
@@ -70,7 +72,7 @@ score(object)
 }
 
 \author{
-  Steffen Neumann and Laurent Gatto
+  Steffen Neumann, Laurent Gatto and Qiang Kou
 }
 
 \examples{

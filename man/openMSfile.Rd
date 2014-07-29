@@ -29,7 +29,7 @@
     use. Currently 'Ramp', 'netCDF'  and 'pwiz' are available.}
   \item{object}{ An instantiated mzR object. }
   \item{verbose}{ Enable verbose output. }
-  \item{outformat}{The output format.}
+  \item{outformat}{The output format, mgf/mzML/mzXML formats are supported}
 }
 
 \description{

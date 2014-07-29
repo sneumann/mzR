@@ -96,7 +96,7 @@
   \code{\link{openMSfile}}.  
   
   After creating a \code{mzR}, you can write it into a file.
-  mzXML, mzML, mz5, mgf formats are supported. 
+  mzXML, mzML, mgf formats are supported. 
 }
 
 \section{Slots}{
