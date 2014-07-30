@@ -28,12 +28,6 @@ Rcpp::List RcppIdent::getIDInfo(  )
         software[i] = as[i]->name + " " + as[i]->version + " " + (as[i]->contactRolePtr.get()!=0?as[i]->contactRolePtr->contactPtr->name:"") ;
     }
 
-    Rcpp::StringVector database(sdb.size());
-    for (size_t i = 0; i < sdb.size(); i++)
-    {
-        database = sdb[i]->location + " (" + lexical_cast<string>(sdb[i]->numDatabaseSequences) + " sequences)";
-    }
-
     vector<SpectrumIdentificationProtocolPtr> sip = mzid->analysisProtocolCollection.spectrumIdentificationProtocol;
     string fragmentTolerance = "";
     string parentTolerance = "";
@@ -91,7 +85,6 @@ Rcpp::List RcppIdent::getIDInfo(  )
                Rcpp::_["FileProvider"]	= provider,
                Rcpp::_["CreationDate"]	= date,
                Rcpp::_["software"]	= software,
-               Rcpp::_["database"]	= database,
                Rcpp::_["ModificationSearched"]	= mod,
                Rcpp::_["FragmentTolerance"]	= fragmentTolerance,
                Rcpp::_["ParentTolerance"]	= parentTolerance,
@@ -103,6 +96,8 @@ Rcpp::List RcppIdent::getIDInfo(  )
 
 Rcpp::DataFrame RcppIdent::getPepInfo(  )
 {
+    ListBuilder res;
+
     vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
 
     Rcpp::StringVector spectrumID(spectrumIdResult.size());
@@ -118,6 +113,8 @@ Rcpp::DataFrame RcppIdent::getPepInfo(  )
     Rcpp::NumericVector start(spectrumIdResult.size());
     Rcpp::NumericVector end(spectrumIdResult.size());
     Rcpp::StringVector DBSequenceID(spectrumIdResult.size());
+    Rcpp::StringVector DBseq(spectrumIdResult.size());
+    Rcpp::StringVector DBdesc(spectrumIdResult.size());
 
     for (size_t i = 0; i < spectrumIdResult.size(); i++)
     {
@@ -134,34 +131,44 @@ Rcpp::DataFrame RcppIdent::getPepInfo(  )
         start[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->start;
         end[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->end;
         DBSequenceID[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->accession;
-
+        DBseq[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq;
+        if(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
+            DBdesc[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams[0].value;
     }
 
-    return Rcpp::DataFrame::create(
-               Rcpp::_["spectrumID"]	= spectrumID,
-               Rcpp::_["chargeState"]	= chargeState,
-               Rcpp::_["experimentalM/Z"]	= experimentalMassToCharge,
-               Rcpp::_["calculatedM/Z"]	= calculatedMassToCharge,
-               Rcpp::_["sequence"]	= seq,
-               Rcpp::_["modNum"]	= modification,
-               Rcpp::_["isDecoy"]	= isDecoy,
-               Rcpp::_["post"]		= post,
-               Rcpp::_["pre"]		= pre,
-               Rcpp::_["start"]		= start,
-               Rcpp::_["end"]		= end,
-               Rcpp::_["DatabaseID"]= DBSequenceID
-           );
+    res.add("spectrumID", Rcpp::wrap(spectrumID));
+    res.add("chargeState", Rcpp::wrap(chargeState));
+    res.add("experimentalM/Z", Rcpp::wrap(experimentalMassToCharge));
+    res.add("calculatedM/Z", Rcpp::wrap(calculatedMassToCharge));
+    res.add("sequence", Rcpp::wrap(seq));
+    res.add("modNum", Rcpp::wrap(modification));
+    res.add("isDecoy", Rcpp::wrap(isDecoy));
+    res.add("post", Rcpp::wrap(post));
+    res.add("pre", Rcpp::wrap(pre));
+    res.add("start", Rcpp::wrap(start));
+    res.add("end", Rcpp::wrap(end));
+    res.add("DatabaseID", Rcpp::wrap(DBSequenceID));
+    if(!spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq.empty())
+        res.add("DatabaseSeq", Rcpp::wrap(DBseq));
+    if(spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
+        res.add("DatabaseDescription", Rcpp::wrap(DBdesc));
 
+    return res;
 }
 
 Rcpp::DataFrame RcppIdent::getModInfo(  )
 {
+    ListBuilder res;
+
     vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
     vector<string> spectrumID;
     vector<string> seq;
     vector<string> name;
     vector<double> mass;
     vector<int> loc;
+    vector<string> DBSequenceID;
+    vector<string> DBseq;
+    vector<string> DBdesc;
 
     for (size_t i = 0; i < spectrumIdResult.size(); i++)
     {
@@ -174,19 +181,26 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
                 name.push_back(cvTermInfo(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification[j]->cvParams[0].cvid).name);
                 mass.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification[j]->monoisotopicMassDelta);
                 loc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification[j]->location);
+                DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->accession);
+                DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq);
+                if(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
+                    DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams[0].value);
             }
         }
 
     }
 
-    return Rcpp::DataFrame::create(
-               Rcpp::_["spectrumID"]	= spectrumID,
-               Rcpp::_["sequence"]	= seq,
-               Rcpp::_["name"]	= name,
-               Rcpp::_["mass"]	= mass,
-               Rcpp::_["location"]	= loc
-           );
-
+    res.add("spectrumID", Rcpp::wrap(spectrumID));
+    res.add("sequence", Rcpp::wrap(seq));
+    res.add("name", Rcpp::wrap(name));
+    res.add("mass", Rcpp::wrap(mass));
+    res.add("location", Rcpp::wrap(loc));
+    res.add("DBSequenceID", Rcpp::wrap(DBSequenceID));
+    if(!spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq.empty())
+        res.add("DatabaseSeq", Rcpp::wrap(DBseq));
+    if(spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
+        res.add("DatabaseDescription", Rcpp::wrap(DBdesc));
+    return res;
 }
 
 Rcpp::DataFrame RcppIdent::getSubInfo(  )
@@ -231,7 +245,7 @@ Rcpp::DataFrame RcppIdent::getScore(  )
     vector<string> spectrumID;
     vector<string> names;
     int count = 0;
-    //names.push_back("spectrumID");
+
     for(size_t i = 0; i < spectrumIdResult[0]->spectrumIdentificationItem[0]->cvParams.size(); i++)
     {
         if(!spectrumIdResult[0]->spectrumIdentificationItem[0]->cvParams[i].value.empty())
@@ -304,24 +318,31 @@ Rcpp::CharacterVector RcppIdent::getPara(  )
 
 Rcpp::DataFrame RcppIdent::getDB(  )
 {
-    ListBuilder res;
-    std::vector<std::string> access;
-    std::vector<std::string> seq;
-    std::vector<std::string> desc;
-    for(int i = 0; i < mzid->sequenceCollection.dbSequences.size(); i++)
-    {
-        //Rcpp::Rcout << i << "\t" << mzid->sequenceCollection.dbSequences[i]->accession << std::endl;
-        access.push_back(mzid->sequenceCollection.dbSequences[i]->accession);
-        if(!mzid->sequenceCollection.dbSequences[i]->seq.empty())
-            seq.push_back(mzid->sequenceCollection.dbSequences[i]->seq);
-        if(mzid->sequenceCollection.dbSequences[i]->cvParams.size() > 0)
-            desc.push_back(mzid->sequenceCollection.dbSequences[i]->cvParams[0].value);
-    }
-    res.add("accession", Rcpp::wrap(access));
-    if(!mzid->sequenceCollection.dbSequences[0]->seq.empty())
-        res.add("seq", Rcpp::wrap(seq));
-    if(mzid->sequenceCollection.dbSequences[0]->cvParams.size() > 0 )
-        res.add("description", Rcpp::wrap(desc));
+    vector<SearchDatabasePtr> sdb = mzid->dataCollection.inputs.searchDatabase;
 
-    return res;
+    std::vector<std::string> dbLocation;
+    std::vector<std::string> dbID;
+    std::vector<std::string> dbName;
+    std::vector<std::string> dbVersion;
+    std::vector<long> numDatabaseSequences;
+    std::vector<long> numResidues;
+    for (size_t i = 0; i < sdb.size(); i++)
+    {
+        dbLocation.push_back(sdb[i]->location);
+        dbID.push_back(sdb[i]->id);
+        dbName.push_back(sdb[i]->name);
+        dbVersion.push_back(sdb[i]->version);
+        numDatabaseSequences.push_back(sdb[i]->numDatabaseSequences);
+        numResidues.push_back(sdb[i]->numResidues);
+    }
+    Rcpp::DataFrame database = Rcpp::List::create(
+                                   Rcpp::_["location"]  = dbLocation,
+                                   Rcpp::_["id"]  = dbID,
+                                   Rcpp::_["name"]  = dbName,
+                                   Rcpp::_["numDatabaseSequences"]  = numDatabaseSequences,
+                                   Rcpp::_["numResidues"]  = numResidues,
+                                   Rcpp::_["version"]  = dbVersion
+                               );
+
+    return database;
 }
