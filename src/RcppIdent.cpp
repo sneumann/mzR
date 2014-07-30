@@ -45,7 +45,7 @@ Rcpp::List RcppIdent::getIDInfo(  )
     }
     
     vector<SearchModificationPtr> sm = sip[0]->modificationParams;   
-    
+
     Rcpp::StringVector mod(sm.size());
     for(size_t i = 0; i < sm.size(); i++){
 		mod[i] = cvTermInfo(sm[i]->cvParams[0].cvid).name;
@@ -256,4 +256,25 @@ Rcpp::DataFrame RcppIdent::getScore(  )
 	}
 	
     
+}
+
+Rcpp::CharacterVector RcppIdent::getPara(  )
+{
+    vector<SpectrumIdentificationProtocolPtr> sip = mzid->analysisProtocolCollection.spectrumIdentificationProtocol;
+    vector<SearchModificationPtr> sm = sip[0]->modificationParams;   
+    std::vector<std::string> para;
+    para.push_back(cvTermInfo(sip[0]->searchType.cvid).name);
+    
+    for(int i = 0 ; i < sip[0]->additionalSearchParams.cvParams.size(); i++){
+		para.push_back(cvTermInfo(sip[0]->additionalSearchParams.cvParams[i].cvid).name);
+	}
+    
+    for(int i = 0; i < sip[0]->additionalSearchParams.userParams.size(); i++){
+		if(sip[0]->additionalSearchParams.userParams[i].value.empty()){
+			para.push_back(sip[0]->additionalSearchParams.userParams[i].name);
+		} else
+			para.push_back(sip[0]->additionalSearchParams.userParams[i].name + ": " + sip[0]->additionalSearchParams.userParams[i].value);
+	}
+	
+	return wrap(para);
 }

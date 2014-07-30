@@ -45,6 +45,8 @@ public:
     Rcpp::DataFrame getSubInfo();
     
     Rcpp::DataFrame getScore();
+    
+    Rcpp::CharacterVector getPara();
 };
 
 #endif

@@ -69,6 +69,7 @@
 \alias{sourceInfo,mzRident-method}
 \alias{tolerance,mzRident-method}
 \alias{score,mzRident-method}
+\alias{para,mzRident-method}
 
 
 \title{Class \code{mzR} and sub-classes}
@@ -170,6 +171,7 @@
     \item{sourceInfo}{\code{signature(object = "mzRident")}: ... }
     \item{tolerance}{\code{signature(object = "mzRident")}: ... }
     \item{score}{\code{signature(object = "mzRident")}: ... }
+    \item{para}{\code{signature(object = "mzRident")}: ... }
   }
 }
 

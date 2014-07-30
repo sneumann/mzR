@@ -9,6 +9,11 @@ setMethod("peptides",
 setMethod("score",
           signature=c("mzRident"),
           function(object) return(object@backend$getScore()))
+          
+setMethod("para",
+          signature=c("mzRident"),
+          function(object) return(object@backend$getPara()))          
+          
 
 setMethod("modifications",
           signature=c("mzRident"),
