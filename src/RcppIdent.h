@@ -46,7 +46,7 @@ public:
 
     Rcpp::DataFrame getScore();
 
-    Rcpp::CharacterVector getPara();
+    Rcpp::List getPara();
 
     Rcpp::DataFrame getDB();
 };
