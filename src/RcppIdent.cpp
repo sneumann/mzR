@@ -19,6 +19,7 @@ Rcpp::List RcppIdent::getIDInfo(  )
 	provider = (mzid->provider.contactRolePtr.get()!=0?mzid->provider.contactRolePtr.get()->name():"");
     date = mzid->creationDate;
     vector<AnalysisSoftwarePtr> as = mzid->analysisSoftwareList;
+
     vector<SearchDatabasePtr> sdb = mzid->dataCollection.inputs.searchDatabase;
     Rcpp::StringVector software(as.size());
 
@@ -277,4 +278,27 @@ Rcpp::CharacterVector RcppIdent::getPara(  )
 	}
 	
 	return wrap(para);
+}
+
+Rcpp::DataFrame RcppIdent::getDB(  )
+{
+	ListBuilder res;
+	std::vector<std::string> access;
+	std::vector<std::string> seq;
+	std::vector<std::string> desc;
+	for(int i = 0; i < mzid->sequenceCollection.dbSequences.size(); i++){
+		//Rcpp::Rcout << i << "\t" << mzid->sequenceCollection.dbSequences[i]->accession << std::endl;
+		access.push_back(mzid->sequenceCollection.dbSequences[i]->accession);
+		if(!mzid->sequenceCollection.dbSequences[i]->seq.empty())
+			seq.push_back(mzid->sequenceCollection.dbSequences[i]->seq);
+		if(mzid->sequenceCollection.dbSequences[i]->cvParams.size() > 0)
+			desc.push_back(mzid->sequenceCollection.dbSequences[i]->cvParams[0].value);
+	}
+	res.add("accession", Rcpp::wrap(access));
+	if(!mzid->sequenceCollection.dbSequences[0]->seq.empty())
+		res.add("seq", Rcpp::wrap(seq));
+    if(mzid->sequenceCollection.dbSequences[0]->cvParams.size() > 0 )
+		res.add("description", Rcpp::wrap(desc));
+		
+	return res;
 }

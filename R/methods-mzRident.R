@@ -31,11 +31,8 @@ setMethod("softwareInfo",
           })
           
 setMethod("database",
-          signature="mzRident",
-          function(object) {
-            info <- mzidInfo(object)           
-            return(info$database)
-          })
+          signature=c("mzRident"),
+          function(object) return(object@backend$getDB()))
         
 setMethod("enzymes",
           signature="mzRident",

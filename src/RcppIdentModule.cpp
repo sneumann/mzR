@@ -15,5 +15,6 @@ RCPP_MODULE(Ident){
     .method( "getSubInfo", &RcppIdent::getSubInfo, "Substitution information about this mzid files" )
     .method( "getScore", &RcppIdent::getScore, "Scoring information about this mzid files" )
     .method( "getPara", &RcppIdent::getPara, "Parameters used in identification." )
+    .method( "getDB", &RcppIdent::getDB, "Database used in identification." )
     ;
 }
