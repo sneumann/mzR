@@ -35,19 +35,19 @@ public:
     RcppIdent();
 
     void open(const string& fileNames);
-    
+
     Rcpp::List getIDInfo();
-    
+
     Rcpp::DataFrame getPepInfo();
-    
+
     Rcpp::DataFrame getModInfo();
-    
+
     Rcpp::DataFrame getSubInfo();
-    
+
     Rcpp::DataFrame getScore();
-    
+
     Rcpp::CharacterVector getPara();
-    
+
     Rcpp::DataFrame getDB();
 };
 

@@ -55,7 +55,7 @@ public:
     RcppPwiz();
 
     void open(const string& fileNames);
-    
+
     void writeMSfile(const string& filenames, const string& format);
 
     string getFilename();
@@ -63,7 +63,7 @@ public:
     int getLastScan() const;
 
     Rcpp::List getInstrumentInfo();
-    
+
     Rcpp::List getRunInfo();
 
     Rcpp::List getScanHeaderInfo(int whichScan);

@@ -11,7 +11,7 @@ and mzML, if you have the PWIZ library from Spielberg Family Proteomics Center
     begin                : Wed Oct 10
     copyright            : (C) 2003 by Pedrioli Patrick, ISB, Proteomics
     email                : ppatrick@student.ethz.ch
-    additional work for C++, >2GB files in WIN32, and portability (C) 2004 by Brian Pratt, Insilicos LLC 
+    additional work for C++, >2GB files in WIN32, and portability (C) 2004 by Brian Pratt, Insilicos LLC
  ***************************************************************************/
 
 /***************************************************************************
@@ -82,9 +82,9 @@ typedef FILE * ramp_filehandle_t; // can use fopen, fseek etc
 
 // set mz and intensity precision
 #ifndef RAMPREAL_FLOAT
-typedef double RAMPREAL; 
+typedef double RAMPREAL;
 #else
-typedef float RAMPREAL; 
+typedef float RAMPREAL;
 #endif
 
 #include "ramp_base64.h"
@@ -94,22 +94,25 @@ typedef enum { mzInt = 0 , mzRuler, mzOnly, intensityOnly } e_contentType;
 #else
 #ifndef RAMP_STRUCT_DECL_ONLY  // useful for pwiz, which only wants to mimic ramp structs
 #ifdef HAVE_PWIZ_MZML_LIB
-namespace pwiz {  // forward ref
-	namespace msdata {  // forward ref
-		class RAMPAdapter; // forward ref
-	}
+namespace pwiz    // forward ref
+{
+namespace msdata    // forward ref
+{
+class RAMPAdapter; // forward ref
+}
 }
 #endif
 
 //
 // we use this struct instead of FILE* so we can track what kind of files we're parsing
 //
-typedef struct {
-   ramp_filehandle_t fileHandle;
+typedef struct
+{
+    ramp_filehandle_t fileHandle;
 #ifdef HAVE_PWIZ_MZML_LIB
-   pwiz::msdata::RAMPAdapter *mzML; // if nonNULL, then we're reading mzML 
+    pwiz::msdata::RAMPAdapter *mzML; // if nonNULL, then we're reading mzML
 #endif
-   int bIsMzData; // if not mzML, then is it mzXML or mzData?
+    int bIsMzData; // if not mzML, then is it mzXML or mzData?
 } RAMPFILE;
 #endif  // RAMP_STRUCT_DECL_ONLY
 #ifdef RAMP_HAVE_GZ_INPUT
@@ -141,7 +144,7 @@ typedef off_t ramp_fileoffset_t;
 #define ramp_fseek(a,b,c) fseeko((a)->fileHandle,b,c)
 #define ramp_ftell(a) ftello((a)->fileHandle)
 #endif
-#endif 
+#endif
 #endif // not SWIG
 
 
@@ -155,56 +158,56 @@ typedef off_t ramp_fileoffset_t;
 
 struct ScanHeaderStruct
 {
-   int seqNum; // number in sequence observed file (1-based)
-   int acquisitionNum; // scan number as declared in File (may be gaps)
-   int  msLevel;
-   int  polarity; // 1 - positive, 0 - negative
-   int  peaksCount;
-   double totIonCurrent;
-   double retentionTime;        /* in seconds */
-   double basePeakMZ;
-   double basePeakIntensity;
-   double collisionEnergy;
-   double compensationVoltage;
-   double ionisationEnergy;
-   double lowMZ;
-   double highMZ;
-   int precursorScanNum; /* only if MS level > 1 */
-   double precursorMZ;  /* only if MS level > 1 */
-   int precursorCharge;  /* only if MS level > 1 */
-   double precursorIntensity;  /* only if MS level > 1 */
-   char scanType[SCANTYPE_LENGTH];
-   char activationMethod[SCANTYPE_LENGTH];
-   char possibleCharges[SCANTYPE_LENGTH];
-   int numPossibleCharges;
-   bool possibleChargesArray[CHARGEARRAY_LENGTH]; /* NOTE: does NOT include "precursorCharge" information; only from "possibleCharges" */
-   int mergedScan;  /* only if MS level > 1 */
-   int mergedResultScanNum; /* scan number of the resultant merged scan */
-   int mergedResultStartScanNum; /* smallest scan number of the scanOrigin for merged scan */
-   int mergedResultEndScanNum; /* largest scan number of the scanOrigin for merged scan */
-   const char* filterLine;
-   ramp_fileoffset_t filePosition; /* where in the file is this header? */
+    int seqNum; // number in sequence observed file (1-based)
+    int acquisitionNum; // scan number as declared in File (may be gaps)
+    int  msLevel;
+    int  polarity; // 1 - positive, 0 - negative
+    int  peaksCount;
+    double totIonCurrent;
+    double retentionTime;        /* in seconds */
+    double basePeakMZ;
+    double basePeakIntensity;
+    double collisionEnergy;
+    double compensationVoltage;
+    double ionisationEnergy;
+    double lowMZ;
+    double highMZ;
+    int precursorScanNum; /* only if MS level > 1 */
+    double precursorMZ;  /* only if MS level > 1 */
+    int precursorCharge;  /* only if MS level > 1 */
+    double precursorIntensity;  /* only if MS level > 1 */
+    char scanType[SCANTYPE_LENGTH];
+    char activationMethod[SCANTYPE_LENGTH];
+    char possibleCharges[SCANTYPE_LENGTH];
+    int numPossibleCharges;
+    bool possibleChargesArray[CHARGEARRAY_LENGTH]; /* NOTE: does NOT include "precursorCharge" information; only from "possibleCharges" */
+    int mergedScan;  /* only if MS level > 1 */
+    int mergedResultScanNum; /* scan number of the resultant merged scan */
+    int mergedResultStartScanNum; /* smallest scan number of the scanOrigin for merged scan */
+    int mergedResultEndScanNum; /* largest scan number of the scanOrigin for merged scan */
+    const char* filterLine;
+    ramp_fileoffset_t filePosition; /* where in the file is this header? */
 };
 
 struct RunHeaderStruct
 {
-  int scanCount;
-  double lowMZ;
-  double highMZ;
-  double startMZ;
-  double endMZ;
-  double dStartTime;
-  double dEndTime;
+    int scanCount;
+    double lowMZ;
+    double highMZ;
+    double startMZ;
+    double endMZ;
+    double dStartTime;
+    double dEndTime;
 };
 
 typedef struct InstrumentStruct
 {
-   char manufacturer[INSTRUMENT_LENGTH];
-   char model[INSTRUMENT_LENGTH];
-   char ionisation[INSTRUMENT_LENGTH];
-   char analyzer[INSTRUMENT_LENGTH];
-   char detector[INSTRUMENT_LENGTH];
-   //char msType[INSTRUMENT_LENGTH];
+    char manufacturer[INSTRUMENT_LENGTH];
+    char model[INSTRUMENT_LENGTH];
+    char ionisation[INSTRUMENT_LENGTH];
+    char analyzer[INSTRUMENT_LENGTH];
+    char detector[INSTRUMENT_LENGTH];
+    //char msType[INSTRUMENT_LENGTH];
 } InstrumentStruct;
 
 #ifndef RAMP_STRUCT_DECL_ONLY  // useful for pwiz, which only wants to mimic ramp structs
@@ -218,9 +221,9 @@ void rampCloseFile(RAMPFILE *pFI);
 std::string rampConstructInputFileName(const std::string &basename);
 char *rampConstructInputFileName(char *buf,int buflen,const char *basename);
 char *rampConstructInputPath(char *buf, // put the result here
-							 int inbuflen, // max result length
-							 const char *dir_in, // use this as a directory hint if basename does not contain valid dir info
-							 const char *basename); // we'll try adding various filename extensions to this
+                             int inbuflen, // max result length
+                             const char *dir_in, // use this as a directory hint if basename does not contain valid dir info
+                             const char *basename); // we'll try adding various filename extensions to this
 
 // construct a filename in inbuf from a basename and taking hints from a named
 // spectrum, adding .mzXML or .mzData as exists
@@ -243,42 +246,43 @@ int rampSelfTest(char *filename); // if filename is non-null we'll exercise read
 
 ramp_fileoffset_t getIndexOffset(RAMPFILE *pFI);
 ramp_fileoffset_t *readIndex(RAMPFILE *pFI,
-                ramp_fileoffset_t indexOffset,
-                int *iLastScan);
+                             ramp_fileoffset_t indexOffset,
+                             int *iLastScan);
 void readHeader(RAMPFILE *pFI,
                 ramp_fileoffset_t lScanIndex, // read from this file position
                 struct ScanHeaderStruct *scanHeader);
 int  readMsLevel(RAMPFILE *pFI,
                  ramp_fileoffset_t lScanIndex);
 double readStartMz(RAMPFILE *pFI,
-		   ramp_fileoffset_t lScanIndex);
+                   ramp_fileoffset_t lScanIndex);
 double readEndMz(RAMPFILE *pFI,
-		   ramp_fileoffset_t lScanIndex);
+                 ramp_fileoffset_t lScanIndex);
 int readPeaksCount(RAMPFILE *pFI,
-                 ramp_fileoffset_t lScanIndex);
+                   ramp_fileoffset_t lScanIndex);
 RAMPREAL *readPeaks(RAMPFILE *pFI,
-                 ramp_fileoffset_t lScanIndex);
+                    ramp_fileoffset_t lScanIndex);
 void readRunHeader(RAMPFILE *pFI,
                    ramp_fileoffset_t *pScanIndex,
                    struct RunHeaderStruct *runHeader,
                    int iLastScan);
 void readMSRun(RAMPFILE *pFI,
-                   struct RunHeaderStruct *runHeader);
+               struct RunHeaderStruct *runHeader);
 
 InstrumentStruct* getInstrumentStruct(RAMPFILE *pFI);
 
 // for MS/MS averaged scan
-enum {
-  MASK_SCANS_TYPE = 0x0003,
-  BIT_ORIGIN_SCANS = 0x0001,
-  BIT_AVERAGE_SCANS = 0x0002,
-  OPTION_AVERAGE_SCANS = BIT_AVERAGE_SCANS, // return scan including merged resultant scan
-                                            // but exclude 'real' scan via peaksCount=0
-  OPTION_ORIGIN_SCANS = BIT_ORIGIN_SCANS,   // return 'real' scan 
-                                            // but exclude merged resultant scan via peaksCount=0
-  OPTION_ALL_SCANS = BIT_ORIGIN_SCANS | BIT_AVERAGE_SCANS,
-                                            // return 'real' scan + merged resultant scan
-  DEFAULT_OPTION = OPTION_AVERAGE_SCANS
+enum
+{
+    MASK_SCANS_TYPE = 0x0003,
+    BIT_ORIGIN_SCANS = 0x0001,
+    BIT_AVERAGE_SCANS = 0x0002,
+    OPTION_AVERAGE_SCANS = BIT_AVERAGE_SCANS, // return scan including merged resultant scan
+    // but exclude 'real' scan via peaksCount=0
+    OPTION_ORIGIN_SCANS = BIT_ORIGIN_SCANS,   // return 'real' scan
+    // but exclude merged resultant scan via peaksCount=0
+    OPTION_ALL_SCANS = BIT_ORIGIN_SCANS | BIT_AVERAGE_SCANS,
+    // return 'real' scan + merged resultant scan
+    DEFAULT_OPTION = OPTION_AVERAGE_SCANS
 };
 void setRampOption(long option);
 // return 0 if the scan has not been used in merged scan
