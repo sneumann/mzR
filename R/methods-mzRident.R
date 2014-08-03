@@ -2,9 +2,9 @@ setMethod("mzidInfo",
           signature=c("mzRident"),
           function(object) return(object@backend$getIDInfo()))
           
-setMethod("peptides",
+setMethod("psms",
           signature=c("mzRident"),
-          function(object) return(object@backend$getPepInfo()))
+          function(object) return(object@backend$getPsmInfo()))
           
 setMethod("score",
           signature=c("mzRident"),

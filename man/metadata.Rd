@@ -12,7 +12,7 @@
 \alias{sourceInfo}
 \alias{mzidInfo}
 \alias{modifications}
-\alias{peptides}
+\alias{psms}
 \alias{substitutions}
 \alias{database}
 \alias{enzymes}
@@ -37,7 +37,7 @@ sourceInfo(object)
 model(object)
 mzidInfo(object)
 modifications(object)
-peptides(object)
+psms(object)
 substitutions(object)
 database(object)
 enzymes(object)

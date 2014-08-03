@@ -61,7 +61,7 @@
 \alias{sampleInfo,mzRpwiz-method}
 \alias{sourceInfo,mzRpwiz-method}
 \alias{mzidInfo,mzRident-method}
-\alias{peptides,mzRident-method}
+\alias{psms,mzRident-method}
 \alias{modifications,mzRident-method}
 \alias{substitutions,mzRident-method}
 \alias{database,mzRident-method}
@@ -163,7 +163,7 @@
   Methods currently implemented for \code{mzRident}
   \describe{
     \item{mzidInfo}{\code{signature(object = "mzRident")}: ... }
-    \item{peptides}{\code{signature(object = "mzRident")}: ... }
+    \item{psms}{\code{signature(object = "mzRident")}: ... }
     \item{modifications}{\code{signature(object = "mzRident")}: ... }
     \item{substitutions}{\code{signature(object = "mzRident")}: ... }
     \item{database}{\code{signature(x = "mzRident")}: ... }

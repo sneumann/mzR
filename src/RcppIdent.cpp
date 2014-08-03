@@ -92,52 +92,61 @@ Rcpp::List RcppIdent::getIDInfo(  )
 
 }
 
-Rcpp::DataFrame RcppIdent::getPepInfo(  )
+Rcpp::DataFrame RcppIdent::getPsmInfo(  )
 {
     ListBuilder res;
 
     vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
 
-    Rcpp::StringVector spectrumID(spectrumIdResult.size());
-    Rcpp::NumericVector chargeState(spectrumIdResult.size());
-    Rcpp::NumericVector rank(spectrumIdResult.size());
-    Rcpp::NumericVector experimentalMassToCharge(spectrumIdResult.size());
-    Rcpp::NumericVector calculatedMassToCharge(spectrumIdResult.size());
-    Rcpp::StringVector seq(spectrumIdResult.size());
-    Rcpp::NumericVector modification(spectrumIdResult.size());
-    Rcpp::LogicalVector isDecoy(spectrumIdResult.size());
-    Rcpp::StringVector post(spectrumIdResult.size());
-    Rcpp::StringVector pre(spectrumIdResult.size());
-    Rcpp::NumericVector start(spectrumIdResult.size());
-    Rcpp::NumericVector end(spectrumIdResult.size());
-    Rcpp::StringVector DBSequenceID(spectrumIdResult.size());
-    Rcpp::StringVector DBseq(spectrumIdResult.size());
-    Rcpp::StringVector DBdesc(spectrumIdResult.size());
+    std::vector<std::string> spectrumID;
+    std::vector<int> chargeState;
+    std::vector<int> rank;
+    std::vector<double> experimentalMassToCharge;
+    std::vector<double> calculatedMassToCharge;
+    std::vector<std::string> seq;
+    std::vector<int> modification;
+    std::vector<bool> isDecoy;
+    std::vector<bool> passThreshold;
+    std::vector<std::string> post;
+    std::vector<std::string> pre;
+    std::vector<int> start;
+    std::vector<int> end;
+    std::vector<std::string> DBSequenceID;
+    std::vector<std::string> DBseq;
+    std::vector<std::string> DBdesc;
 
     for (size_t i = 0; i < spectrumIdResult.size(); i++)
     {
-		Rcpp::Rcout << spectrumIdResult[i]->spectrumIdentificationItem.size() << std::endl;
-        spectrumID[i] = spectrumIdResult[i]->spectrumID;
-        chargeState[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->chargeState;
-        experimentalMassToCharge[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->experimentalMassToCharge;
-        calculatedMassToCharge[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->calculatedMassToCharge;
-        seq[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->peptideSequence;
-        modification[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification.size();
-        isDecoy[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->isDecoy;
-        pre[i] = string(1, spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->pre);
-        post[i] =  string(1, spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->post);
-        start[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->start;
-        end[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->end;
-        DBSequenceID[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->accession;
-        DBseq[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq;
-        if(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
-            DBdesc[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams[0].value;
+        
+        for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem.size(); j++){
+			for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr.size(); k++){
+				spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+				chargeState.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->chargeState);
+				rank.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->rank);
+				passThreshold.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->passThreshold);
+				experimentalMassToCharge.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->experimentalMassToCharge);
+				calculatedMassToCharge.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->calculatedMassToCharge);
+				seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptidePtr->peptideSequence);
+				modification.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptidePtr->modification.size());
+				isDecoy.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->isDecoy);
+				pre.push_back(string(1, spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->pre));
+				post.push_back(string(1, spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->post));
+				start.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->start);
+				end.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->end);
+				DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->accession);
+				DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->seq);
+				if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams.size() > 0)
+				DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams[0].value);
+			}
+		}
     }
 
     res.add("spectrumID", Rcpp::wrap(spectrumID));
     res.add("chargeState", Rcpp::wrap(chargeState));
-    res.add("experimentalM/Z", Rcpp::wrap(experimentalMassToCharge));
-    res.add("calculatedM/Z", Rcpp::wrap(calculatedMassToCharge));
+    res.add("rank", Rcpp::wrap(rank));
+    res.add("passThreshold", Rcpp::wrap(passThreshold));
+    res.add("experimentalMassToCharge", Rcpp::wrap(experimentalMassToCharge));
+    res.add("calculatedMassToCharge", Rcpp::wrap(calculatedMassToCharge));
     res.add("sequence", Rcpp::wrap(seq));
     res.add("modNum", Rcpp::wrap(modification));
     res.add("isDecoy", Rcpp::wrap(isDecoy));
@@ -145,7 +154,7 @@ Rcpp::DataFrame RcppIdent::getPepInfo(  )
     res.add("pre", Rcpp::wrap(pre));
     res.add("start", Rcpp::wrap(start));
     res.add("end", Rcpp::wrap(end));
-    res.add("DatabaseID", Rcpp::wrap(DBSequenceID));
+    res.add("DatabaseAccess", Rcpp::wrap(DBSequenceID));
     if(!spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq.empty())
         res.add("DatabaseSeq", Rcpp::wrap(DBseq));
     if(spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
@@ -280,7 +289,7 @@ Rcpp::DataFrame RcppIdent::getScore(  )
         res.add("spectrumID", Rcpp::wrap(spectrumID));
         for(size_t i = 0; i < score.size(); i++)
         {
-            res.add(names[i], Rcpp::wrap(score[i]));
+            res.add(underscore(names[i]), Rcpp::wrap(score[i]));
         }
 
         return res;
@@ -291,28 +300,32 @@ Rcpp::DataFrame RcppIdent::getScore(  )
 
 Rcpp::List RcppIdent::getPara(  )
 {
-	ListBuilder para;
+    ListBuilder para;
     vector<SpectrumIdentificationProtocolPtr> sip = mzid->analysisProtocolCollection.spectrumIdentificationProtocol;
 
-    para.add("searchType", Rcpp::wrap(cvTermInfo(sip[0]->searchType.cvid).name));
+    para.add("searchType", Rcpp::wrap(underscore(cvTermInfo(sip[0]->searchType.cvid).name)));
 
     for(int i = 0 ; i < sip[0]->additionalSearchParams.cvParams.size(); i++)
     {
-        para.add(space2underscore(cvTermInfo(sip[0]->additionalSearchParams.cvParams[i].cvid).name), Rcpp::wrap((bool) 1));
+        para.add(underscore(cvTermInfo(sip[0]->additionalSearchParams.cvParams[i].cvid).name), Rcpp::wrap((bool) 1));
     }
 
     for(int i = 0; i < sip[0]->additionalSearchParams.userParams.size(); i++)
     {
         if(sip[0]->additionalSearchParams.userParams[i].value.empty())
         {
-            para.add(space2underscore(sip[0]->additionalSearchParams.userParams[i].name), Rcpp::wrap((bool) 1));
+            para.add(underscore(sip[0]->additionalSearchParams.userParams[i].name), Rcpp::wrap((bool) 1));
         }
-        else if(isNumber(sip[0]->additionalSearchParams.userParams[i].value)){
-			para.add(sip[0]->additionalSearchParams.userParams[i].name, Rcpp::wrap(lexical_cast<double>(sip[0]->additionalSearchParams.userParams[i].value)));
-		}else if(isBool(sip[0]->additionalSearchParams.userParams[i].value)){
-			para.add(sip[0]->additionalSearchParams.userParams[i].name, Rcpp::wrap(toBool(sip[0]->additionalSearchParams.userParams[i].value)));
-		}else
-            para.add(sip[0]->additionalSearchParams.userParams[i].name, Rcpp::wrap(sip[0]->additionalSearchParams.userParams[i].value));
+        else if(isNumber(sip[0]->additionalSearchParams.userParams[i].value))
+        {
+            para.add(underscore(sip[0]->additionalSearchParams.userParams[i].name), Rcpp::wrap(lexical_cast<double>(sip[0]->additionalSearchParams.userParams[i].value)));
+        }
+        else if(isBool(sip[0]->additionalSearchParams.userParams[i].value))
+        {
+            para.add(underscore(sip[0]->additionalSearchParams.userParams[i].name), Rcpp::wrap(toBool(sip[0]->additionalSearchParams.userParams[i].value)));
+        }
+        else
+            para.add(underscore(sip[0]->additionalSearchParams.userParams[i].name), Rcpp::wrap(sip[0]->additionalSearchParams.userParams[i].value));
     }
 
     return para;
