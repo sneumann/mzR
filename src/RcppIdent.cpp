@@ -117,9 +117,9 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
 
     for (size_t i = 0; i < spectrumIdResult.size(); i++)
     {
-        
         for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem.size(); j++){
 			for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr.size(); k++){
+
 				spectrumID.push_back(spectrumIdResult[i]->spectrumID);
 				chargeState.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->chargeState);
 				rank.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->rank);
@@ -133,10 +133,13 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
 				post.push_back(string(1, spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->post));
 				start.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->start);
 				end.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->end);
-				DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->accession);
-				DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->seq);
-				if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams.size() > 0)
-				DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams[0].value);
+				if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr.get()!=0){
+					DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->accession);
+					DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->seq);
+					if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams.size() > 0)
+						DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams[0].value);
+				}
+				
 			}
 		}
     }
@@ -154,10 +157,14 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
     res.add("pre", Rcpp::wrap(pre));
     res.add("start", Rcpp::wrap(start));
     res.add("end", Rcpp::wrap(end));
-    res.add("DatabaseAccess", Rcpp::wrap(DBSequenceID));
-    if(!spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq.empty())
+    
+    if(DBSequenceID.size() > 0)
+		res.add("DatabaseAccess", Rcpp::wrap(DBSequenceID));
+
+	if(DBseq.size() > 0)
         res.add("DatabaseSeq", Rcpp::wrap(DBseq));
-    if(spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
+    
+    if(DBdesc.size() > 0)
         res.add("DatabaseDescription", Rcpp::wrap(DBdesc));
 
     return res;
@@ -272,13 +279,13 @@ Rcpp::DataFrame RcppIdent::getScore(  )
 
         for (size_t i = 0; i < spectrumIdResult.size(); i++)
         {
-			Rcpp::Rcout << spectrumIdResult[i]->spectrumIdentificationItem.size() << std::endl;
+			
 			for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem.size(); k++){
 				spectrumID.push_back(spectrumIdResult[i]->spectrumID);
 				count = 0;
 				for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams.size(); j++)
 				{
-					if(!spectrumIdResult[i]->spectrumIdentificationItem[0]->cvParams[j].value.empty())
+					if(!spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value.empty())
 					{
 						score[count].push_back(lexical_cast<double>(spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value));
 						count++;
