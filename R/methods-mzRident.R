@@ -38,7 +38,7 @@ setMethod("enzymes",
           signature="mzRident",
           function(object) {
             info <- mzidInfo(object)           
-            return(info$enzymes)
+            return(as.data.frame(info$enzymes))
           })   
 
 setMethod("sourceInfo",
