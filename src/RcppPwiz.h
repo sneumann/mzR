@@ -56,7 +56,7 @@ public:
 
     void open(const string& fileNames);
 
-    void writeMSfile(const string& filenames, const string& format);
+    //void writeMSfile(const string& filenames, const string& format);
 
     string getFilename();
 

@@ -19,7 +19,7 @@ void RcppPwiz::open(const string& fileName)
     msd = new MSDataFile(fileName);
 
 }
-
+/*
 void RcppPwiz::writeMSfile(const string& file, const string& format)
 {
     if (msd != NULL)
@@ -54,7 +54,7 @@ void RcppPwiz::writeMSfile(const string& file, const string& format)
     else
         Rcpp::Rcerr << "No pwiz object available! Please open a file first!" << std::endl;
 }
-
+*/
 
 string RcppPwiz::getFilename (  )
 {

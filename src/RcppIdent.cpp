@@ -117,31 +117,34 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
 
     for (size_t i = 0; i < spectrumIdResult.size(); i++)
     {
-        for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem.size(); j++){
-			for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr.size(); k++){
+        for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem.size(); j++)
+        {
+            for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr.size(); k++)
+            {
 
-				spectrumID.push_back(spectrumIdResult[i]->spectrumID);
-				chargeState.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->chargeState);
-				rank.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->rank);
-				passThreshold.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->passThreshold);
-				experimentalMassToCharge.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->experimentalMassToCharge);
-				calculatedMassToCharge.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->calculatedMassToCharge);
-				seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptidePtr->peptideSequence);
-				modification.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptidePtr->modification.size());
-				isDecoy.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->isDecoy);
-				pre.push_back(string(1, spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->pre));
-				post.push_back(string(1, spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->post));
-				start.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->start);
-				end.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->end);
-				if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr.get()!=0){
-					DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->accession);
-					DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->seq);
-					if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams.size() > 0)
-						DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams[0].value);
-				}
-				
-			}
-		}
+                spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+                chargeState.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->chargeState);
+                rank.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->rank);
+                passThreshold.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->passThreshold);
+                experimentalMassToCharge.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->experimentalMassToCharge);
+                calculatedMassToCharge.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->calculatedMassToCharge);
+                seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptidePtr->peptideSequence);
+                modification.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptidePtr->modification.size());
+                isDecoy.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->isDecoy);
+                pre.push_back(string(1, spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->pre));
+                post.push_back(string(1, spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->post));
+                start.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->start);
+                end.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->end);
+                if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr.get()!=0)
+                {
+                    DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->accession);
+                    DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->seq);
+                    if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams.size() > 0)
+                        DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams[0].value);
+                }
+
+            }
+        }
     }
 
     res.add("spectrumID", Rcpp::wrap(spectrumID));
@@ -157,13 +160,13 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
     res.add("pre", Rcpp::wrap(pre));
     res.add("start", Rcpp::wrap(start));
     res.add("end", Rcpp::wrap(end));
-    
-    if(DBSequenceID.size() > 0)
-		res.add("DatabaseAccess", Rcpp::wrap(DBSequenceID));
 
-	if(DBseq.size() > 0)
+    if(DBSequenceID.size() > 0)
+        res.add("DatabaseAccess", Rcpp::wrap(DBSequenceID));
+
+    if(DBseq.size() > 0)
         res.add("DatabaseSeq", Rcpp::wrap(DBseq));
-    
+
     if(DBdesc.size() > 0)
         res.add("DatabaseDescription", Rcpp::wrap(DBdesc));
 
@@ -186,24 +189,24 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
 
     for (size_t i = 0; i < spectrumIdResult.size(); i++)
     {
-		for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem.size() ; k++)
-		{
-			if(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification.size()>0)
-			{
-				for(size_t j = 0 ; j < spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification.size(); j++)
-				{
-					spectrumID.push_back(spectrumIdResult[i]->spectrumID);
-					seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->peptideSequence);
-					name.push_back(cvTermInfo(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->cvParams[0].cvid).name);
-					mass.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->monoisotopicMassDelta);
-					loc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->location);
-					/*DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->accession);
-					DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->seq);
-					if(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
-						DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->cvParams[0].value);*/
-				}
-			}
-		}
+        for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem.size() ; k++)
+        {
+            if(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification.size()>0)
+            {
+                for(size_t j = 0 ; j < spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification.size(); j++)
+                {
+                    spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+                    seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->peptideSequence);
+                    name.push_back(cvTermInfo(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->cvParams[0].cvid).name);
+                    mass.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->monoisotopicMassDelta);
+                    loc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->location);
+                    /*DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->accession);
+                    DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->seq);
+                    if(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
+                    	DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->cvParams[0].value);*/
+                }
+            }
+        }
     }
 
     res.add("spectrumID", Rcpp::wrap(spectrumID));
@@ -211,11 +214,11 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
     res.add("name", Rcpp::wrap(name));
     res.add("mass", Rcpp::wrap(mass));
     res.add("location", Rcpp::wrap(loc));
-/*    res.add("DBSequenceID", Rcpp::wrap(DBSequenceID));
-    if(!spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq.empty())
-        res.add("DatabaseSeq", Rcpp::wrap(DBseq));
-    if(spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
-        res.add("DatabaseDescription", Rcpp::wrap(DBdesc));*/
+    /*    res.add("DBSequenceID", Rcpp::wrap(DBSequenceID));
+        if(!spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq.empty())
+            res.add("DatabaseSeq", Rcpp::wrap(DBseq));
+        if(spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
+            res.add("DatabaseDescription", Rcpp::wrap(DBdesc));*/
     return res;
 }
 
@@ -281,20 +284,21 @@ Rcpp::DataFrame RcppIdent::getScore(  )
 
         for (size_t i = 0; i < spectrumIdResult.size(); i++)
         {
-			
-			for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem.size(); k++){
-				spectrumID.push_back(spectrumIdResult[i]->spectrumID);
-				count = 0;
-				for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams.size(); j++)
-				{
-					if(!spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value.empty())
-					{
-						score[count].push_back(lexical_cast<double>(spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value));
-						count++;
-					}
 
-				}
-			}
+            for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem.size(); k++)
+            {
+                spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+                count = 0;
+                for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams.size(); j++)
+                {
+                    if(!spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value.empty())
+                    {
+                        score[count].push_back(lexical_cast<double>(spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value));
+                        count++;
+                    }
+
+                }
+            }
         }
 
         ListBuilder res;

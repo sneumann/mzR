@@ -3,7 +3,6 @@
 \alias{initializeRamp}
 \alias{isInitialized}
 \alias{fileName}
-\alias{writeMSfile}
 \alias{openIDfile}
 
 \title{
@@ -18,8 +17,6 @@
 
  fileName(object)
  
- writeMSfile(object, filename, outformat)
-
  openIDfile(filename, verbose = FALSE )
 }
 \arguments{
@@ -29,7 +26,6 @@
     use. Currently 'Ramp', 'netCDF'  and 'pwiz' are available.}
   \item{object}{ An instantiated mzR object. }
   \item{verbose}{ Enable verbose output. }
-  \item{outformat}{The output format, mgf/mzML/mzXML formats are supported}
 }
 
 \description{
@@ -37,9 +33,6 @@
   \code{mzR} object, open 'filename' file and all header information is
   loaded as a Rcpp module and made accessible through the \code{ramp} or \code{pwiz}
   slot of the resulting object.
-  
-  The \code{writeMSfile} function will write a mzR object (\code{pwiz} backend only)
-  into a file. mgf/mzML/mzXML formats are supported.
   
   The \code{openIDfile} constructor will create a new format-specifc
   \code{mzR} object, open 'filename' file and all information is

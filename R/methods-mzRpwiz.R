@@ -3,10 +3,10 @@ setMethod("get3Dmap",
           function(object,scans,lowMz,highMz,resMz) 
           return(object@backend$get3DMap(scans,lowMz,highMz,resMz)))
          
-setMethod("writeMSfile",
-          signature="mzRpwiz",
-          function(object, filename, outformat)
-          object@backend$writeMSfile(filename, outformat))
+##setMethod("writeMSfile",
+##          signature="mzRpwiz",
+##          function(object, filename, outformat)
+##          object@backend$writeMSfile(filename, outformat))
 
 setMethod("length", 
           signature=c("mzRpwiz"),

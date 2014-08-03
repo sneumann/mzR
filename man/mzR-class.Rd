@@ -55,7 +55,6 @@
 \alias{runInfo,mzRramp-method}
 \alias{runInfo,mzRpwiz-method}
 \alias{chromatogramsInfo,mzRpwiz-method}
-\alias{writeMSfile,mzRpwiz-method}
 \alias{softwareInfo,mzRpwiz-method}
 \alias{softwareInfo,mzRident-method}
 \alias{sampleInfo,mzRpwiz-method}
@@ -158,7 +157,6 @@
     \item{model}{\code{signature(object = "mzRpwiz")}: ... }
     \item{runInfo}{\code{signature(object = "mzRpwiz")}: ... }
     \item{chromatogramsInfo}{\code{signature(object = "mzRpwiz")}: ... }
-    \item{writeMSfile}{\code{signature(object = "mzRpwiz")}: ... }
   }
   Methods currently implemented for \code{mzRident}
   \describe{
