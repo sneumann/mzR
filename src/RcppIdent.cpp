@@ -180,28 +180,30 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
     vector<string> name;
     vector<double> mass;
     vector<int> loc;
-    vector<string> DBSequenceID;
-    vector<string> DBseq;
-    vector<string> DBdesc;
+    //vector<string> DBSequenceID;
+    //vector<string> DBseq;
+    //vector<string> DBdesc;
 
     for (size_t i = 0; i < spectrumIdResult.size(); i++)
     {
-        if(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification.size()>0)
-        {
-            for(size_t j = 0 ; j < spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification.size(); j++)
-            {
-                spectrumID.push_back(spectrumIdResult[i]->spectrumID);
-                seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->peptideSequence);
-                name.push_back(cvTermInfo(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification[j]->cvParams[0].cvid).name);
-                mass.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification[j]->monoisotopicMassDelta);
-                loc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptidePtr->modification[j]->location);
-                DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->accession);
-                DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq);
-                if(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
-                    DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams[0].value);
-            }
-        }
-
+		for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem.size() ; k++)
+		{
+			if(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification.size()>0)
+			{
+				for(size_t j = 0 ; j < spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification.size(); j++)
+				{
+					spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+					seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->peptideSequence);
+					name.push_back(cvTermInfo(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->cvParams[0].cvid).name);
+					mass.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->monoisotopicMassDelta);
+					loc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->location);
+					/*DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->accession);
+					DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->seq);
+					if(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
+						DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->cvParams[0].value);*/
+				}
+			}
+		}
     }
 
     res.add("spectrumID", Rcpp::wrap(spectrumID));
@@ -209,11 +211,11 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
     res.add("name", Rcpp::wrap(name));
     res.add("mass", Rcpp::wrap(mass));
     res.add("location", Rcpp::wrap(loc));
-    res.add("DBSequenceID", Rcpp::wrap(DBSequenceID));
+/*    res.add("DBSequenceID", Rcpp::wrap(DBSequenceID));
     if(!spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq.empty())
         res.add("DatabaseSeq", Rcpp::wrap(DBseq));
     if(spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
-        res.add("DatabaseDescription", Rcpp::wrap(DBdesc));
+        res.add("DatabaseDescription", Rcpp::wrap(DBdesc));*/
     return res;
 }
 
