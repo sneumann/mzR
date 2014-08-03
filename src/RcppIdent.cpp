@@ -272,17 +272,20 @@ Rcpp::DataFrame RcppIdent::getScore(  )
 
         for (size_t i = 0; i < spectrumIdResult.size(); i++)
         {
-            spectrumID.push_back(spectrumIdResult[i]->spectrumID);
-            count = 0;
-            for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem[0]->cvParams.size(); j++)
-            {
-                if(!spectrumIdResult[i]->spectrumIdentificationItem[0]->cvParams[j].value.empty())
-                {
-                    score[count].push_back(lexical_cast<double>(spectrumIdResult[i]->spectrumIdentificationItem[0]->cvParams[j].value));
-                    count++;
-                }
+			Rcpp::Rcout << spectrumIdResult[i]->spectrumIdentificationItem.size() << std::endl;
+			for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem.size(); k++){
+				spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+				count = 0;
+				for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams.size(); j++)
+				{
+					if(!spectrumIdResult[i]->spectrumIdentificationItem[0]->cvParams[j].value.empty())
+					{
+						score[count].push_back(lexical_cast<double>(spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value));
+						count++;
+					}
 
-            }
+				}
+			}
         }
 
         ListBuilder res;
