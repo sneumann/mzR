@@ -1,5 +1,3 @@
-#include <boost/lexical_cast.hpp>
-
 #include "RcppIdent.h"
 #include "ListBuilder.h"
 
@@ -118,7 +116,7 @@ Rcpp::DataFrame RcppIdent::getPepInfo(  )
 
     for (size_t i = 0; i < spectrumIdResult.size(); i++)
     {
-
+		Rcpp::Rcout << spectrumIdResult[i]->spectrumIdentificationItem.size() << std::endl;
         spectrumID[i] = spectrumIdResult[i]->spectrumID;
         chargeState[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->chargeState;
         experimentalMassToCharge[i] = spectrumIdResult[i]->spectrumIdentificationItem[0]->experimentalMassToCharge;
@@ -300,16 +298,20 @@ Rcpp::List RcppIdent::getPara(  )
 
     for(int i = 0 ; i < sip[0]->additionalSearchParams.cvParams.size(); i++)
     {
-        para.add(cvTermInfo(sip[0]->additionalSearchParams.cvParams[i].cvid).name, Rcpp::wrap((bool) 1));
+        para.add(space2underscore(cvTermInfo(sip[0]->additionalSearchParams.cvParams[i].cvid).name), Rcpp::wrap((bool) 1));
     }
 
     for(int i = 0; i < sip[0]->additionalSearchParams.userParams.size(); i++)
     {
         if(sip[0]->additionalSearchParams.userParams[i].value.empty())
         {
-            para.add(sip[0]->additionalSearchParams.userParams[i].name, Rcpp::wrap((bool) 1));
+            para.add(space2underscore(sip[0]->additionalSearchParams.userParams[i].name), Rcpp::wrap((bool) 1));
         }
-        else
+        else if(isNumber(sip[0]->additionalSearchParams.userParams[i].value)){
+			para.add(sip[0]->additionalSearchParams.userParams[i].name, Rcpp::wrap(lexical_cast<double>(sip[0]->additionalSearchParams.userParams[i].value)));
+		}else if(isBool(sip[0]->additionalSearchParams.userParams[i].value)){
+			para.add(sip[0]->additionalSearchParams.userParams[i].name, Rcpp::wrap(toBool(sip[0]->additionalSearchParams.userParams[i].value)));
+		}else
             para.add(sip[0]->additionalSearchParams.userParams[i].name, Rcpp::wrap(sip[0]->additionalSearchParams.userParams[i].value));
     }
 
