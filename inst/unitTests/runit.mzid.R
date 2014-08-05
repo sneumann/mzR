@@ -2,7 +2,7 @@ test.mzid <- function() {
     library(msdata)
     library(mzR)
     library(mzID)
-	file <- system.file("mzid", "tandem.mzid", package="msdata")
+	file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
 	x <- openIDfile(file)
 	validObject(x)
 	y <- mzID(file)
