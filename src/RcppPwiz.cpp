@@ -6,7 +6,7 @@ RcppPwiz::RcppPwiz()
 {
     msd = NULL;
     instrumentInfo = Rcpp::List::create();
-    chromatogramsInfo = Rcpp::List::create();
+    chromatogramsInfo = Rcpp::DataFrame::create();
     isInCacheInstrumentInfo = FALSE;
     allScanHeaderInfo = Rcpp::List::create();
     isInCacheAllScanHeaderInfo = FALSE;
@@ -239,23 +239,23 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( )
 
             ListBuilder header;
             header.add("seqNum", seqNum);
-            header.add("acquisitionNum",           acquisitionNum);
-            header.add("msLevel",                  msLevel);
-            header.add("polarity",                 polarity);
-            header.add("peaksCount",               peaksCount);
-            header.add("totIonCurrent",            totIonCurrent);
-            header.add("retentionTime",            retentionTime);
-            header.add("basePeakMZ",               basePeakMZ);
-            header.add("basePeakIntensity",        basePeakIntensity);
-            header.add("collisionEnergy",          collisionEnergy);
-            header.add("ionisationEnergy",         ionisationEnergy);
-            header.add("lowMZ",                    lowMZ);
-            header.add("highMZ",                   highMZ);
-            header.add("precursorScanNum",         precursorScanNum);
-            header.add("precursorMZ",              precursorMZ);
-            header.add("precursorCharge",          precursorCharge);
-            header.add("precursorIntensity",       precursorIntensity);
-            header.add("mergedScan",               mergedScan);
+            header.add("acquisitionNum",	acquisitionNum);
+            header.add("msLevel",           msLevel);
+            header.add("polarity",          polarity);
+            header.add("peaksCount",        peaksCount);
+            header.add("totIonCurrent",     totIonCurrent);
+            header.add("retentionTime",     retentionTime);
+            header.add("basePeakMZ",        basePeakMZ);
+            header.add("basePeakIntensity", basePeakIntensity);
+            header.add("collisionEnergy",   collisionEnergy);
+            header.add("ionisationEnergy",  ionisationEnergy);
+            header.add("lowMZ",             lowMZ);
+            header.add("highMZ",            highMZ);
+            header.add("precursorScanNum",  precursorScanNum);
+            header.add("precursorMZ",       precursorMZ);
+            header.add("precursorCharge",   precursorCharge);
+            header.add("precursorIntensity",precursorIntensity);
+            header.add("mergedScan",        mergedScan);
             header.add("mergedResultScanNum",      mergedResultScanNum);
             header.add("mergedResultStartScanNum", mergedResultStartScanNum);
             header.add("mergedResultEndScanNum",   mergedResultEndScanNum);
@@ -311,37 +311,36 @@ Rcpp::DataFrame RcppPwiz::getChromatogramsInfo()
 {
     if (msd != NULL)
     {
-        if (!isInCacheChromatogramsInfo)
+        ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+        if(clp.get() == 0)
         {
-            SpectrumListPtr slp = msd->run.spectrumListPtr;
-            int N = slp->size();
-            ScanHeaderStruct scanHeader;
-            RAMPAdapter * adapter = new  RAMPAdapter(filename);
+            Rcpp::Rcerr << "The direct support for chromatogram info is only available in mzML format." << std::endl;
+            return Rcpp::DataFrame::create();
+        }
+        else if(clp->size() == 0)
+        {
+            Rcpp::Rcerr << "No available chromatogram info." << std::endl;
+            return Rcpp::DataFrame::create();
+        }
+        else
+        {
+            std::vector<double> time;
+            std::vector<double> intensity;
+            ChromatogramPtr c = clp->chromatogram(0, true);
+            vector<TimeIntensityPair> pairs;
+            c->getTimeIntensityPairs (pairs);
 
-            Rcpp::IntegerVector msLevel(N);
-            Rcpp::NumericVector retentionTime(N);
-            Rcpp::NumericVector basePeakIntensity(N);
-            Rcpp::NumericVector totIonCurrent(N);
-
-            SpectrumInfo info;
-            SpectrumPtr s;
-            vector<MZIntensityPair> pairs;
-
-            for (int whichScan=1; whichScan <= N; whichScan++)
+            for(int i =0; i < pairs.size(); i++)
             {
-                adapter->getScanHeader(whichScan - 1, scanHeader);
-                msLevel[whichScan-1] = scanHeader.msLevel;
-                retentionTime[whichScan-1] = scanHeader.retentionTime;
-                basePeakIntensity[whichScan-1] = scanHeader.basePeakIntensity;
-                totIonCurrent[whichScan-1] = scanHeader.totIonCurrent;
+                TimeIntensityPair p = pairs.at(i);
+                time.push_back(p.time);
+                intensity.push_back(p.intensity);
             }
 
             chromatogramsInfo = Rcpp::DataFrame::create(
-                                    Rcpp::_["msLevel"] = msLevel,
-                                    Rcpp::_["retentionTime"] = retentionTime,
-                                    Rcpp::_["basePeakIntensity"] = basePeakIntensity,
-                                    Rcpp::_["totIonCurrent"] = totIonCurrent);
-            isInCacheChromatogramsInfo = TRUE;
+                                    Rcpp::_["time"]	= time,
+                                    Rcpp::_[c->id]	= intensity);
+
         }
         return(chromatogramsInfo);
     }
@@ -378,7 +377,6 @@ Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double wh
             SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, true);
             vector<MZIntensityPair> pairs;
             s->getMZIntensityPairs(pairs);
-
 
             for (int k=0; k < pairs.size(); k++)
             {

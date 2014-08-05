@@ -47,7 +47,6 @@ private:
     bool isInCacheInstrumentInfo;
     Rcpp::DataFrame allScanHeaderInfo;
     bool isInCacheAllScanHeaderInfo;
-    bool isInCacheChromatogramsInfo;
     string filename;
 
 public:

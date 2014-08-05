@@ -287,17 +287,21 @@ Rcpp::DataFrame RcppIdent::getScore(  )
 
             for(size_t k = 0; k < spectrumIdResult[i]->spectrumIdentificationItem.size(); k++)
             {
-                spectrumID.push_back(spectrumIdResult[i]->spectrumID);
-                count = 0;
-                for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams.size(); j++)
+                for(size_t n = 0; n < spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr.size(); n++)
                 {
-                    if(!spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value.empty())
+                    spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+                    count = 0;
+                    for(size_t j = 0; j < spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams.size(); j++)
                     {
-                        score[count].push_back(lexical_cast<double>(spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value));
-                        count++;
-                    }
+                        if(!spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value.empty())
+                        {
+                            score[count].push_back(lexical_cast<double>(spectrumIdResult[i]->spectrumIdentificationItem[k]->cvParams[j].value));
+                            count++;
+                        }
 
+                    }
                 }
+
             }
         }
 
