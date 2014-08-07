@@ -97,6 +97,12 @@ Access to the spectral data is done via the peaks function.
 The return value is a list of two-column mass-to-charge and intensity 
 matrices or a single matrix if one spectrum is queried.
 
+\subsection{Identification result access}
+
+The main access to identification result is done via \texttt{psms}, \texttt{score} and \texttt{modifications}.
+\texttt{psms} and \texttt{score} will return the detailed information on each psm and scores.
+\texttt{modifications} will return the details on each modification found in peptide.
+
 \subsection{Metadata access}
 
 \paragraph{Run metadata} is available via several functions such as
@@ -108,12 +114,19 @@ return a list (for single scans) or a dataframe with information such as the
 \texttt{basePeakMZ}, \texttt{peaksCount}, \ldots or, for higher-order MS 
 the \texttt{msLevel} and precursor information.
 
+\paragraph{Identification metadata} is available via \texttt{mzidInfo()},
+which will return a list with information such as the \texttt{software},
+\texttt{ModificationSearched}, \texttt{enzymes}, \texttt{SpectraSource}
+and other information for this identification result.
+
 \bigskip
 
 The availability of this metadata can not always be guaranteed, and
 depends on the MS software which converted the data.
 
 \section{Example}
+
+\subsection{\texttt{mzXML}/\texttt{mzML}/\texttt{mzData} files}
 
 A short example sequence to read data from a mass spectrometer. 
 First open the file.
@@ -142,10 +155,55 @@ head(pl)
 plot(pl[,1], pl[,2], type="h", lwd=1)
 @ 
 
-One should always close the file when not needed any more. This will release the memory of cached content.
+One should always close the file when not needed any more if you are using RAMP backend.
+This will release the memory of cached content.
 <<close the file>>=
 close(aa)
 @ 
+
+
+\subsection{\texttt{mzIdentML} files}
+
+You can use \texttt{openIDfile} to read a \texttt{mzIdentML} file, which use the pwiz backend.
+
+<<open the file>>=
+library(mzR)
+library(msdata)
+
+file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
+x <- openIDfile(file)
+@ 
+
+\texttt{mzidInfo} function will return general information about this identification result.
+
+<<metadata>>=
+mzidInfo(x)
+@ 
+
+\texttt{psms} will return the detailed information on each peptide-spectrum-match,
+include \texttt{spectrumID}, \texttt{chargeState}, \texttt{sequence}. \texttt{modNum} and others.
+
+<<psms>>=
+p <- psms(x)
+colnames(p)
+@
+
+The modifications information can be accessed using \texttt{modifications}, which
+will return the \texttt{spectrumID}, \texttt{sequence}, \texttt{name}, \texttt{mass} and \texttt{location}.
+
+<<psms>>=
+m <- modifications(x)
+head(m)
+@
+
+Since different software will use different scoring function, we provide a \texttt{score} to
+extract the scores for each psm. It will return a data.frame with different columns depending
+on software generating this file.
+
+<<psms>>=
+scr <- score(x)
+colnames(scr)
+@
 
 \section{Future plans}
 

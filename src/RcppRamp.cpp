@@ -20,8 +20,7 @@ RcppRamp::~RcppRamp()
     RcppRamp::close();
 }
 
-void
-RcppRamp::open( const char* fileName, bool declaredScansOnly )
+void RcppRamp::open( const char* fileName, bool declaredScansOnly )
 {
     RcppRamp::close();
     ramp = new cRamp(fileName, declaredScansOnly);
@@ -36,8 +35,7 @@ RcppRamp::open( const char* fileName, bool declaredScansOnly )
     }
 }
 
-void
-RcppRamp::close()
+void RcppRamp::close()
 {
     if (ramp != NULL)
     {
@@ -54,8 +52,7 @@ RcppRamp::close()
 }
 
 
-Rcpp::StringVector
-RcppRamp::getFilename (  )
+Rcpp::StringVector RcppRamp::getFilename (  )
 {
     if (ramp != NULL)
     {
@@ -65,8 +62,7 @@ RcppRamp::getFilename (  )
     return filename;
 }
 
-Rcpp::List
-RcppRamp::getRunInfo (  )
+Rcpp::List RcppRamp::getRunInfo (  )
 {
     if (ramp != NULL)
     {
@@ -97,8 +93,7 @@ RcppRamp::getRunInfo (  )
     return runInfo;
 }
 
-Rcpp::List
-RcppRamp::getInstrumentInfo ( )
+Rcpp::List RcppRamp::getInstrumentInfo ( )
 {
     if (ramp != NULL)
     {
@@ -142,8 +137,7 @@ RcppRamp::getInstrumentInfo ( )
     return instrumentInfo;
 }
 
-Rcpp::List
-RcppRamp::getScanHeaderInfo ( int whichScan  )
+Rcpp::List RcppRamp::getScanHeaderInfo ( int whichScan  )
 {
     if (ramp != NULL)
     {
@@ -194,8 +188,7 @@ RcppRamp::getScanHeaderInfo ( int whichScan  )
     return Rcpp::List::create( );
 }
 
-Rcpp::DataFrame
-RcppRamp::getAllScanHeaderInfo ( )
+Rcpp::DataFrame RcppRamp::getAllScanHeaderInfo ( )
 {
     if (ramp != NULL)
     {
@@ -299,8 +292,7 @@ RcppRamp::getAllScanHeaderInfo ( )
     return Rcpp::DataFrame::create( );
 }
 
-Rcpp::List
-RcppRamp::getPeakList ( int whichScan )
+Rcpp::List RcppRamp::getPeakList ( int whichScan )
 {
     if (ramp != NULL)
     {
@@ -339,8 +331,7 @@ RcppRamp::getPeakList ( int whichScan )
     return Rcpp::List::create( );
 }
 
-Rcpp::NumericMatrix
-RcppRamp::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz )
+Rcpp::NumericMatrix RcppRamp::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz )
 {
     if (ramp != NULL)
     {
@@ -394,8 +385,7 @@ RcppRamp::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whi
     return Rcpp::NumericMatrix(0,0);
 }
 
-int
-RcppRamp::getLastScan() const
+int RcppRamp::getLastScan() const
 {
     if (ramp != NULL)
     {
@@ -405,8 +395,7 @@ RcppRamp::getLastScan() const
     return -1;
 }
 
-bool
-RcppRamp::OK (  )
+bool RcppRamp::OK (  )
 {
     if (ramp != NULL)
     {
@@ -415,4 +404,3 @@ RcppRamp::OK (  )
     // Rprintf("Warning: Ramp not yet initialized.\n ");
     return false;
 }
-
