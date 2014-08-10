@@ -96,7 +96,7 @@ PWIZOBJECTS=\
 
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
 
-OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o
+OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) R_init_mzR.o rampR.o
 
 PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE
 
