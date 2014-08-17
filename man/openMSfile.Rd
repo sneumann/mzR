@@ -9,7 +9,7 @@
   Create and check mzR objects from netCDF, mzXML, mzData or mzML files.
 }
 \usage{
- openMSfile(filename, backend=c("Ramp", "netCDF"), verbose = FALSE)
+ openMSfile(filename, backend=c("Ramp", "netCDF", "pwiz"), verbose = FALSE)
 
  initializeRamp(object)
 
@@ -23,7 +23,7 @@
   \item{filename}{ Path name of the netCDF, mzData, mzXML or mzML file to
     read/write. }
   \item{backend}{ A \code{character} specifiying with backend API to
-    use. Currently 'Ramp' and 'netCDF' are available.}
+    use. Currently 'Ramp', 'netCDF'  and 'pwiz' are available.}
   \item{object}{ An instantiated mzR object. }
   \item{verbose}{ Enable verbose output. }
 }

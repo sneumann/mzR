@@ -2071,7 +2071,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
       if( isCompressed )
       {
           int err;
-//        Rprintf("Decompressing data\n");
+//        printf("Decompressing data\n");
           uLong uncomprLen = (dataPerPeak * peaksCount * (precision/8) + 1);
 			
           pUncompr = (Byte*)calloc((uInt) uncomprLen , 1);
@@ -2131,14 +2131,14 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
          
           for (n = 0; n < (2 * peaksCount); )
           {
-// Rprintf("%f\n" , pPeaks[j] );
+// printf("%f\n" , pPeaks[j] );
               if( (int) pPeaks[j] == -1 )
               { // Change in delta m/z
 				++j;
 				lastMass = (RAMPREAL) pPeaks[j++];
                 deltaMass = pPeaks[j++];
 				multiplier = 0;
-//Rprintf("%f %f\n" , lastMass , deltaMass );
+//printf("%f %f\n" , lastMass , deltaMass );
               }
    		    pPeaksDeRuled[n++] = lastMass + (RAMPREAL) multiplier * deltaMass;
 			++multiplier;
