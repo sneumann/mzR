@@ -1,0 +1,18 @@
+test.mzid <- function() {
+    library(msdata)
+    library(mzR)
+    library(mzID)
+	file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
+	x <- openIDfile(file)
+	validObject(x)
+	y <- mzID(file)
+	fy <- flatten(y)
+	s <- score(x)
+	checkTrue(identical(s$X_Tandem_hyperscore, fy$"x\\!tandem:hyperscore"))
+	checkTrue(identical(s$X_Tandem_expect, fy$"x\\!tandem:expect"))
+	p <- psms(x)
+	checkTrue(identical(p$spectrumID, fy$spectrumid))
+	checkTrue(identical(p$post, fy$post))
+	checkTrue(identical(p$sequence, fy$pepseq))
+	checkTrue(identical(p$DatabaseAccess, fy$accession))
+}

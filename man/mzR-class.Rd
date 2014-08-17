@@ -4,9 +4,13 @@
 \alias{mzR-class}
 \alias{mzRramp-class}
 \alias{mzRnetCDF-class}
+\alias{mzRpwiz-class}
+\alias{mzRident-class}
 \alias{class:mzR}
 \alias{class:mzRramp}
 \alias{class:mzRnetCDF}
+\alias{class:mzRpwiz}
+\alias{class:mzRident}
 \alias{close,mzRramp-method}
 \alias{close,mzRnetCDF-method}
 \alias{close}
@@ -35,6 +39,23 @@
 \alias{peaks,mzRnetCDF,missing-method}
 \alias{peaks,mzRnetCDF,numeric-method}
 \alias{runInfo,mzRramp-method}
+\alias{runInfo,mzRpwiz-method}
+\alias{chromatogramsInfo,mzRpwiz-method}
+\alias{softwareInfo,mzRpwiz-method}
+\alias{softwareInfo,mzRident-method}
+\alias{sampleInfo,mzRpwiz-method}
+\alias{sourceInfo,mzRpwiz-method}
+\alias{mzidInfo,mzRident-method}
+\alias{psms,mzRident-method}
+\alias{modifications,mzRident-method}
+\alias{substitutions,mzRident-method}
+\alias{database,mzRident-method}
+\alias{enzymes,mzRident-method}
+\alias{sourceInfo,mzRident-method}
+\alias{tolerance,mzRident-method}
+\alias{score,mzRident-method}
+\alias{para,mzRident-method}
+
 
 \title{Class \code{mzR} and sub-classes}
 \description{
@@ -43,10 +64,11 @@
   directly.
 
   The sub-classes implement specific APIs to access the underlying data
-  and metadata in the files. Currently, \code{mzRramp} is the only
-  available implementation. It uses the ISB 'RAMP' random access C/C++
-  API to access the relevant information in \code{mzData}, \code{mzXML}
-  and \code{mzML} files.
+  and metadata in the files. Currently, \code{mzRramp} and \code{mzRpwiz}
+  are available implementations. \code{mzRramp} uses the ISB 'RAMP' random access C/C++
+  API, and \code{mzRpwiz} uses Proteowizard to access the relevant
+  information in \code{mzData}, \code{mzXML}
+  and \code{mzML} files. You can also open \code{mz5} file by using \code{mzRpwiz}.
 
   Additional sub-classes using the proteowizard API and netCDF are
   planned.
@@ -58,6 +80,9 @@
   Objects can be created by calls of the form \code{new("mzRramp",
     ...)}, but more often they will be created with
   \code{\link{openMSfile}}.  
+  
+  After creating a \code{mzR}, you can write it into a file.
+  mzXML, mzML, mgf formats are supported. 
 }
 
 \section{Slots}{
@@ -105,6 +130,32 @@
     \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "missing")}: ... }
     \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
     \item{runInfo}{\code{signature(object = "mzRramp")}: ... }
+
+  }
+  Methods currently implemented for \code{mzRpwiz}
+  \describe{
+    \item{analyzer}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{detector}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{instrumentInfo}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{ionisation}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{length}{\code{signature(x = "mzRpwiz")}: ... }
+    \item{manufacturer}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{model}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{runInfo}{\code{signature(object = "mzRpwiz")}: ... }
+    \item{chromatogramsInfo}{\code{signature(object = "mzRpwiz")}: ... }
+  }
+  Methods currently implemented for \code{mzRident}
+  \describe{
+    \item{mzidInfo}{\code{signature(object = "mzRident")}: ... }
+    \item{psms}{\code{signature(object = "mzRident")}: ... }
+    \item{modifications}{\code{signature(object = "mzRident")}: ... }
+    \item{substitutions}{\code{signature(object = "mzRident")}: ... }
+    \item{database}{\code{signature(x = "mzRident")}: ... }
+    \item{enzymes}{\code{signature(object = "mzRident")}: ... }
+    \item{sourceInfo}{\code{signature(object = "mzRident")}: ... }
+    \item{tolerance}{\code{signature(object = "mzRident")}: ... }
+    \item{score}{\code{signature(object = "mzRident")}: ... }
+    \item{para}{\code{signature(object = "mzRident")}: ... }
   }
 }
 

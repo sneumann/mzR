@@ -18,10 +18,10 @@ License: Artistic-2.0
 LazyLoad: yes
 Depends: Rcpp (>= 0.10.1), methods, utils
 Imports: Biobase
-Suggests: msdata (>= 0.1.9), RUnit, faahKO
+Suggests: msdata, RUnit, faahKO, mzID
 LinkingTo: Rcpp
-RcppModules: Ramp
+RcppModules: Ramp, Pwiz, Ident
 SystemRequirements: GNU make, NetCDF, zlib
 biocViews: Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry
-Packaged: 2014-07-24; sneumann
+Packaged: 2014-07-04 21:16:04 UTC; qkou

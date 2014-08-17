@@ -7,7 +7,7 @@ importFrom(Biobase, validMsg)
 ##importFrom(Rcpp, "loadRcppModules")
 import(Rcpp)
 
-export(openMSfile)
+export(openMSfile, openIDfile)
 
 exportMethods(close,
               isInitialized,
@@ -15,6 +15,7 @@ exportMethods(close,
               runInfo,
               fileName,
               instrumentInfo,
+              chromatogramsInfo,
               manufacturer,
               model,
               ionisation,
@@ -23,9 +24,23 @@ exportMethods(close,
               header,
               peaksCount,
               peaks,
-              get3Dmap)
+              get3Dmap,
+              softwareInfo,
+              sampleInfo,
+              sourceInfo,
+              mzidInfo,
+              psms,
+              modifications,
+              substitutions,
+              database,
+              enzymes,
+              tolerance,
+              score,
+              para)
 
 exportClasses("mzR",
               "mzRramp",
-              "mzRnetCDF")
+              "mzRnetCDF",
+              "mzRpwiz",
+              "mzRident")
 

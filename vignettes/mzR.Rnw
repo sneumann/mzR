@@ -1,4 +1,4 @@
-%\VignetteIndexEntry{mzR, Ramp, mzXML, mzData, mzML}
+%\VignetteIndexEntry{mzR, Ramp, mzXML, mzData, mzML, mzid}
 %\VignetteKeywords{mzXML, mzData, mzML, Ramp, mass spectrometry, proteomics, metabolomics}
 %\VignettePackage{mzR}
 
@@ -35,11 +35,12 @@
 
 \begin{document}
 
-\title{A Parser for \texttt{mzXML}, \texttt{mzData} and \texttt{mzML} files}
+\title{A Parser for \texttt{mzXML}, \texttt{mzData}, \texttt{mzML} and \texttt{mzid} files}
 
 \author{Bernd Fischer\footnote{\email{bernd.fischer@embl.de}} \\
   Steffen Neumann\footnote{\email{sneumann@ipb-halle.de}} \\
-  Laurent Gatto\footnote{\email{lg390@cam.ac.uk}}}
+  Laurent Gatto\footnote{\email{lg390@cam.ac.uk}}\\
+  Qiang Kou\footnote{\email{qkou@umail.iu.edu}}}
 
 \maketitle
 
@@ -49,8 +50,8 @@
 
 The \Rpackage{mzR} \citep{Chambers2012} package aims at providing a common interface to
 several mass spectrometry data formats, namely \texttt{mzData}
-\citep{Orchard2007}, \texttt{mzXML} \citep{Pedrioli2004} and the
-latest \texttt{mzML} \citep{Martens2010}, somewhat similar to the
+\citep{Orchard2007}, \texttt{mzXML} \citep{Pedrioli2004},
+\texttt{mzML} \citep{Martens2010}, and \texttt{mzid} somewhat similar to the
 Bioconductor package affyio for affymetrix raw data. No processing is
 done in mzR, which is left to packages such as 
 \Rpackage{XCMS}\footnote{\url{http://www.bioconductor.org/packages/release/bioc/html/xcms.html}} 
@@ -96,6 +97,12 @@ Access to the spectral data is done via the peaks function.
 The return value is a list of two-column mass-to-charge and intensity 
 matrices or a single matrix if one spectrum is queried.
 
+\subsection{Identification result access}
+
+The main access to identification result is done via \texttt{psms}, \texttt{score} and \texttt{modifications}.
+\texttt{psms} and \texttt{score} will return the detailed information on each psm and scores.
+\texttt{modifications} will return the details on each modification found in peptide.
+
 \subsection{Metadata access}
 
 \paragraph{Run metadata} is available via several functions such as
@@ -107,12 +114,19 @@ return a list (for single scans) or a dataframe with information such as the
 \texttt{basePeakMZ}, \texttt{peaksCount}, \ldots or, for higher-order MS 
 the \texttt{msLevel} and precursor information.
 
+\paragraph{Identification metadata} is available via \texttt{mzidInfo()},
+which will return a list with information such as the \texttt{software},
+\texttt{ModificationSearched}, \texttt{enzymes}, \texttt{SpectraSource}
+and other information for this identification result.
+
 \bigskip
 
 The availability of this metadata can not always be guaranteed, and
 depends on the MS software which converted the data.
 
 \section{Example}
+
+\subsection{\texttt{mzXML}/\texttt{mzML}/\texttt{mzData} files}
 
 A short example sequence to read data from a mass spectrometer. 
 First open the file.
@@ -141,20 +155,61 @@ head(pl)
 plot(pl[,1], pl[,2], type="h", lwd=1)
 @ 
 
-One should always close the file when not needed any more. This will release the memory of cached content.
+One should always close the file when not needed any more if you are using RAMP backend.
+This will release the memory of cached content.
 <<close the file>>=
 close(aa)
 @ 
 
+
+\subsection{\texttt{mzIdentML} files}
+
+You can use \texttt{openIDfile} to read a \texttt{mzIdentML} file, which use the pwiz backend.
+
+<<open the file>>=
+library(mzR)
+library(msdata)
+
+file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
+x <- openIDfile(file)
+@ 
+
+\texttt{mzidInfo} function will return general information about this identification result.
+
+<<metadata>>=
+mzidInfo(x)
+@ 
+
+\texttt{psms} will return the detailed information on each peptide-spectrum-match,
+include \texttt{spectrumID}, \texttt{chargeState}, \texttt{sequence}. \texttt{modNum} and others.
+
+<<psms>>=
+p <- psms(x)
+colnames(p)
+@
+
+The modifications information can be accessed using \texttt{modifications}, which
+will return the \texttt{spectrumID}, \texttt{sequence}, \texttt{name}, \texttt{mass} and \texttt{location}.
+
+<<psms>>=
+m <- modifications(x)
+head(m)
+@
+
+Since different software will use different scoring function, we provide a \texttt{score} to
+extract the scores for each psm. It will return a data.frame with different columns depending
+on software generating this file.
+
+<<psms>>=
+scr <- score(x)
+colnames(scr)
+@
+
 \section{Future plans}
 
-Right on the heels of the initial RAMP backend release, 
-supporting little metadata beyond e.g. the instrument model, 
-is support to the full pwiz functionality to access the full metadata 
-stored in an \texttt{mzML} files, 
-or the chromatograms (which store e.g. MRM data). Other file formats
-supported by pwiz, such as \texttt{mzIdentML} for protein identification
-results are also possible in the future. 
+Other file formats provided by HUPO,
+such as \texttt{mzQuantML} for quantitative data
+are also possible in the future. 
 
 \section{Session information}\label{sec:sessionInfo} 
 

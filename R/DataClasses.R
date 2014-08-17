@@ -65,3 +65,12 @@ setClass("mzRnetCDF",
          prototype=prototype(
            new("Versioned", versions=c(mzR="0.0.1")))
          )
+
+##############################################################
+## mzRident - pwiz backend for mzid file
+setClass("mzRident",
+         representation(backend="C++Object"),
+         contains=c("mzR"),
+         prototype=prototype(
+           new("Versioned", versions=c(mzR="0.0.1")))
+         )

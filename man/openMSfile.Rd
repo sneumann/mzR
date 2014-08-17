@@ -3,6 +3,7 @@
 \alias{initializeRamp}
 \alias{isInitialized}
 \alias{fileName}
+\alias{openIDfile}
 
 \title{
   Create and check mzR objects from netCDF, mzXML, mzData or mzML files.
@@ -15,11 +16,12 @@
  isInitialized(object)
 
  fileName(object)
-
+ 
+ openIDfile(filename, verbose = FALSE )
 }
 \arguments{
   \item{filename}{ Path name of the netCDF, mzData, mzXML or mzML file to
-    read. }
+    read/write. }
   \item{backend}{ A \code{character} specifiying with backend API to
     use. Currently 'Ramp' and 'netCDF' are available.}
   \item{object}{ An instantiated mzR object. }
@@ -29,8 +31,12 @@
 \description{
   The \code{openMSfile} constructor will create a new format-specifc
   \code{mzR} object, open 'filename' file and all header information is
-  loaded as a Rcpp module and made accessible through the \code{ramp}
-  slot of the resulting object. 
+  loaded as a Rcpp module and made accessible through the \code{ramp} or \code{pwiz}
+  slot of the resulting object.
+  
+  The \code{openIDfile} constructor will create a new format-specifc
+  \code{mzR} object, open 'filename' file and all information is
+  loaded as a Rcpp module. The mzid format is supported throught \code{pwiz} backend.
 
   % If the object was created manually with e.g. new("mzR"), then
   % initializeRamp() will open the given file. An mzR object can be
@@ -48,9 +54,14 @@
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
                     full.names=TRUE, recursive = TRUE)
-  mz <- openMSfile(file)
+  mz <- openMSfile(file, "Ramp")
   fileName(mz)
   isInitialized(mz)
   runInfo(mz)
   close(mz)
+  
+  file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
+  mzid <- openIDfile(file)
+  softwareInfo(mzid)
+  enzymes(mzid)
 }

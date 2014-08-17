@@ -17,9 +17,6 @@ PWIZOBJECTS=\
 ./boost/regex/src/cpp_regex_traits.o \
 ./boost/regex/src/static_mutex.o \
 ./boost/regex/src/w32_regex_traits.o \
-./pwiz/data/msdata/Version.o \
-./pwiz/utility/minimxml/XMLWriter.o \
-./pwiz/utility/minimxml/SAXParser.o \
 ./boost/iostreams/src/zlib.o \
 ./boost/iostreams/src/file_descriptor.o \
 ./boost/filesystem/src/operations.o \
@@ -29,12 +26,15 @@ PWIZOBJECTS=\
 ./boost/filesystem/src/windows_file_codecvt.o \
 ./boost/filesystem/src/codecvt_error_category.o \
 ./boost/thread/src/win32/thread.o \
+./boost_aux/boost/nowide/iostream.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
 ./pwiz/data/common/ParamTypes.o \
 ./pwiz/data/common/BinaryIndexStream.o \
 ./pwiz/data/common/diff_std.o \
+./pwiz/data/common/Unimod.o \
+./pwiz/data/msdata/Version.o \
 ./pwiz/data/msdata/SpectrumList_MGF.o \
 ./pwiz/data/msdata/DefaultReaderList.o \
 ./pwiz/data/msdata/ChromatogramList_mzML.o \
@@ -61,6 +61,24 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
 ./pwiz/data/msdata/Index_mzML.o \
+./pwiz/data/msdata/ramp/wglob.o \
+./pwiz/data/identdata/IdentDataFile.o \
+./pwiz/data/identdata/IdentData.o \
+./pwiz/data/identdata/DefaultReaderList.o \
+./pwiz/data/identdata/Reader.o \
+./pwiz/data/identdata/Serializer_protXML.o \
+./pwiz/data/identdata/Serializer_pepXML.o \
+./pwiz/data/identdata/Serializer_mzid.o \
+./pwiz/data/identdata/IO.o \
+./pwiz/data/identdata/Version.o \
+./pwiz/data/identdata/References.o \
+./pwiz/data/proteome/Modification.o \
+./pwiz/data/proteome/Digestion.o \
+./pwiz/data/proteome/Peptide.o \
+./pwiz/data/proteome/AminoAcid.o \
+./pwiz/utility/chemistry/Chemistry.o \
+./pwiz/utility/chemistry/ChemistryData.o \
+./pwiz/utility/chemistry/MZTolerance.o \
 ./pwiz/utility/misc/IntegerSet.o \
 ./pwiz/utility/misc/Base64.o \
 ./pwiz/utility/misc/IterationListener.o \
@@ -71,15 +89,16 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
 ./pwiz/utility/misc/sha1calc.o \
-./pwiz/data/msdata/ramp/wglob.o \
+./pwiz/utility/minimxml/XMLWriter.o \
+./pwiz/utility/minimxml/SAXParser.o \
 ./random_access_gzFile.o
 
 
-MZROBJECTS=cramp.o  ramp_base64.o  pwiz/data/msdata/ramp/ramp.o  RcppRamp.o RcppRampModule.o rnetCDF.o 
+MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
 
-OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o R_init_mzR.o
+OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) R_init_mzR.o rampR.o
 
-PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB -fpermissive -DWINDOWS_NATIVE
+PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
