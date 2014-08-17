@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.99.0
+-------------------------
+ o New pwiz backend and support for mzid, contributed by Qiang Kou as
+   part of GSoC 2014.
+
 CHANGES IN VERSION 1.11.10
 -------------------------
  o Remove redundant columns when returning several spectra
