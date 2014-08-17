@@ -59,4 +59,9 @@
   isInitialized(mz)
   runInfo(mz)
   close(mz)
+  
+  file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
+  mzid <- openIDfile(file)
+  softwareInfo(mzid)
+  enzymes(mzid)
 }

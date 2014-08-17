@@ -85,4 +85,9 @@ para(object)
   mz <- openMSfile(file, backend = "Ramp")
   fileName(mz)
   instrumentInfo(mz)
+  
+    file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
+  mzid <- openIDfile(file)
+  softwareInfo(mzid)
+  enzymes(mzid)
 }

@@ -207,13 +207,9 @@ colnames(scr)
 
 \section{Future plans}
 
-Right on the heels of the initial RAMP backend release, 
-supporting little metadata beyond e.g. the instrument model, 
-is support to the full pwiz functionality to access the full metadata 
-stored in an \texttt{mzML} files, 
-or the chromatograms (which store e.g. MRM data). Other file formats
-supported by pwiz, such as \texttt{mzIdentML} for protein identification
-results are also possible in the future. 
+Other file formats provided by HUPO,
+such as \texttt{mzQuantML} for quantitative data
+are also possible in the future. 
 
 \section{Session information}\label{sec:sessionInfo} 
 
