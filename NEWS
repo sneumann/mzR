@@ -2,6 +2,7 @@ CHANGES IN VERSION 1.99.0
 -------------------------
  o New pwiz backend and support for mzid, contributed by Qiang Kou as
    part of GSoC 2014.
+ o Using BiocStyle for vignette [2014-08-26 Tue]
 
 CHANGES IN VERSION 1.11.10
 -------------------------
