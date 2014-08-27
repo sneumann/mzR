@@ -18,7 +18,8 @@ License: Artistic-2.0
 LazyLoad: yes
 Depends: Rcpp (>= 0.10.1), methods, utils
 Imports: Biobase
-Suggests: msdata, RUnit, faahKO, mzID, BiocStyle
+Suggests: msdata, RUnit, faahKO, mzID, BiocStyle, knitr
+VignetteBuilder: knitr
 LinkingTo: Rcpp
 RcppModules: Ramp, Pwiz, Ident
 SystemRequirements: GNU make, NetCDF, zlib
