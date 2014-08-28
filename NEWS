@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.11.11
+-------------------------
+ o Remove superflouus library call in unitTests, should fix R CMD check on windows
+
 CHANGES IN VERSION 1.11.10
 -------------------------
  o Remove redundant columns when returning several spectra
