@@ -1,6 +1,4 @@
 test.open <- function() {
-    library(faahKO)
-    library(mzR)
     file <- system.file('cdf/KO/ko15.CDF', package = "faahKO")
     cdf <- openMSfile(file, backend="netCDF")    
     checkTrue(class(cdf)=="mzRnetCDF")
@@ -8,8 +6,6 @@ test.open <- function() {
   }
 
 test.length <- function() {
-  library(faahKO)
-  library(mzR)
   file <- system.file('cdf/KO/ko15.CDF', package = "faahKO")
   cdf <- openMSfile(file, backend="netCDF")     
   
@@ -19,8 +15,6 @@ test.length <- function() {
 }
 
 test.peaks <- function() {
-  library(faahKO)
-  library(mzR)
   file <- system.file('cdf/KO/ko15.CDF', package = "faahKO")
   cdf <- openMSfile(file, backend="netCDF")       
 
@@ -42,8 +36,6 @@ test.peaks <- function() {
 
 
 test.header <- function() { 
-  library(faahKO)
-  library(mzR)
   file <- system.file('cdf/KO/ko15.CDF', package = "faahKO")
   cdf <- openMSfile(file, backend="netCDF")        
 

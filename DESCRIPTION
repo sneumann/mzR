@@ -2,7 +2,7 @@ Package: mzR
 Type: Package
 Title: parser for netCDF, mzXML, mzData and mzML files (mass
         spectrometry data)
-Version: 1.11.10
+Version: 1.11.11
 Author: Bernd Fischer, Steffen Neumann, Laurent Gatto, Qiang Kou
 Maintainer: Bernd Fischer <bernd.fischer@embl.de>, Steffen Neumann
  <sneumann@ipb-halle.de>, Laurent Gatto <lg390@cam.ac.uk>,
@@ -26,4 +26,4 @@ URL: https://github.com/sneumann/mzR/
 BugReports: https://github.com/sneumann/mzR/issues/new
 biocViews: Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry
-Packaged: 2014-07-24; sneumann
+Packaged: 2014-08-28; sneumann
