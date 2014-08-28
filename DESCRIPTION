@@ -22,6 +22,8 @@ Suggests: msdata (>= 0.1.9), RUnit, faahKO
 LinkingTo: Rcpp
 RcppModules: Ramp
 SystemRequirements: GNU make, NetCDF, zlib
+URL: https://github.com/sneumann/mzR/
+BugReports: https://github.com/sneumann/mzR/issues/new
 biocViews: Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry
 Packaged: 2014-07-24; sneumann
