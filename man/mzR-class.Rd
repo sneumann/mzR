@@ -34,6 +34,7 @@
 \alias{ionisation,mzRpwiz-method}
 \alias{isInitialized,mzRramp-method}
 \alias{isInitialized,mzRnetCDF-method}
+\alias{length,mzRident-method}
 \alias{length,mzRramp-method}
 \alias{length,mzRpwiz-method}
 \alias{length,mzRnetCDF-method}
