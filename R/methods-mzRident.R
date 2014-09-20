@@ -57,3 +57,17 @@ setMethod("tolerance",
             ll$'ParentTolerance' <- info$ParentTolerance
             return(ll)
           }) 
+
+setMethod("length",
+          signature = "mzRident",
+          function(x) return(nrow(psms(x))))
+
+
+setMethod("show",
+          signature = "mzRident",
+          function(object) {
+              filename <- fileName(object)
+              cat("Identification file handle.\n")
+              cat("Filename: ", basename(filename), "\n")
+              cat("Number of psms: ", length(object), "\n")
+          })
