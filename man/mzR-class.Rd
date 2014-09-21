@@ -189,7 +189,6 @@
  file <- list.files(filepath, pattern="MM14.mzML",
                     full.names=TRUE, recursive = TRUE)
   mzml <- openMSfile(file)
-  close(mzml)
 }
 
 \keyword{classes}

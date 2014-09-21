@@ -54,11 +54,15 @@
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
                     full.names=TRUE, recursive = TRUE)
-  mz <- openMSfile(file, "Ramp")
+  mz <- openMSfile(file)
   fileName(mz)
   isInitialized(mz)
   runInfo(mz)
-  close(mz)
+
+  ## to use another backend
+  mz <- openMSfile(file, "Ramp")
+  mz
+  close(mz) 
   
   file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
   mzid <- openIDfile(file)
