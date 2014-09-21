@@ -11,6 +11,7 @@
 \alias{class:mzRnetCDF}
 \alias{class:mzRpwiz}
 \alias{class:mzRident}
+\alias{close,mzRpwiz-method}
 \alias{close,mzRramp-method}
 \alias{close,mzRnetCDF-method}
 \alias{close}
