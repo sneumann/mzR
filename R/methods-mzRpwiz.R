@@ -142,3 +142,6 @@ setMethod("sourceInfo",
             info <- instrumentInfo(object)   
             return(info$source)
           })
+
+setMethod("close", "mzRpwiz", 
+	  function(object) invisible(TRUE))
