@@ -144,4 +144,7 @@ setMethod("sourceInfo",
           })
 
 setMethod("close", "mzRpwiz", 
-	  function(object) invisible(TRUE))
+          function(con, ...) invisible(TRUE))
+
+
+
