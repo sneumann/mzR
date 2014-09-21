@@ -56,11 +56,11 @@
                     full.names=TRUE, recursive = TRUE)
   mz <- openMSfile(file)
   fileName(mz)
-  isInitialized(mz)
   runInfo(mz)
 
   ## to use another backend
   mz <- openMSfile(file, "Ramp")
+  isInitialized(mz)
   mz
   close(mz) 
   
