@@ -1,8 +1,8 @@
 CHANGES IN VERSION 1.99.1
 -------------------------
- o using pwiz as the default backend
+ o using pwiz as the default backend [2014-09-21 Sun]
  o adding a dummy close for pwiz backend to avoid breaking code 
-   that properly closes the previous ramp backend
+   that properly closes the previous ramp backend [2014-09-21 Sun]
 
 CHANGES IN VERSION 1.99.0
 -------------------------

@@ -9,7 +9,7 @@
   Create and check mzR objects from netCDF, mzXML, mzData or mzML files.
 }
 \usage{
- openMSfile(filename, backend=c("Ramp", "netCDF", "pwiz"), verbose = FALSE)
+ openMSfile(filename, backend=c("pwiz", "Ramp", "netCDF"), verbose = FALSE)
 
  initializeRamp(object)
 
@@ -17,7 +17,7 @@
 
  fileName(object)
  
- openIDfile(filename, verbose = FALSE )
+ openIDfile(filename, verbose = FALSE)
 }
 \arguments{
   \item{filename}{ Path name of the netCDF, mzData, mzXML or mzML file to
