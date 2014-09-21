@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.99.1
+-------------------------
+ o using pwiz as the default backend
+
 CHANGES IN VERSION 1.99.0
 -------------------------
  o New pwiz backend and support for mzid, contributed by Qiang Kou as
