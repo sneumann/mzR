@@ -140,11 +140,11 @@ head(pl)
 plot(pl[,1], pl[,2], type="h", lwd=1)
 @ 
 
-One should always close the file when not needed any more if you are using RAMP backend.
-This will release the memory of cached content.
-<<close the file>>=
-close(aa)
-@ 
+%% One should always close the file when not needed any more if you are using RAMP backend.
+%% This will release the memory of cached content.
+%% <<close the file>>=
+%% close(aa)
+%% @ 
 
 
 \subsection{\texttt{mzIdentML} files}

@@ -74,5 +74,4 @@
   mz <- openMSfile(file)
   runInfo(mz)
   colnames(header(mz))
-  close(mz)
 }
