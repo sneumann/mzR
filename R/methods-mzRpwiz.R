@@ -148,3 +148,12 @@ setMethod("close", "mzRpwiz",
 
 
 
+
+setMethod("show", "mzRpwiz",
+          function(object) {
+              filename <- fileName(object)
+              cat("Mass Spectrometry file handle.\n")
+              cat("Filename: ", basename(filename), "\n")
+              cat("Number of scans: ", length(object), "\n")
+          })
+
