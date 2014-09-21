@@ -16,4 +16,5 @@ test.mzXML <- function() {
     header(mzxml,1)
     header(mzxml,2:3)
     fileName(mzxml)
+    close(mzxml) 
 }
