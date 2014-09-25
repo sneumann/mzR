@@ -1,5 +1,5 @@
 openMSfile <- function(filename,
-                       backend=c("pwiz", "Ramp", "netCDF"),
+                       backend=c("Ramp", "pwiz", "netCDF"),
                        verbose = FALSE) {
     if (!file.exists(filename))
         stop("File ",filename," not found.\n")

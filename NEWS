@@ -1,6 +1,7 @@
 CHANGES IN VERSION 1.99.1
 -------------------------
- o using pwiz as the default backend [2014-09-21 Sun]
+ o annoucning pwiz in vignette and that it will become the default
+   backend in Bioc 3.1 [2014-09-25 Thu]
  o adding a dummy close for pwiz backend to avoid breaking code 
    that properly closes the previous ramp backend [2014-09-21 Sun]
 

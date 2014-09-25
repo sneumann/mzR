@@ -9,7 +9,7 @@
   Create and check mzR objects from netCDF, mzXML, mzData or mzML files.
 }
 \usage{
- openMSfile(filename, backend=c("pwiz", "Ramp", "netCDF"), verbose = FALSE)
+ openMSfile(filename, backend=c("Ramp", "pwiz", "netCDF"), verbose = FALSE)
 
  initializeRamp(object)
 
@@ -53,16 +53,16 @@
  library(msdata)
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
-                    full.names=TRUE, recursive = TRUE)
-  mz <- openMSfile(file)
-  fileName(mz)
-  runInfo(mz)
+                     full.names=TRUE, recursive = TRUE)
+ mz <- openMSfile(file)
+ fileName(mz)
+ runInfo(mz)
+ close(mz)
 
   ## to use another backend
-  mz <- openMSfile(file, "Ramp")
+  mz <- openMSfile(file, backend = "pwiz")
   isInitialized(mz)
   mz
-  close(mz) 
   
   file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
   mzid <- openIDfile(file)

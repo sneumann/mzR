@@ -81,13 +81,14 @@ para(object)
  library(msdata)
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
-                    full.names=TRUE, recursive = TRUE)
-  mz <- openMSfile(file, backend = "Ramp")
-  fileName(mz)
-  instrumentInfo(mz)
-  
-    file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
-  mzid <- openIDfile(file)
-  softwareInfo(mzid)
-  enzymes(mzid)
+                     full.names=TRUE, recursive = TRUE)
+ mz <- openMSfile(file)
+ fileName(mz)
+ instrumentInfo(mz)
+ close(mz)
+ 
+ file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
+ mzid <- openIDfile(file)
+ softwareInfo(mzid)
+ enzymes(mzid)
 }
