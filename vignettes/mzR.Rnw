@@ -59,6 +59,11 @@ provides support to \texttt{CDF}-based formats. Finally, the
 \texttt{mzRident} backend is available to access identification data
 (\texttt{mzIdentML}) through pwiz.
 
+\warning{It is anticipated to switch to the \texttt{mzRpwiz} backend
+  in Bioconductor 3.1. We advise users and developers to test it and
+  report any issues on the github issue tracker
+  \url{https://github.com/sneumann/mzR/issues}.}
+
 The \Biocpkg{mzR} package is in essence a collection of wrappers to
 the C++ code, and benefits from the C++ interface provided through the
 Rcpp package \cite{Rcpp11}.
