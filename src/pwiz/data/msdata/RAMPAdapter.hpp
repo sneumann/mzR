@@ -24,16 +24,8 @@
 #ifndef _RAMPADAPTER_HPP_
 #define _RAMPADAPTER_HPP_
 
-#include<Rcpp.h>
-#if defined(__MINGW32__)
-#undef Realloc
-#undef Free
-#include <winsock2.h>
-#endif
-
 #include <stdlib.h>
 #include "pwiz/utility/misc/Export.hpp"
-//#include "ramp.h"
 #include "pwiz/data/msdata/ramp/ramp.h"
 #include "boost/shared_ptr.hpp"
 #include <string>

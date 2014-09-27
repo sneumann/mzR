@@ -31,6 +31,7 @@ and gzipped versions of all of these if you have pwiz
 #define RAMP_HOME
 
 #include <Rcpp.h>
+
 // Taken from http://tolstoy.newcastle.edu.au/R/e2/devel/06/11/1242.html
 // and http://stackoverflow.com/questions/11588765/using-rcpp-with-windows-specific-includes
 // Undefine the Realloc macro, which is defined by both R and by Windows stuff
@@ -41,6 +42,13 @@ and gzipped versions of all of these if you have pwiz
 #endif
 
 #include "ramp.h"
+#include <string>
+
+#if defined(__MINGW32__)
+#include <windows.h>
+#endif
+
+using namespace Rcpp;
 
 #undef SIZE_BUF
 #define SIZE_BUF 512
@@ -54,13 +62,14 @@ and gzipped versions of all of these if you have pwiz
 #include <pwiz/data/vendor_readers/Reader_Thermo.hpp>
 #endif
 #define MZML_TRYBLOCK try {
-#define MZML_CATCHBLOCK } catch (std::exception& e) { Rcpp::Rcerr << e.what() << std::endl;  } catch (...) {Rcpp::Rcerr  << "Caught unknown exception." << std::endl;  }
+#define MZML_CATCHBLOCK } catch (std::exception& e) { Rcout << e.what() << std::endl;  } catch (...) { Rcout << "Caught unknown exception." << std::endl;  }
 #endif
 #ifdef RAMP_HAVE_GZ_INPUT
 #include "pwiz/utility/misc/random_access_compressed_ifstream.hpp"  // for reading mzxml.gz
 #endif
 #ifdef WINDOWS_NATIVE
-#include "wglob.h"		//glob for windows
+// #include "wglob.h"		//glob for windows
+#include "pwiz/data/msdata/ramp/wglob.h"
 #else
 #include <glob.h>		//glob for real
 #endif
@@ -248,14 +257,14 @@ RAMPFILE *rampOpenFile(const char *filename) {
 			  result->mzML = new pwiz::msdata::RAMPAdapter(std::string(filename));
 		      } 
 			  catch (std::exception& e) { 
-				  Rcpp::Rcerr << e.what() << std::endl;  
+				  Rcout << e.what() << std::endl;  
 			  } catch (...) { 
-				  Rcpp::Rcerr << "Caught unknown exception." << std::endl;  
+				  Rcout << "Caught unknown exception." << std::endl;  
 			  }
 			  if (!result->mzML) {
 #ifdef HAVE_PWIZ_RAW_LIB  // use RAMP+pwiz+xcalibur to read .raw
 				  if (pwiz::msdata::Reader_Thermo::hasRAWHeader(std::string(buf,sizeof(buf)))) {
-					  Rcpp::Rcerr << "could not read .raw file - missing Xcalibur DLLs?" << std::endl;
+					  Rcout << "could not read .raw file - missing Xcalibur DLLs?" << std::endl;
 				  }
 #endif
 				  bRecognizedFormat = false; // something's amiss
@@ -715,6 +724,70 @@ static const char *findMzDataTagValue(const char *pStr, const char *tag) {
    return find;
 }
 
+/****************************************************************
+ * Reads polarity of the scan.	       			        *
+ *                                                              *
+ * !! THE STREAM IS NOT RESET AT THE INITIAL POSITION BEFORE	*
+ *    RETURNING !!						*
+ ***************************************************************/
+
+static int rampReadPolarity(RAMPFILE *pFI,const char *pStr)
+{
+	int mode = -1;
+	if(pFI->bIsMzData)
+	{
+		const char *label = findMzDataTagValue(pStr, "Polarity");
+		if(label)
+		{
+			if(strstr(label,"Positive"))
+			{
+				mode=1;
+			}
+			else if(strstr(label,"Negative"))
+			{
+				mode=0;
+			}
+			else
+			{
+				//mode can not be estimate
+				mode=-1;
+			}
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	else
+	{
+		const char *find = strstr(pStr,"polarity");
+		if(find)
+		{
+			mode=3;
+			find = findquot(find);
+			if(find)
+			{
+				find++;
+				if(strstr(find,"+"))
+				{
+					mode=1;
+				}
+				else if(strstr(find,"-"))
+				{
+					mode=0;
+				}
+				else
+				{
+					//mode can not be estimate
+					mode=-1;
+				}
+			}
+		}
+	}
+	return mode;
+}
+
+
 #include <time.h>
 /*
  * Reads a time string, returns time in seconds.
@@ -821,6 +894,7 @@ void readHeader(RAMPFILE *pFI,
    memset(scanHeader,0,sizeof(struct ScanHeaderStruct)); // mostly we want 0's
 #define LOWMZ_UNINIT 1.111E6
    scanHeader->lowMZ =  LOWMZ_UNINIT;
+   //scanHeader->filterLine = "test";
    scanHeader->acquisitionNum = -1;
    scanHeader->seqNum = -1;
    scanHeader->retentionTime = -1;
@@ -873,6 +947,8 @@ void readHeader(RAMPFILE *pFI,
                sscanf(pStr, "%d", &(scanHeader->msLevel));
             //} else if ((pStr = matchAttr(attrib, "length",6)))  { get this from array element
             //   sscanf(pStr, "%d", &(scanHeader->peaksCount));
+	    } else if ((pStr = findMzDataTagValue(attrib,"Polarity"))) {
+ 	       scanHeader->polarity = rampReadPolarity(pFI,stringBuf);
             } else if ((pStr = findMzDataTagValue(attrib,"TimeInMinutes")))  {
                scanHeader->retentionTime = rampReadTime(pFI,stringBuf);
             } else if ((pStr = findMzDataTagValue(attrib,"TimeInSeconds")))  {
@@ -925,6 +1001,11 @@ void readHeader(RAMPFILE *pFI,
                scanHeader->precursorMZ = atof(pStr2);
             }
             if (NULL!=(pStr2 = findMzDataTagValue(stringBuf,"mz"))) 
+            {
+               scanHeader->precursorMZ = atof(pStr2);
+            }
+	    // "m/z" is used by the compassXport mzData export
+            if (NULL!=(pStr2 = findMzDataTagValue(stringBuf,"m/z"))) 
             {
                scanHeader->precursorMZ = atof(pStr2);
             }
@@ -985,6 +1066,8 @@ void readHeader(RAMPFILE *pFI,
                sscanf(pStr, "%lf", &(scanHeader->basePeakIntensity));      
             } else if ((pStr = matchAttr(attrib, "msLevel",7)))  {
                sscanf(pStr, "%d", &(scanHeader->msLevel));
+	    } else if ((pStr = matchAttr(attrib, "polarity",8)))  {
+ 		scanHeader->polarity = rampReadPolarity(pFI,stringBuf);
             } else if ((pStr = matchAttr(attrib, "peaksCount",10)))  {
                sscanf(pStr, "%d", &(scanHeader->peaksCount));
             } else if ((pStr = matchAttr(attrib, "retentionTime",13)))  {
@@ -1110,8 +1193,8 @@ void readHeader(RAMPFILE *pFI,
 		      int curCharge = atoi(token);
 		      //printf("found %d\n", curCharge);
 		      if (curCharge > (CHARGEARRAY_LENGTH-1)) {
-			Rprintf("error, cannot handle precursor charges > %d (got %d)\n", CHARGEARRAY_LENGTH-1, curCharge);
-			Rf_error("exit from readHeader");
+			REprintf("error, cannot handle precursor charges > %d (got %d)\n", CHARGEARRAY_LENGTH-1, curCharge);
+			//exit(-1);
 		      }
 		      scanHeader->possibleChargesArray[curCharge] = true;
 		      scanHeader->numPossibleCharges++;
@@ -1866,7 +1949,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "contentType=\"") + 1 , '\"' );
                   pEndAttrValue  = '\0';
-                  Rprintf("%s Unsupported content type\n" , pBeginData ); 
+                  REprintf("%s Unsupported content type\n" , pBeginData ); 
                   return NULL;
               }
           }
@@ -1885,7 +1968,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "compressionType=\"") + 1 , '\"' );
                   pEndAttrValue = '\0';
-                  Rprintf("%s Unsupported compression type\n" , pBeginData ); 
+                  REprintf("%s Unsupported compression type\n" , pBeginData ); 
                   return NULL;
               }
           }
@@ -1988,7 +2071,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
       if( isCompressed )
       {
           int err;
-//        Rprintf("Decompressing data\n");
+//        printf("Decompressing data\n");
           uLong uncomprLen = (dataPerPeak * peaksCount * (precision/8) + 1);
 			
           pUncompr = (Byte*)calloc((uInt) uncomprLen , 1);
@@ -2048,14 +2131,14 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
          
           for (n = 0; n < (2 * peaksCount); )
           {
-// Rprintf("%f\n" , pPeaks[j] );
+// printf("%f\n" , pPeaks[j] );
               if( (int) pPeaks[j] == -1 )
               { // Change in delta m/z
 				++j;
 				lastMass = (RAMPREAL) pPeaks[j++];
                 deltaMass = pPeaks[j++];
 				multiplier = 0;
-//Rprintf("%f %f\n" , lastMass , deltaMass );
+//printf("%f %f\n" , lastMass , deltaMass );
               }
    		    pPeaksDeRuled[n++] = lastMass + (RAMPREAL) multiplier * deltaMass;
 			++multiplier;

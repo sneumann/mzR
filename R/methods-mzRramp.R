@@ -144,7 +144,7 @@ setMethod("show",
               ## info <- instrumentInfo(object)
               ## run  <- runInfo(object)
               cat("Mass Spectrometry file handle.\n")
-              cat("Filename: ", filename, "\n")
+              cat("Filename: ", basename(filename), "\n")
               cat("Number of scans: ", length(object), "\n")
               ## if (any(info != "")) {
               ##   cat("Manufacturer: ", info$manufacturer, "\n")

@@ -20,13 +20,11 @@
 // limitations under the License.
 //
 
-
+#include "Rcpp.h"
 #include "SHA1Calculator.hpp"
 #include "unit.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 
-#include <Rcpp.h>
-#include <Rcpp/iostream/Rstreambuf.h>
 
 using namespace pwiz::util;
 
@@ -41,12 +39,12 @@ int main(int argc, char* argv[])
     }
     catch (exception& e)
     {
-        Rcpp::Rcout << e.what() << endl;
+        Rcpp::Rcerr << e.what() << endl;
         return 1;
     }
     catch (...)
     {
-        Rcpp::Rcout << "Caught unknown exception.\n";
+        Rcpp::Rcerr << "Caught unknown exception.\n";
         return 1;
     }
 }

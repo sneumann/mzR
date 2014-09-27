@@ -137,6 +137,16 @@ void RAMPAdapter::Impl::getScanHeader(size_t index, ScanHeaderStruct& result, bo
     result.seqNum = static_cast<int>(index + 1);
     result.acquisitionNum = getScanNumber(index);
     result.msLevel = spectrum->cvParam(MS_ms_level).valueAs<int>();
+    
+    CVParam paramPolarity = spectrum->cvParam(MS_scan_polarity);
+    if (paramPolarity.cvid == MS_positive_scan){
+		result.polarity = 1;
+	} else if (paramPolarity.cvid == MS_negative_scan){
+		result.polarity = 0;
+	} else{
+		result.polarity = -1;
+	}
+        
     result.peaksCount = static_cast<int>(spectrum->defaultArrayLength);
     result.totIonCurrent = spectrum->cvParam(MS_total_ion_current).valueAs<double>();
     result.retentionTime = scan.cvParam(MS_scan_start_time).timeInSeconds();

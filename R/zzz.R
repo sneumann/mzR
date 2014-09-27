@@ -18,5 +18,5 @@ BUILT_RCPP_VERSION = package_version("0.11.2")
       require2 <- require
       require2("methods", character.only = TRUE, quietly = TRUE)
       loadRcppModules()
-
-    }
+      Sys.setenv("HDF5_DISABLE_VERSION_CHECK"=2)
+}

@@ -70,9 +70,9 @@
  library(msdata)
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
-                    full.names=TRUE, recursive = TRUE)
-  mz <- openMSfile(file)
-  runInfo(mz)
-  colnames(header(mz))
-  close(mz)
+                     full.names=TRUE, recursive = TRUE)
+ mz <- openMSfile(file)
+ runInfo(mz)
+ colnames(header(mz))
+ close(mz)
 }

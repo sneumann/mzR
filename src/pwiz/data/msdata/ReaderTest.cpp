@@ -221,6 +221,19 @@ void testIdentifyFileFormat()
     unit_assert_operator_equal(MS_ISB_mzXML_format, identifyFileFormat(readers, "testSpectraDataFile.mzedXML"));
     bfs::remove("testSpectraDataFile.mzedXML");
 
+    
+    {
+        MSData msd;
+        examples::initializeTiny(msd);
+        MSDataFile::WriteConfig config;
+        config.format = MSDataFile::Format_MZ5;
+#ifndef WITHOUT_MZ5
+        MSDataFile::write(msd, "testSpectraDataFile.Mz5", config);
+        unit_assert_operator_equal(MS_mz5_format, identifyFileFormat(readers, "testSpectraDataFile.Mz5"));
+#endif
+    }
+    bfs::remove("testSpectraDataFile.Mz5");
+
     {ofstream fs("testSpectraDataFile.mGF"); fs << "MGF";}
     unit_assert_operator_equal(MS_Mascot_MGF_format, identifyFileFormat(readers, "testSpectraDataFile.mGF"));
     bfs::remove("testSpectraDataFile.mGF");
