@@ -4,6 +4,8 @@ CHANGES IN VERSION 1.99.1
    backend in Bioc 3.1 [2014-09-25 Thu]
  o adding a dummy close for pwiz backend to avoid breaking code 
    that properly closes the previous ramp backend [2014-09-21 Sun]
+ o Not using ListBuilder to make psms data.frame and fix segfautls,
+   via KK [2014-09-27 Sat]
 
 CHANGES IN VERSION 1.99.0
 -------------------------

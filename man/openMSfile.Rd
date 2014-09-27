@@ -61,7 +61,6 @@
 
   ## to use another backend
   mz <- openMSfile(file, backend = "pwiz")
-  isInitialized(mz)
   mz
   
   file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")

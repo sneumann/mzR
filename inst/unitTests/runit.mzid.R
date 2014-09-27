@@ -11,8 +11,8 @@ test.mzid <- function() {
 	checkTrue(identical(s$X_Tandem_hyperscore, fy$"x\\!tandem:hyperscore"))
 	checkTrue(identical(s$X_Tandem_expect, fy$"x\\!tandem:expect"))
 	p <- psms(x)
-	checkTrue(identical(p$spectrumID, fy$spectrumid))
-	checkTrue(identical(p$post, fy$post))
-	checkTrue(identical(p$sequence, fy$pepseq))
-	checkTrue(identical(p$DatabaseAccess, fy$accession))
+	checkTrue(identical(as.character(p$spectrumID), fy$spectrumid))
+	checkTrue(identical(as.character(p$post), fy$post))
+	checkTrue(identical(as.character(p$sequence), fy$pepseq))
+	checkTrue(identical(as.character(p$DatabaseAccess), fy$accession))
 }

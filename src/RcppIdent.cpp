@@ -94,8 +94,6 @@ Rcpp::List RcppIdent::getIDInfo(  )
 
 Rcpp::DataFrame RcppIdent::getPsmInfo(  )
 {
-    ListBuilder res;
-
     vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
 
     std::vector<std::string> spectrumID;
@@ -140,37 +138,45 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
                     DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->accession);
                     DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->seq);
                     if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams.size() > 0)
+                    {
                         DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams[0].value);
+                    }
+                    else
+                    {
+                        DBdesc.push_back("");
+                    }
+                }
+                else
+                {
+                    DBSequenceID.push_back("");
+                    DBseq.push_back("");
+                    DBdesc.push_back("");
                 }
 
             }
         }
     }
 
-    res.add("spectrumID", Rcpp::wrap(spectrumID));
-    res.add("chargeState", Rcpp::wrap(chargeState));
-    res.add("rank", Rcpp::wrap(rank));
-    res.add("passThreshold", Rcpp::wrap(passThreshold));
-    res.add("experimentalMassToCharge", Rcpp::wrap(experimentalMassToCharge));
-    res.add("calculatedMassToCharge", Rcpp::wrap(calculatedMassToCharge));
-    res.add("sequence", Rcpp::wrap(seq));
-    res.add("modNum", Rcpp::wrap(modification));
-    res.add("isDecoy", Rcpp::wrap(isDecoy));
-    res.add("post", Rcpp::wrap(post));
-    res.add("pre", Rcpp::wrap(pre));
-    res.add("start", Rcpp::wrap(start));
-    res.add("end", Rcpp::wrap(end));
 
-    if(DBSequenceID.size() > 0)
-        res.add("DatabaseAccess", Rcpp::wrap(DBSequenceID));
 
-    if(DBseq.size() > 0)
-        res.add("DatabaseSeq", Rcpp::wrap(DBseq));
-
-    if(DBdesc.size() > 0)
-        res.add("DatabaseDescription", Rcpp::wrap(DBdesc));
-
-    return res;
+    return Rcpp::DataFrame::create(
+               Rcpp::_["spectrumID"]	= spectrumID,
+               Rcpp::_["chargeState"]	= chargeState,
+               Rcpp::_["rank"]	= rank,
+               Rcpp::_["passThreshold"]	= passThreshold,
+               Rcpp::_["experimentalMassToCharge"]	= experimentalMassToCharge,
+               Rcpp::_["calculatedMassToCharge"]	= calculatedMassToCharge,
+               Rcpp::_["sequence"]	= seq,
+               Rcpp::_["modNum"]	= modification,
+               Rcpp::_["isDecoy"]	= isDecoy,
+               Rcpp::_["post"]	= post,
+               Rcpp::_["pre"]	= pre,
+               Rcpp::_["start"]	= start,
+               Rcpp::_["end"]	= end,
+               Rcpp::_["DatabaseAccess"]	= DBSequenceID,
+               Rcpp::_["DatabaseSeq"]	= DBseq,
+               Rcpp::_["DatabaseDescription"]	= DBdesc
+           );
 }
 
 Rcpp::DataFrame RcppIdent::getModInfo(  )
@@ -183,9 +189,6 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
     vector<string> name;
     vector<double> mass;
     vector<int> loc;
-    //vector<string> DBSequenceID;
-    //vector<string> DBseq;
-    //vector<string> DBdesc;
 
     for (size_t i = 0; i < spectrumIdResult.size(); i++)
     {
@@ -200,26 +203,18 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
                     name.push_back(cvTermInfo(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->cvParams[0].cvid).name);
                     mass.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->monoisotopicMassDelta);
                     loc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->location);
-                    /*DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->accession);
-                    DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->seq);
-                    if(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
-                    	DBdesc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptideEvidencePtr[0]->dbSequencePtr->cvParams[0].value);*/
                 }
             }
         }
     }
 
-    res.add("spectrumID", Rcpp::wrap(spectrumID));
-    res.add("sequence", Rcpp::wrap(seq));
-    res.add("name", Rcpp::wrap(name));
-    res.add("mass", Rcpp::wrap(mass));
-    res.add("location", Rcpp::wrap(loc));
-    /*    res.add("DBSequenceID", Rcpp::wrap(DBSequenceID));
-        if(!spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->seq.empty())
-            res.add("DatabaseSeq", Rcpp::wrap(DBseq));
-        if(spectrumIdResult[0]->spectrumIdentificationItem[0]->peptideEvidencePtr[0]->dbSequencePtr->cvParams.size() > 0)
-            res.add("DatabaseDescription", Rcpp::wrap(DBdesc));*/
-    return res;
+    return Rcpp::DataFrame::create(
+               Rcpp::_["spectrumID"]	= spectrumID,
+               Rcpp::_["sequence"]	= seq,
+               Rcpp::_["name"]	= name,
+               Rcpp::_["mass"]	= mass,
+               Rcpp::_["location"]	= loc);
+
 }
 
 Rcpp::DataFrame RcppIdent::getSubInfo(  )
