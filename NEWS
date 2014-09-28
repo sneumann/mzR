@@ -1,3 +1,18 @@
+CHANGES IN VERSION 1.99.1
+-------------------------
+ o annoucning pwiz in vignette and that it will become the default
+   backend in Bioc 3.1 [2014-09-25 Thu]
+ o adding a dummy close for pwiz backend to avoid breaking code 
+   that properly closes the previous ramp backend [2014-09-21 Sun]
+ o Not using ListBuilder to make psms data.frame and fix segfautls,
+   via KK [2014-09-27 Sat]
+
+CHANGES IN VERSION 1.99.0
+-------------------------
+ o New pwiz backend and support for mzid, contributed by Qiang Kou as
+   part of GSoC 2014.
+ o Using BiocStyle for vignette [2014-08-26 Tue]
+
 CHANGES IN VERSION 1.11.11
 -------------------------
  o Remove superflouus library call in unitTests, should fix R CMD check on windows

@@ -47,20 +47,29 @@ setClass("mzRramp",
          })
 
 
-## ##############################################################
-## ## mzRpwiz - pwiz backend through an Rcpp module 
-## setClass("mzRpwiz",
-##          representation(backend="C++Object"),
-##          contains=c("mzR"),
-##          prototype=prototype(
-##            new("Versioned", versions=c(mzR="0.0.1")))
-##          )
+##############################################################
+## mzRpwiz - pwiz backend through an Rcpp module 
+setClass("mzRpwiz",
+         representation(backend="C++Object"),
+         contains=c("mzR"),
+         prototype=prototype(
+           new("Versioned", versions=c(mzR="0.0.1")))
+         )
 
 
 ##############################################################
 ## mzRnetCDF - netCDF backend 
 setClass("mzRnetCDF",
          representation(),
+         contains=c("mzR"),
+         prototype=prototype(
+           new("Versioned", versions=c(mzR="0.0.1")))
+         )
+
+##############################################################
+## mzRident - pwiz backend for mzid file
+setClass("mzRident",
+         representation(backend="C++Object"),
          contains=c("mzR"),
          prototype=prototype(
            new("Versioned", versions=c(mzR="0.0.1")))

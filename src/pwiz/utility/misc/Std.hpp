@@ -31,16 +31,6 @@
 #include "pwiz/utility/misc/String.hpp"
 #include "pwiz/utility/misc/Stream.hpp"
 
-#include <Rcpp.h>
-using Rcpp::Rcout;
-using Rcpp::Rcerr;
-
-#ifdef __MINGW32__
-#undef Realloc
-#undef Free
-#include <windows.h>
-#endif
-
 #include <limits>
 using std::numeric_limits;
 
@@ -74,6 +64,5 @@ using std::logic_error;
 using std::overflow_error;
 using std::range_error;
 using std::underflow_error;
-
 
 #endif // _STD_HPP_
