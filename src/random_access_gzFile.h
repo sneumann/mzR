@@ -24,7 +24,7 @@ struct random_access_gzFile;  // internals are a mystery to caller
 typedef pwiz::util::random_access_compressed_ifstream_off_t random_access_gzFile_off_t; // so it looks more gzio-like
 
 /* ===========================================================================
-Opens a gzip (.gz) file for reading. 
+Opens a gzip (.gz) file for reading.
 random_access_gzopen returns NULL if the file could not be opened or if there was
 insufficient memory to allocate the (de)compression state; errno
 can be checked to distinguish the two cases (if errno is zero, the

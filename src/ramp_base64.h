@@ -1,4 +1,4 @@
-// base64 decode optimized using table lookup 
+// base64 decode optimized using table lookup
 // Copyright (C) 2005 Insilicos LLC All Rights Reserved
 // bpratt 10-5-05
 

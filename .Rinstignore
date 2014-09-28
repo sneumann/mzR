@@ -1,6 +1,0 @@
-inst/doc/Makefile
-.travis.yml
-.git
-src/lapack
-^.*\.Rproj$
-^\.Rproj\.user$
