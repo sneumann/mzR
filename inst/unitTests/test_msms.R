@@ -1,4 +1,4 @@
-test.ramp <- function() {
+test_ramp <- function() {
 
   filename <- system.file('iontrap/extracted.mzData', package = "msdata")
 
