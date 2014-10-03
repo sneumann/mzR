@@ -1,6 +1,4 @@
-test.backends <- function() {
-    library("mzR")
-    library("msdata")
+test_backends <- function() {
     f <- system.file("lockmass", "LockMass_test.mzXML", package = "msdata")
     mr <- openMSfile(f, backend = "Ramp")
     checkTrue(validObject(mr))

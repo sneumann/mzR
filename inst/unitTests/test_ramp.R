@@ -1,6 +1,4 @@
-test.mzXML <- function() {
-    library(msdata)
-    library(mzR)
+test_mzXML <- function() {
     file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML", package = "msdata")
     mzxml <- openMSfile(file, backend="Ramp")
     checkTrue(class(mzxml)=="mzRramp")
@@ -19,9 +17,7 @@ test.mzXML <- function() {
     close(mzxml)
 }
 
-test.mzML <- function() {
-    library(msdata)
-    library(mzR)
+test_mzML <- function() {
     file <- system.file("microtofq", "MM14.mzML", package = "msdata")
     mzml <- openMSfile(file, backend="Ramp")
     checkTrue(class(mzml)=="mzRramp")
@@ -45,9 +41,7 @@ test.mzML <- function() {
     close(mzml)    
 }
 
-test.mzData <- function() {
-    library(msdata)
-    library(mzR)
+test_mzData <- function() {
     file <- system.file("microtofq", "MM14.mzdata", package = "msdata")
     mzdata <- openMSfile(file, backend="Ramp")
     checkTrue(class(mzdata)=="mzRramp")
@@ -65,9 +59,7 @@ test.mzData <- function() {
     close(mzdata)    
 }
 
-test.mzData.gz <- function() {
-    library(msdata)
-    library(mzR)
+test_mzData.gz <- function() {
     file <- system.file("microtofq", "MM14.mzdata.gz", package = "msdata")
     mzdata <- openMSfile(file, backend="Ramp")
     checkTrue(class(mzdata)=="mzRramp")
