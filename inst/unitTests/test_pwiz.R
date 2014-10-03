@@ -1,6 +1,4 @@
-test.mzXML <- function() {
-    library(msdata)
-    library(mzR)
+test_mzXML <- function() {
     file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML", package = "msdata")
     mzxml <- openMSfile(file, backend="pwiz")
     checkTrue(class(mzxml)=="mzRpwiz")
