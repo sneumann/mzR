@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.99.4
+-------------------------
+ o don't run pwiz example [2014-10-05 Sun]
+
 CHANGES IN VERSION 1.99.3
 -------------------------
  o revising unit testing and using suggested convention as described
