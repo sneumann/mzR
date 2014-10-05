@@ -59,9 +59,11 @@
  runInfo(mz)
  close(mz)
 
-  ## to use another backend
-  mz <- openMSfile(file, backend = "pwiz")
-  mz
+ \dontrun{
+    ## to use another backend
+    mz <- openMSfile(file, backend = "pwiz")
+    mz
+  }
   
   file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
   mzid <- openIDfile(file)
