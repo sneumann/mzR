@@ -21,9 +21,9 @@ Depends: Rcpp (>= 0.10.1), methods, utils
 Imports: Biobase
 Suggests: msdata (>= 0.3.5), RUnit, mzID, BiocStyle, knitr, BiocGenerics
 VignetteBuilder: knitr
-LinkingTo: Rcpp
+LinkingTo: Rcpp, zlibbioc
 RcppModules: Ramp, Pwiz, Ident
-SystemRequirements: GNU make, NetCDF, zlib
+SystemRequirements: GNU make, NetCDF
 URL: https://github.com/sneumann/mzR/
 BugReports: https://github.com/sneumann/mzR/issues/new
 biocViews: Infrastructure, DataImport, Proteomics, Metabolomics,
