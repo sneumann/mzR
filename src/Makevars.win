@@ -106,8 +106,19 @@ PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -D_MSC_VER  -fgnu89-inline
 
 PKG_LIBS = $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf
 
-all: clean $(SHLIB)
+PKG_CFLAGS+=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'|\
+    "${R_HOME}/bin/R" --vanilla --slave)
+PKG_LIBS+=$(shell echo 'zlibbioc::pkgconfig("PKG_LIBS_shared")' |\
+    "${R_HOME}/bin/R" --vanilla --slave)
 
+all: $(SHLIB)
+
+%.o: %.cpp
+	$(CXX) $(ALL_CPPFLAGS) -c $< -o $@
+
+%.o: %.c
+	$(CC) $(ALL_CPPFLAGS) $(ALL_CFLAGS) -c $< -o $@	
+	
 clean:
 	rm -f $(OBJECTS)
 
