@@ -36,7 +36,8 @@
   
   The \code{openIDfile} constructor will create a new format-specifc
   \code{mzR} object, open 'filename' file and all information is
-  loaded as a Rcpp module. The mzid format is supported throught \code{pwiz} backend.
+  loaded as a Rcpp module. The mzid format is supported throught
+  \code{pwiz} backend. Only mzIdentML 1.1 is supported.
 
   % If the object was created manually with e.g. new("mzR"), then
   % initializeRamp() will open the given file. An mzR object can be
