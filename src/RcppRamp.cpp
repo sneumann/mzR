@@ -350,7 +350,7 @@ Rcpp::NumericMatrix RcppRamp::get3DMap ( std::vector<int> scanNumbers, double wh
         }
         // map3d = 0.0;
         int j=0;
-        // Rprintf("%d\n",1);
+        Rprintf("%d\n",1);
         for (int i = 0; i < scanNumbers.size(); i++)
         {
             rampPeakList *pl = ramp->getPeakList( scanNumbers[i] );
