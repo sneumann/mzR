@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.1.5
+------------------------
+ o don't print '1' to the console when calling get3Dmap
+   [2015-01-29 Thu]
+ 
 CHANGES IN VERSION 2.1.4
 ------------------------
  o documentation and vignette: mzIdentML version 1.1 support only

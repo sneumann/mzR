@@ -371,7 +371,7 @@ Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double wh
         }
 
         int j=0;
-        Rprintf("%d\n",1);
+        // Rprintf("%d\n",1);	
         for (int i = 0; i < scanNumbers.size(); i++)
         {
             SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, true);
