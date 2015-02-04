@@ -111,6 +111,7 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
     std::vector<int> end;
     std::vector<std::string> DBSequenceID;
     std::vector<std::string> DBseq;
+    std::vector<int> DBSequenceLen;
     std::vector<std::string> DBdesc;
 
     for (size_t i = 0; i < spectrumIdResult.size(); i++)
@@ -136,6 +137,7 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
                 if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr.get()!=0)
                 {
                     DBSequenceID.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->accession);
+                    DBSequenceLen.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->length);
                     DBseq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->seq);
                     if(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->dbSequencePtr->cvParams.size() > 0)
                     {
@@ -174,6 +176,7 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
                Rcpp::_["start"]	= start,
                Rcpp::_["end"]	= end,
                Rcpp::_["DatabaseAccess"]	= DBSequenceID,
+               Rcpp::_["DBseqLength"]	= DBSequenceLen,
                Rcpp::_["DatabaseSeq"]	= DBseq,
                Rcpp::_["DatabaseDescription"]	= DBdesc
            );
