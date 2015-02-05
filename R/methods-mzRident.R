@@ -4,7 +4,12 @@ setMethod("mzidInfo",
           
 setMethod("psms",
           signature=c("mzRident"),
-          function(object) return(object@backend$getPsmInfo()))
+          function(object) {
+              psms <- object@backend$getPsmInfo()
+              psms$acquisitionNum <-
+                  as.numeric(sub("^.*=([[:digit:]]+)$", "\\1", psms$spectrumID))
+              return(psms)
+          })
           
 setMethod("score",
           signature=c("mzRident"),
