@@ -1,8 +1,5 @@
 #include "RcppRamp.h"
 
-#include "ListBuilder.h"
-
-
 RcppRamp::RcppRamp()
 {
     ramp = NULL;
@@ -150,37 +147,54 @@ Rcpp::List RcppRamp::getScanHeaderInfo ( int whichScan  )
         ScanHeaderStruct data = info->m_data;
         delete info;
 
-        //    Rcpp::List header = Rcpp::List::create();
-        ListBuilder header;
+        std::vector<std::string> names;
+        Rcpp::List header(21);
+        int i = 0;
 
-        header.add("seqNum",  Rcpp::wrap(data.seqNum));
-        header.add("acquisitionNum", Rcpp::wrap(data.acquisitionNum));
-        header.add("msLevel",       Rcpp::wrap(data.msLevel));
-        header.add("polarity",       Rcpp::wrap(data.polarity));
-        header.add("peaksCount",       Rcpp::wrap(data.peaksCount));
-        header.add("totIonCurrent",       Rcpp::wrap(data.totIonCurrent));
-        header.add("retentionTime",       Rcpp::wrap(data.retentionTime));
-        header.add("basePeakMZ",       Rcpp::wrap(data.basePeakMZ));
-        header.add("basePeakIntensity",       Rcpp::wrap(data.basePeakIntensity));
-        header.add("collisionEnergy",       Rcpp::wrap(data.collisionEnergy));
-        header.add("ionisationEnergy",       Rcpp::wrap(data.ionisationEnergy));
-        header.add("lowMZ",       Rcpp::wrap(data.lowMZ));
-        header.add("highMZ",       Rcpp::wrap(data.highMZ));
-        header.add("precursorScanNum",       Rcpp::wrap(data.precursorScanNum));
-        header.add("precursorMZ",       Rcpp::wrap(data.precursorMZ));
-        header.add("precursorCharge",       Rcpp::wrap(data.precursorCharge));
-        header.add("precursorIntensity",       Rcpp::wrap(data.precursorIntensity));
-        //  header.add("scanType",       Rcpp::wrap(data.scanType));
-        //  header.add("activationMethod",       Rcpp::wrap(data.activationMethod));
-        //  header.add("possibleCharges",       Rcpp::wrap(data.possibleCharges));
-        // header.add("numPossibleCharges",       Rcpp::wrap(data.numPossibleCharges));
-        //  header.add("possibleChargesArray",       Rcpp::wrap(data.possibleChargesArray));
-        header.add("mergedScan",       Rcpp::wrap(data.mergedScan));
-        header.add("mergedResultScanNum",       Rcpp::wrap(data.mergedResultScanNum));
-        header.add("mergedResultStartScanNum",       Rcpp::wrap(data.mergedResultStartScanNum));
-        header.add("mergedResultEndScanNum",       Rcpp::wrap(data.mergedResultEndScanNum));
-        //			     header.add("filePosition",       data.filePosition
+        names.push_back("seqNum");
+        header[i++] = Rcpp::wrap(data.seqNum);
+        names.push_back("acquisitionNum");
+        header[i++] = Rcpp::wrap(data.acquisitionNum);
+        names.push_back("msLevel");
+        header[i++] = Rcpp::wrap(data.msLevel);
+        names.push_back("polarity");
+        header[i++] = Rcpp::wrap(data.polarity);
+        names.push_back("peaksCount");
+        header[i++] = Rcpp::wrap(data.peaksCount);
+        names.push_back("totIonCurrent");
+        header[i++] = Rcpp::wrap(data.totIonCurrent);
+        names.push_back("retentionTime");
+        header[i++] = Rcpp::wrap(data.retentionTime);
+        names.push_back("basePeakMZ");
+        header[i++] = Rcpp::wrap(data.basePeakMZ);
+        names.push_back("basePeakIntensity");
+        header[i++] = Rcpp::wrap(data.basePeakIntensity);
+        names.push_back("collisionEnergy");
+        header[i++] = Rcpp::wrap(data.collisionEnergy);
+        names.push_back("ionisationEnergy");
+        header[i++] = Rcpp::wrap(data.ionisationEnergy);
+        names.push_back("lowMZ");
+        header[i++] = Rcpp::wrap(data.lowMZ);
+        names.push_back("highMZ");
+        header[i++] = Rcpp::wrap(data.highMZ);
+        names.push_back("precursorScanNum");
+        header[i++] = Rcpp::wrap(data.precursorScanNum);
+        names.push_back("precursorMZ");
+        header[i++] = Rcpp::wrap(data.precursorMZ);
+        names.push_back("precursorCharge");
+        header[i++] = Rcpp::wrap(data.precursorCharge);
+        names.push_back("precursorIntensity");
+        header[i++] = Rcpp::wrap(data.precursorIntensity);
+        names.push_back("mergedScan");
+        header[i++] = Rcpp::wrap(data.mergedScan);
+        names.push_back("mergedResultScanNum");
+        header[i++] = Rcpp::wrap(data.mergedResultScanNum);
+        names.push_back("mergedResultStartScanNum");
+        header[i++] = Rcpp::wrap(data.mergedResultStartScanNum);
+        names.push_back("mergedResultEndScanNum");
+        header[i++] = Rcpp::wrap(data.mergedResultEndScanNum);
 
+        header.attr("names") = names;
 
         return  header;
     }
@@ -215,11 +229,6 @@ Rcpp::DataFrame RcppRamp::getAllScanHeaderInfo ( )
             Rcpp::NumericVector precursorMZ(N);  /* only if MS level > 1 */
             Rcpp::IntegerVector precursorCharge(N);  /* only if MS level > 1 */
             Rcpp::NumericVector precursorIntensity(N);  /* only if MS level > 1 */
-            // char scanType[SCANTYPE_LENGTH];
-            // char activationMethod[SCANTYPE_LENGTH];
-            // char possibleCharges[SCANTYPE_LENGTH];
-            // int numPossibleCharges;
-            // bool possibleChargesArray[CHARGEARRAY_LENGTH]; /* NOTE: does NOT include "precursorCharge" information; only from "possibleCharges" */
             Rcpp::IntegerVector mergedScan(N);  /* only if MS level > 1 */
             Rcpp::IntegerVector mergedResultScanNum(N); /* scan number of the resultant merged scan */
             Rcpp::IntegerVector mergedResultStartScanNum(N); /* smallest scan number of the scanOrigin for merged scan */
@@ -251,35 +260,56 @@ Rcpp::DataFrame RcppRamp::getAllScanHeaderInfo ( )
                 mergedResultEndScanNum[whichScan-1] = scanHeader.mergedResultEndScanNum;
             }
 
-            ListBuilder header;
-            header.add("seqNum", seqNum);
-            header.add("acquisitionNum",           acquisitionNum);
-            header.add("msLevel",                  msLevel);
-            header.add("polarity",               polarity);
-            header.add("peaksCount",               peaksCount);
-            header.add("totIonCurrent",            totIonCurrent);
-            header.add("retentionTime",            retentionTime);
-            header.add("basePeakMZ",               basePeakMZ);
-            header.add("basePeakIntensity",        basePeakIntensity);
-            header.add("collisionEnergy",          collisionEnergy);
-            header.add("ionisationEnergy",         ionisationEnergy);
-            header.add("lowMZ",                    lowMZ);
-            header.add("highMZ",                   highMZ);
-            header.add("precursorScanNum",         precursorScanNum);
-            header.add("precursorMZ",              precursorMZ);
-            header.add("precursorCharge",          precursorCharge);
-            header.add("precursorIntensity",       precursorIntensity);
-            //  header.add("scanType",                 scanType);
-            //  header.add("activationMethod",         activationMethod);
-            //  header.add("possibleCharges",          possibleCharges);
-            //  header.add("numPossibleCharges",       numPossibleCharges);
-            //  header.add("possibleChargesArray",     possibleChargesArray);
-            header.add("mergedScan",               mergedScan);
-            header.add("mergedResultScanNum",      mergedResultScanNum);
-            header.add("mergedResultStartScanNum", mergedResultStartScanNum);
-            header.add("mergedResultEndScanNum",   mergedResultEndScanNum);
+            Rcpp::List header(21);
+            std::vector<std::string> names;
+            int i = 0;
 
-            allScanHeaderInfo = header.get();
+            names.push_back("seqNum");
+            header[i++] =Rcpp::wrap(seqNum);
+            names.push_back("acquisitionNum");
+            header[i++] =Rcpp::wrap( acquisitionNum);
+            names.push_back("msLevel");
+            header[i++] =Rcpp::wrap(msLevel);
+            names.push_back("polarity");
+            header[i++] =Rcpp::wrap(polarity);
+            names.push_back("peaksCount");
+            header[i++] =Rcpp::wrap(peaksCount);
+            names.push_back("totIonCurrent");
+            header[i++] =Rcpp::wrap(totIonCurrent);
+            names.push_back("retentionTime");
+            header[i++] =Rcpp::wrap(retentionTime);
+            names.push_back("basePeakMZ");
+            header[i++] =Rcpp::wrap(basePeakMZ);
+            names.push_back("basePeakIntensity");
+            header[i++] =Rcpp::wrap(basePeakIntensity);
+            names.push_back("collisionEnergy");
+            header[i++] =Rcpp::wrap(collisionEnergy);
+            names.push_back("ionisationEnergy");
+            header[i++] =Rcpp::wrap(ionisationEnergy);
+            names.push_back("lowMZ");
+            header[i++] =Rcpp::wrap(lowMZ);
+            names.push_back("highMZ");
+            header[i++] =Rcpp::wrap(highMZ);
+            names.push_back("precursorScanNum");
+            header[i++] =Rcpp::wrap(precursorScanNum);
+            names.push_back("precursorMZ");
+            header[i++] =Rcpp::wrap(precursorMZ);
+            names.push_back("precursorCharge");
+            header[i++] =Rcpp::wrap(precursorCharge);
+            names.push_back("precursorIntensity");
+            header[i++] =Rcpp::wrap(precursorIntensity);
+            names.push_back("mergedScan");
+            header[i++] =Rcpp::wrap(mergedScan);
+            names.push_back("mergedResultScanNum");
+            header[i++] =Rcpp::wrap(mergedResultScanNum);
+            names.push_back("mergedResultStartScanNum");
+            header[i++] =Rcpp::wrap(mergedResultStartScanNum);
+            names.push_back("mergedResultEndScanNum");
+            header[i++] =Rcpp::wrap(mergedResultEndScanNum);
+            
+			header.attr("names") = names;
+			
+            allScanHeaderInfo = header;
             isInCacheAllScanHeaderInfo = TRUE;
         }
         else
