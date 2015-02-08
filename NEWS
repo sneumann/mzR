@@ -1,10 +1,13 @@
+CHANGES IN VERSION 2.1.7
+------------------------
+ o Fix score segfault (see issue #18) and remove usage of ListBuilder.
+ o Update unit test to reflext new score code.
+
 CHANGES IN VERSION 2.1.6
 ------------------------
  o adding an acquisitionNum column to psms (closes issue #17)
    [2015-02-05 Thu]
- o Fix score segfault (see issue #18) and remove usage of ListBuilder.
- o Update unit test to reflext new score code.
- 
+   
 CHANGES IN VERSION 2.1.5
 ------------------------
  o don't print '1' to the console when calling get3Dmap
