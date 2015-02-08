@@ -1,5 +1,4 @@
 #include "RcppIdent.h"
-#include "ListBuilder.h"
 
 RcppIdent::RcppIdent()
 {
@@ -184,7 +183,6 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
 
 Rcpp::DataFrame RcppIdent::getModInfo(  )
 {
-    ListBuilder res;
 
     vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
     vector<string> spectrumID;
@@ -303,50 +301,72 @@ Rcpp::DataFrame RcppIdent::getScore(  )
             }
         }
 
-        ListBuilder res;
-        res.add("spectrumID", Rcpp::wrap(spectrumID));
+        Rcpp::List res(score.size() + 1);
+        
+        names.insert(names.begin(), "spectrumID");
+        
+        res[0] = Rcpp::wrap(spectrumID);
+        
         for(size_t i = 0; i < score.size(); i++)
         {
-            res.add(underscore(names[i]), Rcpp::wrap(score[i]));
+			res[i + 1] = Rcpp::wrap(score[i]);
         }
+        
+        res.attr("names") = names;
+        Rcpp::DataFrame out(res);
 
-        return res;
+        return out;
     }
-
-
 }
 
 Rcpp::List RcppIdent::getPara(  )
 {
-    ListBuilder para;
-    vector<SpectrumIdentificationProtocolPtr> sip = mzid->analysisProtocolCollection.spectrumIdentificationProtocol;
 
-    para.add("searchType", Rcpp::wrap(underscore(cvTermInfo(sip[0]->searchType.cvid).name)));
+    std::vector<SpectrumIdentificationProtocolPtr> sip = mzid->analysisProtocolCollection.spectrumIdentificationProtocol;
+	std::vector<std::string> names, values;
 
+	names.push_back("searchType");
+	values.push_back(underscore(cvTermInfo(sip[0]->searchType.cvid).name));
+	
     for(int i = 0 ; i < sip[0]->additionalSearchParams.cvParams.size(); i++)
     {
-        para.add(underscore(cvTermInfo(sip[0]->additionalSearchParams.cvParams[i].cvid).name), Rcpp::wrap((bool) 1));
-    }
+		names.push_back(underscore(cvTermInfo(sip[0]->additionalSearchParams.cvParams[i].cvid).name));
+		values.push_back("true");
+	}
 
     for(int i = 0; i < sip[0]->additionalSearchParams.userParams.size(); i++)
     {
+		names.push_back(underscore(sip[0]->additionalSearchParams.userParams[i].name));
         if(sip[0]->additionalSearchParams.userParams[i].value.empty())
         {
-            para.add(underscore(sip[0]->additionalSearchParams.userParams[i].name), Rcpp::wrap((bool) 1));
-        }
-        else if(isNumber(sip[0]->additionalSearchParams.userParams[i].value))
-        {
-            para.add(underscore(sip[0]->additionalSearchParams.userParams[i].name), Rcpp::wrap(lexical_cast<double>(sip[0]->additionalSearchParams.userParams[i].value)));
-        }
-        else if(isBool(sip[0]->additionalSearchParams.userParams[i].value))
-        {
-            para.add(underscore(sip[0]->additionalSearchParams.userParams[i].name), Rcpp::wrap(toBool(sip[0]->additionalSearchParams.userParams[i].value)));
+			values.push_back("true");
         }
         else
-            para.add(underscore(sip[0]->additionalSearchParams.userParams[i].name), Rcpp::wrap(sip[0]->additionalSearchParams.userParams[i].value));
+        {
+			values.push_back(sip[0]->additionalSearchParams.userParams[i].value);
+        }
     }
-
-    return para;
+    
+    Rcpp::List res(names.size());
+    
+    for (size_t i = 0; i < names.size(); i++)
+    {
+		if (isNumber(values[i]))
+		{
+			res[i] = Rcpp::wrap(lexical_cast<double>(values[i]));
+		}
+		else if (isBool(values[i]))
+		{
+			res[i] = Rcpp::wrap(toBool(values[i]));
+		}
+		else
+		{
+			res[i] = Rcpp::wrap(values[i]);
+		}
+	}
+    
+    res.attr("names") = names;
+    return res;
 }
 
 Rcpp::DataFrame RcppIdent::getDB(  )
