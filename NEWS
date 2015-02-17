@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.1.8
+------------------------
+ o Fix build on unix with netcdf.h in non-standard location
+
 CHANGES IN VERSION 2.1.7
 ------------------------
  o Fix score segfault (see issue #18) and remove usage of ListBuilder.
