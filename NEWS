@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.1.9
+------------------------
+ o Fix a compiler warning on OSX in the pep_XML serialiser
+
 CHANGES IN VERSION 2.1.8
 ------------------------
  o Fix build on unix with netcdf.h in non-standard location
