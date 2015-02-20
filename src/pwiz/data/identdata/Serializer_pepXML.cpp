@@ -1466,6 +1466,8 @@ struct HandlerSearchResults : public SAXParser::Handler
 
         copy(params.userParams.begin(), params.userParams.end(),
              (*result).second->userParams.begin());
+
+	return true;
     }
     
     DBSequencePtr getDBSequence(const string& accession)
