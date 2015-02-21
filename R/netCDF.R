@@ -123,6 +123,33 @@ netCDFVarInt <- function(ncid, var) {
        PACKAGE = "mzR")$data
 }
 
+netCDFVarText <- function(ncid, var) {
+
+    if (is.character(var))
+        var <- netCDFVarID(ncid, var)
+    
+    if (!is.null(attr(var, "errortext")))
+        return(var)
+        
+    .C("NetCDFVarText",
+       as.integer(ncid),
+       as.integer(var),
+       data = character(1),
+       status = integer(1),
+       PACKAGE = "mzR")$data
+}
+
+netCDFAttText <- function(ncid, att) {
+
+    .C("NetCDFGlobalAttribute",
+       as.integer(ncid),
+       as.character(att),
+       data = character(1),
+       status = integer(1),
+       PACKAGE = "mzR")$data
+}
+
+
 netCDFMSPoints <- function(ncid, scanIndex) {
 
     if (!is.integer(scanIndex)) scanIndex <- as.integer(scanIndex)
@@ -168,3 +195,42 @@ netCDFRawData <- function(ncid) {
                 mz = pointValues$massValues,
                 intensity = pointValues$intensityValues))
 }
+
+netCDFRunInfo <- function(ncid) {
+
+    ncraw <- netCDFRawData(ncid)
+
+    return(list(scanCount = length(ncraw$scanindex),
+                lowMz = min (ncraw$mz),
+                highMz = max (ncraw$mz),
+                dStartTime = min (ncraw$rt),
+                dEndTime = max (ncraw$rt),
+                msLevels = NA))
+}
+
+
+netCDFInstrumentInfo <- function(ncid) {
+    
+    imodel <- netCDFVarText(ncid, "instrument_name")
+    if (!is.null(attr(imodel, "errortext")))
+        stop("Couldn't read instrument_name")
+
+    imanufacturer <- netCDFVarText(ncid, "instrument_mfr")
+    if (!is.null(attr(imodel, "errortext")))
+        stop("Couldn't read instrument_mfr")
+
+    iionisation <- netCDFAttText(ncid, "test_ionization_mode")
+    if (!is.null(attr(iionisation, "errortext")))
+        stop("Couldn't read test_ionization_mode")
+
+    idetector <- netCDFAttText(ncid, "test_detector_type")
+    if (!is.null(attr(idetector, "errortext")))
+        stop("Couldn't read test_detector_type")
+
+    ianalyzer <- NA
+
+    return(list(model = imodel, manufacturer=imanufacturer,
+                ionisation = iionisation, detector = idetector,
+                analyzer = ianalyzer))
+}
+

@@ -75,6 +75,28 @@ void NetCDFVarInt(const int *ncid, const int *varid, int *data, int *status) {
     *status = nc_get_var_int(*ncid, *varid, data);
 }
 
+void NetCDFVarText(const int *ncid, const int *varid, char **data, int *status) {
+    
+    int    varLen;
+    
+    NetCDFVarLen(ncid, varid, &varLen, status);
+    if (*status)
+        return;
+
+    *status = nc_get_var_text(*ncid, *varid, data[0]);
+}
+
+void NetCDFGlobalAttribute(const int *ncid, const char **attname, char **data, int *status) {
+    
+    size_t    attLen;
+
+    *status = nc_inq_attlen (*ncid, NC_GLOBAL, attname[0], &attLen);
+    if (*status)
+        return;
+    
+    *status = nc_get_att_text(*ncid, NC_GLOBAL, attname[0], data[0]);
+}
+
 void NetCDFMSPoints(const int *ncid, const int *scanNumber, 
                     const int *scanIndex, const int *pointNumber, 
                     double *massValues, double *intensityValues, int *status) {
