@@ -14,6 +14,10 @@ void NetCDFVarDouble(const int *ncid, const int *varid, double *data, int *statu
 
 void NetCDFVarInt(const int *ncid, const int *varid, int *data, int *status);
 
+void NetCDFVarText(const int *ncid, const int *varid, char **data, int *status);
+
+void NetCDFGlobalAttribute(const int *ncid, const char **attname, char **data, int *status);
+
 void NetCDFMSPoints(const int *ncid, const int *scanNumber,
                     const int *scanIndex, const int *pointNumber,
                     double *massValues, double *intensityValues, int *status);

@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.1.10
+------------------------
+ o Add instrumentInfo() and runInfo() for CDF backend (closes issue #22) 
+ o Add precompiled libpwiz.a to reduce compile time on Windows (closes issue #21), thanks to KK
+
 CHANGES IN VERSION 2.1.9
 ------------------------
  o Fix a compiler warning on OSX in the pep_XML serialiser
