@@ -108,63 +108,52 @@ setMethod("isInitialized",
           signature="mzRnetCDF",
           function(object) return(object@backend > 0))
 
-## setMethod("runInfo",
-##           signature="mzRnetCDF",
-##           function(object) {
-##             ##return(object@backend$getRunInfo())
-##             hd <- header(object)
-##             ll <- list()
-##             ll$'scanCount' <- length(object)
-##             ll$'lowMz' <- min(hd$lowMZ)
-##             ll$'highMz' <- max(hd$highMZ)
-##             ll$'dStartTime' <- min(hd$retentionTime)
-##             ll$'dEndTime' <- max(hd$retentionTime)
-##             ll$'msLevels' <- unique(hd$msLevel)
-##             return(ll)
-##           })
+setMethod("runInfo",
+           signature="mzRnetCDF",
+          function(object) 
+              return(netCDFRunInfo(object@backend)))
 
 
-## setMethod("instrumentInfo",
-##           signature="mzRnetCDF",
-##           function(object) 
-##           return(object@backend$getInstrumentInfo()))
+setMethod("instrumentInfo",
+          signature="mzRnetCDF",
+          function(object) 
+              return(netCDFInstrumentInfo(object@backend)))
 
 
-## setMethod("manufacturer",
-##           signature="mzRnetCDF",
-##           function(object) {
-##             info <- instrumentInfo(object)           
-##             return(info$manufacturer)
-##           })
+setMethod("manufacturer",
+          signature="mzRnetCDF",
+          function(object) {
+            info <- instrumentInfo(object)           
+            return(info$manufacturer)
+          })
 
-## setMethod("model",
-##           signature="mzRnetCDF",
-##           function(object) {
-##             info <- instrumentInfo(object)           
-##             return(info$model)
-##           })
+setMethod("model",
+          signature="mzRnetCDF",
+          function(object) {
+            info <- instrumentInfo(object)           
+            return(info$model)
+          })
 
-## setMethod("ionisation",
-##           signature="mzRnetCDF",
-##           function(object) {
-##             info <- instrumentInfo(object)           
-##             return(info$ionisation)
-##           })
+setMethod("ionisation",
+          signature="mzRnetCDF",
+          function(object) {
+            info <- instrumentInfo(object)           
+            return(info$ionisation)
+          })
 
-## setMethod("analyzer",
-##           signature="mzRnetCDF",
-##           function(object) {
-##             info <- instrumentInfo(object)           
-##             return(info$analyzer)
-##           })
+setMethod("analyzer",
+          signature="mzRnetCDF",
+          function(object) {
+            info <- instrumentInfo(object)           
+            return(info$analyzer)
+          })
 
-## setMethod("detector",
-##           signature="mzRnetCDF",
-##           function(object) {
-##             info <- instrumentInfo(object)           
-##             return(info$detector)
-##           })
-
+setMethod("detector",
+          signature="mzRnetCDF",
+          function(object) {
+            info <- instrumentInfo(object)           
+            return(info$detector)
+          })
 
 setMethod("show",
           signature="mzRnetCDF",
