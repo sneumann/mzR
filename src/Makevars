@@ -93,12 +93,6 @@ MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o Rc
 
 OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o R_init_mzR.o
 
-
-
-
-MZROBJECTS=rnetCDF.o 
-OBJECTS= $(MZROBJECTS) 
-
 ##
 ## R complains about assert(), hence -D_NODEBUG
 ##  http://www.gamedev.net/topic/555511-is-there-a-way-to-only-disable-boost-debug-checks/
