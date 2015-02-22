@@ -17,8 +17,10 @@
 \alias{close}
 \alias{analyzer,mzRramp-method}
 \alias{analyzer,mzRpwiz-method}
+\alias{analyzer,mzRnetCDF-method}
 \alias{detector,mzRramp-method}
 \alias{detector,mzRpwiz-method}
+\alias{detector,mzRnetCDF-method}
 \alias{fileName,mzR-method}
 \alias{get3Dmap,mzRramp-method}
 \alias{get3Dmap,mzRpwiz-method}
@@ -31,8 +33,10 @@
 \alias{initializeRamp,mzRramp-method}
 \alias{instrumentInfo,mzRramp-method}
 \alias{instrumentInfo,mzRpwiz-method}
+\alias{instrumentInfo,mzRnetCDF-method}
 \alias{ionisation,mzRramp-method}
 \alias{ionisation,mzRpwiz-method}
+\alias{ionisation,mzRnetCDF-method}
 \alias{isInitialized,mzRramp-method}
 \alias{isInitialized,mzRnetCDF-method}
 \alias{length,mzRident-method}
@@ -42,8 +46,10 @@
 \alias{length}
 \alias{manufacturer,mzRramp-method}
 \alias{manufacturer,mzRpwiz-method}
+\alias{manufacturer,mzRnetCDF-method}
 \alias{model,mzRramp-method}
 \alias{model,mzRpwiz-method}
+\alias{model,mzRnetCDF-method}
 \alias{peaksCount,mzRramp,missing-method}
 \alias{peaksCount,mzRramp,numeric-method}
 \alias{peaksCount,mzRpwiz,missing-method}
@@ -56,6 +62,7 @@
 \alias{peaks,mzRnetCDF,numeric-method}
 \alias{runInfo,mzRramp-method}
 \alias{runInfo,mzRpwiz-method}
+\alias{runInfo,mzRnetCDF-method}
 \alias{chromatogramsInfo,mzRpwiz-method}
 \alias{softwareInfo,mzRpwiz-method}
 \alias{softwareInfo,mzRident-method}
