@@ -15,7 +15,7 @@
 
  isInitialized(object)
 
- fileName(object)
+ fileName(object, ...)
  
  openIDfile(filename, verbose = FALSE)
 }
@@ -26,6 +26,7 @@
     use. Currently 'Ramp', 'netCDF'  and 'pwiz' are available.}
   \item{object}{ An instantiated mzR object. }
   \item{verbose}{ Enable verbose output. }
+  \item{...}{ Additional arguments, currently ignored. }
 }
 
 \description{

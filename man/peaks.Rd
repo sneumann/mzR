@@ -13,7 +13,7 @@
 
  peaksCount(object, scans, ...)
 
- peaks(object, scans, ...)
+ peaks(object, ...)
 
  get3Dmap(object, scans, lowMz, highMz, resMz, ...)
 }
@@ -26,7 +26,8 @@
     peaks is returned. } 
   \item{lowMz, highMz}{\code{Numeric}s defining the m/z range to be returned.}
   \item{resMz}{a \code{numeric} defining the m/z resolution.}
-  \item{...}{Other arguments. Currently ignored.}
+  \item{...}{Other arguments. A \code{scan} parameter can be passed to
+    \code{peaks}.}
 }
 
 \description{

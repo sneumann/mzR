@@ -1,6 +1,8 @@
 useDynLib(mzR)
 
 import(methods)
+import(BiocGenerics)
+import(ProtGenerics)
 import(zlibbioc)
 importClassesFrom(Biobase, "Versioned")
 importFrom(Biobase, validMsg)

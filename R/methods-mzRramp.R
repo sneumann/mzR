@@ -18,22 +18,18 @@ setMethod("length",
           function(x) return(x@backend$getLastScan()))
 
 setMethod("peaks",
-          signature=c("mzRramp","numeric"),
-          function(object,scans) {
-            if (length(scans)==1) {
-              return(object@backend$getPeakList(scans)$peaks)
-            } else {
-              return(sapply(scans,function(x) object@backend$getPeakList(x)$peaks, simplify = FALSE))
-            }
-          })
-
-setMethod("peaks",
-          signature=c("mzRramp","missing"),
-          function(object) {
-            n <- length(object)
-            if (n==1)
-              return(list(peaks(object,1:n))) ## full experiments are always returned as lists
-            return(peaks(object,1:n))
+          signature=c("mzRramp"),
+          function(object, scans) {
+              if (missing(scans))
+                  scans <- 1:length(object)
+              
+              if (length(scans) == 1) {
+                  return(object@backend$getPeakList(scans)$peaks)
+              } else {
+                  return(sapply(scans,
+                                function(x) object@backend$getPeakList(x)$peaks,
+                                simplify = FALSE))
+              }
           })
 
 setMethod("peaksCount",

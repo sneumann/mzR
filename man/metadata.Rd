@@ -36,17 +36,19 @@ sampleInfo(object)
 sourceInfo(object)
 model(object)
 mzidInfo(object)
-modifications(object)
-psms(object)
+modifications(object, ...)
+psms(object, ...)
 substitutions(object)
-database(object)
+database(object, ...)
 enzymes(object)
 tolerance(object)
-score(object)
+score(x, ...)
 para(object)
 }
 \arguments{
   \item{object}{An instantiated \code{mzR} object.}
+  \item{x}{An instantiated \code{mzR} object.}
+  \item{...}{ Additional arguments, currently ignored. }
 }
 
 \description{
