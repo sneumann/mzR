@@ -28,12 +28,16 @@
 #include "Diff.hpp"
 #include <boost/functional/hash.hpp>
 
+#ifndef PRE_BUILD
 #include <Rcpp.h>
+#endif
 
 namespace pwiz {
 namespace msdata {
 
+#ifndef PRE_BUILD
 using namespace Rcpp;
+#endif
 using namespace pwiz::cv;
 using namespace pwiz::data;
 
@@ -1046,7 +1050,11 @@ PWIZ_API_DECL void SpectrumList::warn_once(const char *msg) const
     boost::hash<const char*> H;
     if (warn_msg_hashes.insert(H(msg)).second) // .second is true iff value is new
     {
+#ifndef PRE_BUILD
         Rcerr << msg << endl;
+#else
+		cerr << msg << endl;
+#endif
     }
 }
 

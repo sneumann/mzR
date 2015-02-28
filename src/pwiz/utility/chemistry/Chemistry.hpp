@@ -24,7 +24,10 @@
 #ifndef _CHEMISTRY_HPP_
 #define _CHEMISTRY_HPP_
 
+#ifndef PRE_BUILD
 #include "Rcpp.h"
+#endif
+
 #include "pwiz/utility/misc/Export.hpp"
 #include <iosfwd>
 #include <string>
