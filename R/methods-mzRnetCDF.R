@@ -23,33 +23,26 @@ setMethod("length",
           })
 
 setMethod("peaks",
-          signature=c("mzRnetCDF","numeric"),
-          function(object,scans) {
+          signature=c("mzRnetCDF"),
+          function(object, scans) {
+              if (missing(scans)) 
+                  scans <- 1:length(object)
 
-            rawdata <- netCDFRawData(object@backend)
+              rawdata <- netCDFRawData(object@backend)
 
-            if (length(scans)==1) {
-              idx <- seq(rawdata$scanindex[scans]+1,
-                         min(rawdata$scanindex[scans+1],
-                             length(rawdata$mz), na.rm=TRUE))              
-              return(cbind(mz=rawdata$mz[idx],intensity=rawdata$intensity[idx]))
-            } else {
-              return(sapply(scans,function(x) {
-                idx <- seq(rawdata$scanindex[x]+1,
-                           min(rawdata$scanindex[x+1],
-                               length(rawdata$mz), na.rm=TRUE))
-                cbind(mz=rawdata$mz[idx],intensity=rawdata$intensity[idx])
-              }, simplify = FALSE))
-            }
-          })
-
-setMethod("peaks",
-          signature=c("mzRnetCDF","missing"),
-          function(object) {
-            n <- length(object)
-            if (n==1)
-              return(list(peaks(object,1:n))) ## full experiments are always returned as lists
-            return(peaks(object,1:n))
+              if (length(scans) == 1) {
+                  idx <- seq(rawdata$scanindex[scans]+1,
+                             min(rawdata$scanindex[scans+1],
+                                 length(rawdata$mz), na.rm=TRUE))              
+                  return(cbind(mz=rawdata$mz[idx],intensity=rawdata$intensity[idx]))
+              } else {
+                  return(sapply(scans,function(x) {
+                      idx <- seq(rawdata$scanindex[x]+1,
+                                 min(rawdata$scanindex[x+1],
+                                     length(rawdata$mz), na.rm=TRUE))
+                      cbind(mz=rawdata$mz[idx],intensity=rawdata$intensity[idx])
+                  }, simplify = FALSE))
+              }
           })
 
 ## setMethod("peaksCount",

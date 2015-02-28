@@ -73,22 +73,18 @@ setMethod("header",
           })
           
 setMethod("peaks",
-          signature=c("mzRpwiz","numeric"),
-          function(object,scans) {
-            if (length(scans)==1) {
-              return(object@backend$getPeakList(scans)$peaks)
-            } else {
-              return(sapply(scans,function(x) object@backend$getPeakList(x)$peaks, simplify = FALSE))
-            }
-          })
+          signature=c("mzRpwiz"),
+          function(object, scans) {
+              if (mising(scans))
+                  scans <- 1:length(object)
 
-setMethod("peaks",
-          signature=c("mzRpwiz","missing"),
-          function(object) {
-            n <- length(object)
-            if (n==1)
-              return(list(peaks(object,1:n))) ## full experiments are always returned as lists
-            return(peaks(object,1:n))
+              if (length(scans) == 1) {
+                  return(object@backend$getPeakList(scans)$peaks)
+              } else {
+                  return(sapply(scans,
+                                function(x) object@backend$getPeakList(x)$peaks,
+                                simplify = FALSE))
+              }
           })
 
 setMethod("peaksCount",
