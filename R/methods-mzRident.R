@@ -13,7 +13,7 @@ setMethod("psms",
           
 setMethod("score",
           signature=c("mzRident"),
-          function(object) return(object@backend$getScore()))
+          function(x) return(x@backend$getScore()))
           
 setMethod("para",
           signature=c("mzRident"),
