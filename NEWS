@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.1.12
+-------------------------
+ o Remove superfluous BiocGenerics in Suggests [2015-03-01 Sun]
+ o Merged KK's Makefile to generate pwiz lib for windows [2015-03-01 Sun]
+
 CHANGES IN VERSION 2.1.11
 -------------------------
  o Using generics from BiocGenerics (fileName, score) and ProtGenerics
