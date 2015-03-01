@@ -25,7 +25,9 @@
 #include <cmath>
 #include "MSNumpress.hpp"
 
+#ifndef PRE_BUILD
 #include <Rcpp.h>
+#endif
 
 namespace ms {
 namespace numpress {
@@ -38,7 +40,9 @@ using std::min;
 using std::max;
 using std::abs;
 
+#ifndef PRE_BUILD
 using namespace Rcpp;
+#endif
 
 const int ONE = 1;
 bool is_big_endian() {
@@ -365,6 +369,7 @@ size_t decodeLinear(
             ints[2]         = y;
         }
     } catch (...) {
+#ifndef PRE_BUILD
         Rcerr << "DECODE ERROR" << endl;
         Rcerr << "i: " << i << endl;
         Rcerr << "ri: " << ri << endl;
@@ -374,11 +379,29 @@ size_t decodeLinear(
         Rcerr << "ints[]: " << ints[0] << ", " << ints[1] << ", " << ints[2] << endl;
         Rcerr << "extrapol: " << extrapol << endl;
         Rcerr << "y: " << y << endl;
-
+#else
+        cerr << "DECODE ERROR" << endl;
+        cerr << "i: " << i << endl;
+        cerr << "ri: " << ri << endl;
+        cerr << "di: " << di << endl;
+        cerr << "half: " << half << endl;
+        cerr << "dataSize: " << dataSize << endl;
+        cerr << "ints[]: " << ints[0] << ", " << ints[1] << ", " << ints[2] << endl;
+        cerr << "extrapol: " << extrapol << endl;
+        cerr << "y: " << y << endl;
+#endif
         for (i = di - 3; i < min(di + 3, dataSize); i++) {
+#ifndef PRE_BUILD
             Rcerr << "data[" << i << "] = " << data[i];
+#else
+			cerr << "data[" << i << "] = " << data[i];
+#endif
         }
+#ifndef PRE_BUILD
         Rcerr << endl;
+#else
+		cerr << endl;
+#endif
     }
     
     return ri;
@@ -486,17 +509,33 @@ size_t decodePic(
             result[ri++]     = count;
         }
     } catch (...) {
+#ifndef PRE_BUILD
         Rcerr << "DECODE ERROR" << endl;
         Rcerr << "ri: " << ri << endl;
         Rcerr << "di: " << di << endl;
         Rcerr << "half: " << half << endl;
         Rcerr << "dataSize: " << dataSize << endl;
         Rcerr << "count: " << count << endl;
-
+#else
+        cerr << "DECODE ERROR" << endl;
+        cerr << "ri: " << ri << endl;
+        cerr << "di: " << di << endl;
+        cerr << "half: " << half << endl;
+        cerr << "dataSize: " << dataSize << endl;
+        cerr << "count: " << count << endl;
+#endif		
         for (i = di - 3; i < min(di + 3, dataSize); i++) {
+#ifndef PRE_BUILD
             Rcerr << "data[" << i << "] = " << data[i];
+#else
+			cerr << "data[" << i << "] = " << data[i];
+#endif
         }
+#ifndef PRE_BUILD
         Rcerr << endl;
+#else
+		cerr << endl;
+#endif
     }
     return ri;
 }
