@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 
-CXXFLAGS = -I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE -DPRE_BUILD -s -O2 
+CXXFLAGS = -I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE -DPRE_BUILD -s -O2 -m64
 
 .c.o:
 	$(CC) $(CXXFLAGS) -c -o $@ $<
