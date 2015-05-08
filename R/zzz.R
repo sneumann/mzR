@@ -9,8 +9,8 @@ BUILT_RCPP_VERSION = package_version("0.11.4")
             msg <- paste0("mzR has been built against a different Rcpp version (", BUILT_RCPP_VERSION, ")\n",
                           "than is installed on your system (", installedRcpp, "). This might lead to errors\n",
                           "when loading mzR. If you encounter such issues, please send a report,\n",
-                          "including the output of sessionInfo() to the Bioc mailing list at \n",
-                          "http://www.bioconductor.org/help/mailing-list. For details see also\n",
+                          "including the output of sessionInfo() to the Bioc support forum at \n",
+                          "https://support.bioconductor.org/. For details see also\n",
                           "https://github.com/sneumann/mzR/wiki/mzR-Rcpp-compiler-linker-issue.")
             warning(msg)            
           }
