@@ -75,7 +75,7 @@ setMethod("header",
 setMethod("peaks",
           signature=c("mzRpwiz"),
           function(object, scans) {
-              if (mising(scans))
+              if (missing(scans))
                   scans <- 1:length(object)
 
               if (length(scans) == 1) {
