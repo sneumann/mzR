@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.3.2
+------------------------
+ o Fix typo/bug in peaks,mzRpwiz <2015-07-31 Fri>
+ 
 CHANGES IN VERSION 2.3.1
 ------------------------
  o update Rcpp version message to point to support site <2015-05-08 Fri>
