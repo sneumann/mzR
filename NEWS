@@ -1,0 +1,206 @@
+CHANGES IN VERSION 2.3.3
+------------------------
+ o bump to new Rcpp 0.12.1 version <2015-09-29 Tue>
+
+CHANGES IN VERSION 2.3.2
+------------------------
+ o Fix typo/bug in peaks,mzRpwiz <2015-07-31 Fri>
+ 
+CHANGES IN VERSION 2.3.1
+------------------------
+ o update Rcpp version message to point to support site <2015-05-08 Fri>
+
+CHANGES IN VERSION 2.1.12
+-------------------------
+ o Remove superfluous BiocGenerics in Suggests [2015-03-01 Sun]
+ o Merged KK's Makefile to generate pwiz lib for windows [2015-03-01 Sun]
+
+CHANGES IN VERSION 2.1.11
+-------------------------
+ o Using generics from BiocGenerics (fileName, score) and ProtGenerics
+   [2015-02-28 Sat]
+ 
+CHANGES IN VERSION 2.1.10
+-------------------------
+ o Add instrumentInfo() and runInfo() for CDF backend (closes issue #22) 
+ o Add precompiled libpwiz.a to reduce compile time on Windows (closes issue #21), thanks to KK
+
+CHANGES IN VERSION 2.1.9
+------------------------
+ o Fix a compiler warning on OSX in the pep_XML serialiser
+
+CHANGES IN VERSION 2.1.8
+------------------------
+ o Fix build on unix with netcdf.h in non-standard location
+
+CHANGES IN VERSION 2.1.7
+------------------------
+ o Fix score segfault (see issue #18) and remove usage of ListBuilder.
+ o Update unit test to reflext new score code.
+
+CHANGES IN VERSION 2.1.6
+------------------------
+ o adding an acquisitionNum column to psms (closes issue #17)
+   [2015-02-05 Thu]
+   
+CHANGES IN VERSION 2.1.5
+------------------------
+ o don't print '1' to the console when calling get3Dmap
+   [2015-01-29 Thu]
+ o add sequence length in psms output (closes issue #19)
+   [2015-02-04 Wed]
+ 
+CHANGES IN VERSION 2.1.4
+------------------------
+ o documentation and vignette: mzIdentML version 1.1 support only
+   [2015-01-23 Fri]
+
+CHANGES IN VERSION 2.1.1
+------------------------
+ o remove dependency on faahKO
+
+CHANGES IN VERSION 1.99.4
+-------------------------
+ o don't run pwiz example [2014-10-05 Sun]
+
+CHANGES IN VERSION 1.99.3
+-------------------------
+ o revising unit testing and using suggested convention as described
+   in Bioc unitTesting guidelines  [2014-10-02 Thu]
+
+CHANGES IN VERSION 1.99.2
+-------------------------
+ o bump to new Rcpp 0.11.3 version
+
+CHANGES IN VERSION 1.99.1
+-------------------------
+ o annoucning pwiz in vignette and that it will become the default
+   backend in Bioc 3.1 [2014-09-25 Thu]
+ o adding a dummy close for pwiz backend to avoid breaking code 
+   that properly closes the previous ramp backend [2014-09-21 Sun]
+ o Not using ListBuilder to make psms data.frame and fix segfautls,
+   via KK [2014-09-27 Sat]
+
+CHANGES IN VERSION 1.99.0
+-------------------------
+ o New pwiz backend and support for mzid, contributed by Qiang Kou as
+   part of GSoC 2014.
+ o Using BiocStyle for vignette [2014-08-26 Tue]
+
+CHANGES IN VERSION 1.11.11
+-------------------------
+ o Remove superflouus library call in unitTests, should fix R CMD check on windows
+
+CHANGES IN VERSION 1.11.10
+-------------------------
+ o Remove redundant columns when returning several spectra
+
+CHANGES IN VERSION 1.11.9
+-------------------------
+ o Fix a bug in header() returning too few columns, introduced during 1.11.7
+
+CHANGES IN VERSION 1.11.8
+-------------------------
+ o Fix a windows compile problem by early importing Rcpp.h
+
+ CHANGES IN VERSION 1.11.7
+-------------------------
+ o include polarity information into header() output
+
+CHANGES IN VERSION 1.11.6
+-------------------------
+ o removed one redundant parser which fixes inconsistencies 
+   in the scan headers
+
+CHANGES IN VERSION 1.11.5
+-------------------------
+ o restored the polarity extraction
+
+CHANGES IN VERSION 1.11.4
+-------------------------
+ o restored the old ramp Interface
+
+CHANGES IN VERSION 1.11.2
+-------------------------
+ o adding missed src files [2014-05-28 Tue]
+ o merging master [2014-05-30 Fri]
+
+CHANGES IN VERSION 1.11.1
+-------------------------
+ o update pwiz/boost to support Maverick [2014-05-26 Mon]
+
+CHANGES IN VERSION 1.9.8
+------------------------
+ o Pointing to the relevant wiki page in the Rcpp compiler/linker
+   warning [2014-04-03 Thu]
+
+CHANGES IN VERSION 1.9.7
+------------------------
+ o modify to new biocViews to DESCRIPTION file (s.arora)
+
+CHANGES IN VERSION 1.9.6
+------------------------
+ o import all of Rcpp to avoid warnings in reverse dependencies <2014-02-14 Fri>
+
+CHANGES IN VERSION 1.9.3
+------------------------
+ o fix a string in ramp.cpp to enable compilation on clang-3.4
+
+CHANGES IN VERSION 1.9.2
+------------------------
+ o version bump for Rcpp 0.10.6 <2013-10-30 Wed> 
+
+CHANGES IN VERSION 1.9.1
+------------------------
+ o moved vignettes to /vignettes <2013-10-17 Thu>
+
+CHANGES IN VERSION 1.7.4
+------------------------
+ o version bump for Rcpp 0.10.5 <2013-10-02 Wed>
+
+CHANGES IN VERSION 1.7.3
+------------------------
+ o Fix a compile error with the clang-3.3 compiler
+
+CHANGES IN VERSION 1.7.2
+------------------------
+ o updated Rcpp number mismatch warning to include versions <2013-08-01 Thu>
+
+CHANGES IN VERSION 1.7.1
+------------------------
+ o version bump for Rcpp 0.10.4
+
+CHANGES IN VERSION 1.5.9
+------------------------
+ o version bump for Rcpp 0.10.3
+
+CHANGES IN VERSION 1.5.8
+------------------------
+ o version bump for Rcpp 0.10.2
+
+CHANGES IN VERSION 1.5.7
+------------------------
+ o only load Rcpp modules after checking for Rcpp 
+   version conflict (DT)
+
+CHANGES IN VERSION 1.5.6
+------------------------
+ o Explicitely call utils::packageVersion() to avoid warning (SN) <2012-12-15 Sat>
+
+CHANGES IN VERSION 1.5.5
+------------------------a
+ o Added utils to Depends (SN) <2012-12-14 Fri>
+
+CHANGES IN VERSION 1.5.4
+------------------------
+ o requiring Rcpp (>= 0.10.1) LG <2012-12-05 Wed>
+ o catching Rcpp build-time version (thanks to 
+   Dan for help!) LG <2012-12-05 Wed>
+ o checking Rcpp installed vs building versions 
+   and warn if these are different. LG <2012-12-05 Wed>
+ 
+CHANGES IN VERSION 1.5.3
+------------------------
+ o bumping version to force rebuild due to Rcpp 
+   change LG <2012-12-05 Wed> 
+ o added NEWS file <2012-12-05 Wed> 

@@ -1,0 +1,108 @@
+citHeader("If you use mzR, please cite")
+
+citEntry(entry="article",  
+    author = "Chambers, Matthew C. and Maclean, Brendan and Burke, Robert and Amodei, 
+    	      Dario and Ruderman, Daniel L. and Neumann, Steffen and Gatto, Laurent 
+	      and Fischer, Bernd and Pratt, Brian and Egertson, Jarrett and Hoff, 
+	      Katherine and Kessner, Darren and Tasman, Natalie and Shulman, Nicholas 
+	      and Frewen, Barbara and Baker, Tahmina A. and Brusniak, Mi-Youn and Paulse, 
+	      Christopher and Creasy, David and Flashner, Lisa and Kani, Kian and Moulding, 
+	      Chris and Seymour, Sean L. and Nuwaysir, Lydia M. and Lefebvre, Brent and Kuhlmann, 
+	      Frank and Roark, Joe and Rainer, Paape and Detlev, Suckau and Hemenway, Tina and Huhmer, 
+	      Andreas and Langridge, James and Connolly, Brian and Chadick, Trey and Holly, Krisztina 
+	      and Eckels, Josh and Deutsch, Eric W. and Moritz, Robert L. and Katz, Jonathan E. and Agus, 
+	      David B. and MacCoss, Michael and Tabb, David L. and Mallick, Parag",
+    year = "2012",
+    journal = "Nat Biotech",
+    title = "{A cross-platform toolkit for mass spectrometry and proteomics}",
+    doi = "10.1038/nbt.2377",
+    pmid = "23051804",
+    month = "oct",
+    number = "10",
+    volume = "30",
+    pages = "918--920",
+    url = "http://dx.doi.org/10.1038/nbt.2377",
+    textVersion = paste("A cross-platform toolkit for mass spectrometry and proteomics",
+    		"Chambers, Matthew C. and Maclean, Brendan and Burke, Robert and Amodei, 
+		 Dario and Ruderman, Daniel L. and Neumann, Steffen and Gatto, Laurent and 
+		 Fischer, Bernd and Pratt, Brian and Egertson, Jarrett and Hoff, Katherine 
+		 and Kessner, Darren and Tasman, Natalie and Shulman, Nicholas and Frewen, 
+		 Barbara and Baker, Tahmina A. and Brusniak, Mi-Youn and Paulse, Christopher 
+		 and Creasy, David and Flashner, Lisa and Kani, Kian and Moulding, Chris and 
+		 Seymour, Sean L. and Nuwaysir, Lydia M. and Lefebvre, Brent and Kuhlmann, 
+		 Frank and Roark, Joe and Rainer, Paape and Detlev, Suckau and Hemenway, 
+		 Tina and Huhmer, Andreas and Langridge, James and Connolly, Brian and Chadick, 
+		 Trey and Holly, Krisztina and Eckels, Josh and Deutsch, Eric W. and Moritz, 
+		 Robert L. and Katz, Jonathan E. and Agus, David B. and MacCoss, Michael and 
+		 Tabb, David L. and Mallick, Parag", 
+		 "Nat Biotechnol. 2012 NOct;30(10):918-920.")
+)
+
+citHeader("You may want to cite the formats and libraries used in mzR:")
+
+citEntry(entry="article",  
+   author="Lennart Martens and Matthew Chambers and Marc Sturm and Darren Kessner
+	and Fredrik Levander and Jim Shofstahl and Wilfred H Tang and Andreas
+	Rompp and Steffen Neumann and Angel D Pizarro and Luisa Montecchi-Palazzi
+	and Natalie Tasman and Mike Coleman and Florian Reisinger and Puneet
+	Souda and Henning Hermjakob and Pierre-Alain Binz and Eric W Deutsch",
+   title="mz{ML} - a {C}ommunity {S}tandard for {M}ass {S}pectrometry {D}ata.",
+   journal="{Mol Cell Proteomics}",
+   year="2010",
+   pmid = "20716697",
+   doi="10.1074/mcp.R110.000133",
+   textVersion = paste("Mol Cell Proteomics. 2010 Aug 17.", 
+   "mzML - a Community Standard for Mass Spectrometry Data.", 
+   "Martens L, Chambers M, Sturm M, Kessner D, Levander F, Shofstahl J, Tang WH, Rompp A, Neumann S, ",
+   "Pizarro AD, Montecchi-Palazzi L, Tasman N, Coleman M, Reisinger F, Souda P, ",
+   "Hermjakob H, Binz PA, Deutsch EW."))
+
+citEntry(entry="article",  
+   author="Patrick G A Pedrioli and Jimmy K Eng and Robert Hubley and Mathijs
+	Vogelzang and Eric W Deutsch and Brian Raught and Brian Pratt and
+	Erik Nilsson and Ruth H Angeletti and Rolf Apweiler and Kei Cheung
+	and Catherine E Costello and Henning Hermjakob and Sequin Huang and
+	Randall K Julian and Eugene Kapp and Mark E McComb and Stephen G
+	Oliver and Gilbert Omenn and Norman W Paton and Richard Simpson and
+	Richard Smith and Chris F Taylor and Weimin Zhu and Ruedi Aebersold",
+   title="{A} common open representation of mass spectrometry data and its
+	application to proteomics research.",
+   journal="Nat Biotechnol",
+   year="2004",
+   volume="22",
+   number="11",
+   pages="{1459--1466}",
+   pmid="15529173",
+   doi="10.1038/nbt1031",
+   textVersion = paste("Nat Biotechnol. 2004 Nov;22(11):1459-66.",
+   "A common open representation of mass spectrometry data and its application to proteomics research.",
+   "Pedrioli PG, Eng JK, Hubley R, Vogelzang M, Deutsch EW, Raught B, Pratt B, Nilsson E, Angeletti RH,",
+   "Apweiler R, Cheung K, Costello CE, Hermjakob H, Huang S, Julian RK, Kapp E, McComb ME, Oliver SG, ",
+   "Omenn G, Paton NW, Simpson R, Smith R, Taylor CF, Zhu W, Aebersold R."))
+
+
+citEntry(entry="article",  
+   author="Andrew Keller and Jimmy Eng and Ning Zhang and Xiao-jun Li and Ruedi Aebersold",
+   title="{A} uniform proteomics {MS}/{MS} analysis platform utilizing open {XML} file formats.",
+   journal="Mol Syst Biol",
+   year="2005",
+   textVersion = paste("Mol Syst Biol. 2005;1:2005.0017. Epub 2005 Aug 2.",
+   "A uniform proteomics MS/MS analysis platform utilizing open XML file formats.",
+   "Keller A, Eng J, Zhang N, Li XJ, Aebersold R."))
+
+citEntry(entry="article",  
+   author="Darren Kessner and Matt Chambers and Robert Burke and David Agus
+	and Parag Mallick",
+   title="{P}roteo{W}izard: open source software for rapid proteomics tools
+	development.",
+   journal="Bioinformatics",
+   year="2008",
+   volume="24",
+   number="21",
+   pages="2534--2536",
+   doi="10.1093/bioinformatics/btn323",
+   pmid="18606607",
+   textVersion = paste("Bioinformatics. 2008 Nov 1;24(21):2534-6. Epub 2008 Jul 7.",
+   "ProteoWizard: open source software for rapid proteomics tools development.",
+   "Kessner D, Chambers M, Burke R, Agus D, Mallick P."))
+

@@ -1,0 +1,14 @@
+find . -name \*~ -exec rm {} \;
+find . -name \*.o -exec rm {} \;
+find . -name "#*#" -exec rm {} \;
+
+rm -f inst/doc/mzR-plotspectrum.pdf \
+ inst/doc/mzR.aux \
+ inst/doc/mzR.bbl \
+ inst/doc/mzR.blg \
+ inst/doc/mzR.log \
+ inst/doc/mzR.out \
+ inst/doc/mzR.tex \
+ inst/doc/mzR.toc
+
+ 
