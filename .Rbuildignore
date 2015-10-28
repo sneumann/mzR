@@ -1,4 +1,4 @@
 .travis.yml
-.git
+^.git$
 ^.*\.Rproj$
 ^\.Rproj\.user$

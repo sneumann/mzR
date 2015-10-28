@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.5.1
+------------------------
+ o Import Boost 1.59, thanks to Qiang Kou (KK)
+
 CHANGES IN VERSION 2.3.3
 ------------------------
  o bump to new Rcpp 0.12.1 version <2015-09-29 Tue>
