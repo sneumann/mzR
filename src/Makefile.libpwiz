@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 
-CXXFLAGS = -I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE -DPRE_BUILD -s -O2 -m64
+CXXFLAGS = -I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE -DPRE_BUILD -s -O2
 
 .c.o:
 	$(CC) $(CXXFLAGS) -c -o $@ $<
@@ -36,7 +36,7 @@ PWIZOBJECTS=\
 ./boost/filesystem/src/utf8_codecvt_facet.o \
 ./boost/filesystem/src/windows_file_codecvt.o \
 ./boost/filesystem/src/codecvt_error_category.o \
-./boost/thread/src/win32/thread.o \
+./boost/thread/win32/thread.o \
 ./boost_aux/boost/nowide/iostream.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
