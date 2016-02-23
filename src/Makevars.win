@@ -9,7 +9,17 @@ PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
 PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -D_MSC_VER  -fgnu89-inline
 
-PKG_LIBS = $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lpwiz
+## Faster Linker on BioC build farm:
+## https://github.com/sneumann/mzR/issues/21#issuecomment-87802019
+
+ifeq ($(ULDAR),"")
+	LD_ULDAR=""
+else
+	LD_ULDAR="-Wl,--dynamic-linker=$(ULDAR)/ld.exe"
+endif
+
+PKG_LIBS = $(LD_ULDAR) $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lpwiz
+
 
 all: clean $(SHLIB)
 

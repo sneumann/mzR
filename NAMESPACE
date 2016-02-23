@@ -8,7 +8,7 @@ importFrom(Biobase, validMsg)
 ##importFrom(Rcpp, "loadRcppModules")
 import(Rcpp)
 
-export(openMSfile, openIDfile)
+export(openMSfile, openIDfile, pwiz.version)
 
 exportMethods(close,
               isInitialized,
