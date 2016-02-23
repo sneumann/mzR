@@ -1,5 +1,5 @@
 
-MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
+MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o RcppExports.o
 
 OBJECTS= $(MZROBJECTS) R_init_mzR.o rampR.o
 
