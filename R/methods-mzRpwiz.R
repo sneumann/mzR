@@ -153,3 +153,7 @@ setMethod("show", "mzRpwiz",
               cat("Number of scans: ", length(object), "\n")
           })
 
+pwiz.version <- function() {
+    .Call('mzR_pwiz_version', PACKAGE = 'mzR')
+}
+
