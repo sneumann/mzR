@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.4.1
+------------------------
+ o bump version to link to Rcpp 0.12.3 <2016-03-06 Sun>
+
 CHANGES IN VERSION 2.3.3
 ------------------------
  o bump to new Rcpp 0.12.1 version <2015-09-29 Tue>
