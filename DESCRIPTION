@@ -25,6 +25,6 @@ LinkingTo: Rcpp, zlibbioc
 RcppModules: Ramp, Pwiz, Ident
 SystemRequirements: C++11, GNU make, NetCDF
 URL: https://github.com/sneumann/mzR/
-BugReports: https://github.com/sneumann/mzR/issues/new
+BugReports: https://github.com/sneumann/mzR/issues/
 biocViews: Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry
