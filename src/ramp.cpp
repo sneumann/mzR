@@ -12,7 +12,7 @@ and gzipped versions of all of these if you have pwiz
     begin                : Wed Oct 10
     copyright            : (C) 2003 by Pedrioli Patrick, ISB, Proteomics
     email                : ppatrick@student.ethz.ch
-    additional work for C++, >2GB files in WIN32, and portability (C) 2004 by Brian Pratt, Insilicos LLC
+    additional work for C++, >2GB files in WIN32, and portability (C) *2004 by Brian Pratt, Insilicos LLC
     additional work for mzData input (C) 2005 Brian Pratt Insilicos LLC
  ***************************************************************************/
 
@@ -2256,9 +2256,9 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
                     }
                     else
                     {
-                        const char* pEndAttrValue;
-                        pEndAttrValue = strchr( pBeginData + strlen( "contentType=\"") + 1 , '\"' );
-                        pEndAttrValue  = '\0';
+                        char* pEndAttrValue;
+                        pEndAttrValue = (char*)strchr( pBeginData + strlen( "contentType=\"") + 1 , '\"' );
+                        *pEndAttrValue = '\0';
                         REprintf("%s Unsupported content type\n" , pBeginData );
                         return NULL;
                     }
@@ -2276,9 +2276,9 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
                     }
                     else
                     {
-                        const char* pEndAttrValue;
-                        pEndAttrValue = strchr( pBeginData + strlen( "compressionType=\"") + 1 , '\"' );
-                        pEndAttrValue = '\0';
+                        char* pEndAttrValue;
+                        pEndAttrValue = (char*) strchr( pBeginData + strlen( "compressionType=\"") + 1 , '\"' );
+                        *pEndAttrValue = '\0';
                         REprintf("%s Unsupported compression type\n" , pBeginData );
                         return NULL;
                     }
