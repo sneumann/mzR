@@ -102,7 +102,7 @@ PWIZ_LDFLAGS=-L./pwiz
 PWIZ_LDFLAGS=-lpthread 
 
 ## http://stackoverflow.com/questions/22422741/turning-off-the-register-storage-class-specifier-is-deprecated-warning
-PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -DWITHOUT_MZ5 -I./boost -Wno-deprecated-register
+PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -DWITHOUT_MZ5 -I./boost
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS) `nc-config --cflags || /bin/true`
