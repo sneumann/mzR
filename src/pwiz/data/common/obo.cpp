@@ -1,5 +1,5 @@
 //
-// $Id: obo.cpp 4922 2013-09-05 22:33:08Z pcbrefugee $
+// $Id: obo.cpp 6909 2014-11-19 17:18:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -24,8 +24,9 @@
 #define PWIZ_SOURCE
 
 #include "obo.hpp"
-#include "boost/regex.hpp"
+#include "boost/xpressive/xpressive_dynamic.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+namespace bxp = boost::xpressive;
 
 namespace pwiz {
 namespace data {
@@ -46,7 +47,7 @@ namespace {
 // line into [tag, value, dbxrefs, comment] if the OBO grammar were more regular.
 
 
-// boost::regex notes:
+// regex notes:
 //  parentheses are used for submatch captures
 //  \\d matches digit
 //  \\s matches whitespace 
@@ -90,11 +91,11 @@ istream& getcleanline(istream& is, string& buffer)
 
 void parse_id(const string& line, Term& term)
 {
-    static const boost::regex e("id: (\\w+):(\\d+)\\s*");
+    static const bxp::sregex e = bxp::sregex::compile("id:\\s*(\\w+):(\\d+)\\s*");
 
-    boost::smatch what; 
-    if (!regex_match(line, what, e))
-        throw runtime_error("Error matching term id on line: " + line);
+    bxp::smatch what; 
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term id on line: \"" + line + "\"");
 
     term.prefix = unescape_copy(what[1]);
     string id = what[2];
@@ -108,11 +109,11 @@ void parse_id(const string& line, Term& term)
 
 void parse_name(const string& line, Term& term)
 {
-    static const boost::regex e("name: (.*?)\\s*");
+    static const bxp::sregex e = bxp::sregex::compile("name:\\s*(.*?)\\s*");
 
-    boost::smatch what; 
-    if (!regex_match(line, what, e))
-        throw runtime_error("Error matching term name.");    
+    bxp::smatch what; 
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term name on line: \"" + line + "\"");    
 
     term.name = unescape_copy(what[1]);
 }
@@ -120,28 +121,28 @@ void parse_name(const string& line, Term& term)
 
 void parse_def(const string& line, Term& term)
 {
-    static const boost::regex e("def: \"(OBSOLETE )?(.*)\"\\s*\\[.*\\].*");
+    static const bxp::sregex e = bxp::sregex::compile("def:\\s*\"(OBSOLETE )?(.*)\"\\s*\\[.*\\].*");
 
-    boost::smatch what; 
-    if (!regex_match(line, what, e))
-        throw runtime_error("Error matching term def.");
+    bxp::smatch what; 
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term def on line: \"" + line + "\"");
 
-    term.def = what[2]; // TODO: is unescaping needed in a quoted string?
+    term.def = what[2];
     term.isObsolete = what[1].matched;
 }
 
 
 void parse_relationship(const string& line, Term& term)
 {
-    static const boost::regex e("relationship: (\\w+) (\\w+):(\\d+).*");
+    static const bxp::sregex e = bxp::sregex::compile("relationship:\\s*(\\w+) (\\w+):(\\d+).*");
 
-    boost::smatch what; 
-    if (!regex_match(line, what, e))
-        throw runtime_error("Error matching term relationship.");
+    bxp::smatch what; 
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term relationship on line: \"" + line + "\"");
 
     if (what[1] == "part_of")
     {
-        if (what[2] != term.prefix)
+        if (what[2].str() != term.prefix)
             cerr << "[obo] Ignoring part_of relationship with different prefix:\n  " << line << endl;
         else
             term.parentsPartOf.push_back(lexical_cast<Term::id_type>(what[3]));
@@ -154,11 +155,11 @@ void parse_relationship(const string& line, Term& term)
 
 void parse_is_obsolete(const string& line, Term& term)
 {
-    static const boost::regex e("is_obsolete: (\\w+)\\s*");
+    static const bxp::sregex e = bxp::sregex::compile("is_obsolete:\\s*(\\w+)\\s*");
 
-    boost::smatch what; 
-    if (!regex_match(line, what, e))
-        throw runtime_error("Error matching term is_obsolete.");    
+    bxp::smatch what; 
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term is_obsolete on line: \"" + line + "\"");    
 
     term.isObsolete = (what[1] == "true");
 }
@@ -166,13 +167,13 @@ void parse_is_obsolete(const string& line, Term& term)
 
 void parse_is_a(const string& line, Term& term)
 {
-    static const boost::regex e("is_a: (\\w+):(\\d+).*");
+    static const bxp::sregex e = bxp::sregex::compile("is_a:\\s*(\\w+):(\\d+).*");
 
-    boost::smatch what; 
-    if (!regex_match(line, what, e))
-        throw runtime_error("Error matching term is_a.");    
+    bxp::smatch what; 
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term is_a on line: \"" + line + "\"");    
 
-    if (what[1] != term.prefix)
+    if (what[1].str() != term.prefix)
     {
         cerr << "[obo] Ignoring is_a with different prefix:\n  " << line << endl;
         return;
@@ -184,11 +185,11 @@ void parse_is_a(const string& line, Term& term)
 
 void parse_exact_synonym(const string& line, Term& term)
 {
-    static const boost::regex e("exact_synonym: \"(.*)\".*");
+    static const bxp::sregex e = bxp::sregex::compile("exact_synonym:\\s*\"(.*)\".*");
 
-    boost::smatch what; 
-    if (!regex_match(line, what, e))
-        throw runtime_error("Error matching term exact_synonym.");    
+    bxp::smatch what; 
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term exact_synonym on line: \"" + line + "\"");    
 
     term.exactSynonyms.push_back(unescape_copy(what[1]));
 }
@@ -196,11 +197,11 @@ void parse_exact_synonym(const string& line, Term& term)
 
 void parse_synonym(const string& line, Term& term)
 {
-    static const boost::regex e("synonym: \"(.*)\"\\s*(\\w+)?.*");
+    static const bxp::sregex e = bxp::sregex::compile("synonym:\\s*\"(.*)\"\\s*(\\w+)?.*");
 
-    boost::smatch what; 
-    if (!regex_match(line, what, e))
-        throw runtime_error("Error matching term synonym.");    
+    bxp::smatch what; 
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term synonym on line: \"" + line + "\"");    
 
     if (what[2] == "EXACT")
         term.exactSynonyms.push_back(unescape_copy(what[1]));
@@ -209,11 +210,11 @@ void parse_synonym(const string& line, Term& term)
 
 void parse_property_value(const string& line, Term& term)
 {
-    static const boost::regex e("property_value: (\\S+?)\\s*[=:]?\\s*\"(.*)\".*");
+    static const bxp::sregex e = bxp::sregex::compile("property_value:\\s*(\\S+?)\\s*[=:]?\\s*\"(.*)\".*");
 
-    boost::smatch what;
-    if (!regex_match(line, what, e))
-        throw runtime_error("Error matching term property_value.");
+    bxp::smatch what;
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term property_value on line: \"" + line + "\"");
 
     term.propertyValues.insert(make_pair(what[1], what[2]));
 }
@@ -221,11 +222,11 @@ void parse_property_value(const string& line, Term& term)
 
 void parse_xref(const string& line, Term& term)
 {
-    static const boost::regex e("xref: (\\S+?)\\s*\"(.*)\".*");
+    static const bxp::sregex e = bxp::sregex::compile("xref:\\s*(\\S+?)\\s*\"(.*)\".*");
 
-    boost::smatch what;
-    if (!regex_match(line, what, e))
-        throw runtime_error("Error matching term xref.");
+    bxp::smatch what;
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term xref on line: \"" + line + "\"");
 
     term.propertyValues.insert(make_pair(unescape_copy(what[1]), unescape_copy(what[2])));
 }
@@ -235,7 +236,7 @@ void parseTagValuePair(const string& line, Term& term)
 {
     string::size_type tagSize = line.find(':'); 
     if (tagSize==0 || tagSize==string::npos)
-        throw runtime_error("[parseTagValuePair()]: No tag found.");
+        throw runtime_error("[parseTagValuePair()]: No tag found on line: \"" + line + "\"");
     
     string tag = line.substr(0, tagSize);
     

@@ -1,5 +1,5 @@
 //
-// $Id: MSData.cpp 4585 2013-05-24 20:20:42Z pcbrefugee $
+// $Id: MSData.cpp 6452 2014-07-03 19:01:15Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -26,18 +26,11 @@
 #include "pwiz/utility/misc/Std.hpp"
 #include <boost/lexical_cast.hpp>
 #include "Diff.hpp"
-#include <boost/functional/hash.hpp>
-
-#ifndef PRE_BUILD
-#include <Rcpp.h>
-#endif
 
 namespace pwiz {
 namespace msdata {
 
-#ifndef PRE_BUILD
-using namespace Rcpp;
-#endif
+
 using namespace pwiz::cv;
 using namespace pwiz::data;
 
@@ -795,6 +788,44 @@ PWIZ_API_DECL void Spectrum::setMZIntensityPairs(const MZIntensityPair* input, s
 }
 
 
+/// set m/z and intensity arrays separately (they must be the same size) by swapping the vector contents
+/// this allows for a more nearly zero copy setup.  Contents of mzArray and intensityArray are undefined after calling.
+PWIZ_API_DECL void Spectrum::swapMZIntensityArrays(std::vector<double>& mzArray, std::vector<double>& intensityArray, CVID intensityUnits)
+{
+    if (mzArray.size() != intensityArray.size())
+        throw runtime_error("[MSData::Spectrum::swapMZIntensityArrays()] Sizes do not match.");
+
+    pair<BinaryDataArrayPtr,BinaryDataArrayPtr> arrays = 
+            getMZIntensityArrays(binaryDataArrayPtrs);
+
+    BinaryDataArrayPtr& bd_mz = arrays.first;
+    BinaryDataArrayPtr& bd_intensity = arrays.second;
+
+    if (!bd_mz.get())
+    {
+        bd_mz = BinaryDataArrayPtr(new BinaryDataArray);
+        CVParam arrayType(MS_m_z_array);
+        arrayType.units = MS_m_z;
+        bd_mz->cvParams.push_back(arrayType);
+        binaryDataArrayPtrs.push_back(bd_mz);
+    }
+
+    if (!bd_intensity.get())
+    {
+        bd_intensity = BinaryDataArrayPtr(new BinaryDataArray);
+        CVParam arrayType(MS_intensity_array);
+        arrayType.units = intensityUnits;
+        bd_intensity->cvParams.push_back(arrayType);
+        binaryDataArrayPtrs.push_back(bd_intensity);
+    }
+
+    defaultArrayLength = mzArray.size();
+
+    bd_mz->data.swap(mzArray);
+    bd_intensity->data.swap(intensityArray);
+
+}
+
 PWIZ_API_DECL void Spectrum::setMZIntensityArrays(const std::vector<double>& mzArray, const std::vector<double>& intensityArray, CVID intensityUnits)
 {
     if (mzArray.size() != intensityArray.size())
@@ -1020,6 +1051,27 @@ PWIZ_API_DECL size_t SpectrumList::find(const string& id) const
 }
 
 
+PWIZ_API_DECL size_t SpectrumList::findAbbreviated(const string& abbreviatedId, char delimiter) const
+{
+    vector<string> abbreviatedTokens, actualTokens;
+
+    // "1.1.123.2" splits to { 1, 1, 123, 2 }
+    bal::split(abbreviatedTokens, abbreviatedId, bal::is_any_of(string(1, delimiter)));
+
+    if (empty()) return 0;
+
+    // "sample=1 period=1 cycle=123 experiment=2" splits to { sample, 1, period, 1, cycle, 123, experiment, 2 }
+    string firstId = spectrumIdentity(0).id;
+    bal::split(actualTokens, firstId, bal::is_any_of(" ="));
+
+    string fullId(actualTokens[0] + "=" + abbreviatedTokens[0]);
+    for (size_t i = 1; i < abbreviatedTokens.size(); ++i)
+        fullId += " " + actualTokens[2*i] + "=" + abbreviatedTokens[i];
+
+    return find(fullId);
+}
+
+
 PWIZ_API_DECL IndexList SpectrumList::findNameValue(const string& name, const string& value) const
 {
     IndexList result;
@@ -1045,18 +1097,27 @@ PWIZ_API_DECL const shared_ptr<const DataProcessing> SpectrumList::dataProcessin
     return shared_ptr<const DataProcessing>();
 }
 
+
+PWIZ_API_DECL SpectrumPtr SpectrumList::spectrum(const SpectrumPtr& seed, bool getBinaryData) const
+{
+    return spectrum(seed->index, getBinaryData);
+};
+
+
+PWIZ_API_DECL SpectrumPtr SpectrumList::spectrum(size_t index, DetailLevel detailLevel) const
+{
+    // By default faster metadeta access is not implemented
+    if (detailLevel == DetailLevel_FastMetadata || detailLevel == DetailLevel_InstantMetadata)
+        return SpectrumPtr(new Spectrum);
+
+    return spectrum(index, detailLevel == DetailLevel_FullData);
+}
+
+
 PWIZ_API_DECL void SpectrumList::warn_once(const char *msg) const
 {
-    boost::hash<const char*> H;
-    if (warn_msg_hashes.insert(H(msg)).second) // .second is true iff value is new
-    {
-#ifndef PRE_BUILD
-        Rcerr << msg << endl;
-#else
-		cerr << msg << endl;
-#endif
-    }
 }
+
 
 //
 // SpectrumListSimple

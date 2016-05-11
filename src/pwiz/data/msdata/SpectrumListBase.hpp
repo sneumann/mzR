@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumListBase.hpp 1189 2009-08-14 17:36:06Z chambm $
+// $Id: SpectrumListBase.hpp 8725 2015-08-04 15:49:57Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -26,7 +26,10 @@
 
 
 #include "pwiz/data/msdata/MSData.hpp"
+#include "pwiz/utility/misc/IntegerSet.hpp"
+#include <boost/functional/hash.hpp>
 #include <stdexcept>
+#include <iostream>
 
 
 namespace pwiz {
@@ -37,16 +40,34 @@ namespace msdata {
 class PWIZ_API_DECL SpectrumListBase : public SpectrumList
 {
     public:
+    SpectrumListBase() : MSLevelsNone() {};
 
     /// implementation of SpectrumList
     virtual const boost::shared_ptr<const DataProcessing> dataProcessingPtr() const {return dp_;}
 
     /// set DataProcessing
-    virtual void setDataProcessingPtr(DataProcessingPtr dp) {dp_ = dp;}
+    virtual void setDataProcessingPtr(DataProcessingPtr dp) { dp_ = dp; }
+
+    /// issues a warning once per SpectrumList instance (based on string hash)
+    virtual void warn_once(const char* msg) const
+    {
+        boost::hash<const char*> H;
+        if (warn_msg_hashes.insert(H(msg)).second) // .second is true iff value is new
+        {
+            std::cerr << msg << std::endl;
+        }
+    }
 
     protected:
 
     DataProcessingPtr dp_;
+
+    // Useful for avoiding repeated ctor when you just want an empty set
+    const pwiz::util::IntegerSet MSLevelsNone;
+
+    private:
+
+    mutable std::set<size_t> warn_msg_hashes; // for warn_once use
 };
 
 

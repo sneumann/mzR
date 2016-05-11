@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_mzXML.cpp 5759 2014-02-19 22:26:29Z chambm $
+// $Id: SpectrumList_mzXML.cpp 6585 2014-08-07 22:49:28Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -27,6 +27,7 @@
 #include "References.hpp"
 #include "pwiz/utility/minimxml/SAXParser.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include <boost/thread.hpp>
 
 
 namespace pwiz {
@@ -61,6 +62,7 @@ class SpectrumList_mzXMLImpl : public SpectrumList_mzXML
     const MSData& msd_;
     vector<SpectrumIdentityFromMzXML> index_;
     map<string,size_t> idToIndex_;
+    mutable boost::recursive_mutex readMutex;
 
     mutable vector<int> scanMsLevelCache_;
 
@@ -395,7 +397,6 @@ class HandlerScan : public SAXParser::Handler
             if (scanType.empty() || scanType == "full")
             {
                 spectrum_.set(msLevel == "1" ? MS_MS1_spectrum : MS_MSn_spectrum);
-                scan.set(MS_full_scan);
             } else if (scanType == "zoom")
             {
                 spectrum_.set(MS_MSn_spectrum);
@@ -587,6 +588,7 @@ SpectrumPtr SpectrumList_mzXMLImpl::spectrum(size_t index, IO::BinaryDataFlag bi
 
 SpectrumPtr SpectrumList_mzXMLImpl::spectrum(size_t index, IO::BinaryDataFlag binaryDataFlag, DetailLevel detailLevel, const SpectrumPtr *defaults, bool isRecursiveCall) const
 {
+    boost::lock_guard<boost::recursive_mutex> lock(readMutex);  // lock_guard will unlock mutex when out of scope or when exception thrown (during destruction)
     if (index > index_.size())
         throw runtime_error("[SpectrumList_mzXML::spectrum()] Index out of bounds.");
 

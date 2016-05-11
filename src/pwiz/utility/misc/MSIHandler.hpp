@@ -1,5 +1,5 @@
 //
-// $Id: MSIHandler.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id: MSIHandler.hpp 7297 2015-03-12 05:30:33Z paragmallick $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -29,7 +29,7 @@
 #include "boost/shared_ptr.hpp"
 
 namespace pwiz {
-namespace utility {
+namespace util {
 
 class  PWIZ_API_DECL MSIHandler : public DefaultTabHandler
 {

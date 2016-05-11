@@ -1,5 +1,5 @@
 //
-// $Id: VendorReaderTestHarness.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id: VendorReaderTestHarness.hpp 7155 2015-02-03 22:38:32Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -44,7 +44,7 @@ struct PWIZ_API_DECL TestPathPredicate
 PWIZ_API_DECL
 int testReader(const pwiz::msdata::Reader& reader,
                const std::vector<std::string>& args,
-               bool testAcceptOnly,
+               bool testAcceptOnly, bool requireUnicodeSupport,
                const TestPathPredicate& isPathTestable);
 
 

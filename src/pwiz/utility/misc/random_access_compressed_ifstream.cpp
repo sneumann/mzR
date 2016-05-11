@@ -64,14 +64,14 @@ Version 1.0  29 May 2005  Mark Adler */
 
 #include "zlib.h"
 
+#include "random_access_compressed_ifstream.hpp"
+
 #if defined(_MSC_VER) || defined(__MINGW32__)  // MSVC or MinGW
 #include <winsock2.h>
 #else
 #include <stdint.h>
 #include <netinet/in.h>
 #endif
-
-#include "random_access_compressed_ifstream.hpp"
 #include <boost/iostreams/device/file_descriptor.hpp>
 #include <sys/stat.h>
 #include <vector>

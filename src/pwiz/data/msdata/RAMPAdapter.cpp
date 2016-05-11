@@ -1,5 +1,5 @@
 //
-// $Id: RAMPAdapter.cpp 3112 2011-11-09 19:42:29Z pcbrefugee $
+// $Id: RAMPAdapter.cpp 7331 2015-03-24 16:11:12Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -137,23 +137,13 @@ void RAMPAdapter::Impl::getScanHeader(size_t index, ScanHeaderStruct& result, bo
     result.seqNum = static_cast<int>(index + 1);
     result.acquisitionNum = getScanNumber(index);
     result.msLevel = spectrum->cvParam(MS_ms_level).valueAs<int>();
-    
-    CVParam paramPolarity = spectrum->cvParam(MS_scan_polarity);
-    if (paramPolarity.cvid == MS_positive_scan){
-		result.polarity = 1;
-	} else if (paramPolarity.cvid == MS_negative_scan){
-		result.polarity = 0;
-	} else{
-		result.polarity = -1;
-	}
-        
     result.peaksCount = static_cast<int>(spectrum->defaultArrayLength);
     result.totIonCurrent = spectrum->cvParam(MS_total_ion_current).valueAs<double>();
     result.retentionTime = scan.cvParam(MS_scan_start_time).timeInSeconds();
     result.basePeakMZ = spectrum->cvParam(MS_base_peak_m_z).valueAs<double>();    
     result.basePeakIntensity = spectrum->cvParam(MS_base_peak_intensity).valueAs<double>();    
     result.collisionEnergy = 0;
-    result.ionisationEnergy = spectrum->cvParam(MS_ionization_energy).valueAs<double>();
+    result.ionisationEnergy = spectrum->cvParam(MS_ionization_energy_OBSOLETE).valueAs<double>();
     result.lowMZ = spectrum->cvParam(MS_lowest_observed_m_z).valueAs<double>();        
     result.highMZ = spectrum->cvParam(MS_highest_observed_m_z).valueAs<double>();        
     result.precursorScanNum = 0;
@@ -176,7 +166,7 @@ void RAMPAdapter::Impl::getScanHeader(size_t index, ScanHeaderStruct& result, bo
       }
     }
 
-    result.filterLine = filterLine.c_str();
+    result.filterLine = filterLine;
 
 
 
