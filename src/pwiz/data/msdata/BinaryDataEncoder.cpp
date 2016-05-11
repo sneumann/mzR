@@ -38,6 +38,8 @@
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/data/msdata/MSNumpress.hpp"
 
+#include <Rcpp.h>
+
 namespace pwiz {
 namespace msdata {
 
@@ -215,9 +217,9 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
             else
                 byteBuffer = reinterpret_cast<const void*>(&numpressed[0]);
         } catch (int e) {
-            cerr << "MZNumpress encoder threw exception: " << e << endl;
+          Rcpp::Rcerr << "MZNumpress encoder threw exception: " << e << endl;
         } catch (...) {
-            cerr << "Unknown exception while encoding " << dataSize << " doubles" << endl;
+          Rcpp::Rcerr << "Unknown exception while encoding " << dataSize << " doubles" << endl;
         }
 
     }

@@ -28,6 +28,8 @@
 #include <boost/thread.hpp>
 #include <deque>
 
+#include <Rcpp.h>
+
 
 using std::deque;
 using namespace pwiz::util;
@@ -236,11 +238,11 @@ class SpectrumWorkerThreads::Impl
         catch (exception& e)
         {
             // TODO: log this
-            cerr << "[SpectrumWorkerThreads::work] error in thread: " << e.what() << endl;
+          Rcpp::Rcerr << "[SpectrumWorkerThreads::work] error in thread: " << e.what() << endl;
         }
         catch (...)
         {
-            cerr << "[SpectrumWorkerThreads::work] unknown exception in worker thread" << endl;
+          Rcpp::Rcerr << "[SpectrumWorkerThreads::work] unknown exception in worker thread" << endl;
         }
     }
 

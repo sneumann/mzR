@@ -29,12 +29,12 @@
 #include <algorithm>
 #include "MSNumpress.hpp"
 
+#include <Rcpp.h>
+
 namespace pwiz {
 namespace msdata {
 namespace MSNumpress {
 
-using std::cout;
-using std::cerr;
 using std::endl;
 using std::min;
 using std::max;
@@ -371,20 +371,20 @@ size_t decodeLinear(
             ints[2]         = y;
         }
     } catch (...) {
-        cerr << "DECODE ERROR" << endl;
-        cerr << "i: " << i << endl;
-        cerr << "ri: " << ri << endl;
-        cerr << "di: " << di << endl;
-        cerr << "half: " << half << endl;
-        cerr << "dataSize: " << dataSize << endl;
-        cerr << "ints[]: " << ints[0] << ", " << ints[1] << ", " << ints[2] << endl;
-        cerr << "extrapol: " << extrapol << endl;
-        cerr << "y: " << y << endl;
+        Rcpp::Rcerr << "DECODE ERROR" << endl;
+        Rcpp::Rcerr << "i: " << i << endl;
+        Rcpp::Rcerr << "ri: " << ri << endl;
+        Rcpp::Rcerr << "di: " << di << endl;
+        Rcpp::Rcerr << "half: " << half << endl;
+        Rcpp::Rcerr << "dataSize: " << dataSize << endl;
+        Rcpp::Rcerr << "ints[]: " << ints[0] << ", " << ints[1] << ", " << ints[2] << endl;
+        Rcpp::Rcerr << "extrapol: " << extrapol << endl;
+        Rcpp::Rcerr << "y: " << y << endl;
 
         for (i = di - 3; i < min(di + 3, dataSize); i++) {
-            cerr << "data[" << i << "] = " << data[i];
+            Rcpp::Rcerr << "data[" << i << "] = " << data[i];
         }
-        cerr << endl;
+        Rcpp::Rcerr << endl;
     }
     
     return ri;
@@ -494,17 +494,17 @@ size_t decodePic(
             result[ri++]     = count;
         }
     } catch (...) {
-        cerr << "DECODE ERROR" << endl;
-        cerr << "ri: " << ri << endl;
-        cerr << "di: " << di << endl;
-        cerr << "half: " << half << endl;
-        cerr << "dataSize: " << dataSize << endl;
-        cerr << "count: " << count << endl;
+        Rcpp::Rcerr << "DECODE ERROR" << endl;
+        Rcpp::Rcerr << "ri: " << ri << endl;
+        Rcpp::Rcerr << "di: " << di << endl;
+        Rcpp::Rcerr << "half: " << half << endl;
+        Rcpp::Rcerr << "dataSize: " << dataSize << endl;
+        Rcpp::Rcerr << "count: " << count << endl;
 
         for (i = di - 3; i < min(di + 3, dataSize); i++) {
-            cerr << "data[" << i << "] = " << data[i];
+          Rcpp::Rcerr << "data[" << i << "] = " << data[i];
         }
-        cerr << endl;
+        Rcpp::Rcerr << endl;
     }
     return ri;
 }

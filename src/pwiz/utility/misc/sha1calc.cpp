@@ -20,7 +20,7 @@
 // limitations under the License.
 //
 
-
+#include "Rcpp.h"
 #include "SHA1Calculator.hpp"
 #include "unit.hpp"
 #include "pwiz/utility/misc/Std.hpp"
@@ -34,17 +34,17 @@ int main(int argc, char* argv[])
     try
     {
         if (argc<2) throw runtime_error("Usage: sha1calc filename"); 
-        cout << SHA1Calculator::hashFile(argv[1]) << endl;
+        Rcpp::Rcout << SHA1Calculator::hashFile(argv[1]) << endl;
         return 0;
     }
     catch (exception& e)
     {
-        cerr << e.what() << endl;
+        Rcpp::Rcerr << e.what() << endl;
         return 1;
     }
     catch (...)
     {
-        cerr << "Caught unknown exception.\n";
+        Rcpp::Rcerr << "Caught unknown exception.\n";
         return 1;
     }
 }
