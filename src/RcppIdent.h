@@ -31,69 +31,69 @@ using namespace pwiz::identdata;
 
 class RcppIdent
 {
-private:
+ private:
 
-    IdentDataFile *mzid;
-    string date, filename, provider;
+  IdentDataFile *mzid;
+  string date, filename, provider;
 
-public:
+ public:
 
-    RcppIdent();
+  RcppIdent();
 
-    void open(const string& fileNames);
+  void open(const string& fileNames);
 
-    Rcpp::List getIDInfo();
+  Rcpp::List getIDInfo();
 
-    Rcpp::DataFrame getPsmInfo();
+  Rcpp::DataFrame getPsmInfo();
 
-    Rcpp::DataFrame getModInfo();
+  Rcpp::DataFrame getModInfo();
 
-    Rcpp::DataFrame getSubInfo();
+  Rcpp::DataFrame getSubInfo();
 
-    Rcpp::DataFrame getScore();
+  Rcpp::DataFrame getScore();
 
-    Rcpp::List getPara();
+  Rcpp::List getPara();
 
-    Rcpp::DataFrame getDB();
+  Rcpp::DataFrame getDB();
 
-    inline bool isNumber(const std::string& s)
+  inline bool isNumber(const std::string& s)
+  {
+    std::istringstream iss( s );
+    double dTestSink;
+    iss >> dTestSink;
+    return ( iss.rdbuf()->in_avail() == 0 );
+  }
+
+  inline bool isBool(std::string s)
+  {
+
+    boost::algorithm::to_lower(s);
+    if (s=="true"||s=="false")
+      return true;
+    else
+      return false;
+  }
+
+  inline bool toBool(std::string s)
+  {
+    boost::algorithm::to_lower(s);
+    if (s=="true")
+      return true;
+    else
+      return false;
+  }
+
+  inline std::string underscore(std::string text)
+  {
+    for(std::string::iterator it = text.begin(); it != text.end(); ++it)
     {
-        std::istringstream iss( s );
-        double dTestSink;
-        iss >> dTestSink;
-        return ( iss.rdbuf()->in_avail() == 0 );
+      if(*it == ' '||*it == ':'||*it == '-'||*it == '!')
+      {
+        *it = '_';
+      }
     }
-
-    inline bool isBool(std::string s)
-    {
-
-        boost::algorithm::to_lower(s);
-        if (s=="true"||s=="false")
-            return true;
-        else
-            return false;
-    }
-
-    inline bool toBool(std::string s)
-    {
-        boost::algorithm::to_lower(s);
-        if (s=="true")
-            return true;
-        else
-            return false;
-    }
-
-    inline std::string underscore(std::string text)
-    {
-        for(std::string::iterator it = text.begin(); it != text.end(); ++it)
-        {
-            if(*it == ' '||*it == ':'||*it == '-'||*it == '!')
-            {
-                *it = '_';
-            }
-        }
-        return text;
-    }
+    return text;
+  }
 };
 
 #endif
