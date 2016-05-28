@@ -1,22 +1,25 @@
-BUILT_RCPP_VERSION = package_version("0.12.4.5")
+BUILT_RCPP_VERSION = package_version("0.12.5")
 
 .onLoad <-
     function(libname, pkgname) {
       ## checkeing installed vs build-time Rcpp version
       if (Sys.info()['sysname'] %in% c("Darwin", "Windows")) {
         installedRcpp <- utils::packageVersion("Rcpp")
-          if (installedRcpp != BUILT_RCPP_VERSION) { # use > instead of !=?            
+          if (installedRcpp != BUILT_RCPP_VERSION) { # use > instead of !=?
             msg <- paste0("mzR has been built against a different Rcpp version (", BUILT_RCPP_VERSION, ")\n",
                           "than is installed on your system (", installedRcpp, "). This might lead to errors\n",
                           "when loading mzR. If you encounter such issues, please send a report,\n",
                           "including the output of sessionInfo() to the Bioc support forum at \n",
                           "https://support.bioconductor.org/. For details see also\n",
                           "https://github.com/sneumann/mzR/wiki/mzR-Rcpp-compiler-linker-issue.")
-            warning(msg)            
+            warning(msg)
           }
       }
       require2 <- require
       require2("methods", character.only = TRUE, quietly = TRUE)
-      loadRcppModules()
+      #loadRcppModules()
+      loadModule("Ramp", TRUE)
+      loadModule("Pwiz", TRUE)
+      loadModule("Ident", TRUE)
       Sys.setenv("HDF5_DISABLE_VERSION_CHECK"=2)
 }
