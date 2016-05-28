@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_FASTA.cpp 6979 2014-12-09 16:15:35Z chambm $
+// $Id: Serializer_FASTA.cpp 2674 2011-04-29 17:30:42Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -27,12 +27,16 @@
 #include "pwiz/utility/misc/Std.hpp"
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
-#include <boost/xpressive/xpressive_dynamic.hpp>
+
+// HACK: boost::regex::mark_count() is bugged, always returns the real count + 1
+#include <boost/regex.hpp>
 
 
 using namespace pwiz::data;
 using namespace pwiz::util;
-namespace bxp = boost::xpressive;
+using boost::regex;
+using boost::smatch;
+using boost::regex_search;
 
 
 namespace pwiz {
@@ -50,7 +54,7 @@ class ProteinList_FASTA : public ProteinList
 
     IndexPtr indexPtr_;
 
-    vector<bxp::sregex> idAndDescriptionRegexes_;
+    vector<regex> idAndDescriptionRegexes_;
 
     mutable boost::mutex io_mutex;
 
@@ -81,10 +85,10 @@ class ProteinList_FASTA : public ProteinList
 
                 bal::trim_right_if(buf, bal::is_any_of(" \r"));
 
-                BOOST_FOREACH(bxp::sregex& idAndDescriptionRegex, idAndDescriptionRegexes_)
+                BOOST_FOREACH(regex& idAndDescriptionRegex, idAndDescriptionRegexes_)
                 {
-                    bxp::smatch match;
-                    if (bxp::regex_match(buf, match, idAndDescriptionRegex))
+                    smatch match;
+                    if (regex_match(buf, match, idAndDescriptionRegex))
                     {
                         ie.id = match[1].str();
                         break;
@@ -114,15 +118,16 @@ class ProteinList_FASTA : public ProteinList
     ProteinList_FASTA(shared_ptr<istream> fsPtr, IndexPtr indexPtr, const vector<string>& idAndDescriptionRegexes)
         : fsPtr_(fsPtr), indexPtr_(indexPtr)
     {
+        // HACK: boost::regex::mark_count() is bugged, always returns the real count + 1
         BOOST_FOREACH(const string& regexString, idAndDescriptionRegexes)
         {
-            bxp::sregex idAndDescriptionRegex = bxp::sregex::compile(regexString);
-            if (idAndDescriptionRegex.mark_count() == 1)
+            regex idAndDescriptionRegex(regexString);
+            if (idAndDescriptionRegex.mark_count() == 2)
             {
                 // TODO: log warning about only capturing id
             }
-            else if (idAndDescriptionRegex.mark_count() != 2)
-                throw runtime_error("[ProteinList_FASTA::ctor] regular expressions for capturing id and description must contain 1 or 2 capture groups; \"" + regexString + "\" has " + lexical_cast<string>(idAndDescriptionRegex.mark_count()));
+            else if (idAndDescriptionRegex.mark_count() != 3)
+                throw runtime_error("[ProteinList_FASTA::ctor] regular expressions for capturing id and description must contain 1 or 2 capture groups; \"" + regexString + "\" has " + lexical_cast<string>(idAndDescriptionRegex.mark_count()-1));
 
             idAndDescriptionRegexes_.push_back(idAndDescriptionRegex);
         }
@@ -185,12 +190,13 @@ class ProteinList_FASTA : public ProteinList
         bal::trim_right_if(buf, bal::is_any_of(" \r"));
 
         string description;
-        BOOST_FOREACH(const bxp::sregex& idAndDescriptionRegex, idAndDescriptionRegexes_)
+        BOOST_FOREACH(const regex& idAndDescriptionRegex, idAndDescriptionRegexes_)
         {
-            if (idAndDescriptionRegex.mark_count() == 2)
+            // HACK: boost::regex::mark_count() is bugged, always returns the real count + 1
+            if (idAndDescriptionRegex.mark_count() == 3)
             {
-                bxp::smatch match;
-                if (bxp::regex_match(buf, match, idAndDescriptionRegex))
+                smatch match;
+                if (regex_match(buf, match, idAndDescriptionRegex))
                 {
                     description = match[2].str();
                     break;

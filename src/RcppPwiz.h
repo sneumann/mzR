@@ -40,38 +40,40 @@ using namespace pwiz::util;
 class RcppPwiz
 {
 
- private:
-  MSDataFile *msd;
-  Rcpp::List instrumentInfo;
-  Rcpp::DataFrame chromatogramsInfo;
-  bool isInCacheInstrumentInfo;
-  Rcpp::DataFrame allScanHeaderInfo;
-  bool isInCacheAllScanHeaderInfo;
-  string filename;
+private:
+    MSDataFile *msd;
+    Rcpp::List instrumentInfo;
+    Rcpp::DataFrame chromatogramsInfo;
+    bool isInCacheInstrumentInfo;
+    Rcpp::DataFrame allScanHeaderInfo;
+    bool isInCacheAllScanHeaderInfo;
+    string filename;
 
- public:
+public:
 
-  RcppPwiz();
+    RcppPwiz();
 
-  void open(const string& fileNames);
+    void open(const string& fileNames);
 
-  string getFilename();
+    //void writeMSfile(const string& filenames, const string& format);
 
-  int getLastScan() const;
+    string getFilename();
 
-  Rcpp::List getInstrumentInfo();
+    int getLastScan() const;
 
-  Rcpp::List getRunInfo();
+    Rcpp::List getInstrumentInfo();
 
-  Rcpp::List getScanHeaderInfo(int whichScan);
+    Rcpp::List getRunInfo();
 
-  Rcpp::DataFrame getChromatogramsInfo();
+    Rcpp::List getScanHeaderInfo(int whichScan);
 
-  Rcpp::DataFrame getAllScanHeaderInfo();
+    Rcpp::DataFrame getChromatogramsInfo();
 
-  Rcpp::List getPeakList(int whichScan);
+    Rcpp::DataFrame getAllScanHeaderInfo();
 
-  Rcpp::NumericMatrix get3DMap(std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz);
+    Rcpp::List getPeakList(int whichScan);
+
+    Rcpp::NumericMatrix get3DMap(std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz);
 
 };
 

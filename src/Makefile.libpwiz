@@ -1,9 +1,7 @@
 CC = gcc
 CXX = g++
 
-## Use -m32 or -m64 to build the library for both windows architectures
-## TOOD: replace absolute paths by what R returns like $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" )
-CXXFLAGS = -m32 -I"D:/Rtools/R/R-devel/library/Rcpp/include" -I"D:/Rtools/R/R-devel/include"  -I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE -DPRE_BUILD -s -O2
+CXXFLAGS = -I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE -DPRE_BUILD -s -O2
 
 .c.o:
 	$(CC) $(CXXFLAGS) -c -o $@ $<
@@ -11,9 +9,6 @@ CXXFLAGS = -m32 -I"D:/Rtools/R/R-devel/library/Rcpp/include" -I"D:/Rtools/R/R-de
 .cpp.o:
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-.cxx.o:
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-	
 PWIZOBJECTS=\
 ./boost/system/src/error_code.o \
 ./boost/regex/src/posix_api.o \
@@ -35,13 +30,14 @@ PWIZOBJECTS=\
 ./boost/regex/src/w32_regex_traits.o \
 ./boost/iostreams/src/zlib.o \
 ./boost/iostreams/src/file_descriptor.o \
-./boost/thread/win32/thread.o \
 ./boost/filesystem/src/operations.o \
 ./boost/filesystem/src/path.o \
+./boost/filesystem/src/path_traits.o \
 ./boost/filesystem/src/utf8_codecvt_facet.o \
-./boost/chrono/src/chrono.o \
-./boost/chrono/src/process_cpu_clocks.o \
-./boost/chrono/src/thread_clock.o \
+./boost/filesystem/src/windows_file_codecvt.o \
+./boost/filesystem/src/codecvt_error_category.o \
+./boost/thread/win32/thread.o \
+./boost_aux/boost/nowide/iostream.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
@@ -49,6 +45,7 @@ PWIZOBJECTS=\
 ./pwiz/data/common/BinaryIndexStream.o \
 ./pwiz/data/common/diff_std.o \
 ./pwiz/data/common/Unimod.o \
+./pwiz/data/msdata/Version.o \
 ./pwiz/data/msdata/SpectrumList_MGF.o \
 ./pwiz/data/msdata/DefaultReaderList.o \
 ./pwiz/data/msdata/ChromatogramList_mzML.o \
@@ -75,8 +72,7 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
 ./pwiz/data/msdata/Index_mzML.o \
-./pwiz/data/msdata/Version.o \
-./pwiz/data/msdata/SpectrumWorkerThreads.o \
+./pwiz/data/msdata/ramp/wglob.o \
 ./pwiz/data/identdata/IdentDataFile.o \
 ./pwiz/data/identdata/IdentData.o \
 ./pwiz/data/identdata/DefaultReaderList.o \
@@ -85,14 +81,12 @@ PWIZOBJECTS=\
 ./pwiz/data/identdata/Serializer_pepXML.o \
 ./pwiz/data/identdata/Serializer_mzid.o \
 ./pwiz/data/identdata/IO.o \
+./pwiz/data/identdata/Version.o \
 ./pwiz/data/identdata/References.o \
-./pwiz/data/identdata/MascotReader.o \
 ./pwiz/data/proteome/Modification.o \
 ./pwiz/data/proteome/Digestion.o \
 ./pwiz/data/proteome/Peptide.o \
 ./pwiz/data/proteome/AminoAcid.o \
-./pwiz/utility/minimxml/XMLWriter.o \
-./pwiz/utility/minimxml/SAXParser.o \
 ./pwiz/utility/chemistry/Chemistry.o \
 ./pwiz/utility/chemistry/ChemistryData.o \
 ./pwiz/utility/chemistry/MZTolerance.o \
@@ -105,9 +99,9 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/random_access_compressed_ifstream.o \
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
-./pwiz/utility/misc/sha1calc.o \
+./pwiz/utility/minimxml/XMLWriter.o \
+./pwiz/utility/minimxml/SAXParser.o \
 ./random_access_gzFile.o \
-./RcppExports.o \
 adler32.o compress.o crc32.o deflate.o gzclose.o gzlib.o gzread.o gzwrite.o infback.o inffast.o inflate.o inftrees.o trees.o uncompr.o zutil.o
 
 
@@ -115,6 +109,6 @@ all: libpwiz.a
 
 libpwiz.a: $(PWIZOBJECTS)
 	ar -rc $@ $(PWIZOBJECTS)
-
+	
 clean:
 	rm -rf $(PWIZOBJECTS)

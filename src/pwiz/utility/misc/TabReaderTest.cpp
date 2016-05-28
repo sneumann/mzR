@@ -1,5 +1,5 @@
 //
-// $Id: TabReaderTest.cpp 7297 2015-03-12 05:30:33Z paragmallick $
+// $Id: TabReaderTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -28,6 +28,7 @@
 #include <cstring>
 
 using namespace pwiz::util;
+using namespace pwiz::utility;
 
 ostream *os_ = NULL;
 

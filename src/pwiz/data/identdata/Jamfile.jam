@@ -1,5 +1,5 @@
 #
-# $Id: Jamfile.jam 6909 2014-11-19 17:18:29Z chambm $
+# $Id: Jamfile.jam 3703 2012-06-15 18:23:36Z pcbrefugee $
 #
 #
 # Original author: Robert Burke <robetr.burke@proteowizard.org>
@@ -47,7 +47,11 @@ rule mascot-api-requirements ( properties * )
     local msparser_path = [ msparser-path $(properties) ] ;
     if $(msparser_path)
     {
-        result += <define>PWIZ_READER_MASCOT ;
+        result += <source>MascotReader.cpp ;
+    }
+    else
+    {
+        result += <source>MascotReader_dummy.cpp ;
     }
     return $(result) [ mascot-api-usage-requirements $(properties) ] ;
 }
@@ -67,6 +71,7 @@ rule mascot-api-usage-requirements ( properties * )
 
 lib pwiz_data_identdata_version : Version.cpp : <link>static <conditional>@static-with-fpic ;
 
+
 lib pwiz_data_identdata 
     : # sources
         Diff.cpp
@@ -76,12 +81,10 @@ lib pwiz_data_identdata
         DefaultReaderList.cpp
         IO.cpp
         Serializer_mzid.cpp
-        #Serializer_idpDB.cpp
         Serializer_pepXML.cpp
         Serializer_protXML.cpp
         Serializer_Text.cpp
         Pep2MzIdent.cpp
-        MascotReader.cpp
         DelimWriter.cpp
         DelimReader.cpp
         References.cpp
@@ -94,7 +97,7 @@ lib pwiz_data_identdata
         <library>../misc//pwiz_data_misc
         <library>../../utility/chemistry//pwiz_utility_chemistry
         <library>/ext/boost//iostreams/<boost-iostreams-zlib>on
-        #<library>$(PWIZ_ROOT_PATH)/libraries/SQLite//sqlite3pp
+        <library>/ext/boost//regex
         <conditional>@mascot-api-requirements
     : # default-build
     : # usage-requirements
@@ -105,7 +108,7 @@ lib pwiz_data_identdata
         <library>../misc//pwiz_data_misc
         <library>../../utility/chemistry//pwiz_utility_chemistry
         <library>/ext/boost//iostreams/<boost-iostreams-zlib>on
-        #<library>$(PWIZ_ROOT_PATH)/libraries/SQLite//sqlite3pp
+        <library>/ext/boost//regex
         <conditional>@mascot-api-usage-requirements
     ;
 
@@ -123,10 +126,7 @@ rule install-requirements ( properties * )
     local msparser_path = [ msparser-path $(properties) ] ;
     if $(msparser_path)
     {
-        local result = <source>$(msparser_path)/../config/unimod_2.xsd ; 
-        result += <source>$(msparser_path)/../config/quantitation_1.xsd ;
-        result += <source>$(msparser_path)/../config/quantitation_2.xsd ;   
-
+        local result = <source>$(msparser_path)/../config/unimod_2.xsd ;    
         if <toolset>msvc in $(properties)
         {
             if <runtime-debugging>on in $(properties)
@@ -163,6 +163,7 @@ explicit ExtendedReaderTest ;
 #
 # unit tests (ordered by dependency)
 #
+
 unit-test-if-exists IdentDataTest : IdentDataTest.cpp pwiz_data_identdata_examples ; 
 unit-test-if-exists DiffTest : DiffTest.cpp pwiz_data_identdata_examples ;
 unit-test-if-exists ReferencesTest : ReferencesTest.cpp pwiz_data_identdata ;
@@ -176,11 +177,4 @@ unit-test-if-exists KwCVMapTest : KwCVMapTest.cpp pwiz_data_identdata_examples ;
 #unit-test-if-exists TraDataFileTest : TraDataFileTest.cpp pwiz_data_tradata pwiz_data_tradata_examples /ext/boost//filesystem ;
 #unit-test-if-exists ReaderTest : ReaderTest.cpp pwiz_data_tradata ;
 
-run-if-exists MascotReaderTest.cpp pwiz_data_identdata 
-    : # args
-    : MascotReaderTest.data/F003081.dat MascotReaderTest.data/F02.mzid.gz # input-files
-    : # requirements
-      <conditional>@mascot-api-requirements
-    : MascotReaderTest # target 
-    : # default-build
-    ;
+

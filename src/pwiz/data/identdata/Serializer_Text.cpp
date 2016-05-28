@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_Text.cpp 6909 2014-11-19 17:18:29Z chambm $
+// $Id: Serializer_Text.cpp 4922 2013-09-05 22:33:08Z pcbrefugee $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -25,14 +25,13 @@
 #include "pwiz/utility/misc/Std.hpp"
 #include "Serializer_Text.hpp"
 #include "TextWriter.hpp"
-#include <boost/xpressive/xpressive_dynamic.hpp>
+#include <boost/regex.hpp>
 
 namespace pwiz {
 namespace identdata {
 
 using namespace pwiz::util;
 using namespace boost;
-namespace bxp = boost::xpressive;
 
 namespace {
 
@@ -366,7 +365,7 @@ vector<TextRecord> fetchSpectrumIdResults(
     const vector<SpectrumIdentificationResultPtr>& sirl)
 {
     const string spectrumIDPattern = ".*[ ]*scan=([0-9\\.]+).*";
-    bxp::sregex spectrumIDExp = bxp::sregex::compile(spectrumIDPattern);
+    regex spectrumIDExp(spectrumIDPattern);
 
     vector<TextRecord> records;
 
@@ -399,8 +398,8 @@ vector<TextRecord> fetchSpectrumIdResults(
         }
 
         // Check for a keyword/numerical value match in the spectrumID
-        bxp::smatch what;
-        if (regex_match(sir->spectrumID, what, spectrumIDExp))
+        cmatch what;
+        if (regex_match(sir->spectrumID.c_str(), what, spectrumIDExp))
         {
             // Use the numerical value as the scan
             tr.scan.assign(what[1].first, what[1].second);

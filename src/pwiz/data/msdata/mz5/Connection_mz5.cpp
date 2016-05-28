@@ -1,5 +1,5 @@
 //
-// $Id: Connection_mz5.cpp 7032 2014-12-31 22:46:22Z pcbrefugee $
+// $Id: Connection_mz5.cpp 5123 2013-11-06 20:31:17Z pcbrefugee $
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>

@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumListWrapper.hpp 6585 2014-08-07 22:49:28Z chambm $
+// $Id: SpectrumListWrapper.hpp 4091 2012-11-08 16:15:32Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -56,17 +56,6 @@ class PWIZ_API_DECL SpectrumListWrapper : public SpectrumList
     virtual SpectrumPtr spectrum(size_t index, DetailLevel detailLevel) const {return spectrum(index, detailLevel == DetailLevel_FullData);}
 
     virtual const boost::shared_ptr<const DataProcessing> dataProcessingPtr() const {return dp_;}
-
-    SpectrumListPtr inner() const {return inner_;}
-
-    SpectrumListPtr innermost() const
-    {
-        if(dynamic_cast<SpectrumListWrapper*>(&*inner_))
-            return dynamic_cast<SpectrumListWrapper*>(&*inner_)->innermost();
-        else
-            return inner();
-    }
-
     protected:
 
     SpectrumListPtr inner_;

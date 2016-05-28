@@ -1,5 +1,5 @@
 //
-// $Id: Reader.hpp 6865 2014-10-31 21:47:12Z chambm $
+// $Id: Reader.hpp 2820 2011-06-27 22:51:16Z chambm $
 //
 //
 // Origional author: Robert Burke <robert.burke@proteowizard.org>
@@ -46,12 +46,10 @@ class PWIZ_API_DECL Reader
     struct PWIZ_API_DECL Config
     {
         bool ignoreSequenceCollectionAndAnalysisData;
-        bool ignoreProteinDetectionList;
         const pwiz::util::IterationListenerRegistry* iterationListenerRegistry;
 
-        Config(bool ignoreSequenceCollectionAndAnalysisData = false, bool ignoreProteinDetectionList = false)
+        Config(bool ignoreSequenceCollectionAndAnalysisData = false)
         :   ignoreSequenceCollectionAndAnalysisData(ignoreSequenceCollectionAndAnalysisData),
-            ignoreProteinDetectionList(ignoreProteinDetectionList),
             iterationListenerRegistry(NULL)
         {}
     };

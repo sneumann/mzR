@@ -1,5 +1,5 @@
 //
-// $Id: Pep2MzIdent.cpp 6909 2014-11-19 17:18:29Z chambm $
+// $Id: Pep2MzIdent.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
 //
@@ -25,7 +25,7 @@
 #include "MzidPredicates.hpp"
 #include "pwiz/utility/chemistry/Ion.hpp"
 #include "pwiz/data/common/cv.hpp"
-#include "boost/xpressive/xpressive_dynamic.hpp"
+#include "boost/regex.hpp"
 #include "pwiz/utility/misc/Filesystem.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "boost/tokenizer.hpp"
@@ -42,7 +42,6 @@ using namespace pwiz::cv;
 using namespace pwiz::identdata;
 using namespace pwiz::data::pepxml;
 using namespace pwiz::chemistry;
-namespace bxp = boost::xpressive;
 
 // String constants
 
@@ -1295,14 +1294,14 @@ CVID Pep2MzIdent::Impl::mapToNearestSoftware(const string& softwareName,
 {
     // TODO clean this up and move the patterns into a separate class
     // as we get more patterns.
-    static bxp::sregex X_TandemMod = bxp::sregex::compile("[xX][\\!]?[ ]*[Tt]andem[ ]*[\\(]?([^\\)]*)[\\)]?");
+    static regex X_TandemMod("[xX][\\!]?[ ]*[Tt]andem[ ]*[\\(]?([^\\)]*)[\\)]?");
     
     CVID cvid = getCVID(softwareName);
 
     if (cvid == CVID_Unknown)
     {
-        bxp::smatch what;
-        if (bxp::regex_match(softwareName, what, X_TandemMod))
+        smatch what;
+        if (regex_match(softwareName, what, X_TandemMod))
         {
             cvid = MS_X_Tandem;
 

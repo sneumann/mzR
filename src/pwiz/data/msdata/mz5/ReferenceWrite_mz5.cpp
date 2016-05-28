@@ -1,5 +1,5 @@
 //
-// $Id: ReferenceWrite_mz5.cpp 6585 2014-08-07 22:49:28Z chambm $
+// $Id: ReferenceWrite_mz5.cpp 5122 2013-11-06 18:58:43Z pcbrefugee $
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -26,7 +26,6 @@
 #include "Datastructures_mz5.hpp"
 #include "../../common/cv.hpp"
 #include <boost/lexical_cast.hpp>
-#include "pwiz/data/msdata/SpectrumWorkerThreads.hpp"
 
 namespace pwiz {
 namespace msdata {
@@ -363,7 +362,6 @@ pwiz::util::IterationListener::Status ReferenceWrite_mz5::readAndWriteSpectra(
         pwiz::msdata::SpectrumPtr sp;
         pwiz::msdata::BinaryDataArrayPtr bdap;
         std::vector<double> mz;
-        SpectrumWorkerThreads spectrumWorkers(*sl);
         for (size_t i = 0; i < sl->size(); i++)
         {
             status = pwiz::util::IterationListener::Status_Ok;
@@ -374,8 +372,7 @@ pwiz::util::IterationListener::Status ReferenceWrite_mz5::readAndWriteSpectra(
             if (status == pwiz::util::IterationListener::Status_Cancel)
                 break;
 
-            //sp = sl->spectrum(i, true);
-            sp = spectrumWorkers.processBatch(i);
+            sp = sl->spectrum(i, true);
             mz.clear();
             if (sp.get())
             {

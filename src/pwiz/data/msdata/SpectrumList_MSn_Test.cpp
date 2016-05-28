@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_MSn_Test.cpp 7331 2015-03-24 16:11:12Z chambm $
+// $Id: SpectrumList_MSn_Test.cpp 5245 2013-12-09 22:53:47Z kaipot $
 //
 //
 // Original author: Barbara Frewen <frewen@u.washington.edu>
@@ -739,7 +739,7 @@ void test_v3(SpectrumListPtr sl, int msLevel)
             {
                 charges.push_back(param.value);
             }
-            if (param.cvid == MS_accurate_mass_OBSOLETE)
+            if (param.cvid == MS_accurate_mass)
             {
               masses.push_back(lexical_cast<double>(param.value));
             }
@@ -815,7 +815,7 @@ void test_v3(SpectrumListPtr sl, int msLevel)
             {
                 charges.push_back(param.value);
             }
-            if (param.cvid == MS_accurate_mass_OBSOLETE)
+            if (param.cvid == MS_accurate_mass)
             {
               masses.push_back(lexical_cast<double>(param.value));
             }

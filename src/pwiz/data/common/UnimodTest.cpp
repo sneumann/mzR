@@ -1,5 +1,5 @@
 //
-// $Id: UnimodTest.cpp 6865 2014-10-31 21:47:12Z chambm $
+// $Id: UnimodTest.cpp 5162 2013-11-15 20:16:10Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -130,8 +130,8 @@ void test()
     unit_assert_operator_equal(2, modifications(oxidation.deltaAverageMass(), 0, false, indeterminate, Site::Methionine | Site::Alanine).size());
 
 
-    // 18 mods are 28 +/- 1
-    unit_assert_operator_equal(18, modifications(28, 1, true, indeterminate).size());
+    // 18 mods are 28 +/- 1 (but 1 of them is an isotope label not yet supported)
+    unit_assert_operator_equal(17, modifications(28, 1, true, indeterminate).size());
 
     // only two of those mods happen post-translationally on protein N-termini
     unit_assert_operator_equal(2, modifications(28, 1, true, indeterminate, Site::Any,

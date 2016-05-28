@@ -1,5 +1,5 @@
 //
-// $Id: Unimod.cpp 6865 2014-10-31 21:47:12Z chambm $
+// $Id: Unimod.cpp 5162 2013-11-15 20:16:10Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -67,11 +67,6 @@ struct UnimodData : public boost::singleton<UnimodData>
         brickFormulaByTitle["N"] = Formula("N1");
         brickFormulaByTitle["S"] = Formula("S1");
         brickFormulaByTitle["P"] = Formula("P1");
-
-        brickFormulaByTitle["13C"] = Formula("_13C1");
-        brickFormulaByTitle["2H"] = Formula("_2H1");
-        brickFormulaByTitle["18O"] = Formula("_18O1");
-        brickFormulaByTitle["15N"] = Formula("_15N1");
 
         map<string, Site> siteMap;
         siteMap["N-term"] = Site::NTerminus;
@@ -237,6 +232,9 @@ struct UnimodData : public boost::singleton<UnimodData>
 
         try
         {
+            if (std::isdigit(brick[0]))
+                throw invalid_argument("[UnimodData::getBrickFormula] isotopes not yet supported");
+
             // handle less common elements like Cl, Cu, Se, etc.
             return Formula(brick + "1");
         }

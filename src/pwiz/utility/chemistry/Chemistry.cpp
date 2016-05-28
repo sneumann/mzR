@@ -1,5 +1,5 @@
 //
-// $Id: Chemistry.cpp 6865 2014-10-31 21:47:12Z chambm $ 
+// $Id: Chemistry.cpp 2901 2011-08-03 20:16:57Z chambm $ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -27,8 +27,6 @@
 #include "ChemistryData.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/utility/misc/Singleton.hpp"
-
-#include <Rcpp.h>
 
 
 namespace pwiz {
@@ -148,8 +146,13 @@ PWIZ_API_DECL const Info::Record& Info::record(const string& symbol) {return rec
 
 PWIZ_API_DECL ostream& operator<<(ostream& os, const Info::Record& r)
 {
+#ifndef PRE_BUILD
     Rcpp::Rcout << r.symbol << " " << r.atomicNumber << " " << r.atomicWeight << " " << r.monoisotope << " ";
     copy(r.isotopes.begin(), r.isotopes.end(), ostream_iterator<MassAbundance>(Rcpp::Rcout, " "));
+#else
+    cout << r.symbol << " " << r.atomicNumber << " " << r.atomicWeight << " " << r.monoisotope << " ";
+    copy(r.isotopes.begin(), r.isotopes.end(), ostream_iterator<MassAbundance>(cout, " "));
+#endif
     return os;
 }
 
@@ -173,7 +176,7 @@ class Formula::Impl
             dirty = false;
 
             monoMass = avgMass = 0;
-            for (size_t i=0; i <= size_t(Element::_15N); ++i)
+            for (size_t i=0; i <= size_t(Element::P); ++i)
             {
                 int count = CHONSP_data[i];
                 if (count != 0)
@@ -216,7 +219,7 @@ class Formula::Impl
 Formula::Impl::Impl(const string& formula)
 :   monoMass(0), avgMass(0), dirty(false)
 {
-    CHONSP_data.resize(size_t(Element::_15N)+1, 0);
+    CHONSP_data.resize(size_t(Element::P)+1, 0);
 
     if (formula.empty())
         return;
@@ -228,7 +231,7 @@ Formula::Impl::Impl(const string& formula)
 
     const string& whitespace_ = " \t\n\r";
     const string& digits_ = "-0123456789";
-    const string& letters_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    const string& letters_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     string::size_type index = 0;
     while (index < formula.size())
@@ -240,17 +243,6 @@ Formula::Impl::Impl(const string& formula)
 
         if (indexTypeBegin==string::npos || indexCountBegin==string::npos) 
             throw runtime_error("[Formula::Impl::Impl()] Invalid formula: " + formula);
-
-        if (formula[indexTypeBegin] == '_')
-        {
-            indexTypeEnd = formula.find_first_not_of(digits_, indexTypeBegin + 1);
-            indexTypeEnd = formula.find_first_not_of(letters_, indexTypeEnd);
-            indexCountBegin = formula.find_first_of(digits_, indexTypeEnd);
-            indexCountEnd = formula.find_first_not_of(digits_, indexCountBegin);
-
-            if (indexCountBegin == string::npos)
-                throw runtime_error("[Formula::Impl::Impl()] Invalid formula: " + formula);
-        }
 
         string symbol = formula.substr(indexTypeBegin, indexTypeEnd-indexTypeBegin);
         int count;
@@ -264,7 +256,7 @@ Formula::Impl::Impl(const string& formula)
         }
 
         Element::Type type = Element::text2enum(symbol);
-        if (type > Element::_15N)
+        if (type > Element::P)
             data[type] = count;
         else
             CHONSP_data[size_t(type)] = count;
@@ -322,7 +314,7 @@ PWIZ_API_DECL string Formula::formula() const
     // collect a term for each element
     vector<string> terms;
 
-    for (size_t i=0; i <= size_t(Element::_15N); ++i)
+    for (size_t i=0; i <= size_t(Element::P); ++i)
     {
         int count = impl_->CHONSP_data[i];
         ostringstream term;
@@ -347,7 +339,7 @@ PWIZ_API_DECL string Formula::formula() const
 
 PWIZ_API_DECL int Formula::operator[](Element::Type e) const
 {
-    if (e > Element::_15N)
+    if (e > Element::P)
         return impl_->data[e];
     else
         return impl_->CHONSP_data[e];
@@ -357,7 +349,7 @@ PWIZ_API_DECL int Formula::operator[](Element::Type e) const
 PWIZ_API_DECL int& Formula::operator[](Element::Type e)
 {
     impl_->dirty = true; // worst-case
-    if (e > Element::_15N)
+    if (e > Element::P)
         return impl_->data[e];
     else
         return impl_->CHONSP_data[e];
@@ -367,7 +359,7 @@ PWIZ_API_DECL int& Formula::operator[](Element::Type e)
 PWIZ_API_DECL map<Element::Type, int> Formula::data() const
 {
     map<Element::Type, int> dataCopy(impl_->data);
-    for (size_t i=0; i <= size_t(Element::_15N); ++i)
+    for (size_t i=0; i <= size_t(Element::P); ++i)
     {
         int count = impl_->CHONSP_data[i];
         if (count != 0)
@@ -385,10 +377,6 @@ PWIZ_API_DECL Formula& Formula::operator+=(const Formula& that)
     impl_->CHONSP_data[3] += that.impl_->CHONSP_data[3];
     impl_->CHONSP_data[4] += that.impl_->CHONSP_data[4];
     impl_->CHONSP_data[5] += that.impl_->CHONSP_data[5];
-    impl_->CHONSP_data[6] += that.impl_->CHONSP_data[6];
-    impl_->CHONSP_data[7] += that.impl_->CHONSP_data[7];
-    impl_->CHONSP_data[8] += that.impl_->CHONSP_data[8];
-    impl_->CHONSP_data[9] += that.impl_->CHONSP_data[9];
 
     for (Map::const_iterator it=that.impl_->data.begin(); it!=that.impl_->data.end(); ++it)
         impl_->data[it->first] += it->second;
@@ -405,10 +393,6 @@ PWIZ_API_DECL Formula& Formula::operator-=(const Formula& that)
     impl_->CHONSP_data[3] -= that.impl_->CHONSP_data[3];
     impl_->CHONSP_data[4] -= that.impl_->CHONSP_data[4];
     impl_->CHONSP_data[5] -= that.impl_->CHONSP_data[5];
-    impl_->CHONSP_data[6] -= that.impl_->CHONSP_data[6];
-    impl_->CHONSP_data[7] -= that.impl_->CHONSP_data[7];
-    impl_->CHONSP_data[8] -= that.impl_->CHONSP_data[8];
-    impl_->CHONSP_data[9] -= that.impl_->CHONSP_data[9];
 
     for (Map::const_iterator it=that.impl_->data.begin(); it!=that.impl_->data.end(); ++it)
         impl_->data[it->first] -= it->second;
@@ -425,10 +409,6 @@ PWIZ_API_DECL Formula& Formula::operator*=(int scalar)
     impl_->CHONSP_data[3] *= scalar;
     impl_->CHONSP_data[4] *= scalar;
     impl_->CHONSP_data[5] *= scalar;
-    impl_->CHONSP_data[6] *= scalar;
-    impl_->CHONSP_data[7] *= scalar;
-    impl_->CHONSP_data[8] *= scalar;
-    impl_->CHONSP_data[9] *= scalar;
 
     for (Map::iterator it=impl_->data.begin(); it!=impl_->data.end(); ++it)
         it->second *= scalar;
@@ -444,11 +424,7 @@ PWIZ_API_DECL bool Formula::operator==(const Formula& that) const
         impl_->CHONSP_data[2] != that.impl_->CHONSP_data[2] ||
         impl_->CHONSP_data[3] != that.impl_->CHONSP_data[3] ||
         impl_->CHONSP_data[4] != that.impl_->CHONSP_data[4] ||
-        impl_->CHONSP_data[5] != that.impl_->CHONSP_data[5] ||
-        impl_->CHONSP_data[6] != that.impl_->CHONSP_data[6] ||
-        impl_->CHONSP_data[7] != that.impl_->CHONSP_data[7] ||
-        impl_->CHONSP_data[8] != that.impl_->CHONSP_data[8] ||
-        impl_->CHONSP_data[9] != that.impl_->CHONSP_data[9])
+        impl_->CHONSP_data[5] != that.impl_->CHONSP_data[5])
         return false;
 
     impl_->calculateMasses(); // will remove zero-count elements from data map

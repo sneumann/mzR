@@ -1,5 +1,5 @@
 //
-// $Id: IO.cpp 8868 2015-09-22 20:51:26Z kaipot $
+// $Id: IO.cpp 5519 2014-01-13 17:03:17Z chambm $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -3639,10 +3639,10 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const ProteinDetectionList
     
     writer.startElement("ProteinDetectionList", attributes);
     
+    writeParamContainer(writer, pdl);
     for (vector<ProteinAmbiguityGroupPtr>::const_iterator it=pdl.proteinAmbiguityGroup.begin();
          it!= pdl.proteinAmbiguityGroup.end(); it++)
         write(writer, **it);
-    writeParamContainer(writer, pdl);
     writer.endElement();
 }
 
@@ -4103,7 +4103,7 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const SpectrumIdentificati
 }
 
 
-struct HandlerSpectrumIdentificationList : public HandlerIdentifiableParamContainer
+struct HandlerSpectrumIdentificationList : public HandlerIdentifiable
 {
     SpectrumIdentificationList* silp;
     HandlerSpectrumIdentificationList(SequenceIndex& sequenceIndex,
@@ -4123,12 +4123,12 @@ struct HandlerSpectrumIdentificationList : public HandlerIdentifiableParamContai
         {
             getAttribute(attributes, "numSequencesSearched", silp->numSequencesSearched);
             
-            HandlerIdentifiableParamContainer::id = silp;
+            HandlerIdentifiable::id = silp;
+            return HandlerIdentifiable::startElement(name, attributes, position);
         }
         else if (name == "FragmentationTable")
         {
             // Ignore
-            return Status::Ok;
         }
         else if (name == "Measure")
         {
@@ -4151,8 +4151,10 @@ struct HandlerSpectrumIdentificationList : public HandlerIdentifiableParamContai
             handlerSpectrumIdentificationResult_.sirp = silp->spectrumIdentificationResult.back().get();
             return Status(Status::Delegate, &handlerSpectrumIdentificationResult_);
         }
+        else
+            throw runtime_error("[IO::HandlerSpectrumIdentificationList] Unexpected element name: " + name);
 
-        return HandlerIdentifiableParamContainer::startElement(name, attributes, position);
+        return Status::Ok;
     }
 
     virtual Status endElement(const string& name,
@@ -4243,13 +4245,10 @@ struct HandlerAnalysisData : public SAXParser::Handler
         }
         else if (name == "ProteinDetectionList")
         {
-            if (analysisDataFlag != IgnoreProteinDetectionList)
-            {
-                ad->proteinDetectionListPtr = ProteinDetectionListPtr(new ProteinDetectionList());
-                handlerProteinDetectionList_.version = version;
-                handlerProteinDetectionList_.pdl = ad->proteinDetectionListPtr.get();
-                return Status(Status::Delegate, &handlerProteinDetectionList_);
-            }
+            ad->proteinDetectionListPtr = ProteinDetectionListPtr(new ProteinDetectionList());
+            handlerProteinDetectionList_.version = version;
+            handlerProteinDetectionList_.pdl = ad->proteinDetectionListPtr.get();
+            return Status(Status::Delegate, &handlerProteinDetectionList_);
         }
         else
             throw runtime_error("[IO::HandlerAnalysisData] Unexpected element name: " + name);

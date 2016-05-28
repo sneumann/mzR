@@ -1,5 +1,5 @@
 //
-// $Id: Filesystem.hpp 7303 2015-03-13 20:19:40Z chambm $
+// $Id: Filesystem.hpp 5091 2013-10-30 20:02:10Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -73,11 +73,6 @@ namespace util {
 PWIZ_API_DECL int expand_pathmask(const bfs::path& pathmask,
                                   vector<bfs::path>& matchingPaths);
 
-/// if recursive is true, then copies "from" and all its contents to "to";
-/// if "to" already exists or the copy fails for another reason, the error is reported in one of two ways:
-/// - if "ec" is not NULL, it will set it to the error code
-/// - if "ec" is NULL, a boost::filesystem_error is thrown
-PWIZ_API_DECL void copy_directory(const bfs::path& from, const bfs::path& to, bool recursive = true, boost::system::error_code* ec = 0);
 
 PWIZ_API_DECL enum ByteSizeAbbreviation
 {
@@ -103,9 +98,6 @@ std::string abbreviate_byte_size(boost::uintmax_t byteSize,
 
 PWIZ_API_DECL std::string read_file_header(const std::string& filepath, size_t length = 512);
 
-
-/// attempts to get the platform-specific console bounds (number of columns and lines), returns defaultBounds if an error occurs or the platform is not supported
-PWIZ_API_DECL std::pair<int, int> get_console_bounds(const std::pair<int, int>& defaultBounds = std::pair<int, int>(80, 24));
 
 } // util
 } // pwiz

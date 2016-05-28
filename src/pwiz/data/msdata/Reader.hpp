@@ -1,5 +1,5 @@
 //
-// $Id: Reader.hpp 8904 2015-09-29 19:20:14Z chambm $
+// $Id: Reader.hpp 5120 2013-11-05 23:00:13Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -48,16 +48,6 @@ class PWIZ_API_DECL Reader
 
 		/// when true, allows for skipping 0 length checks (and thus skip re-reading data for ABI)
 		bool acceptZeroLengthSpectra;
-
-        /// when true, all drift bins/scans in a frame/block are written in combined form instead of as individual spectra
-        bool combineIonMobilitySpectra;
-
-        /// when true, if a reader cannot identify an instrument, an exception will be thrown asking users to report it
-        bool unknownInstrumentIsError;
-
-        /// when true, if a reader does not know what time zone was used to record a time, it will assume the time refers to the host's local time;
-        /// when false, the reader will treat times with unknown time zone as UTC
-        bool adjustUnknownTimeZonesToHostTimeZone;
 
         Config();
         Config(const Config& rhs);

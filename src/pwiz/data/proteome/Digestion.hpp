@@ -1,5 +1,5 @@
 //
-// $Id: Digestion.hpp 6909 2014-11-19 17:18:29Z chambm $ 
+// $Id: Digestion.hpp 3979 2012-09-28 21:49:17Z chambm $ 
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -30,6 +30,7 @@
 #include "pwiz/data/common/cv.hpp"
 #include "pwiz/utility/chemistry/Chemistry.hpp"
 #include "Peptide.hpp"
+#include <boost/regex.hpp>
 #include "boost/shared_ptr.hpp"
 #include <string>
 #include <limits>
@@ -183,7 +184,7 @@ class PWIZ_API_DECL Digestion
     /// example: "(?=[DE])" means "cleaves before D or E"
     /// example: "(?<=[FYWLKR])(?!P)" means "cleaves after any single residue from FYWLKR except when it is followed by P"
     Digestion(const Peptide& polypeptide,
-              const std::string& cleavageAgentRegex,
+              const boost::regex& cleavageAgentRegex,
               const Config& config = Config());
 
     /// specifies digestion occurs by a combination of user-specified, zero-width Perl regular expressions
@@ -192,7 +193,7 @@ class PWIZ_API_DECL Digestion
     /// example: "(?=[DE])" means "cleaves before D or E"
     /// example: "(?<=[FYWLKR])(?!P)" means "cleaves after any single residue from FYWLKR except when it is followed by P"
     Digestion(const Peptide& polypeptide,
-              const std::vector<std::string>& cleavageAgentRegexes,
+              const std::vector<boost::regex>& cleavageAgentRegexes,
               const Config& config = Config());
 
     /// returns all instances of the given peptide in the polypeptide under digestion;

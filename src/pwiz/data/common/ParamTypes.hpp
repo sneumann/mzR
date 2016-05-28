@@ -1,5 +1,5 @@
 //
-// $Id: ParamTypes.hpp 6212 2014-05-20 22:38:47Z pcbrefugee $
+// $Id: ParamTypes.hpp 4008 2012-10-16 17:16:55Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -205,9 +205,6 @@ struct PWIZ_API_DECL UserParam
 
     UserParam(const UserParam& other);
     UserParam& operator=(const UserParam& rhs);
-
-    /// convenience function to return time in seconds (throws if units not a time unit)
-    double timeInSeconds() const;
 
     /// Templated value access with type conversion
     template<typename value_type>

@@ -24,9 +24,7 @@ PWIZOBJECTS=\
 ./boost/filesystem/src/operations.o \
 ./boost/filesystem/src/path.o \
 ./boost/filesystem/src/utf8_codecvt_facet.o \
-./boost/chrono/src/chrono.o \
-./boost/chrono/src/process_cpu_clocks.o \
-./boost/chrono/src/thread_clock.o \
+./pwiz/data/msdata/Version.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
@@ -60,8 +58,6 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
 ./pwiz/data/msdata/Index_mzML.o \
-./pwiz/data/msdata/Version.o \
-./pwiz/data/msdata/SpectrumWorkerThreads.o \
 ./pwiz/data/identdata/IdentDataFile.o \
 ./pwiz/data/identdata/IdentData.o \
 ./pwiz/data/identdata/DefaultReaderList.o \
@@ -70,8 +66,8 @@ PWIZOBJECTS=\
 ./pwiz/data/identdata/Serializer_pepXML.o \
 ./pwiz/data/identdata/Serializer_mzid.o \
 ./pwiz/data/identdata/IO.o \
+./pwiz/data/identdata/Version.o \
 ./pwiz/data/identdata/References.o \
-./pwiz/data/identdata/MascotReader.o \
 ./pwiz/data/proteome/Modification.o \
 ./pwiz/data/proteome/Digestion.o \
 ./pwiz/data/proteome/Peptide.o \
@@ -104,7 +100,7 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o R_init_mzR.o
 ##
 PWIZ_LDFLAGS=-L./pwiz
 PWIZ_LDFLAGS=-lpthread 
-PWIZ_CPPFLAGS=-I./boost_aux -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -DWITHOUT_MZ5 -I./boost
+PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -DWITHOUT_MZ5 -I./boost
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS) `nc-config --cflags || /bin/true`

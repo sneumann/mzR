@@ -1,4 +1,4 @@
-/* $Id: SHA1.cpp 9248 2015-12-30 21:09:31Z chambm $
+/* $Id: SHA1.cpp 2029 2010-06-10 02:18:59Z chambm $
 	100% free public domain implementation of the SHA-1 algorithm
 	by Dominik Reichl <dominik.reichl@t-online.de>
 	Web: http://www.dominik-reichl.de/
@@ -14,11 +14,6 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "SHA1.h"
-#include <boost/nowide/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
-#include <boost/interprocess/file_mapping.hpp>
-#include <boost/interprocess/mapped_region.hpp>
 
 #ifdef SHA1_UTILITY_FUNCTIONS
 #define SHA1_MAX_FILE_BUFFER 8000
@@ -146,74 +141,40 @@ void CSHA1::Update(const UINT_8* pbData, UINT_32 uLen)
 
 #ifdef SHA1_UTILITY_FUNCTIONS
 // Hash in file contents
-bool CSHA1::HashFile(const TCHAR* tszFileName)
+bool CSHA1::HashFile(const char* tszFileName)
 {
 	if(tszFileName == NULL) return false;
 
-	// first try to use memory-mapped I/O to maximize speed; on 32-bit systems this may fail for large files
-	try
+	FILE* fpIn = _tfopen(tszFileName, _T("rb"));
+	if(fpIn == NULL) return false;
+
+	_fseeki64(fpIn, 0, SEEK_END);
+	const INT_64 lFileSize = _ftelli64(fpIn);
+	_fseeki64(fpIn, 0, SEEK_SET);
+
+	const INT_64 lMaxBuf = SHA1_MAX_FILE_BUFFER;
+	UINT_8 vData[SHA1_MAX_FILE_BUFFER];
+	INT_64 lRemaining = lFileSize;
+
+	while(lRemaining > 0)
 	{
-		const INT_64 fileSize = (INT_64)boost::filesystem::file_size(tszFileName);
+		const size_t uMaxRead = static_cast<size_t>((lRemaining > lMaxBuf) ?
+			lMaxBuf : lRemaining);
 
-		// don't use a 32-bit process's entire address space, but 64-bit processes can just use the file size
-		const INT_64 maxRegionSize = sizeof(void*) == 8 ? fileSize : (1 << 30);
-		const INT_64 lMaxBuf = SHA1_MAX_FILE_BUFFER;
-
-		using namespace boost::interprocess;
-		file_mapping mmFile(tszFileName, read_only);
-		INT_64 totalRemaining = fileSize;
-
-		for (INT_64 offset = 0; offset < fileSize; offset += maxRegionSize)
+		const size_t uRead = fread(vData, 1, uMaxRead, fpIn);
+		if(uRead == 0)
 		{
-			INT_64 currentRegionSize = std::min(maxRegionSize, totalRemaining);
-			mapped_region mmRegion(mmFile, read_only, offset, currentRegionSize);
-
-			void* addr = mmRegion.get_address();
-			unsigned char* currentOffset = reinterpret_cast<unsigned char*>(addr);
-			INT_64 regionRemaining = currentRegionSize;
-
-			while (regionRemaining > 0)
-			{
-				const size_t uMaxRead = static_cast<size_t>((regionRemaining > lMaxBuf) ? lMaxBuf : regionRemaining);
-
-				Update(currentOffset, static_cast<UINT_32>(uMaxRead));
-
-				currentOffset += uMaxRead;
-				regionRemaining -= static_cast<INT_64>(uMaxRead);
-			}
-			totalRemaining -= currentRegionSize;
+			fclose(fpIn);
+			return false;
 		}
 
-		return (totalRemaining == 0);
+		Update(vData, static_cast<UINT_32>(uRead));
+
+		lRemaining -= static_cast<INT_64>(uRead);
 	}
-	catch (std::exception&) // fall back to using boost::nowide::ifstream
-	{
-		using namespace boost::nowide;
 
-		ifstream fpIn(tszFileName, std::ios::binary);
-		if (!fpIn) return false;
-
-		const INT_64 lFileSize = boost::filesystem::file_size(boost::filesystem::path(tszFileName, boost::filesystem::detail::utf8_codecvt_facet()));
-		const INT_64 lMaxBuf = SHA1_MAX_FILE_BUFFER;
-		char vData[SHA1_MAX_FILE_BUFFER];
-		INT_64 lRemaining = lFileSize;
-
-		while(lRemaining > 0)
-		{
-			const size_t uMaxRead = static_cast<size_t>((lRemaining > lMaxBuf) ? lMaxBuf : lRemaining);
-
-			fpIn.read(vData, uMaxRead);
-			const size_t uRead = fpIn ? uMaxRead : fpIn.gcount();
-			if(uRead == 0)
-				return false;
-
-			Update(reinterpret_cast<unsigned char*>(vData), static_cast<UINT_32>(uRead));
-
-			lRemaining -= static_cast<INT_64>(uRead);
-		}
-
-		return (lRemaining == 0);
-	}
+	fclose(fpIn);
+	return (lRemaining == 0);
 }
 #endif
 
@@ -248,18 +209,18 @@ void CSHA1::Final()
 
 #ifdef SHA1_UTILITY_FUNCTIONS
 // Get the final hash as a pre-formatted string
-bool CSHA1::ReportHash(TCHAR* tszReport, REPORT_TYPE rtReportType) const
+bool CSHA1::ReportHash(char* tszReport, REPORT_TYPE rtReportType) const
 {
 	if(tszReport == NULL) return false;
 
-	TCHAR tszTemp[16];
+	char tszTemp[16];
 
 	if((rtReportType == REPORT_HEX) || (rtReportType == REPORT_HEX_SHORT))
 	{
 		_sntprintf(tszTemp, 15, _T("%02X"), m_digest[0]);
 		_tcscpy(tszReport, tszTemp);
 
-		const TCHAR* lpFmt = ((rtReportType == REPORT_HEX) ? _T(" %02X") : _T("%02X"));
+		const char* lpFmt = ((rtReportType == REPORT_HEX) ? _T(" %02X") : _T("%02X"));
 		for(size_t i = 1; i < 20; ++i)
 		{
 			_sntprintf(tszTemp, 15, lpFmt, m_digest[i]);
@@ -284,9 +245,9 @@ bool CSHA1::ReportHash(TCHAR* tszReport, REPORT_TYPE rtReportType) const
 #endif
 
 #ifdef SHA1_STL_FUNCTIONS
-bool CSHA1::ReportHashStl(std::basic_string<TCHAR>& strOut, REPORT_TYPE rtReportType) const
+bool CSHA1::ReportHashStl(std::basic_string<char>& strOut, REPORT_TYPE rtReportType) const
 {
-	TCHAR tszOut[84];
+	char tszOut[84];
 	const bool bResult = ReportHash(tszOut, rtReportType);
 	if(bResult) strOut = tszOut;
 	return bResult;
