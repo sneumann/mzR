@@ -1,5 +1,5 @@
 //
-// $Id: KwCVMap.hpp 6909 2014-11-19 17:18:29Z chambm $
+// $Id: KwCVMap.hpp 2820 2011-06-27 22:51:16Z chambm $
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
 //
@@ -25,10 +25,8 @@
 #include <string>
 #include <vector>
 #include "boost/shared_ptr.hpp"
-#include "boost/xpressive/xpressive_dynamic.hpp"
+#include "boost/regex.hpp"
 #include "pwiz/data/common/cv.hpp"
-
-namespace bxp = boost::xpressive;
 
 namespace pwiz{
 namespace identdata{
@@ -68,14 +66,14 @@ struct PWIZ_API_DECL RegexCVMap : public CVMap
     
     void setPattern(const std::string& pattern);
     
-    virtual bxp::smatch match(std::string& text);
+    virtual boost::cmatch match(std::string& text);
     
     virtual const char* getTag() const;
 
     virtual bool operator()(const std::string& text) const;
 
 protected:
-    bxp::sregex pattern;
+    boost::regex pattern;
 };
 
 typedef boost::shared_ptr<RegexCVMap> RegexCVMapPtr;

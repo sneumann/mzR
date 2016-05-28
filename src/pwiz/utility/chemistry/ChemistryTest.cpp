@@ -1,5 +1,5 @@
 //
-// $Id: ChemistryTest.cpp 6865 2014-10-31 21:47:12Z chambm $
+// $Id: ChemistryTest.cpp 4129 2012-11-20 00:05:37Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -51,22 +51,19 @@ void testMassAbundance()
 struct TestFormula
 {
     const char* formula;
-    int numC, numH, numN, numO, numS, num13C, num2H, num15N, num18O;
+    int numC, numH, numN, numO, numS;
     double monoMass;
     double avgMass;
 };
 
 const TestFormula testFormulaData[] =
 {
-    { "C1H2N3O4S5", 1, 2, 3, 4, 5, 0, 0, 0, 0, 279.864884, 280.36928 },
-    { "C1H 2N3O4 S5", 1, 2, 3, 4, 5, 0, 0, 0, 0, 279.864884, 280.36928 },
-    { "H-42", 0, -42, 0, 0, 0, 0, 0, 0, 0, -42.328651, -42.333512 },
-    { "N2C-1", -1, 0, 2, 0, 0, 0, 0, 0, 0, 28.006148 - 12, 28.013486 - 12.0107 },
-    { "C39H67N11O10", 39, 67, 11, 10, 0, 0, 0, 0, 0, 849.507238, 850.01698 },
-    { "C3H7N1O2Se1", 3, 7, 1, 2, 0, 0, 0, 0, 0, 168.9642, 168.0532 },
-    { "_13C1_2H2_15N3_18O4", 0, 0, 0, 0, 0, 1, 2, 3, 4, 134.0285, 134.0285 },
-    { "C-1 _13C1 _2H2 H-2 N-3 _15N3 _18O4 O-4", -1, -2, -3, -4, 0, 1, 2, 3, 4, 14.024, 13.984 },
-    { "C-1_13C1_2H2H-2N-3_15N3_18O4O-4", -1, -2, -3, -4, 0, 1, 2, 3, 4, 14.024, 13.984 },
+    { "C1H2N3O4S5", 1, 2, 3, 4, 5, 279.864884, 280.36928 },
+    { "C1H 2N3O4 S5", 1, 2, 3, 4, 5, 279.864884, 280.36928 },
+    { "H-42", 0, -42, 0, 0, 0, -42.328651, -42.333512 },
+    { "N2C-1", -1, 0, 2, 0, 0, 28.006148-12, 28.013486-12.0107 },
+    { "C39H67N11O10", 39, 67, 11, 10, 0, 849.507238, 850.01698 },
+    { "C3H7N1O2Se1", 3, 7, 1, 2, 0, 168.9642, 168.0532 }
 };
 
 const int testFormulaDataSize = sizeof(testFormulaData)/sizeof(TestFormula);
@@ -80,14 +77,14 @@ void testFormula()
 
         const double EPSILON = 0.001;
 
-        if (os_) *os_ << formula << " " << formula.monoisotopicMass() << " " << formula.molecularWeight() << endl;
         unit_assert_equal(formula.monoisotopicMass(), testFormula.monoMass, EPSILON);
         unit_assert_equal(formula.molecularWeight(), testFormula.avgMass, EPSILON);
+        if (os_) *os_ << formula << " " << formula.monoisotopicMass() << " " << formula.molecularWeight() << endl;
 
         formula[Element::C] += 2;
-        if (os_) *os_ << formula << " " << formula.monoisotopicMass() << " " << formula.molecularWeight() << endl;
         unit_assert_equal(formula.monoisotopicMass(), testFormula.monoMass+24, EPSILON);
         unit_assert_equal(formula.molecularWeight(), testFormula.avgMass+12.0107*2, EPSILON);
+        if (os_) *os_ << formula << " " << formula.monoisotopicMass() << " " << formula.molecularWeight() << endl;
 
         //const Formula& constFormula = formula;
         //constFormula[Element::C] = 1; // this won't compile, by design 
@@ -95,16 +92,16 @@ void testFormula()
         // test copy constructor
         Formula formula2 = formula;
         formula2[Element::C] -= 2;
-        if (os_) *os_ << "formula: " << formula << endl;
-        if (os_) *os_ << "formula2: " << formula2 << endl;
         unit_assert_equal(formula.monoisotopicMass(), testFormula.monoMass+24, EPSILON);
         unit_assert_equal(formula2.monoisotopicMass(), testFormula.monoMass, EPSILON);
+        if (os_) *os_ << "formula: " << formula << endl;
+        if (os_) *os_ << "formula2: " << formula2 << endl;
 
         // test operator=
         formula = formula2;
+        unit_assert_equal(formula.monoisotopicMass(), formula2.monoisotopicMass(), EPSILON);
         if (os_) *os_ << "formula: " << formula << endl;
         if (os_) *os_ << "formula2: " << formula2 << endl;
-        unit_assert_equal(formula.monoisotopicMass(), formula2.monoisotopicMass(), EPSILON);
 
         // test operator==
         unit_assert(formula == testFormula.formula); // implicit construction from string
@@ -201,7 +198,7 @@ void testPolysiloxane()
 }
 
 
-void testThreadSafetyWorker(boost::barrier* testBarrier, int& result)
+void testThreadSafetyWorker(boost::barrier* testBarrier)
 {
     testBarrier->wait(); // wait until all threads have started
 
@@ -213,8 +210,6 @@ void testThreadSafetyWorker(boost::barrier* testBarrier, int& result)
         testInfo();
         infoExample();
         testPolysiloxane();
-        result = 0;
-        return;
     }
     catch (exception& e)
     {
@@ -224,21 +219,15 @@ void testThreadSafetyWorker(boost::barrier* testBarrier, int& result)
     {
         cerr << "Unhandled exception in worker thread." << endl;
     }
-    result = 1;
 }
 
 void testThreadSafety(const int& testThreadCount)
 {
     boost::barrier testBarrier(testThreadCount);
     boost::thread_group testThreadGroup;
-    vector<int> results(testThreadCount, 0);
     for (int i=0; i < testThreadCount; ++i)
-        testThreadGroup.add_thread(new boost::thread(&testThreadSafetyWorker, &testBarrier, boost::ref(results[i])));
+        testThreadGroup.add_thread(new boost::thread(&testThreadSafetyWorker, &testBarrier));
     testThreadGroup.join_all();
-
-    int failedThreads = std::accumulate(results.begin(), results.end(), 0);
-    if (failedThreads > 0)
-        throw runtime_error(lexical_cast<string>(failedThreads) + " thread failed");
 }
 
 

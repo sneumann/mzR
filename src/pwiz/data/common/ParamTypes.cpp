@@ -1,5 +1,5 @@
 //
-// $Id: ParamTypes.cpp 6212 2014-05-20 22:38:47Z pcbrefugee $
+// $Id: ParamTypes.cpp 4008 2012-10-16 17:16:55Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -51,32 +51,20 @@ PWIZ_API_DECL string CVParam::unitsName() const
     return cvTermInfo(units).name;
 }
 
-double timeInSecondsHelper(CVID units, double value)
-{
-    if (units == UO_second) 
-        return value;
-    else if (units == UO_minute)
-        return value * 60;
-    else if (units == UO_hour)
-        return value * 3600;
-    else if (units == UO_millisecond)
-        return value * 1e-3;
-    else if (units == UO_microsecond)
-        return value * 1e-6;
-    else if (units == UO_nanosecond)
-        return value * 1e-9;
-    else if (units == UO_picosecond)
-        return value * 1e-12;
-    else if (units == MS_second_OBSOLETE) // mzML 1.0 support
-        return value;
-    else if (units == MS_minute_OBSOLETE) // mzML 1.0 support
-        return value * 60;
-    return 0; 
-}
 
 PWIZ_API_DECL double CVParam::timeInSeconds() const
 {
-    return timeInSecondsHelper(units, valueAs<double>());
+    if (units == UO_second) 
+        return valueAs<double>();
+    else if (units == UO_minute)
+        return valueAs<double>() * 60;
+    else if (units == UO_hour)
+        return valueAs<double>() * 3600;
+    else if (units == MS_second_OBSOLETE) // mzML 1.0 support
+        return valueAs<double>();
+    else if (units == MS_minute_OBSOLETE) // mzML 1.0 support
+        return valueAs<double>() * 60;
+    return 0; 
 }
 
 template <typename T>
@@ -148,11 +136,6 @@ PWIZ_API_DECL UserParam& UserParam::operator=(const UserParam& rhs)
     return *this;
 }
 
-
-PWIZ_API_DECL double UserParam::timeInSeconds() const
-{
-    return timeInSecondsHelper(units, valueAs<double>());
-}
 
 PWIZ_API_DECL bool UserParam::empty() const 
 {

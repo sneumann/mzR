@@ -1,5 +1,5 @@
 //
-// $Id: cvtest.cpp 6478 2014-07-08 20:01:38Z chambm $
+// $Id: cvtest.cpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -59,8 +59,6 @@ void test()
                 cvTermInfo(MS_instrument_model).parentsPartOf[0] == MS_instrument);
 
     unit_assert(cvTermInfo(MS_None____OBSOLETE).isObsolete);
-
-    unit_assert(cvTermInfo(MS_regular_expressions_for_a_GUID).def == "([A-Fa-f0-9]\\{8\\}-([A-Fa-f0-9]\\{4\\}-)\\{3\\}[A-Fa-f0-9]\\{12\\}).");
 }
 
 

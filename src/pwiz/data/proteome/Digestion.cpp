@@ -1,5 +1,5 @@
 //
-// $Id: Digestion.cpp 9198 2015-12-04 23:48:50Z chambm $ 
+// $Id: Digestion.cpp 4080 2012-11-07 00:23:09Z pcbrefugee $ 
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -31,7 +31,6 @@
 #include "pwiz/utility/misc/Exception.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/utility/misc/Singleton.hpp"
-#include <boost/xpressive/xpressive_dynamic.hpp>
 
 
 namespace pwiz {
@@ -41,7 +40,6 @@ namespace proteome {
 using namespace pwiz::cv;
 using namespace pwiz::util;
 using boost::shared_ptr;
-namespace bxp = boost::xpressive;
 
 #undef SECURE_SCL
 
@@ -211,8 +209,6 @@ class CleavageAgentInfo : public boost::singleton<CleavageAgentInfo>
                 cleavageAgents_.insert(*itr);
                 cleavageAgentNames_.push_back(cvTermInfo.name);
                 cleavageAgentNameToCvidMap_[bal::to_lower_copy(cvTermInfo.name)] = *itr;
-                BOOST_FOREACH(const string& synonym, cvTermInfo.exactSynonyms)
-                    cleavageAgentNameToCvidMap_[bal::to_lower_copy(synonym)] = *itr;
                 const CVTermInfo& cleavageAgentRegexTerm = pwiz::cv::cvTermInfo(regexRelationItr->second);
                 cleavageAgentRegexToCvidMap_[cleavageAgentRegexTerm.name] = *itr;
                 cleavageAgentToRegexMap_[*itr] = &cleavageAgentRegexTerm;
@@ -306,7 +302,7 @@ namespace {
 // match zero or one regex term like (?<=[KR]) or (?<=K) or (?<![KR]) or (?<!K)
 // followed by zero or one term like (?=[KR]) or (?=K) or (?![KR]) or (?!K)
 // 4 capture groups: [!=] [A-Z] for each look: 0                1                        2                3
-const bxp::sregex cutNoCutRegex = bxp::sregex::compile("(?:\\(+\\?<([=!])(\\[[A-Z]+\\]|[A-Z])\\)+)?(?:\\(+\\?([=!])(\\[[A-Z]+\\]|[A-Z])\\)+)?");
+const boost::regex cutNoCutRegex("(?:\\(+\\?<([=!])(\\[[A-Z]+\\]|[A-Z])\\)+)?(?:\\(+\\?([=!])(\\[[A-Z]+\\]|[A-Z])\\)+)?");
 
 } // namespace
 
@@ -317,8 +313,8 @@ string Digestion::disambiguateCleavageAgentRegex(const string& cleavageAgentRege
         return cleavageAgentRegex;
 
     // expand ambiguous residues, i.e. B->[ND], Z->[EQ], J->[IL], X->[A-Z]
-    bxp::smatch what;
-    bxp::regex_match(cleavageAgentRegex, what, cutNoCutRegex);
+    boost::smatch what;
+    boost::regex_match(cleavageAgentRegex, what, cutNoCutRegex);
 
     bool hasLookbehind = what[1].matched && what[2].matched;
     bool hasLookahead = what[3].matched && what[4].matched;
@@ -363,35 +359,33 @@ class Digestion::Impl
             if (cleavageAgent_ == MS_unspecific_cleavage)
                 config_.minimumSpecificity = Digestion::NonSpecific;
             else if (cleavageAgent_ != MS_no_cleavage)
-                cleavageAgentRegex_ = bxp::sregex::compile(disambiguateCleavageAgentRegex(getCleavageAgentRegex(cleavageAgent_)));
+                cleavageAgentRegex_ = disambiguateCleavageAgentRegex(getCleavageAgentRegex(cleavageAgent_));
             return;
         }
 
-        cleavageAgent_ = CVID_Unknown; // Avoid testing uninitialized value in digest()
         string mergedRegex = "((" + disambiguateCleavageAgentRegex(getCleavageAgentRegex(cleavageAgents[0]));
         for (size_t i=1; i < cleavageAgents.size(); ++i)
             mergedRegex += ")|(" + disambiguateCleavageAgentRegex(getCleavageAgentRegex(cleavageAgents[i]));
         mergedRegex += "))";
 
-        cleavageAgentRegex_ = bxp::sregex::compile(mergedRegex);
+        cleavageAgentRegex_ = mergedRegex;
     }
 
-    Impl(const Peptide& peptide, const vector<string>& cleavageAgentRegexes, const Config& config)
+    Impl(const Peptide& peptide, const vector<boost::regex>& cleavageAgentRegexes, const Config& config)
         :   peptide_(peptide), config_(config)
     {
-        cleavageAgent_ = CVID_Unknown; // Avoid testing uninitialized value in digest()
         if (cleavageAgentRegexes.size() == 1)
         {
-            cleavageAgentRegex_ = bxp::sregex::compile(cleavageAgentRegexes[0]); //disambiguateCleavageAgentRegex(cleavageAgentRegexes[0].str());
+            cleavageAgentRegex_ = cleavageAgentRegexes[0]; //disambiguateCleavageAgentRegex(cleavageAgentRegexes[0].str());
             return;
         }
 
-        string mergedRegex = "((" + disambiguateCleavageAgentRegex(cleavageAgentRegexes[0]);
+        string mergedRegex = "((" + disambiguateCleavageAgentRegex(cleavageAgentRegexes[0].str());
         for (size_t i=1; i < cleavageAgentRegexes.size(); ++i)
-            mergedRegex += ")|(" + disambiguateCleavageAgentRegex(cleavageAgentRegexes[i]);
+            mergedRegex += ")|(" + disambiguateCleavageAgentRegex(cleavageAgentRegexes[i].str());
         mergedRegex += "))";
 
-        cleavageAgentRegex_ = bxp::sregex::compile(mergedRegex);
+        cleavageAgentRegex_ = mergedRegex;
     }
 
     inline void digest() const
@@ -417,20 +411,21 @@ class Digestion::Impl
                     return;
                 }
 
-                //if (cleavageAgentRegex_.empty())
-                //    throw runtime_error("empty cleavage regex");
+                if (cleavageAgentRegex_.empty())
+                    throw runtime_error("empty cleavage regex");
 
                 std::string::const_iterator start = sequence.begin();
                 std::string::const_iterator end = sequence.end();
-                bxp::smatch what;
-                bxp::regex_constants::match_flag_type flags = bxp::regex_constants::match_default;
-                while (bxp::regex_search(start, end, what, cleavageAgentRegex_, flags))
+                boost::smatch what;
+                boost::match_flag_type flags = boost::match_default;
+                while (regex_search(start, end, what, cleavageAgentRegex_, flags))
                 {
                     sites_.push_back(int(what[0].first-sequence.begin()-1));
 
                     // update search position and flags
                     start = max(what[0].second, start+1);
-                    flags = flags | bxp::regex_constants::match_prev_avail | bxp::regex_constants::match_not_bol;
+                    flags |= boost::match_prev_avail;
+                    flags |= boost::match_not_bob;
                 }
 
                 // if regex didn't match n-terminus, insert it
@@ -576,7 +571,7 @@ class Digestion::Impl
     Peptide peptide_;
     Config config_;
     CVID cleavageAgent_;
-    bxp::sregex cleavageAgentRegex_;
+    boost::regex cleavageAgentRegex_;
     friend class Digestion::const_iterator::Impl;
 
     // precalculated offsets to digestion sites in order of occurence;
@@ -606,15 +601,15 @@ Digestion::Digestion(const Peptide& peptide,
 
 PWIZ_API_DECL
 Digestion::Digestion(const Peptide& peptide,
-                     const string& cleavageAgentRegex,
+                     const boost::regex& cleavageAgentRegex,
                      const Config& config)
-:   impl_(new Impl(peptide, vector<string>(1, cleavageAgentRegex), config))
+:   impl_(new Impl(peptide, vector<boost::regex>(1, cleavageAgentRegex), config))
 {
 }
 
 PWIZ_API_DECL
 Digestion::Digestion(const Peptide& peptide,
-                     const vector<string>& cleavageAgentRegexes,
+                     const vector<boost::regex>& cleavageAgentRegexes,
                      const Config& config)
 :   impl_(new Impl(peptide, cleavageAgentRegexes, config))
 {
@@ -679,7 +674,6 @@ class Digestion::const_iterator::Impl
     inline void initFullySpecific()
     {
         begin_ = end_ = sites_.end();
-        beginNonSpecific_ = endNonSpecific_ = -1; // So debuggers don't complain about uninit values
 
         // iteration requires at least 2 digestion sites
         if (sites_.size() < 2)

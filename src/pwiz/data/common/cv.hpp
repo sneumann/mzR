@@ -1,5 +1,5 @@
 //
-// $Id: cv.hpp 8981 2015-10-12 20:20:31Z chambm $
+// $Id: cv.hpp 5759 2014-02-19 22:26:29Z chambm $
 //
 //
 // Darren Kessner <darren@proteowizard.org>
@@ -41,8 +41,8 @@
 // [psi-ms.obo]
 #define _PSI_MS_OBO_
 //   format-version: 1.2
-//   data-version: 3.79.0
-//   date: 07:10:2015 10:15
+//   data-version: 3.60.0
+//   date: 18:02:2014 08:37
 //   saved-by: Gerhard Mayer
 //   auto-generated-by: OBO-Edit 2.3
 //   import: http://pato.googlecode.com/svn/trunk/quality.obo
@@ -50,28 +50,26 @@
 //   default-namespace: MS
 //   namespace-id-rule: * MS:$sequence(7,0,9999999)$
 //   remark: namespace: MS
-//   remark: version: 3.79.0
-//   remark: release date: 2015-10-07
+//   remark: version: 3.60.0
+//   remark: release date: 2014-02-18
 //   remark: coverage: Mass spectrometer output files and spectra interpretation
 //   remark: creator: Matt Chambers <matt.chambers <-at-> vanderbilt.edu>
 //   remark: creator: Andreas Bertsch <bertsch <-at-> informatik.uni-tuebingen.de>
 //   remark: creator: Marius Kallhardt <Marius.Kallhardt <-at-> bdal.de>
 //   remark: creator: Eric Deutsch <edeutsch <-at-> systemsbiology.org>
 //   remark: creator: Fredrik Levander <fredrik.levander <-at-> immun.lth.se>
-//   remark: creator: Pierre-Alain Binz <pierre-alain.binz <-at-> chuv.ch>
 //   remark: creator: Gerhard Mayer <mayerg97 <-at-> rub.de>
 //   remark: publisher: HUPO Proteomics Standards Initiative Mass Spectrometry Standards Working Group and HUPO Proteomics Standards Initiative Proteomics Informatics Working Group
 //   remark: When appropriate the definition and synonyms of a term are reported exactly as in the chapter 12 of IUPAC orange book. See http://www.iupac.org/projects/2003/2003-056-2-500.html and http://mass-spec.lsu.edu/msterms/index.php/Main_Page
-//   remark: For any queries contact psidev-ms-vocab@lists.sourceforge.net
-//   remark: URL: http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo
 //   remark: This work is licensed under the Creative Commons Attribution 3.0 Unported License.
 //   remark: To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
-//   ontology: ms
+//   ontology: pato
+//   ontology: uo
 //
 // [unimod.obo]
 #define _UNIMOD_OBO_
 //   format-version: 1.2
-//   date: 2015:05:06 10:56
+//   date: 2013:11:06 11:40
 //
 // [unit.obo]
 #define _UNIT_OBO_
@@ -103,7 +101,7 @@ enum PWIZ_API_DECL CVID
     MS_sample_number = 1000001,
 
     /// sample name: A reference string relevant to the sample under study.
-    MS_sample_name = 1000002,
+    MS_sample_name_OBSOLETE = 1000002,
 
     /// sample state: The chemical phase of a pure sample, or the state of a mixed sample.
     MS_sample_state = 1000003,
@@ -136,7 +134,7 @@ enum PWIZ_API_DECL CVID
     MS_resolution_measurement_method = 1000012,
 
     /// resolution type: Specify the nature of resolution for the mass analyzer. Resolution is usually either constant with respect to m/z or proportional to m/z.
-    MS_resolution_type_OBSOLETE = 1000013,
+    MS_resolution_type = 1000013,
 
     /// accuracy: Accuracy is the degree of conformity of a measured mass to its actual value.
     MS_accuracy = 1000014,
@@ -148,7 +146,7 @@ enum PWIZ_API_DECL CVID
     MS_scan_start_time = 1000016,
 
     /// Scan Function: Describes the type of mass analysis being performed. Two primary modes are: typical acquisition over a range of masses (Mass Scan), and Selected Ion Detection. The primary difference is that Selected Ion Detection produces a single value for the signal at the selected mass rather than producing a mass spectrum.
-    MS_Scan_Function_OBSOLETE = 1000017,
+    MS_Scan_Function = 1000017,
 
     /// scan direction: Direction in terms of m/z of the scan for scanning analyzers (low to high, or high to low).
     MS_scan_direction = 1000018,
@@ -157,7 +155,7 @@ enum PWIZ_API_DECL CVID
     MS_scan_law = 1000019,
 
     /// scanning method: Describes the acquisition data type produced by a tandem mass spectrometry experiment.
-    MS_scanning_method_OBSOLETE = 1000020,
+    MS_scanning_method = 1000020,
 
     /// reflectron state: Status of the reflectron, turned on or off.
     MS_reflectron_state = 1000021,
@@ -303,10 +301,10 @@ enum PWIZ_API_DECL CVID
     /// membrane separator: A device to separate carrier molecules from analyte molecules on the basis of ease of diffusion across a semipermeable membrane.
     MS_membrane_separator = 1000062,
 
-    /// moving belt: Continuous moving surface in the form of a belt which passes through an ion source carrying analyte molecules.
+    /// moving belt: Continuous moving surface in the form of a belt which passes through an ionsource carrying analyte molecules.
     MS_moving_belt = 1000063,
 
-    /// moving wire: Continuous moving surface in the form of a wire which passes through an ion source carrying analyte molecules.
+    /// moving wire: Continuous moving surface in the form of a wire which passes through an ionsource carrying analyte molecules.
     MS_moving_wire = 1000064,
 
     /// open split: A division of flowing stream of liquid into two streams.
@@ -318,7 +316,7 @@ enum PWIZ_API_DECL CVID
     /// reservoir: A sample inlet method involving a reservoir.
     MS_reservoir = 1000067,
 
-    /// septum: A disc composed of a flexible material that seals the entrance to the reservoir. Can also be entrance to the vacuum chamber.
+    /// septum: A disc composed of a flexible material that seals the entrance to the reservoir. Can also be enterance to the vaccum chamber.
     MS_septum = 1000068,
 
     /// thermospray inlet: A method for generating gas phase ions from a solution of an analyte by rapid heating of the sample.
@@ -415,16 +413,16 @@ enum PWIZ_API_DECL CVID
     MS_ten_percent_valley = 1000087,
 
     /// constant: When resolution is constant with respect to m/z.
-    MS_constant_OBSOLETE = 1000088,
+    MS_constant = 1000088,
 
     /// proportional: When resolution is proportional with respect to m/z.
-    MS_proportional_OBSOLETE = 1000089,
+    MS_proportional = 1000089,
 
     /// mass scan: A variation of instrument where a selected mass is scanned.
-    MS_mass_scan_OBSOLETE = 1000090,
+    MS_mass_scan = 1000090,
 
     /// selected ion detection: Please see Single Ion Monitoring.
-    MS_selected_ion_detection_OBSOLETE = 1000091,
+    MS_selected_ion_detection = 1000091,
 
     /// decreasing m/z scan: High to low direction in terms of m/z of the scan for scanning analyzers.
     MS_decreasing_m_z_scan = 1000092,
@@ -537,8 +535,8 @@ enum PWIZ_API_DECL CVID
     /// transient recorder: A detector acquisition mode used for detecting transient signals.
     MS_transient_recorder = 1000120,
 
-    /// SCIEX instrument model: The brand of instruments from the joint venture between Applied Biosystems and MDS Analytical Technologies (formerly MDS SCIEX). Previously branded as \"Applied Biosystems|MDS SCIEX\".
-    MS_SCIEX_instrument_model = 1000121,
+    /// AB SCIEX instrument model: The brand of instruments from the joint venture between Applied Biosystems and MDS Analytical Technologies (formerly MDS SCIEX). Previously branded as \"Applied Biosystems|MDS SCIEX\".
+    MS_AB_SCIEX_instrument_model = 1000121,
 
     /// Bruker Daltonics instrument model: Bruker Daltonics' instrument model.
     MS_Bruker_Daltonics_instrument_model = 1000122,
@@ -591,8 +589,8 @@ enum PWIZ_API_DECL CVID
     /// CAD (collision-induced dissociation): The dissociation of an ion after collisional excitation. The term collisional-activated dissociation is not recommended.
     MS_CAD = MS_collision_induced_dissociation,
 
-    /// collisionally activated dissociation (collision-induced dissociation): The dissociation of an ion after collisional excitation. The term collisional-activated dissociation is not recommended.
-    MS_collisionally_activated_dissociation = MS_collision_induced_dissociation,
+    /// collision activated dissociation (collision-induced dissociation): The dissociation of an ion after collisional excitation. The term collisional-activated dissociation is not recommended.
+    MS_collision_activated_dissociation = MS_collision_induced_dissociation,
 
     /// plasma desorption: The ionization of material in a solid sample by bombarding it with ionic or neutral atoms formed as a result of the fission of a suitable nuclide, typically 252Cf. Synonymous with fission fragment ionization.
     MS_plasma_desorption = 1000134,
@@ -835,16 +833,16 @@ enum PWIZ_API_DECL CVID
     MS_SRM = MS_selected_reaction_monitoring,
 
     /// accurate mass: An experimentally determined mass that is can be to determine a unique elemental formula. For ions less than 200 u, a measurement with 5 ppm accuracy is sufficient to determine the elemental composition.
-    MS_accurate_mass_OBSOLETE = 1000207,
+    MS_accurate_mass = 1000207,
 
     /// average mass: The mass of an ion or molecule calculated using the average mass of each element weighted for its natural isotopic abundance.
-    MS_average_mass_OBSOLETE = 1000208,
+    MS_average_mass = 1000208,
 
     /// appearance energy: The minimum energy that must be imparted to an atom or molecule to produce a specified ion. The term appearance potential is not recommended.
-    MS_appearance_energy_OBSOLETE = 1000209,
+    MS_appearance_energy = 1000209,
 
     /// AE (appearance energy): The minimum energy that must be imparted to an atom or molecule to produce a specified ion. The term appearance potential is not recommended.
-    MS_AE_OBSOLETE = MS_appearance_energy_OBSOLETE,
+    MS_AE = MS_appearance_energy,
 
     /// base peak: The peak in a mass spectrum that has the greatest intensity. This term may be applied to the spectra of pure substances or mixtures.
     MS_base_peak = 1000210,
@@ -865,16 +863,16 @@ enum PWIZ_API_DECL CVID
     MS_Da_OBSOLETE = MS_dalton_OBSOLETE,
 
     /// electron affinity: The electron affinity of M is the minimum energy required for the process M- ? M + e where M- and M are in their ground rotational, vibrational and electronic states and the electron has zero kinetic energy.
-    MS_electron_affinity_OBSOLETE = 1000213,
+    MS_electron_affinity = 1000213,
 
     /// EA (electron affinity): The electron affinity of M is the minimum energy required for the process M- ? M + e where M- and M are in their ground rotational, vibrational and electronic states and the electron has zero kinetic energy.
-    MS_EA_OBSOLETE = MS_electron_affinity_OBSOLETE,
+    MS_EA = MS_electron_affinity,
 
     /// electron energy obsolete: The potential difference through which electrons are accelerated before they are used to bring about electron ionization.
     MS_electron_energy_obsolete_OBSOLETE = 1000214,
 
     /// exact mass: The calculated mass of an ion or molecule containing a single isotope of each atom.
-    MS_exact_mass_OBSOLETE = 1000215,
+    MS_exact_mass = 1000215,
 
     /// field-free region: A section of a mass spectrometer in which there are no electric or magnetic fields.
     MS_field_free_region = 1000216,
@@ -883,43 +881,43 @@ enum PWIZ_API_DECL CVID
     MS_FFR = MS_field_free_region,
 
     /// ionization cross section: A measure of the probability that a given ionization process will occur when an atom or molecule interacts with a photon, electron, atom or molecule.
-    MS_ionization_cross_section_OBSOLETE = 1000217,
+    MS_ionization_cross_section = 1000217,
 
     /// ionization efficiency: The ratio of the number of ions formed to the number of electrons, molecules or photons used.
     MS_ionization_efficiency_OBSOLETE = 1000218,
 
     /// ionization energy: The minimum energy required to remove an electron from an atom or molecule to produce a positive ion.
-    MS_ionization_energy_OBSOLETE = 1000219,
+    MS_ionization_energy = 1000219,
 
     /// IE (ionization energy): The minimum energy required to remove an electron from an atom or molecule to produce a positive ion.
-    MS_IE_OBSOLETE = MS_ionization_energy_OBSOLETE,
+    MS_IE = MS_ionization_energy,
 
     /// isotope dilution mass spectrometry: A quantitative mass spectrometry technique in which an isotopically enriched compound is used as an internal standard.
-    MS_isotope_dilution_mass_spectrometry_OBSOLETE = 1000220,
+    MS_isotope_dilution_mass_spectrometry = 1000220,
 
     /// IDMS (isotope dilution mass spectrometry): A quantitative mass spectrometry technique in which an isotopically enriched compound is used as an internal standard.
-    MS_IDMS_OBSOLETE = MS_isotope_dilution_mass_spectrometry_OBSOLETE,
+    MS_IDMS = MS_isotope_dilution_mass_spectrometry,
 
-    /// magnetic deflection: The deflection of charged particles in a magnetic field due to a force equal to qvxB where q is the particle charge, v its velocity and B the magnetic field. Magnetic deflection of an ion beam is used for m/z separation in a magnetic sector mass spectrometer.
+    /// magnetic deflection: The deflection of charged particles in a magnetic field due to a force equal to qv B where q is the particle charge, v its velocity and B the magnetic field. Magnetic deflection of an ion beam is used for m/z separation in a magnetic sector mass spectrometer.
     MS_magnetic_deflection = 1000221,
 
-    /// mass defect: The difference between the monoisotopic and nominal mass of a molecule or atom.
-    MS_mass_defect_OBSOLETE = 1000222,
+    /// mass defect: The difference between the monoisotipic and nominal mass of a molecule or atom.
+    MS_mass_defect = 1000222,
 
     /// mass number: The sum of the protons and neutrons in an atom, molecule or ion.
-    MS_mass_number_OBSOLETE = 1000223,
+    MS_mass_number = 1000223,
 
     /// molecular mass: The mass of one mole of a molecular substance (6.022 1415(10) x 10^23 molecules).
-    MS_molecular_mass_OBSOLETE = 1000224,
+    MS_molecular_mass = 1000224,
 
     /// monoisotopic mass: The mass of an ion or molecule calculated using the mass of the most abundant isotope of each element.
-    MS_monoisotopic_mass_OBSOLETE = 1000225,
+    MS_monoisotopic_mass = 1000225,
 
     /// molecular beam mass spectrometry: A mass spectrometry technique in which the sample is introduced into the mass spectrometer as a molecular beam.
-    MS_molecular_beam_mass_spectrometry_OBSOLETE = 1000226,
+    MS_molecular_beam_mass_spectrometry = 1000226,
 
     /// MBMS (molecular beam mass spectrometry): A mass spectrometry technique in which the sample is introduced into the mass spectrometer as a molecular beam.
-    MS_MBMS_OBSOLETE = MS_molecular_beam_mass_spectrometry_OBSOLETE,
+    MS_MBMS = MS_molecular_beam_mass_spectrometry,
 
     /// multiphoton ionization: Photoionization of an atom or molecule in which in two or more photons are absorbed.
     MS_multiphoton_ionization = 1000227,
@@ -928,13 +926,13 @@ enum PWIZ_API_DECL CVID
     MS_MPI = MS_multiphoton_ionization,
 
     /// nitrogen rule: An organic molecule containing the elements C, H, O, S, P, or halogen has an odd nominal mass if it contains an odd number of nitrogen atoms.
-    MS_nitrogen_rule_OBSOLETE = 1000228,
+    MS_nitrogen_rule = 1000228,
 
     /// nominal mass: The mass of an ion or molecule calculated using the mass of the most abundant isotope of each element rounded to the nearest integer value.
-    MS_nominal_mass_OBSOLETE = 1000229,
+    MS_nominal_mass = 1000229,
 
     /// odd-electron rule: Odd-electron ions may dissociate to form either odd or even-electron ions, whereas even-electron ions generally form even-electron fragment ions.
-    MS_odd_electron_rule_OBSOLETE = 1000230,
+    MS_odd_electron_rule = 1000230,
 
     /// peak: A localized region of relatively large ion signal in a mass spectrum. Although peaks are often associated with particular ions, the terms peak and ion should not be used interchangeably.
     MS_peak = 1000231,
@@ -943,10 +941,10 @@ enum PWIZ_API_DECL CVID
     MS_peak_intensity_OBSOLETE = 1000232,
 
     /// proton affinity: The proton affinity of a species M is defined as the negative of the enthalpy change for the reaction M + H+ ->[M+H]+, where all species are in their ground rotational, vibrational and electronic states.
-    MS_proton_affinity_OBSOLETE = 1000233,
+    MS_proton_affinity = 1000233,
 
     /// PA (proton affinity): The proton affinity of a species M is defined as the negative of the enthalpy change for the reaction M + H+ ->[M+H]+, where all species are in their ground rotational, vibrational and electronic states.
-    MS_PA_OBSOLETE = MS_proton_affinity_OBSOLETE,
+    MS_PA = MS_proton_affinity,
 
     /// mass resolving power: In a mass spectrum, the observed mass divided by the difference between two masses that can be separated. The method by which delta m was obtained and the mass at which the measurement was made should be reported.
     MS_mass_resolving_power_OBSOLETE = 1000234,
@@ -967,10 +965,10 @@ enum PWIZ_API_DECL CVID
     MS_u_OBSOLETE = MS_unified_atomic_mass_unit_OBSOLETE,
 
     /// accelerator mass spectrometry: A mass spectrometry technique in which atoms extracted from a sample are ionized, accelerated to MeV energies and separated according to their momentum, charge and energy.
-    MS_accelerator_mass_spectrometry_OBSOLETE = 1000238,
+    MS_accelerator_mass_spectrometry = 1000238,
 
     /// AMS (accelerator mass spectrometry): A mass spectrometry technique in which atoms extracted from a sample are ionized, accelerated to MeV energies and separated according to their momentum, charge and energy.
-    MS_AMS_OBSOLETE = MS_accelerator_mass_spectrometry_OBSOLETE,
+    MS_AMS = MS_accelerator_mass_spectrometry,
 
     /// atmospheric pressure matrix-assisted laser desorption ionization: Matrix-assisted laser desorption ionization in which the sample target is at atmospheric pressure and the ions formed by the pulsed laser are sampled through a small aperture into the mass spectrometer.
     MS_atmospheric_pressure_matrix_assisted_laser_desorption_ionization = 1000239,
@@ -997,10 +995,10 @@ enum PWIZ_API_DECL CVID
     MS_BIRD = MS_blackbody_infrared_radiative_dissociation,
 
     /// charge-remote fragmentation: A fragmentation of an even-electron ion in which the cleaved bond is not adjacent to the apparent charge site.
-    MS_charge_remote_fragmentation_OBSOLETE = 1000243,
+    MS_charge_remote_fragmentation = 1000243,
 
     /// CRF (charge-remote fragmentation): A fragmentation of an even-electron ion in which the cleaved bond is not adjacent to the apparent charge site.
-    MS_CRF_OBSOLETE = MS_charge_remote_fragmentation_OBSOLETE,
+    MS_CRF = MS_charge_remote_fragmentation,
 
     /// consecutive reaction monitoring: MSn experiment with three or more stages of m/z separation and in which a particular multi-step reaction path is monitored.
     MS_consecutive_reaction_monitoring_OBSOLETE_1000244 = 1000244,
@@ -1045,16 +1043,16 @@ enum PWIZ_API_DECL CVID
     MS_ECD = MS_electron_capture_dissociation,
 
     /// even-electron ion: An ion containing no unpaired electrons in its ground electronic state, e.g. CH3+ in its ground state.
-    MS_even_electron_ion_OBSOLETE = 1000251,
+    MS_even_electron_ion = 1000251,
 
     /// EE (even-electron ion): An ion containing no unpaired electrons in its ground electronic state, e.g. CH3+ in its ground state.
-    MS_EE_OBSOLETE = MS_even_electron_ion_OBSOLETE,
+    MS_EE = MS_even_electron_ion,
 
     /// electron-induced excitation in organics: The reaction of an ion with an electron in which the translational energy of the collision is converted into internal energy of the ion.
-    MS_electron_induced_excitation_in_organics_OBSOLETE = 1000252,
+    MS_electron_induced_excitation_in_organics = 1000252,
 
     /// EIEIO (electron-induced excitation in organics): The reaction of an ion with an electron in which the translational energy of the collision is converted into internal energy of the ion.
-    MS_EIEIO_OBSOLETE = MS_electron_induced_excitation_in_organics_OBSOLETE,
+    MS_EIEIO = MS_electron_induced_excitation_in_organics,
 
     /// electron multiplier: A device to amplify the current of a beam or packet of charged particles or photons by incidence upon the surface of an electrode to produce secondary electrons. The secondary electrons are then accelerated to other electrodes or parts of a continuous electrode to produce further secondary electrons.
     MS_electron_multiplier = 1000253,
@@ -1075,10 +1073,10 @@ enum PWIZ_API_DECL CVID
     MS_FA = MS_flowing_afterglow,
 
     /// high-field asymmetric waveform ion mobility spectrometry: The separation of ions between two concentric cylindrical electrodes due to application of a high voltage asymmetric waveform whereby ions migrate towards one of the two electrodes depending on the ratio of the high- to low-field mobility of the ion.
-    MS_high_field_asymmetric_waveform_ion_mobility_spectrometry_OBSOLETE = 1000256,
+    MS_high_field_asymmetric_waveform_ion_mobility_spectrometry = 1000256,
 
     /// FAIMS (high-field asymmetric waveform ion mobility spectrometry): The separation of ions between two concentric cylindrical electrodes due to application of a high voltage asymmetric waveform whereby ions migrate towards one of the two electrodes depending on the ratio of the high- to low-field mobility of the ion.
-    MS_FAIMS_OBSOLETE = MS_high_field_asymmetric_waveform_ion_mobility_spectrometry_OBSOLETE,
+    MS_FAIMS = MS_high_field_asymmetric_waveform_ion_mobility_spectrometry,
 
     /// field desorption: The formation of gas-phase ions from a material deposited on a solid surface in the presence of a high electric field. Because this process may encompass ionization by field ionization or other mechanisms, it is not recommended as a synonym for field desorption ionization.
     MS_field_desorption = 1000257,
@@ -1099,16 +1097,16 @@ enum PWIZ_API_DECL CVID
     MS_GD_MS = MS_glow_discharge_ionization,
 
     /// ion kinetic energy spectrometry: A method of analysis in which a beam of ions is separated according to the ratio of its translational energy to charge.
-    MS_ion_kinetic_energy_spectrometry_OBSOLETE = 1000260,
+    MS_ion_kinetic_energy_spectrometry = 1000260,
 
     /// IKES (ion kinetic energy spectrometry): A method of analysis in which a beam of ions is separated according to the ratio of its translational energy to charge.
-    MS_IKES_OBSOLETE = MS_ion_kinetic_energy_spectrometry_OBSOLETE,
+    MS_IKES = MS_ion_kinetic_energy_spectrometry,
 
     /// ion mobility spectrometry: The separation of ions according to their velocity through a buffer gas under the influence of an electric field.
-    MS_ion_mobility_spectrometry_OBSOLETE = 1000261,
+    MS_ion_mobility_spectrometry = 1000261,
 
     /// IMS (ion mobility spectrometry): The separation of ions according to their velocity through a buffer gas under the influence of an electric field.
-    MS_IMS_OBSOLETE = MS_ion_mobility_spectrometry_OBSOLETE,
+    MS_IMS = MS_ion_mobility_spectrometry,
 
     /// infrared multiphoton dissociation: Multiphoton ionization where the reactant ion dissociates as a result of the absorption of multiple infrared photons.
     MS_infrared_multiphoton_dissociation = 1000262,
@@ -1117,10 +1115,10 @@ enum PWIZ_API_DECL CVID
     MS_IRMPD = MS_infrared_multiphoton_dissociation,
 
     /// isotope ratio mass spectrometry: The measurement of the relative quantity of the different isotopes of an element in a material with a mass spectrometer.
-    MS_isotope_ratio_mass_spectrometry_OBSOLETE = 1000263,
+    MS_isotope_ratio_mass_spectrometry = 1000263,
 
     /// IRMS (isotope ratio mass spectrometry): The measurement of the relative quantity of the different isotopes of an element in a material with a mass spectrometer.
-    MS_IRMS_OBSOLETE = MS_isotope_ratio_mass_spectrometry_OBSOLETE,
+    MS_IRMS = MS_isotope_ratio_mass_spectrometry,
 
     /// ion trap: A device for spatially confining ions using electric and magnetic fields alone or in combination.
     MS_ion_trap = 1000264,
@@ -1129,10 +1127,10 @@ enum PWIZ_API_DECL CVID
     MS_IT = MS_ion_trap,
 
     /// kinetic energy release distribution: Distribution of values of translational kinetic energy release for an ensemble of metastable ions undergoing a specific dissociation reaction.
-    MS_kinetic_energy_release_distribution_OBSOLETE = 1000265,
+    MS_kinetic_energy_release_distribution = 1000265,
 
     /// KERD (kinetic energy release distribution): Distribution of values of translational kinetic energy release for an ensemble of metastable ions undergoing a specific dissociation reaction.
-    MS_KERD_OBSOLETE = MS_kinetic_energy_release_distribution_OBSOLETE,
+    MS_KERD = MS_kinetic_energy_release_distribution,
 
     /// Laser Desorption: The formation of ions through the interaction of a laser with a material or with gas-phase ions or molecules.
     MS_Laser_Desorption_OBSOLETE = 1000266,
@@ -1144,28 +1142,28 @@ enum PWIZ_API_DECL CVID
     MS_LD_OBSOLETE = MS_Laser_Desorption_OBSOLETE,
 
     /// mass analyzed ion kinetic energy spectrometry: Spectra that are obtained from a sector mass spectrometer that incorporates at least one magnetic sector plus one electric sector in reverse geometry. The accelerating voltage, V, and the magnetic sector field, B, are set at fixed values to select the precursor ions, which are then allowed to dissociate or to react in a field free region between the two sectors. The kinetic energy product ions of m/z selected precursor ions is analyzed by scanning the electric sector field, E. The width of the product ion spectrum peaks is related to the kinetic energy release distribution (KERD) for the dissociation process.
-    MS_mass_analyzed_ion_kinetic_energy_spectrometry_OBSOLETE = 1000267,
+    MS_mass_analyzed_ion_kinetic_energy_spectrometry = 1000267,
 
     /// MIKES (mass analyzed ion kinetic energy spectrometry): Spectra that are obtained from a sector mass spectrometer that incorporates at least one magnetic sector plus one electric sector in reverse geometry. The accelerating voltage, V, and the magnetic sector field, B, are set at fixed values to select the precursor ions, which are then allowed to dissociate or to react in a field free region between the two sectors. The kinetic energy product ions of m/z selected precursor ions is analyzed by scanning the electric sector field, E. The width of the product ion spectrum peaks is related to the kinetic energy release distribution (KERD) for the dissociation process.
-    MS_MIKES_OBSOLETE = MS_mass_analyzed_ion_kinetic_energy_spectrometry_OBSOLETE,
+    MS_MIKES = MS_mass_analyzed_ion_kinetic_energy_spectrometry,
 
     /// mass spectrometry: The branch of science that deals with all aspects of mass spectrometers and the results obtained with these instruments.
-    MS_mass_spectrometry_OBSOLETE = 1000268,
+    MS_mass_spectrometry = 1000268,
 
     /// MS (mass spectrometry): The branch of science that deals with all aspects of mass spectrometers and the results obtained with these instruments.
-    MS_MS_OBSOLETE = MS_mass_spectrometry_OBSOLETE,
+    MS_MS = MS_mass_spectrometry,
 
     /// mass spectrometry/mass spectrometry: The acquisition, study and spectra of the electrically charged products or precursors of a m/z selected ion or ions.
-    MS_mass_spectrometry_mass_spectrometry_OBSOLETE = 1000269,
+    MS_mass_spectrometry_mass_spectrometry = 1000269,
 
     /// MS/MS (mass spectrometry/mass spectrometry): The acquisition, study and spectra of the electrically charged products or precursors of a m/z selected ion or ions.
-    MS_MS_MS_OBSOLETE = MS_mass_spectrometry_mass_spectrometry_OBSOLETE,
+    MS_MS_MS = MS_mass_spectrometry_mass_spectrometry,
 
     /// multiple stage mass spectrometry: Multiple stages of precursor ion m/z selection followed by product ion detection for successive progeny ions.
-    MS_multiple_stage_mass_spectrometry_OBSOLETE = 1000270,
+    MS_multiple_stage_mass_spectrometry = 1000270,
 
     /// MSn (multiple stage mass spectrometry): Multiple stages of precursor ion m/z selection followed by product ion detection for successive progeny ions.
-    MS_MSn_OBSOLETE = MS_multiple_stage_mass_spectrometry_OBSOLETE,
+    MS_MSn = MS_multiple_stage_mass_spectrometry,
 
     /// Negative Ion chemical ionization: Chemical ionization that results in the formation of negative ions.
     MS_Negative_Ion_chemical_ionization = 1000271,
@@ -1204,10 +1202,10 @@ enum PWIZ_API_DECL CVID
     MS_REMPI = MS_resonance_enhanced_multiphoton_ionization,
 
     /// residual gas analyzer: A mass spectrometer used to measure the composition and pressure of gasses in an evacuated chamber.
-    MS_residual_gas_analyzer_OBSOLETE = 1000277,
+    MS_residual_gas_analyzer = 1000277,
 
     /// RGA (residual gas analyzer): A mass spectrometer used to measure the composition and pressure of gasses in an evacuated chamber.
-    MS_RGA_OBSOLETE = MS_residual_gas_analyzer_OBSOLETE,
+    MS_RGA = MS_residual_gas_analyzer,
 
     /// surface enhanced laser desorption ionization: The formation of ionized species in the gas phase from analytes deposited on a particular surface substrate which is irradiated with a laser beam of which wavelength is absorbed by the surface. See also desorption/ionization on silicon and laser desorption/ionization.
     MS_surface_enhanced_laser_desorption_ionization = 1000278,
@@ -1245,10 +1243,10 @@ enum PWIZ_API_DECL CVID
     /// SSMS (Spark Source Mass Spectrometry): Mass spectrometry using spark ionization.
     MS_SSMS_OBSOLETE = MS_Spark_Source_Mass_Spectrometry_OBSOLETE,
 
-    /// stored waveform inverse fourier transform: A technique to create excitation waveforms for ions in FT-ICR mass spectrometer or Paul ion trap. An excitation waveform in the time-domain is generated by taking the inverse Fourier transform of an appropriate frequency-domain programmed excitation spectrum, in which the resonance frequencies of ions to be excited are included. This technique may be used for selection of precursor ions in MS2 experiments.
+    /// stored waveform inverse fourier transform: A technique to create excitation waveforms for ions in FT-ICR mass spectrometer or Paul ion trap. An excitation waveform in the time-domain is generated by taking the inverse Fourier transform of an appropriate frequency-domain programmed excitation spectrum, in which the resonance frequencies of ions to be excited are included. This technique may be used for selection of precursor ions in MS/MS experiments.
     MS_stored_waveform_inverse_fourier_transform = 1000284,
 
-    /// SWIFT (stored waveform inverse fourier transform): A technique to create excitation waveforms for ions in FT-ICR mass spectrometer or Paul ion trap. An excitation waveform in the time-domain is generated by taking the inverse Fourier transform of an appropriate frequency-domain programmed excitation spectrum, in which the resonance frequencies of ions to be excited are included. This technique may be used for selection of precursor ions in MS2 experiments.
+    /// SWIFT (stored waveform inverse fourier transform): A technique to create excitation waveforms for ions in FT-ICR mass spectrometer or Paul ion trap. An excitation waveform in the time-domain is generated by taking the inverse Fourier transform of an appropriate frequency-domain programmed excitation spectrum, in which the resonance frequencies of ions to be excited are included. This technique may be used for selection of precursor ions in MS/MS experiments.
     MS_SWIFT = MS_stored_waveform_inverse_fourier_transform,
 
     /// total ion current: The sum of all the separate ion currents carried by the ions of different m/z contributing to a complete mass spectrum or in a specified m/z range of a mass spectrum.
@@ -1264,19 +1262,19 @@ enum PWIZ_API_DECL CVID
     MS_TLF = MS_time_lag_focusing,
 
     /// time-of-flight mass spectrometer: An instrument that separates ions by m/z in a field-free region after acceleration to a fixed kinetic energy.
-    MS_time_of_flight_mass_spectrometer_OBSOLETE = 1000287,
+    MS_time_of_flight_mass_spectrometer = 1000287,
 
     /// TOF-MS (time-of-flight mass spectrometer): An instrument that separates ions by m/z in a field-free region after acceleration to a fixed kinetic energy.
-    MS_TOF_MS_OBSOLETE = MS_time_of_flight_mass_spectrometer_OBSOLETE,
+    MS_TOF_MS = MS_time_of_flight_mass_spectrometer,
 
     /// cyclotron: A device that uses an oscillating electric field and magnetic field to accelerate charged particles.
     MS_cyclotron = 1000288,
 
     /// double-focusing mass spectrometer: A mass spectrometer that uses a magnetic sector for m/z focusing and an electric sector for energy focusing of an ion beam.
-    MS_double_focusing_mass_spectrometer_OBSOLETE = 1000289,
+    MS_double_focusing_mass_spectrometer = 1000289,
 
     /// hybrid mass spectrometer: A mass spectrometer that combines m/z analyzers of different types to perform tandem mass spectrometry.
-    MS_hybrid_mass_spectrometer_OBSOLETE = 1000290,
+    MS_hybrid_mass_spectrometer = 1000290,
 
     /// linear ion trap: A two dimensional Paul ion trap in which ions are confined in the axial dimension by means of an electric field at the ends of the trap.
     MS_linear_ion_trap = 1000291,
@@ -1285,7 +1283,7 @@ enum PWIZ_API_DECL CVID
     MS_mass_spectrograph_obsolete_OBSOLETE = 1000292,
 
     /// mass spectrometer: An instrument that measures the mass-to-charge ratio and relative abundances of ions.
-    MS_mass_spectrometer_OBSOLETE = 1000293,
+    MS_mass_spectrometer = 1000293,
 
     /// mass spectrum: A plot of the relative abundance of a beam or other collection of ions as a function of the mass-to-charge ratio (m/z).
     MS_mass_spectrum = 1000294,
@@ -1300,7 +1298,7 @@ enum PWIZ_API_DECL CVID
     MS_paul_ion_trap_OBSOLETE = 1000297,
 
     /// prolate traochoidal mass spectrometer: A mass spectrometer in which the ions of different m/z are separated by means of crossed electric and magnetic fields in such a way that the selected ions follow a prolate trochoidal path.
-    MS_prolate_traochoidal_mass_spectrometer_OBSOLETE = 1000298,
+    MS_prolate_traochoidal_mass_spectrometer = 1000298,
 
     /// quistor: An abbreviation of quadrupole ion storage trap. This term is synonymous with Paul Ion Trap. If so then add a synonym to paul and obsolete this term.
     MS_quistor_OBSOLETE = 1000299,
@@ -1309,22 +1307,22 @@ enum PWIZ_API_DECL CVID
     MS_reflectron = 1000300,
 
     /// sector mass spectrometer: A mass spectrometer consisting of one or more magnetic sectors for m/z selection in a beam of ions. Such instruments may also have one or more electric sectors for energy selection.
-    MS_sector_mass_spectrometer_OBSOLETE = 1000301,
+    MS_sector_mass_spectrometer = 1000301,
 
     /// tandem mass spectrometer: A mass spectrometer designed for mass spectrometry/mass spectrometry.
-    MS_tandem_mass_spectrometer_OBSOLETE = 1000302,
+    MS_tandem_mass_spectrometer = 1000302,
 
     /// transmission quadrupole mass spectrometer: A mass spectrometer that consists of four parallel rods whose centers form the corners of a square and whose opposing poles are connected. The voltage applied to the rods is a superposition of a static potential and a sinusoidal radio frequency potential. The motion of an ion in the x and y dimensions is described by the Matthieu equation whose solutions show that ions in a particular m/z range can be transmitted along the z axis.
-    MS_transmission_quadrupole_mass_spectrometer_OBSOLETE = 1000303,
+    MS_transmission_quadrupole_mass_spectrometer = 1000303,
 
     /// accelerating voltage: The electrical potential used to impart kinetic energy to ions in a mass spectrometer.
     MS_accelerating_voltage = 1000304,
 
     /// cyclotron motion: The circular motion of a charged particle moving at velocity v in a magnetic field B that results from the force qvB.
-    MS_cyclotron_motion_OBSOLETE = 1000305,
+    MS_cyclotron_motion = 1000305,
 
     /// dynamic mass spectrometry: A mass spectrometer in which m/z separation using one or more electric fields that vary with time.
-    MS_dynamic_mass_spectrometry_OBSOLETE = 1000306,
+    MS_dynamic_mass_spectrometry = 1000306,
 
     /// einzel lens: Three element charged particle lens in which the first and third elements are held at the same voltage. Such a lens produces focusing without changing the translational energy of the particle.
     MS_einzel_lens = 1000307,
@@ -1348,19 +1346,19 @@ enum PWIZ_API_DECL CVID
     MS_scan_m_z_range__OBSOLETE = 1000313,
 
     /// mass selective axial ejection: The use of mass selective instability to eject ions of selected m/z values from an ion trap.
-    MS_mass_selective_axial_ejection_OBSOLETE = 1000314,
+    MS_mass_selective_axial_ejection = 1000314,
 
     /// mass selective instability: A method for selective ejection of ions according to their m/z value in an ion trap.
-    MS_mass_selective_instability_OBSOLETE = 1000315,
+    MS_mass_selective_instability = 1000315,
 
     /// mathieu stability diagram: A graphical representation expressed in terms of reduced coordinates that describes charged particle motion in a quadrupole mass filter or quadrupole ion trap mass spectrometer.
-    MS_mathieu_stability_diagram_OBSOLETE = 1000316,
+    MS_mathieu_stability_diagram = 1000316,
 
     /// orthogonal extraction: The pulsed acceleration of ions perpendicular to their direction of travel into a time-of-flight mass spectrometer. Ions may be extracted from a directional ion source, drift tube or m/z separation stage.
-    MS_orthogonal_extraction_OBSOLETE = 1000317,
+    MS_orthogonal_extraction = 1000317,
 
     /// resonance ion ejection: A mode of ion ejection in a quadrupole ion trap that relies on a auxiliary radio frequency voltage that is applied to the end-cap electrodes. The voltage is tuned to the secular frequency of a particular ion to eject it.
-    MS_resonance_ion_ejection_OBSOLETE = 1000318,
+    MS_resonance_ion_ejection = 1000318,
 
     /// space charge effect: The mutual repulsion of particles of like charge that limits the current in a charged-particle beam and causes beams or packets of charged particles to expand radially over time.
     MS_space_charge_effect = 1000319,
@@ -1369,7 +1367,7 @@ enum PWIZ_API_DECL CVID
     MS_static_field = 1000320,
 
     /// 2E Mass Spectrum: A mass spectrum obtained by setting the electric sector field E to twice the value required to transmit the main ion-beam thereby allowing ions with a kinetic energy-to-charge ratio twice that of the main ion-beam to be transmitted. Product ions resulting from partial charge transfer reactions such as m^2+ + N ? m^+ + N^+ that occur in a collision cell (containing a gas, N) located in a field-free region preceding a magnetic and electric sector combination are detected. When the magnetic sector field B is scanned, a mass spectrum of singly charged product ions of doubly charged precursor ions is obtained.
-    MS_2E_Mass_Spectrum_OBSOLETE = 1000321,
+    MS_2E_Mass_Spectrum = 1000321,
 
     /// charge inversion mass spectrum: The measurement of the relative abundance of ions that result from a charge inversion reaction as a function of m/z.
     MS_charge_inversion_mass_spectrum = 1000322,
@@ -1395,38 +1393,38 @@ enum PWIZ_API_DECL CVID
     /// constant neutral mass loss spectrum (constant neutral loss spectrum): A spectrum formed of all product ions that have been produced with a selected m/z decrement from any precursor ions. The spectrum shown correlates to the precursor ion spectrum. See also neutral loss spectrum.
     MS_constant_neutral_mass_loss_spectrum = MS_constant_neutral_loss_spectrum,
 
-    /// consecutive reaction monitoring: A type of MS2 experiments with three or more stages of m/z separation and in which a particular multi-step reaction path is monitored.
+    /// consecutive reaction monitoring: A type of MS/MS experiments with three or more stages of m/z separation and in which a particular multi-step reaction path is monitored.
     MS_consecutive_reaction_monitoring_OBSOLETE_1000327 = 1000327,
 
     /// e/2 mass spectrum: A mass spectrum obtained using a sector mass spectrometer in which the electric sector field E is set to half the value required to transmit the main ion-beam. This spectrum records the signal from doubly charged product ions of charge-stripping reactions.
     MS_e_2_mass_spectrum = 1000328,
 
     /// linked scan: A scan in an instrument with two or more m/z analysers or in a sector mass spectrometer that incorporates at least one magnetic sector and one electric sector. Two or more of the analyzers are scanned simultaneously so as to preserve a predetermined relationship between scan parameters to produce a product ion, precursor ion or constant neutral loss spectrum.
-    MS_linked_scan_OBSOLETE = 1000329,
+    MS_linked_scan = 1000329,
 
     /// linked scan at constant b/e: A linked scan at constant B/E may be performed on a sector mass spectrometer that incorporates at least one magnetic sector plus one electric sector. The magnetic field B and the electric field E are scanned simultaneously while the accelerating voltage V is held constant, so as to maintain the ratio of the two fields constant. This linked scan may record a product ion spectrum of dissociation or other reactions occurring in a field free region preceding the two sectors.
-    MS_linked_scan_at_constant_b_e_OBSOLETE = 1000330,
+    MS_linked_scan_at_constant_b_e = 1000330,
 
     /// Linked Scan at Constant E2/V: A linked scan performed on a sector instrument that incorporates at least one electric sector plus one magnetic sector. The electric sector field, E, and the accelerating voltage, V, are scanned simultaneously, so as to maintain the ratio E2/V at a constant value. This linked scan recordss a product ion spectrum of dissociation or other reactions occurring in a field free region (FFR) preceding the two sectors.
-    MS_Linked_Scan_at_Constant_E2_V_OBSOLETE = 1000331,
+    MS_Linked_Scan_at_Constant_E2_V = 1000331,
 
     /// Linked Scan at Constant B2/E: A linked scan performed on a sector mass spectrometer that incorporates at least one electric sector plus one magnetic sector in either order. The accelerating voltage is fixed and the magnetic field, B, and the electric field, E, are scanned simultaneously so as to maintain the ratio B2/E at a constant value. This linked scan records a precursor ion spectrum of dissociation or other reactions occurring in the field free region preceding the two sectors. The term B2/E linked scan is not recommended.
-    MS_Linked_Scan_at_Constant_B2_E_OBSOLETE = 1000332,
+    MS_Linked_Scan_at_Constant_B2_E = 1000332,
 
     /// Linked Scan at Constant B[1-(E/E0)]^1/2 / E: A linked scan performed on a sector instrument that incorporates at least one electric sector plus one magnetic sector placed in either order. The accelerating voltage is fixed while scanning the magnetic field, B, and electric field, E, simultaneously, so as to maintain the quantity B[1-(E/E0)]1/2/E at a constant value. This linked scan records a constant neutral mass loss (or gain) spectrum of dissociation or other reactions occurring in a field free region preceding the two sectors. E0 is the electric field required to transmit the singly charged analog of the desired neutral fragment. The term B[1-(E/E0)]1/2/E linked scan.
-    MS_Linked_Scan_at_Constant_B_1__E_E0___1_2___E_OBSOLETE = 1000333,
+    MS_Linked_Scan_at_Constant_B_1__E_E0___1_2___E = 1000333,
 
     /// MS/MS in Time: A tandem mass spectrometry method in which product ion spectra are recorded in a single m/z analyzer (such as a Paul Ion Trap or FTMS) in discreet steps over time. Ions in a specific m/z range are selected, dissociated, and the product ions analyzed sequentially in time.
-    MS_MS_MS_in_Time_OBSOLETE = 1000334,
+    MS_MS_MS_in_Time = 1000334,
 
     /// MS/MS in Space: A tandem mass spectrometry method in which product ion spectra are recorded in m/z analyzers separated in space. Specific m/z separation functions are designed such that in one section of the instrument ions are selected, dissociated in an intermediate region, and the product ions are then transmitted to another analyser for m/z separation and data acquisition.
-    MS_MS_MS_in_Space_OBSOLETE = 1000335,
+    MS_MS_MS_in_Space = 1000335,
 
     /// neutral loss: The loss of an uncharged species during a rearrangement process.
     MS_neutral_loss = 1000336,
 
     /// nth generation product ion: Serial product ions from dissociation of selected precursor ions where n refers to the number of stages of dissociation. The term granddaughter ion is deprecated.
-    MS_nth_generation_product_ion_OBSOLETE = 1000337,
+    MS_nth_generation_product_ion = 1000337,
 
     /// nth generation product ion scan: The specific scan functions or processes that record the appropriate generation of product ion or ions of any m/z selected precursor ions.
     MS_nth_generation_product_ion_scan_OBSOLETE = 1000338,
@@ -1434,23 +1432,23 @@ enum PWIZ_API_DECL CVID
     /// nth generation product ion spectrum: The mass spectrum recorded from any mass spectrometer in which the appropriate scan function can be set to record the appropriate generation product ion or ions of m/z selected precursor ions.
     MS_nth_generation_product_ion_spectrum_OBSOLETE = 1000339,
 
-    /// precursor ion: An ion that reacts to form particular product ions. The reaction can be unimolecular dissociation, ion/molecule reaction, isomerization, or change in charge state. The term parent ion is deprecated.
-    MS_precursor_ion_OBSOLETE = 1000340,
+    /// precursor ion: An ion that reacts to form particular product ions. The reaction can be unimolecular dissociation, ion/molecule reaction, isomerization, or change in charge state. The term parent ion is not recommended.
+    MS_precursor_ion = 1000340,
 
     /// precursor ion spectrum: Spectrum generated by scanning precursor m/z while monitoring a fixed product m/z.
     MS_precursor_ion_spectrum = 1000341,
 
     /// product ion: An ion formed as the product of a reaction involving a particular precursor ion. The reaction can be unimolecular dissociation to form fragment ions, an ion/molecule reaction, or simply involve a change in the number of charges. The term fragment ion is deprecated. The term daughter ion is deprecated.
-    MS_product_ion_OBSOLETE = 1000342,
+    MS_product_ion = 1000342,
 
     /// product ion spectrum: A mass spectrum recorded from any spectrometer in which the appropriate m/z separation scan function is set to record the product ion or ions of selected precursor ions.
     MS_product_ion_spectrum_OBSOLETE = 1000343,
 
     /// progeny ion: A charged product of a series of consecutive reactions that includes product ions, 1st generation product ions, 2nd generation product ions, etc. Given the sequential fragmentation scheme: M1+ -> M2+ -> M3+ -> M4+ -> M5+. M4+ is the precursor ion of M5+, a 1st generation product ion of M3+, a 2nd generation product ion of M2+ and a 3rd generation product ion of M1+.
-    MS_progeny_ion_OBSOLETE = 1000344,
+    MS_progeny_ion = 1000344,
 
     /// Progeny Fragment Ion (progeny ion): A charged product of a series of consecutive reactions that includes product ions, 1st generation product ions, 2nd generation product ions, etc. Given the sequential fragmentation scheme: M1+ -> M2+ -> M3+ -> M4+ -> M5+. M4+ is the precursor ion of M5+, a 1st generation product ion of M3+, a 2nd generation product ion of M2+ and a 3rd generation product ion of M1+.
-    MS_Progeny_Fragment_Ion_OBSOLETE = MS_progeny_ion_OBSOLETE,
+    MS_Progeny_Fragment_Ion = MS_progeny_ion,
 
     /// array detector: Detector comprising several ion collection elements, arranged in a line or grid where each element is an individual detector.
     MS_array_detector = 1000345,
@@ -1477,85 +1475,85 @@ enum PWIZ_API_DECL CVID
     MS_secondary_electron_OBSOLETE = 1000352,
 
     /// adduct ion: Ion formed by the interaction of an ion with one or more atoms or molecules to form an ion containing all the constituent atoms of the precursor ion as well as the additional atoms from the associated atoms or molecules.
-    MS_adduct_ion_OBSOLETE = 1000353,
+    MS_adduct_ion = 1000353,
 
-    /// aromatic ion: A planar cyclic ion that obeys the Hueckel (4n + 2) rule where n is a positive integer representing the number of conjugated Pi electrons. Charge delocalization leads to greater stability compared to a hypothetical localized structure.
-    MS_aromatic_ion_OBSOLETE = 1000354,
+    /// aromatic ion: A planar cyclic ion that obeys the Hckel (4n + 2) rule where n is a positive integer representing the number of conjugated Pi electrons. Charge delocalization leads to greater stability compared to a hypothetical localized structure.
+    MS_aromatic_ion = 1000354,
 
     /// analog ion: Ions that have similar chemical valence, for example the acetyl cation CH3-CO+ and the thioacetyl cation CH3-CS+.
-    MS_analog_ion_OBSOLETE = 1000355,
+    MS_analog_ion = 1000355,
 
     /// anti-aromatic ion: A planar cyclic ion with 4n ? electrons and is therefore not aromatic.
-    MS_anti_aromatic_ion_OBSOLETE = 1000356,
+    MS_anti_aromatic_ion = 1000356,
 
     /// cationized molecule: An ion formed by the association of a cation with a neutral molecule, M, for example [M+ Na]+ and [M + K]+. The terms quasi-molecular ion and pseudo-molecular ion should not be used.
-    MS_cationized_molecule_OBSOLETE = 1000357,
+    MS_cationized_molecule = 1000357,
 
     /// cluster ion: An ion formed by a multi-component atomic or molecular assembly of one or more ions with atoms or molecules, such as [(H20)nH]+, [(NaCl)nNa]+ and [(H3PO3)nHPO3]-.
-    MS_cluster_ion_OBSOLETE = 1000358,
+    MS_cluster_ion = 1000358,
 
     /// Conventional ion: A radical cation or anion in which the charge site and the unpaired electron spin are both formally located in the same atom or group of atoms, as opposed to the spatially separate electronic configuration of distonic ions. The radical cation of methanol, CH3OH+, in which the charge and spin sites are formally located at the O atom is an example of a conventional ion, whereas .CH2-OH2+ is a distonic ion.
-    MS_Conventional_ion_OBSOLETE = 1000359,
+    MS_Conventional_ion = 1000359,
 
     /// diagnostic ion: A product ion whose formation reveals structural or compositional information of its precursor. For instance, the phenyl cation in an electron ionization mass spectrum is a diagnostic ion for benzene and derivatives.
-    MS_diagnostic_ion_OBSOLETE = 1000360,
+    MS_diagnostic_ion = 1000360,
 
     /// dimeric ion: An ion formed by ionization of a dimer or by the association of an ion with its neutral counterpart such as [M2]+ or [M-H-M]+.
-    MS_dimeric_ion_OBSOLETE = 1000361,
+    MS_dimeric_ion = 1000361,
 
     /// distonic ion: A radical cation or anion in which the charge site and the unpaired electron spin cannot be both formally located in the same atom or group of atoms as it can be with a conventional ion. For example, CH2-OH2+ is a distonic ion whereas the radical cation of methanol, CH3OH+ is a conventional ion.
-    MS_distonic_ion_OBSOLETE = 1000362,
+    MS_distonic_ion = 1000362,
 
     /// enium ion: A positively charged lower-valency ion of the nonmetallic elements. The methenium ion is CH3+. Other examples are the oxenium, sulfenium, nitrenium, phosphenium, and halenium ions.
-    MS_enium_ion_OBSOLETE = 1000363,
+    MS_enium_ion = 1000363,
 
     /// fragment ion: A product ion that results from the dissociation of a precursor ion.
     MS_fragment_ion_OBSOLETE = 1000364,
 
     /// ion?: An atomic or molecular species having a net positive or negative electric charge.
-    MS_ion__OBSOLETE = 1000365,
+    MS_ion_ = 1000365,
 
     /// Isotopologue ion: An ion that differs only in the isotopic composition of one or more of its constituent atoms. For example CH4+ and CH3D+ or 10BF3 and 11BF3. The term isotopologue is a contraction of isotopic homologue.
-    MS_Isotopologue_ion_OBSOLETE = 1000366,
+    MS_Isotopologue_ion = 1000366,
 
     /// Isotopomeric ion: Isomeric ion having the same numbers of each isotopic atom but differing in their positions. Isotopomeric ions can be either configurational isomers in which two atomic isotopes exchange positions or isotopic stereoisomers. The term isotopomer is a shortening of isotopic isomer.
-    MS_Isotopomeric_ion_OBSOLETE = 1000367,
+    MS_Isotopomeric_ion = 1000367,
 
     /// metastable ion: An ion that is formed with internal energy higher than the threshold for dissociation but with a lifetime great enough to allow it to exit the ion source and enter the mass spectrometer where it dissociates before detection.
-    MS_metastable_ion_OBSOLETE = 1000368,
+    MS_metastable_ion = 1000368,
 
     /// molecular ion: An ion formed by the removal of one or more electrons to form a positive ion or the addition off one or more electrons to form a negative ion.
-    MS_molecular_ion_OBSOLETE = 1000369,
+    MS_molecular_ion = 1000369,
 
     /// negative ion: An atomic or molecular species having a net negative electric charge.
-    MS_negative_ion_OBSOLETE = 1000370,
+    MS_negative_ion = 1000370,
 
     /// non-classical ion: Hyper-coordinated carbonium ion such as the penta-coordinated norbornyl cation. Note: Tri-coordinated carbenium ions are termed classical ions.
-    MS_non_classical_ion_OBSOLETE = 1000371,
+    MS_non_classical_ion = 1000371,
 
     /// onium ion: A positively charged hypervalent ion of the nonmetallic elements. Examples are the methonium ion CH5+, the hydrogenonium ion H3+ and the hydronium ion H3O+. Other examples are the carbonium, oxonium, sulfonium, nitronium, diazonium, phosphonium, and halonium ions. Onium ions are not limited to monopositive ions; multiply-charged onium ions exist such as the gitonic (proximal) oxonium dication H4O2+ and the distonic oxonium dication H2O+-CH2-CH2-OH2+.
-    MS_onium_ion_OBSOLETE = 1000372,
+    MS_onium_ion = 1000372,
 
     /// principal ion: Most abundant ion of an isotope cluster, such as the 11B79Br2 81Br+ ion of m/z 250 of the cluster of isotopologue molecular ions of BBr3. The term principal ion has also been used to describe ions that have been artificially isotopically enriched in one or more positions such as CH3 13CH3+ or CH2D2 +, but those are best defined as isotopologue ions.
-    MS_principal_ion_OBSOLETE = 1000373,
+    MS_principal_ion = 1000373,
 
     /// positive ion: An atomic or molecular species having a net positive electric charge.
-    MS_positive_ion_OBSOLETE = 1000374,
+    MS_positive_ion = 1000374,
 
     /// protonated molecule: An ion formed by interaction of a neutral molecule with a proton and represented by the symbol [M + H]+, where M is the neutral molecule. The term 'protonated molecular ion,' 'quasi-molecular ion' and 'pseudo-molecular ion' are not recommended.
-    MS_protonated_molecule_OBSOLETE = 1000375,
+    MS_protonated_molecule = 1000375,
 
     /// radical ion: An ion, either a cation or anion, containing unpaired electrons in its ground state. The unpaired electron is denoted by a superscript dot alongside the superscript symbol for charge, such as for the molecular ion of a molecule M, that is, M+. Radical ions with more than one charge and/or more than one unpaired electron are denoted such as M(2+)(2). Unless the positions of the unpaired electron and charge can be associated with specific atoms, superscript charge designation should be placed before the superscript dot designation.
-    MS_radical_ion_OBSOLETE = 1000376,
+    MS_radical_ion = 1000376,
 
     /// reference ion: A stable ion whose structure is known with certainty. These ions are usually formed by direct ionization of a neutral molecule of known structure and are used to verify by comparison the structure of an unknown ion.
-    MS_reference_ion_OBSOLETE = 1000377,
+    MS_reference_ion = 1000377,
 
     /// stable ion: An ion with internal energy sufficiently low that it does not rearrange or dissociate prior to detection in a mass spectrometer.
-    MS_stable_ion_OBSOLETE = 1000378,
+    MS_stable_ion = 1000378,
 
     /// unstable ion: An ion with sufficient energy to dissociate within the ion source.
-    MS_unstable_ion_OBSOLETE = 1000379,
+    MS_unstable_ion = 1000379,
 
     /// adiabatic ionization: A process whereby an electron is removed from an atom, ion, or molecule to produce an ion in its lowest energy state.
     MS_adiabatic_ionization = 1000380,
@@ -1566,7 +1564,7 @@ enum PWIZ_API_DECL CVID
     /// atmospheric pressure photoionization: Atmospheric pressure chemical ionization in which the reactant ions are generated by photo-ionization.
     MS_atmospheric_pressure_photoionization = 1000382,
 
-    /// autodetachment: The formation of a neutral when a negative ion in a discrete state with an energy greater than the detachment threshold loses an electron spontaneously without further interaction with an energy source.
+    /// autodetachment: The formation of a neutral when a negative ion in a disrtete state with an energy greater than the detachment threshold loses an electron spontaneously without further interaction with an energy source.
     MS_autodetachment = 1000383,
 
     /// autoionization: The formation of an ion when an atom or molecule in a discrete state with an energy greater than the ionization threshold loses an electron spontaneously without further interaction with an energy source.
@@ -1588,10 +1586,10 @@ enum PWIZ_API_DECL CVID
     MS_electron_ionization = 1000389,
 
     /// ion desolvation: The removal of solvent molecules clustered around a gas-phase ion by means of heating and/or collisions with gas molecules.
-    MS_ion_desolvation_OBSOLETE = 1000390,
+    MS_ion_desolvation = 1000390,
 
     /// ion-pair formation: The reaction of a molecule to form both a positive ion and negative ion fragment among the products.
-    MS_ion_pair_formation_OBSOLETE = 1000391,
+    MS_ion_pair_formation = 1000391,
 
     /// ionization efficiency: The ratio of the number of ions formed to the number of electrons, molecules or photons used.
     MS_ionization_efficiency = 1000392,
@@ -1605,7 +1603,7 @@ enum PWIZ_API_DECL CVID
     /// membrane inlet: A semi-permeable membrane separator that permits the passage of gas sample directly to the mass spectrometer ion source.
     MS_membrane_inlet = 1000396,
 
-    /// microelectrospray: Electrospray ionization at a solvent flow rate of 300-800 nL/min where the flow is a result of a mechanical pump. See nanoelectrospray.
+    /// microelectrospray: Electrospray ionization at a solvent flow rate of 300-800 nL/min where the flow is a result of a mechanical pump. See nanaoelectrospray.
     MS_microelectrospray = 1000397,
 
     /// nanoelectrospray: Electrospray ionization at a flow rate less than ~25 nL/min. Nanoelectrospray is synonymous with nanospray. The flow is dependent on the potenial on the tip of the electrospray needle and/or a gas presure to push the sample through the needle. See also electrospray ionization and microelectrospray.
@@ -1621,7 +1619,7 @@ enum PWIZ_API_DECL CVID
     MS_plasma_desorption_ionization = 1000400,
 
     /// pre-ionization state: An electronic state capable of undergoing auto-Ionization.
-    MS_pre_ionization_state_OBSOLETE = 1000401,
+    MS_pre_ionization_state = 1000401,
 
     /// secondary ionization: The process in which ions are ejected from a sample surface as a result of bombardment by a primary beam of atoms or ions.
     MS_secondary_ionization = 1000402,
@@ -1645,85 +1643,85 @@ enum PWIZ_API_DECL CVID
     MS_vertical_ionization = 1000408,
 
     /// association reaction: The reaction of an ion with a neutral species in which the reactants combine to form a single ion.
-    MS_association_reaction_OBSOLETE = 1000409,
+    MS_association_reaction = 1000409,
 
     /// alpha-cleavage: A homolytic cleavage where the bond fission occurs between at the atom adjacent to the atom at the apparent charge site and an atom removed from the aparent charge site by two bonds.
-    MS_alpha_cleavage_OBSOLETE = 1000410,
+    MS_alpha_cleavage = 1000410,
 
     /// beta-cleavage: A homolytic cleavage where the bond fission occurs between at an atom removed from the apparent charge site atom by two bonds and an atom adjacent to that atom and removed from the aparent charge site by three bonds.
-    MS_beta_cleavage_OBSOLETE = 1000411,
+    MS_beta_cleavage = 1000411,
 
     /// buffer gas: An inert gas used for collisional deactivation of internally excited ions.
     MS_buffer_gas = 1000412,
 
     /// charge-induced fragmentation: Fragmentation of an odd electron ion in which the cleaved bond is adjacent to the apparent charge site. Synonymous with charge mediated fragmentation.
-    MS_charge_induced_fragmentation_OBSOLETE = 1000413,
+    MS_charge_induced_fragmentation = 1000413,
 
     /// charge inversion reaction: Reaction of an ion with a neutral species in which the charge on the product ion is reversed in sign with respect to the reactant ion.
-    MS_charge_inversion_reaction_OBSOLETE = 1000414,
+    MS_charge_inversion_reaction = 1000414,
 
     /// charge permutation reaction: The reaction of an ion with a neutral species with a resulting change in the magnitude or sign of the charge on the reactant ion.
-    MS_charge_permutation_reaction_OBSOLETE = 1000415,
+    MS_charge_permutation_reaction = 1000415,
 
     /// charge stripping reaction: Reaction of a positive ion with a neutral species in which the positive charge on the product ion is greater than that on the reactant ion.
-    MS_charge_stripping_reaction_OBSOLETE = 1000416,
+    MS_charge_stripping_reaction = 1000416,
 
     /// charge transfer reaction: The reaction of an ion with a neutral species in which some or all of the charge of the reactant ion is transferred to the neutral species.
-    MS_charge_transfer_reaction_OBSOLETE = 1000417,
+    MS_charge_transfer_reaction = 1000417,
 
     /// collisional excitation: The reaction of an ion with a neutral species in which the translational energy of the collision is converted into internal energy of the ion.
-    MS_collisional_excitation_OBSOLETE = 1000418,
+    MS_collisional_excitation = 1000418,
 
     /// collision gas: An inert gas used for collisional excitation. The term target gas is not recommended.
     MS_collision_gas = 1000419,
 
     /// heterolytic cleavage: Fragmentation of a molecule or ion in which both electrons forming the single bond that is broken remain on one of the atoms that were originally bonded. This term is synonymous with heterolysis.
-    MS_heterolytic_cleavage_OBSOLETE = 1000420,
+    MS_heterolytic_cleavage = 1000420,
 
     /// high energy collision: Collision-induced dissociation process wherein the projectile ion has laboratory-frame translational energy higher than 1 keV.
-    MS_high_energy_collision_OBSOLETE = 1000421,
+    MS_high_energy_collision = 1000421,
 
-    /// beam-type collision-induced dissociation: A collision-induced dissociation process that occurs in a beam-type collision cell.
-    MS_beam_type_collision_induced_dissociation = 1000422,
+    /// high-energy collision-induced dissociation: A collision-induced dissociation process wherein the projectile ion has the translational energy higher than approximately 1000 eV.
+    MS_high_energy_collision_induced_dissociation = 1000422,
 
-    /// HCD (beam-type collision-induced dissociation): A collision-induced dissociation process that occurs in a beam-type collision cell.
-    MS_HCD = MS_beam_type_collision_induced_dissociation,
+    /// HCD (high-energy collision-induced dissociation): A collision-induced dissociation process wherein the projectile ion has the translational energy higher than approximately 1000 eV.
+    MS_HCD = MS_high_energy_collision_induced_dissociation,
 
     /// homolytic cleavage: Fragmentation of an odd electron ion that results from one of a pair of electrons that form a bond between two atoms moving to form a pair with the odd electron on the atom at the apparent charge site. Fragmentation results in the formation of an even electron ion and a radical. This reaction involves the movement of a single electron and is symbolized by a single-barbed arrow. Synonymous with Homolysis.
-    MS_homolytic_cleavage_OBSOLETE = 1000423,
+    MS_homolytic_cleavage = 1000423,
 
     /// hydrogen/deuterium exchange: Exchange of hydrogen atoms with deuterium atoms in a molecule or pre-formed ion in solution prior to introduction into a mass spectrometer, or by reaction of an ion with a deuterated collision gas inside a mass spectrometer.
-    MS_hydrogen_deuterium_exchange_OBSOLETE = 1000424,
+    MS_hydrogen_deuterium_exchange = 1000424,
 
     /// ion energy loss spectrum: A plot of the relative abundance of a beam or other collection of ions as a function their loss of translational energy in reactions with neutral species.
     MS_ion_energy_loss_spectrum_OBSOLETE = 1000425,
 
     /// ionizing collision: The reaction of an ion with a neutral species in which one or more electrons are removed from either the ion or neutral.
-    MS_ionizing_collision_OBSOLETE = 1000426,
+    MS_ionizing_collision = 1000426,
 
     /// ion/molecule reaction: The reaction of an ion with a neutral molecule. The term ion-molecule reaction is not recommended because the hyphen suggests a single species that is that is both an ion and a molecule.
-    MS_ion_molecule_reaction_OBSOLETE = 1000427,
+    MS_ion_molecule_reaction = 1000427,
 
     /// ion/neutral complex: A particular type of transition state that lies between precursor and product ions on the reaction coordinate of some ion reactions.
-    MS_ion_neutral_complex_OBSOLETE = 1000428,
+    MS_ion_neutral_complex = 1000428,
 
     /// ion/neutral species reaction: A process wherein a charged species interacts with a neutral reactant to produce either chemically different species or changes in the internal energy of one or both of the reactants.
-    MS_ion_neutral_species_reaction_OBSOLETE = 1000429,
+    MS_ion_neutral_species_reaction = 1000429,
 
     /// ion/neutral species exchange reaction: In this reaction an association reaction is accompanied by the subsequent or simultaneous liberation of a different neutral species as a product.
-    MS_ion_neutral_species_exchange_reaction_OBSOLETE = 1000430,
+    MS_ion_neutral_species_exchange_reaction = 1000430,
 
     /// kinetic method: An approach to determination of ion thermodynamic quantities by a bracketing procedure in which the relative probabilities of competing ion fragmentations are measured via the relative abundances of the reaction products. The extended kinetic method takes the associated entropy changes into account.
-    MS_kinetic_method_OBSOLETE = 1000431,
+    MS_kinetic_method = 1000431,
 
     /// low energy collisions: A collision between an ion and neutral species with translational energy approximately 1000 eV or lower.
-    MS_low_energy_collisions_OBSOLETE = 1000432,
+    MS_low_energy_collisions = 1000432,
 
     /// low-energy collision-induced dissociation: A collision-induced dissociation process wherein the precursor ion has the translational energy lower than approximately 1000 eV. This process typically requires multiple collisions and the collisional excitation is cumulative.
     MS_low_energy_collision_induced_dissociation = 1000433,
 
     /// McLafferty Rearrangement: A dissociation reaction triggered by transfer of a hydrogen atom via a 6-member transition state to the formal radical/charge site from a carbon atom four atoms removed from the charge/radical site (the gamma-carbon); subsequent rearrangement of electron density leads to expulsion of an olefin molecule. This term was originally applied to ketone ions where the charge/radical site is the carbonyl oxygen, but it is now more widely applied.
-    MS_McLafferty_Rearrangement_OBSOLETE = 1000434,
+    MS_McLafferty_Rearrangement = 1000434,
 
     /// photodissociation: A process wherein the reactant ion is dissociated as a result of absorption of one or more photons.
     MS_photodissociation = 1000435,
@@ -1735,19 +1733,19 @@ enum PWIZ_API_DECL CVID
     MS_MPD = MS_photodissociation,
 
     /// partial charge transfer reaction: Reaction of an ion with a neutral species in which some but not all of the ion charge is transferred to the neutral.
-    MS_partial_charge_transfer_reaction_OBSOLETE = 1000436,
+    MS_partial_charge_transfer_reaction = 1000436,
 
     /// ion reaction: Chemical transformation involving an ion.
-    MS_ion_reaction_OBSOLETE = 1000437,
+    MS_ion_reaction = 1000437,
 
     /// superelastic collision: Collision in which the translational energy of the fast-moving collision partner is increased at the expense of internal energy of one or both collision partners.
-    MS_superelastic_collision_OBSOLETE = 1000438,
+    MS_superelastic_collision = 1000438,
 
     /// surface-induced reaction: A process wherein a reactant ion interacts with a surface to produce either chemically different species or a change in the internal energy of the reactant ion.
-    MS_surface_induced_reaction_OBSOLETE = 1000439,
+    MS_surface_induced_reaction = 1000439,
 
     /// unimolecular dissociation: Fragmentation reaction in which the molecularity is treated as one, irrespective of whether the dissociative state is that of a metastable ion produced in the ion source or results from collisional excitation of a stable ion.
-    MS_unimolecular_dissociation_OBSOLETE = 1000440,
+    MS_unimolecular_dissociation = 1000440,
 
     /// scan: Function or process of the mass spectrometer where it records a spectrum.
     MS_scan = 1000441,
@@ -1759,10 +1757,10 @@ enum PWIZ_API_DECL CVID
     MS_mass_analyzer_type = 1000443,
 
     /// m/z Separation Method: Mass/charge separation Method.
-    MS_m_z_Separation_Method_OBSOLETE = 1000444,
+    MS_m_z_Separation_Method = 1000444,
 
     /// sequential m/z separation method: Sequential m/z separation method.
-    MS_sequential_m_z_separation_method_OBSOLETE = 1000445,
+    MS_sequential_m_z_separation_method = 1000445,
 
     /// fast ion bombardment: The ionization of any species by the interaction of a focused beam of ions having a translational energy of several thousand eV with a solid sample.
     MS_fast_ion_bombardment = 1000446,
@@ -1816,7 +1814,7 @@ enum PWIZ_API_DECL CVID
     MS_source = 1000458,
 
     /// spectrum instrument description: Terms used to describe the spectrum.
-    MS_spectrum_instrument_description_OBSOLETE = 1000459,
+    MS_spectrum_instrument_description = 1000459,
 
     /// unit: Terms to describe units.
     MS_unit_OBSOLETE = 1000460,
@@ -1842,7 +1840,7 @@ enum PWIZ_API_DECL CVID
     /// alternating: Alternating.
     MS_alternating_OBSOLETE = 1000466,
 
-    /// 1200 series LC/MSD SL: The 1200 Series LC/MSD SL ion trap belongs to the Agilent LC/MSD ion trap family. It provides fast polarity switching and multisignal data acquisition capabilities in a single run while also providing 5 stages of automated data dependent MS2 and 11 stages of manual MS2.
+    /// 1200 series LC/MSD SL: The 1200 Series LC/MSD SL ion trap belongs to the Agilent LC/MSD ion trap family. It provides fast polarity switching and multisignal data acquisition capabilities in a single run while also providing 5 stages of automated data dependent MS/MS and 11 stages of manual MS/MS.
     MS_1200_series_LC_MSD_SL = 1000467,
 
     /// 6110 Quadrupole LC/MS: The 6110 Quadrupole LC/MS system is a Agilent liquid chromatography instrument combined with an entry level single quadrupole mass spectrometer from the 6100 Series of Agilent quadrupole mass spectrometers. 6110 Quadrupole mass spectrometer has m/z range of 10-1500 and 2500 u/s scan speed. It proves useful for wide range of SIM quantitative applications.
@@ -1882,7 +1880,7 @@ enum PWIZ_API_DECL CVID
     MS_1200_series_LC_MSD_VL = 1000478,
 
     /// purgatory: Terms that will likely become obsolete unless there are wails of dissent.
-    MS_purgatory_OBSOLETE = 1000479,
+    MS_purgatory = 1000479,
 
     /// mass analyzer attribute: Analyzer properties that are associated with a value.
     MS_mass_analyzer_attribute = 1000480,
@@ -1938,14 +1936,14 @@ enum PWIZ_API_DECL CVID
     /// instrument attribute: Instrument properties that are associated with a value.
     MS_instrument_attribute = 1000496,
 
-    /// zoom scan: Special scan mode, where data with improved resolution is acquired. This is typically achieved by scanning a more narrow m/z window or scanning with a lower scan rate.
+    /// zoom scan: Special scan mode, where data with improved resoltuion is acquired. This is typically achieved by scanning a more narrow m/z window or scanning with a lower scan rate.
     MS_zoom_scan = 1000497,
 
-    /// enhanced resolution scan (zoom scan): Special scan mode, where data with improved resolution is acquired. This is typically achieved by scanning a more narrow m/z window or scanning with a lower scan rate.
+    /// enhanced resolution scan (zoom scan): Special scan mode, where data with improved resoltuion is acquired. This is typically achieved by scanning a more narrow m/z window or scanning with a lower scan rate.
     MS_enhanced_resolution_scan = MS_zoom_scan,
 
     /// full scan: Feature of the ion trap mass spectrometer where MS data is acquired over a mass range.
-    MS_full_scan_OBSOLETE = 1000498,
+    MS_full_scan = 1000498,
 
     /// spectrum attribute: Spectrum properties that are associated with a value.
     MS_spectrum_attribute = 1000499,
@@ -1969,13 +1967,13 @@ enum PWIZ_API_DECL CVID
     MS_base_peak_intensity = 1000505,
 
     /// ion role: Ion Role.
-    MS_ion_role_OBSOLETE = 1000506,
+    MS_ion_role = 1000506,
 
     /// ion attribute: Ion properties that are associated with a value.
-    MS_ion_attribute_OBSOLETE = 1000507,
+    MS_ion_attribute = 1000507,
 
     /// ion chemical type: Ion Type.
-    MS_ion_chemical_type_OBSOLETE = 1000508,
+    MS_ion_chemical_type = 1000508,
 
     /// activation energy: Activation Energy.
     MS_activation_energy = 1000509,
@@ -2106,7 +2104,7 @@ enum PWIZ_API_DECL CVID
     /// time unit: Time Unit.
     MS_time_unit_OBSOLETE = 1000550,
 
-    /// Analyst: SCIEX or Applied Biosystems|MDS SCIEX software for data acquisition.
+    /// Analyst: AB SCIEX or Applied Biosystems|MDS SCIEX software for data acquisition.
     MS_Analyst = 1000551,
 
     /// maldi spot identifier: Maldi Spot Identifier.
@@ -2208,16 +2206,16 @@ enum PWIZ_API_DECL CVID
     /// Single-Stage Mass Spectrometry (MS1 spectrum): Mass spectrum created by a single-stage MS experiment or the first stage of a multi-stage experiment.
     MS_Single_Stage_Mass_Spectrometry = MS_MS1_spectrum,
 
-    /// MSn spectrum: MSn refers to multi-stage MS2 experiments designed to record product ion spectra where n is the number of product ion stages (progeny ions). For ion traps, sequential MS/MS experiments can be undertaken where n > 2 whereas for a simple triple quadrupole system n=2. Use the term ms level (MS:1000511) for specifying n.
+    /// MSn spectrum: MSn refers to multi-stage MS/MS experiments designed to record product ion spectra where n is the number of product ion stages (progeny ions). For ion traps, sequential MS/MS experiments can be undertaken where n > 2 whereas for a simple triple quadrupole system n=2. Use the term ms level (MS:1000511) for specifying n.
     MS_MSn_spectrum = 1000580,
 
-    /// multiple-stage mass spectrometry spectrum (MSn spectrum): MSn refers to multi-stage MS2 experiments designed to record product ion spectra where n is the number of product ion stages (progeny ions). For ion traps, sequential MS/MS experiments can be undertaken where n > 2 whereas for a simple triple quadrupole system n=2. Use the term ms level (MS:1000511) for specifying n.
+    /// multiple-stage mass spectrometry spectrum (MSn spectrum): MSn refers to multi-stage MS/MS experiments designed to record product ion spectra where n is the number of product ion stages (progeny ions). For ion traps, sequential MS/MS experiments can be undertaken where n > 2 whereas for a simple triple quadrupole system n=2. Use the term ms level (MS:1000511) for specifying n.
     MS_multiple_stage_mass_spectrometry_spectrum = MS_MSn_spectrum,
 
-    /// nth generation product ion spectrum (MSn spectrum): MSn refers to multi-stage MS2 experiments designed to record product ion spectra where n is the number of product ion stages (progeny ions). For ion traps, sequential MS/MS experiments can be undertaken where n > 2 whereas for a simple triple quadrupole system n=2. Use the term ms level (MS:1000511) for specifying n.
+    /// nth generation product ion spectrum (MSn spectrum): MSn refers to multi-stage MS/MS experiments designed to record product ion spectra where n is the number of product ion stages (progeny ions). For ion traps, sequential MS/MS experiments can be undertaken where n > 2 whereas for a simple triple quadrupole system n=2. Use the term ms level (MS:1000511) for specifying n.
     MS_nth_generation_product_ion_spectrum = MS_MSn_spectrum,
 
-    /// product ion spectrum (MSn spectrum): MSn refers to multi-stage MS2 experiments designed to record product ion spectra where n is the number of product ion stages (progeny ions). For ion traps, sequential MS/MS experiments can be undertaken where n > 2 whereas for a simple triple quadrupole system n=2. Use the term ms level (MS:1000511) for specifying n.
+    /// product ion spectrum (MSn spectrum): MSn refers to multi-stage MS/MS experiments designed to record product ion spectra where n is the number of product ion stages (progeny ions). For ion traps, sequential MS/MS experiments can be undertaken where n > 2 whereas for a simple triple quadrupole system n=2. Use the term ms level (MS:1000511) for specifying n.
     MS_product_ion_spectrum = MS_MSn_spectrum,
 
     /// CRM spectrum: Spectrum generated from MSn experiment with three or more stages of m/z separation and in which a particular multi-step reaction path is monitored.
@@ -2469,19 +2467,19 @@ enum PWIZ_API_DECL CVID
     /// Proteome Discoverer: Thermo Scientific software for data analysis of peptides and proteins.
     MS_Proteome_Discoverer = 1000650,
 
-    /// 3200 QTRAP: SCIEX or Applied Biosystems|MDS SCIEX QTRAP 3200.
+    /// 3200 QTRAP: AB SCIEX or Applied Biosystems|MDS SCIEX QTRAP 3200.
     MS_3200_QTRAP = 1000651,
 
-    /// 4800 Plus MALDI TOF/TOF: SCIEX or Applied Biosystems|MDS SCIEX 4800 Plus MALDI TOF-TOF Analyzer.
+    /// 4800 Plus MALDI TOF/TOF: AB SCIEX or Applied Biosystems|MDS SCIEX 4800 Plus MALDI TOF-TOF Analyzer.
     MS_4800_Plus_MALDI_TOF_TOF = 1000652,
 
-    /// API 3200: SCIEX or Applied Biosystems|MDS SCIEX API 3200 MS.
+    /// API 3200: AB SCIEX or Applied Biosystems|MDS SCIEX API 3200 MS.
     MS_API_3200 = 1000653,
 
-    /// API 5000: SCIEX or Applied Biosystems|MDS SCIEX API 5000 MS.
+    /// API 5000: AB SCIEX or Applied Biosystems|MDS SCIEX API 5000 MS.
     MS_API_5000 = 1000654,
 
-    /// QSTAR Elite: SCIEX or Applied Biosystems|MDS SCIEX QSTAR Elite.
+    /// QSTAR Elite: AB SCIEX or Applied Biosystems|MDS SCIEX QSTAR Elite.
     MS_QSTAR_Elite = 1000655,
 
     /// QSTAR Pulsar: Applied Biosystems|MDS SCIEX QSTAR Pulsar.
@@ -2493,16 +2491,16 @@ enum PWIZ_API_DECL CVID
     /// 4800 Proteomics Analyzer: Applied Biosystems|MDS SCIEX 4800 Proteomics Analyzer.
     MS_4800_Proteomics_Analyzer = 1000658,
 
-    /// 4000 Series Explorer Software: SCIEX or Applied Biosystems software for data acquisition and analysis.
+    /// 4000 Series Explorer Software: AB SCIEX or Applied Biosystems software for data acquisition and analysis.
     MS_4000_Series_Explorer_Software = 1000659,
 
-    /// GPS Explorer: SCIEX or Applied Biosystems software for data acquisition and analysis.
+    /// GPS Explorer: AB SCIEX or Applied Biosystems software for data acquisition and analysis.
     MS_GPS_Explorer = 1000661,
 
-    /// LightSight Software: SCIEX or Applied Biosystems|MDS SCIEX software metabolite identification.
+    /// LightSight Software: AB SCIEX or Applied Biosystems|MDS SCIEX software metabolite identification.
     MS_LightSight_Software = 1000662,
 
-    /// ProteinPilot Software: SCIEX or Applied Biosystems|MDS SCIEX software for protein ID and quant.
+    /// ProteinPilot Software: AB SCIEX or Applied Biosystems|MDS SCIEX software for protein ID and quant.
     MS_ProteinPilot_Software = 1000663,
 
     /// TissueView Software: Applied Biosystems|MDS SCIEX software for tissue imaging.
@@ -2529,7 +2527,7 @@ enum PWIZ_API_DECL CVID
     /// Pro BLAST: Applied Biosystems|MDS SCIEX software for MS-BLAST identification.
     MS_Pro_BLAST = 1000671,
 
-    /// Cliquid: SCIEX Cliquid software for data analysis and quantitation.
+    /// Cliquid: AB SCIEX Cliquid software for data analysis and quantitation.
     MS_Cliquid = 1000672,
 
     /// MIDAS Workflow Designer: Applied Biosystems|MDS SCIEX software for MRM assay development.
@@ -2556,7 +2554,7 @@ enum PWIZ_API_DECL CVID
     /// MassHunter Qualitative Analysis: Software for data analysis of data from 6000 series instruments.
     MS_MassHunter_Qualitative_Analysis = 1000680,
 
-    /// MassHunter Quantitative Analysis: Software for quantitation of Triple Quadrupole and Quadrupole Time-of-Flight data.
+    /// MassHunter Quantitative Analysis: Software for quantitation of Triple Quadruople and Quadrupole Time-of-Flight data.
     MS_MassHunter_Quantitative_Analysis = 1000681,
 
     /// MassHunter Metabolite ID: Software for identification of metabolites.
@@ -2583,8 +2581,8 @@ enum PWIZ_API_DECL CVID
     /// Agilent software: Agilent software for data acquisition and analysis.
     MS_Agilent_software = 1000689,
 
-    /// SCIEX software: SCIEX or Applied Biosystems software for data acquisition and analysis.
-    MS_SCIEX_software = 1000690,
+    /// AB SCIEX software: AB SCIEX or Applied Biosystems software for data acquisition and analysis.
+    MS_AB_SCIEX_software = 1000690,
 
     /// Applied Biosystems software: Applied Biosystems|MDS SCIEX software for data acquisition and analysis.
     MS_Applied_Biosystems_software = 1000691,
@@ -2853,7 +2851,7 @@ enum PWIZ_API_DECL CVID
     /// charge state calculation: A process that infers the charge state of an MSn spectrum's precursor(s) by the application of some algorithm.
     MS_charge_state_calculation = 1000778,
 
-    /// below precursor intensity dominance charge state calculation: Infers charge state as single or ambiguously multiple by determining the fraction of intensity below the precursor m/z.
+    /// below precursor intensity dominance charge state calculation: Infers charge state as single or amibiguously multiple by determining the fraction of intensity below the precursor m/z.
     MS_below_precursor_intensity_dominance_charge_state_calculation = 1000779,
 
     /// precursor recalculation: A process that recalculates existing precursor selected ions with one or more algorithmically determined precursor selected ions.
@@ -2865,7 +2863,7 @@ enum PWIZ_API_DECL CVID
     /// Savitzky-Golay smoothing: Reduces intensity spikes by applying local polynomial regression (of degree k) on a distribution (of at least k+1 equally spaced points) to determine the smoothed value for each point. It tends to preserve features of the distribution such as relative maxima, minima and width, which are usually 'flattened' by other adjacent averaging techniques.
     MS_Savitzky_Golay_smoothing = 1000782,
 
-    /// LOWESS smoothing: Reduces intensity spikes by applying a modelling method known as locally weighted polynomial regression. At each point in the data set a low-degree polynomial is fit to a subset of the data, with explanatory variable values near the point whose response is being estimated. The polynomial is fit using weighted least squares, giving more weight to points near the point whose response is being estimated and less weight to points further away. The value of the regression function for the point is then obtained by evaluating the local polynomial using the explanatory variable values for that data point. The LOESS fit is complete after regression function values have been computed for each of the n data points. Many of the details of this method, such as the degree of the polynomial model and the weights, are flexible.
+    /// LOWESS smoothing: Reduces intensity spikes by applying a modeling method known as locally weighted polynomial regression. At each point in the data set a low-degree polynomial is fit to a subset of the data, with explanatory variable values near the point whose response is being estimated. The polynomial is fit using weighted least squares, giving more weight to points near the point whose response is being estimated and less weight to points further away. The value of the regression function for the point is then obtained by evaluating the local polynomial using the explanatory variable values for that data point. The LOESS fit is complete after regression function values have been computed for each of the n data points. Many of the details of this method, such as the degree of the polynomial model and the weights, are flexible.
     MS_LOWESS_smoothing = 1000783,
 
     /// Gaussian smoothing: Reduces intensity spikes by convolving the data with a one-dimensional Gaussian function.
@@ -3114,7 +3112,7 @@ enum PWIZ_API_DECL CVID
     /// run attribute: Properties of the described run.
     MS_run_attribute = 1000857,
 
-    /// fraction identifier: Identier string that describes the sample fraction. This identifier should contain the fraction number(s) or similar information.
+    /// fraction identifier: Identier string that describes the sample fraction. This identifer should contain the fraction number(s) or similar information.
     MS_fraction_identifier = 1000858,
 
     /// molecule: A molecules is a fundamental component of a chemical compound that is the smallest part of the compound that can participate in a chemical reaction.
@@ -3156,7 +3154,7 @@ enum PWIZ_API_DECL CVID
     /// collision gas pressure: The gas pressure of the collision gas used for collisional excitation.
     MS_collision_gas_pressure = 1000869,
 
-    /// 4000 QTRAP: SCIEX or Applied Biosystems|MDS SCIEX QTRAP 4000.
+    /// 4000 QTRAP: AB SCIEX or Applied Biosystems|MDS SCIEX QTRAP 4000.
     MS_4000_QTRAP_OBSOLETE = 1000870,
 
     /// SRM software: Software used to predict, select, or optimize transitions or analyze the results of selected reaction monitoring runs.
@@ -3168,7 +3166,7 @@ enum PWIZ_API_DECL CVID
     /// peptide attribute calculation software: Software used to predict or calculate numerical attributes of peptides.
     MS_peptide_attribute_calculation_software = 1000873,
 
-    /// SSRCalc: Sequence Specific Retention Calculator estimates the retention time of peptides based on their sequence.
+    /// SSRCalc: Sequence Specific Retention Calculator esimates the retention time of peptides based on their sequence.
     MS_SSRCalc = 1000874,
 
     /// declustering potential: Potential difference between the orifice and the skimmer in volts.
@@ -3207,7 +3205,7 @@ enum PWIZ_API_DECL CVID
     /// protein name: A long name describing the function of the protein.
     MS_protein_name = 1000886,
 
-    /// peptide attribute: A nonphysical attribute that can be used to describe a peptide.
+    /// peptide attribute: An nonphysical attribute that can be used to describe a peptide.
     MS_peptide_attribute = 1000887,
 
     /// unmodified peptide sequence: A sequence of letter symbols denoting the order of amino acids that compose the peptide, without encoding any amino acid mass modifications that might be present.
@@ -3219,13 +3217,13 @@ enum PWIZ_API_DECL CVID
     /// peptide labeling state: A state description of how a peptide might be isotopically or isobarically labelled.
     MS_peptide_labeling_state = 1000890,
 
-    /// heavy labeled peptide: A peptide that has been created or labelled with some heavier-than-usual isotopes.
+    /// heavy labeled peptide: A peptide that has been created or labeled with some heavier-than-usual isotopes.
     MS_heavy_labeled_peptide = 1000891,
 
-    /// unlabeled peptide: A peptide that has not been labelled with heavier-than-usual isotopes. This is often referred to as \"light\" to distinguish from \"heavy\".
+    /// unlabeled peptide: A peptide that has not been labeled with heavier-than-usual isotopes. This is often referred to as \"light\" to distinguish from \"heavy\".
     MS_unlabeled_peptide = 1000892,
 
-    /// light labeled peptide (unlabeled peptide): A peptide that has not been labelled with heavier-than-usual isotopes. This is often referred to as \"light\" to distinguish from \"heavy\".
+    /// light labeled peptide (unlabeled peptide): A peptide that has not been labeled with heavier-than-usual isotopes. This is often referred to as \"light\" to distinguish from \"heavy\".
     MS_light_labeled_peptide = MS_unlabeled_peptide,
 
     /// peptide group label: An arbitrary string label used to mark a set of peptides that belong together in a set, whereby the members are differentiated by different isotopic labels. For example, the heavy and light forms of the same peptide will both be assigned the same peptide group label.
@@ -3285,10 +3283,10 @@ enum PWIZ_API_DECL CVID
     /// transition optimized on specified instrument: The transition has been optimized by direct injection of the peptide into an instrument specified in a separate term, and the optimum voltages and fragmentation energies have been determined.
     MS_transition_optimized_on_specified_instrument = 1000910,
 
-    /// transition validated with an MS/MS spectrum on specified instrument: The transition has been validated by obtaining an MS2 spectrum and demonstrating that the peak is detectable on the instrument specified with a separate term.
+    /// transition validated with an MS/MS spectrum on specified instrument: The transition has been validated by obtaining an MS/MS spectrum and demonstrating that the peak is detectable on the instrument specified with a separate term.
     MS_transition_validated_with_an_MS_MS_spectrum_on_specified_instrument = 1000911,
 
-    /// transition purported from an MS/MS spectrum on a different, specified instrument: The transition has been purported by obtaining an MS2 spectrum and demonstrating that the peak is detectable on the instrument specified with a separate term. However, the detecting instrument is of a different type (e.g. ion trap) than the instrument that the transition will eventually be used on (e.g. triple quad).
+    /// transition purported from an MS/MS spectrum on a different, specified instrument: The transition has been purported by obtaining an MS/MS spectrum and demonstrating that the peak is detectable on the instrument specified with a separate term. However, the detecting instrument is of a different type (e.g. ion trap) than the instrument that the transition will eventually be used on (e.g. triple quad).
     MS_transition_purported_from_an_MS_MS_spectrum_on_a_different__specified_instrument = 1000912,
 
     /// transition predicted by informatic analysis: The transition has been predicted by informatics software without any direct spectral evidence.
@@ -3300,10 +3298,10 @@ enum PWIZ_API_DECL CVID
     /// retention time window attribute: An attribute of a window in time about which a peptide might elute from the column.
     MS_retention_time_window_attribute = 1000915,
 
-    /// retention time window lower offset: The extent of the retention time window in time units below the target retention time. The lower and upper offsets may be asymmetric about the target time.
+    /// retention time window lower offset: The extent of the retention time window in time units below the target retention time. The lower and upper offsets may be asymetric about the target time.
     MS_retention_time_window_lower_offset = 1000916,
 
-    /// retention time window upper offset: The extent of the retention time window in time units above the target retention time. The lower and upper offsets may be asymmetric about the target time.
+    /// retention time window upper offset: The extent of the retention time window in time units above the target retention time. The lower and upper offsets may be asymetric about the target time.
     MS_retention_time_window_upper_offset = 1000917,
 
     /// target list: A list of peptides or compounds and their expected m/z coordinates that can be used to cause a mass spectrometry to obtain spectra of those molecules specifically.
@@ -3348,7 +3346,7 @@ enum PWIZ_API_DECL CVID
     /// QTRAP 5500: Applied Biosystems|MDS SCIEX QTRAP 5500.
     MS_QTRAP_5500 = 1000931,
 
-    /// TripleTOF 5600: SCIEX TripleTOF 5600, a quadrupole - quadrupole - time-of-flight mass spectrometer.
+    /// TripleTOF 5600: AB SCIEX TripleTOF 5600, a quadrupole - quadrupole - time-of-flight mass spectrometer.
     MS_TripleTOF_5600 = 1000932,
 
     /// protein modifications: Encoding of modifications of the protein sequence from the specified accession, written in PEFF notation.
@@ -3378,7 +3376,7 @@ enum PWIZ_API_DECL CVID
     /// search database details: Details about the database searched.
     MS_search_database_details = 1001011,
 
-    /// database source: The organisation, project or laboratory from where the database is obtained (UniProt, NCBI, EBI, other).
+    /// database source: The organisation, project or laboratory from where the database is obtained (uniprot, ncbi, ebi, other).
     MS_database_source = 1001012,
 
     /// database name: The name of the search database (nr, SwissProt or est_human).
@@ -3474,22 +3472,22 @@ enum PWIZ_API_DECL CVID
     /// SEQUEST:sort by dM: Sort order of SEQUEST search results by the difference between a theoretically calculated and the corresponding experimentally measured molecular mass M.
     MS_SEQUEST_sort_by_dM = 1001047,
 
-    /// SEQUEST:sort by Ions: Sort order of SEQUEST search results given by the ions.
+    /// SEQUEST:sort by Ions: 
     MS_SEQUEST_sort_by_Ions = 1001048,
 
-    /// SEQUEST:sort by MH+: Sort order of SEQUEST search results given by the mass of the protonated ion.
+    /// SEQUEST:sort by MH+: 
     MS_SEQUEST_sort_by_MH_ = 1001049,
 
-    /// SEQUEST:sort by P: Sort order of SEQUEST search results given by the probability.
+    /// SEQUEST:sort by P: 
     MS_SEQUEST_sort_by_P = 1001050,
 
     /// multiple enzyme combination rules: OBSOLETE: use attribute independent in mzIdentML instead. Description of multiple enzyme digestion protocol, if any.
     MS_multiple_enzyme_combination_rules_OBSOLETE = 1001051,
 
-    /// SEQUEST:sort by PreviousAminoAcid: Sort order of SEQUEST search results given by the previous amino acid.
+    /// SEQUEST:sort by PreviousAminoAcid: 
     MS_SEQUEST_sort_by_PreviousAminoAcid = 1001052,
 
-    /// SEQUEST:sort by Ref: Sort order of SEQUEST search results given by the reference.
+    /// SEQUEST:sort by Ref: 
     MS_SEQUEST_sort_by_Ref = 1001053,
 
     /// modification parameters: Modification parameters for the search engine run.
@@ -3504,7 +3502,7 @@ enum PWIZ_API_DECL CVID
     /// quality estimation by manual validation: The quality estimation was done manually.
     MS_quality_estimation_by_manual_validation = 1001058,
 
-    /// SEQUEST:sort by RSp: Sort order of SEQUEST search results given by the result 'Sp' of 'Rank/Sp' in the out file (peptide).
+    /// SEQUEST:sort by RSp: 
     MS_SEQUEST_sort_by_RSp = 1001059,
 
     /// quality estimation method details: Method for quality estimation (manually or with decoy database).
@@ -3519,31 +3517,31 @@ enum PWIZ_API_DECL CVID
     /// TODOscoring model: OBSOLETE: There is Phenyx:ScoringModel for Phenyx! Scoring model (more detailed granularity). TODO: add some child terms.
     MS_TODOscoring_model_OBSOLETE = 1001065,
 
-    /// ions series considered in search: The description of the DEPRECATED ion fragment series (including charges and neutral losses) that are considered by the search engine.
+    /// ions series considered in search: The description of the ion fragment series (including charges and neutral losses) that are considered by the search engine.
     MS_ions_series_considered_in_search = 1001066,
 
     /// SEQUEST:sort by Sp: Sort order of SEQUEST search results by the Sp score.
     MS_SEQUEST_sort_by_Sp = 1001068,
 
-    /// SEQUEST:sort by TIC: Sort order of SEQUEST search results given by the total ion current.
+    /// SEQUEST:sort by TIC: 
     MS_SEQUEST_sort_by_TIC = 1001069,
 
-    /// SEQUEST:sort by Scan: Sort order of SEQUEST search results given by the scan number.
+    /// SEQUEST:sort by Scan: 
     MS_SEQUEST_sort_by_Scan = 1001070,
 
-    /// SEQUEST:sort by Sequence: Sort order of SEQUEST search results given by the sequence.
+    /// SEQUEST:sort by Sequence: 
     MS_SEQUEST_sort_by_Sequence = 1001071,
 
-    /// SEQUEST:sort by Sf: Sort order of SEQUEST search results given by the SEQUEST result 'Sf'.
+    /// SEQUEST:sort by Sf: 
     MS_SEQUEST_sort_by_Sf = 1001072,
 
     /// database type amino acid: Database contains amino acid sequences.
     MS_database_type_amino_acid = 1001073,
 
-    /// database type nucleotide: Database contains nucleic acid sequences.
+    /// database type nucleotide: Database contains nucleid acid sequences.
     MS_database_type_nucleotide = 1001079,
 
-    /// search type: Enumeration of type of search value (i.e. from PMF, sequence tag, MS2).
+    /// search type: Enumeration of type of search value (i.e. from PMF, sequence tag, MS-MS).
     MS_search_type = 1001080,
 
     /// pmf search: A peptide mass fingerprint search.
@@ -3552,7 +3550,7 @@ enum PWIZ_API_DECL CVID
     /// tag search: A sequence tag search.
     MS_tag_search = 1001082,
 
-    /// ms-ms search: An MS2 search (with fragment ions).
+    /// ms-ms search: An ms/ms search (with fragment ions).
     MS_ms_ms_search = 1001083,
 
     /// database nr: Non-redundant GenBank sequence database.
@@ -3585,7 +3583,7 @@ enum PWIZ_API_DECL CVID
     /// sequence coverage: The percent coverage for the protein based upon the matched peptide sequences (can be calculated).
     MS_sequence_coverage = 1001093,
 
-    /// SEQUEST:sort by z: Sort order of SEQUEST search results given by the charge.
+    /// SEQUEST:sort by z: 
     MS_SEQUEST_sort_by_z = 1001094,
 
     /// SEQUEST:ProcessAll: 
@@ -3639,7 +3637,7 @@ enum PWIZ_API_DECL CVID
     /// SEQUEST:Full: 
     MS_SEQUEST_Full = 1001111,
 
-    /// n-terminal flanking residue: The residue preceding the first amino acid in the peptide sequence as it occurs in the protein. Use 'N-term' to denote if the peptide starts at the N terminus of the protein.
+    /// n-terminal flanking residue: The residue preceeding the first amino acid in the peptide sequence as it occurs in the protein. Use 'N-term' to denote if the peptide starts at the N terminus of the protein.
     MS_n_terminal_flanking_residue = 1001112,
 
     /// c-terminal flanking residue: The residue following the last amino acid in the peptide sequence as it occurs in the protein. Use 'C-term' to denote if the peptide ends at the C terminus of the protein.
@@ -3669,7 +3667,7 @@ enum PWIZ_API_DECL CVID
     /// number of matched peaks: The number of peaks that were matched as qualified by the ion series considered field. If a peak matches multiple ions then only 1 would be added the count.
     MS_number_of_matched_peaks = 1001121,
 
-    /// ions series considered: The ion series that were used during the calculation of the count (e.g. a, b, c, d, v, w, x, y, z, a-H2O, a-NH3, b-H2O, b-NH3, y-H2O, y-NH3, b-H20, b+, z-, z+1, z+2, b-H3PO4, y-H3PO4, immonium, internal ya, internal yb).
+    /// ions series considered: The ion series that were used during the calculation of the count (e.g. b, y, a, b, c, y, z, b, b-NH3, b-H20, b+, z, z-, z+, y-H3PO4, immonium).
     MS_ions_series_considered = 1001122,
 
     /// number of peaks used: The number of peaks from the original peak list that are used to calculate the scores for a particular search engine. All ions that have the opportunity to match or be counted even if they don't.
@@ -3741,26 +3739,26 @@ enum PWIZ_API_DECL CVID
     /// SEQUEST:SelectAdvancedCV: SEQUEST Select Advanced Input Parameters.
     MS_SEQUEST_SelectAdvancedCV = 1001145,
 
-    /// param: a ion-NH3 DEPRECATED: Ion a-NH3 parameter information, type of product: a ion with lost ammonia.
-    MS_param__a_ion_NH3_DEPRECATED = 1001146,
+    /// param: a ion-NH3: Parameter information, type of product: a ion with lost ammonium.
+    MS_param__a_ion_NH3 = 1001146,
 
     /// protein ambiguity group result details: 
     MS_protein_ambiguity_group_result_details = 1001147,
 
-    /// param: a ion-H2O DEPRECATED: Ion a-H2O if a significant and fragment includes STED.
-    MS_param__a_ion_H2O_DEPRECATED = 1001148,
+    /// param: a ion-H2O: Ion a - H2O if a significant and fragment includes STED.
+    MS_param__a_ion_H2O = 1001148,
 
-    /// param: b ion-NH3 DEPRECATED: Ion b-NH3 parameter information, type of product: b ion with lost ammonia.
-    MS_param__b_ion_NH3_DEPRECATED = 1001149,
+    /// param: b ion-NH3: Parameter information, type of product: b ion with lost ammonium.
+    MS_param__b_ion_NH3 = 1001149,
 
-    /// param: b ion-H2O DEPRECATED: Ion b-H2O if b significant and fragment includes STED.
-    MS_param__b_ion_H2O_DEPRECATED = 1001150,
+    /// param: b ion-H2O: Ion b - H2O if b significant and fragment includes STED.
+    MS_param__b_ion_H2O = 1001150,
 
-    /// param: y ion-NH3 DEPRECATED: Ion y-NH3 parameter information, type of product: y ion with lost ammonia.
-    MS_param__y_ion_NH3_DEPRECATED = 1001151,
+    /// param: y ion-NH3: Parameter information, type of product: y ion with lost ammonium.
+    MS_param__y_ion_NH3 = 1001151,
 
-    /// param: y ion-H2O DEPRECATED: 
-    MS_param__y_ion_H2O_DEPRECATED = 1001152,
+    /// param: y ion-H2O: Ion y - H2O if y significant and fragment includes STED.
+    MS_param__y_ion_H2O = 1001152,
 
     /// search engine specific score: Search engine specific scores.
     MS_search_engine_specific_score = 1001153,
@@ -3828,10 +3826,10 @@ enum PWIZ_API_DECL CVID
     /// Mascot:total ions: The Mascot result 'Total ions'.
     MS_Mascot_total_ions = 1001174,
 
-    /// peptide shared in multiple proteins: A peptide matching multiple proteins.
+    /// peptide shared in multiple proteins: 
     MS_peptide_shared_in_multiple_proteins = 1001175,
 
-    /// (?<=[KR])(?!P): Regular expression for Trypsin.
+    /// (?<=[KR])(?!P): 
     MS______KR_____P_ = 1001176,
 
     /// number of molecular hypothesis considered: Number of Molecular Hypothesis Considered - This is the number of molecules (e.g. peptides for proteomics) considered for a particular search.
@@ -3972,16 +3970,16 @@ enum PWIZ_API_DECL CVID
     /// frag: c ion: Fragmentation information, type of product: c ion.
     MS_frag__c_ion = 1001231,
 
-    /// frag: b ion - NH3: Ion b-NH3 fragmentation information, type of product: b ion without ammonia.
+    /// frag: b ion - NH3: Fragmentation information, type of product: b ion without ammonium ion.
     MS_frag__b_ion___NH3 = 1001232,
 
-    /// frag: y ion - NH3: Ion y-NH3 fragmentation information, type of product: y ion without ammonia.
+    /// frag: y ion - NH3: Fragmentation information, type of product: y ion without ammonium ion.
     MS_frag__y_ion___NH3 = 1001233,
 
     /// frag: a ion - H2O: Fragmentation information, type of product: a ion without water.
     MS_frag__a_ion___H2O = 1001234,
 
-    /// frag: a ion - NH3: Ion a-NH3 fragmentation information, type of product: a ion without ammonia.
+    /// frag: a ion - NH3: Fragmentation information, type of product: a ion without ammonium.
     MS_frag__a_ion___NH3 = 1001235,
 
     /// frag: d ion: Fragmentation information, type of product: d ion.
@@ -4011,8 +4009,8 @@ enum PWIZ_API_DECL CVID
     /// PerSeptive PKS format: PerSeptive peak list file format.
     MS_PerSeptive_PKS_format = 1001245,
 
-    /// SCIEX API III format: PE SCIEX peak list file format.
-    MS_SCIEX_API_III_format = 1001246,
+    /// Sciex API III format: PE Sciex peak list file format.
+    MS_Sciex_API_III_format = 1001246,
 
     /// Bruker XML format: Bruker data exchange XML format.
     MS_Bruker_XML_format = 1001247,
@@ -4080,13 +4078,13 @@ enum PWIZ_API_DECL CVID
     /// researcher: Researcher role.
     MS_researcher = 1001271,
 
-    /// (?<=R)(?!P): Regular expression for Arg-C.
+    /// (?<=R)(?!P): 
     MS_____R____P_ = 1001272,
 
-    /// (?=[BD]): Regular expression for Asp-N.
+    /// (?=[BD]): 
     MS_____BD__ = 1001273,
 
-    /// (?=[DE]): Regular expression for Asp-N-ambic.
+    /// (?=[DE]): 
     MS_____DE__ = 1001274,
 
     /// ProteinScape SearchEvent: Source data for this mzIdentML was a ProteinScape SearchEvent.
@@ -4179,22 +4177,22 @@ enum PWIZ_API_DECL CVID
     /// Lys-C: Endoproteinase Lys-C.
     MS_Lys_C = 1001309,
 
-    /// Lys-C/P: Proteinase Lys-C/P.
+    /// Lys-C/P: 
     MS_Lys_C_P = 1001310,
 
-    /// PepsinA: PepsinA proteinase.
+    /// PepsinA: 
     MS_PepsinA = 1001311,
 
-    /// TrypChymo: Cleavage agent TrypChymo.
+    /// TrypChymo: 
     MS_TrypChymo = 1001312,
 
-    /// Trypsin/P: Cleavage agent Trypsin/P.
+    /// Trypsin/P: 
     MS_Trypsin_P = 1001313,
 
-    /// V8-DE: Cleavage agent V8-DE.
+    /// V8-DE: 
     MS_V8_DE = 1001314,
 
-    /// V8-E: Cleavage agent V8-E.
+    /// V8-E: 
     MS_V8_E = 1001315,
 
     /// Mascot:SigThreshold: Significance threshold below which the p-value of a peptide match must lie to be considered statistically significant (default 0.05).
@@ -4242,34 +4240,34 @@ enum PWIZ_API_DECL CVID
     /// X!Tandem:hyperscore: The X!Tandem hyperscore.
     MS_X_Tandem_hyperscore = 1001331,
 
-    /// (?<=[FYWL])(?!P): Regular expression for Chymotrypsin.
+    /// (?<=[FYWL])(?!P): 
     MS______FYWL_____P_ = 1001332,
 
-    /// (?<=M): Regular expression for CNBr.
+    /// (?<=M): 
     MS_____M_ = 1001333,
 
-    /// ((?<=D))|((?=D)): Regular expression for formic acid.
+    /// ((?<=D))|((?=D)): 
     MS______D_______D__ = 1001334,
 
-    /// (?<=K)(?!P): Regular expression for Lys-C.
+    /// (?<=K)(?!P): 
     MS_____K____P_ = 1001335,
 
-    /// (?<=K): Regular expression for Lys-C/P.
+    /// (?<=K): 
     MS_____K_ = 1001336,
 
-    /// (?<=[FL]): Regular expression for PepsinA.
+    /// (?<=[FL]): 
     MS______FL__ = 1001337,
 
-    /// (?<=[FYWLKR])(?!P): Regular expression for TrypChymo.
+    /// (?<=[FYWLKR])(?!P): 
     MS______FYWLKR_____P_ = 1001338,
 
-    /// (?<=[KR]): Regular expression for Trypsin/P.
+    /// (?<=[KR]): 
     MS______KR__ = 1001339,
 
-    /// (?<=[BDEZ])(?!P): Regular expression for V8-DE.
+    /// (?<=[BDEZ])(?!P): 
     MS______BDEZ_____P_ = 1001340,
 
-    /// (?<=[EZ])(?!P): Regular expression for V8-E.
+    /// (?<=[EZ])(?!P): 
     MS______EZ_____P_ = 1001341,
 
     /// database sequence details: Details about a single database sequence.
@@ -4335,7 +4333,7 @@ enum PWIZ_API_DECL CVID
     /// number of unmatched peaks: The number of unmatched peaks.
     MS_number_of_unmatched_peaks = 1001362,
 
-    /// peptide unique to one protein: A peptide matching only one.
+    /// peptide unique to one protein: 
     MS_peptide_unique_to_one_protein = 1001363,
 
     /// distinct peptide-level global FDR: Estimation of the global false discovery rate for distinct peptides once redundant identifications of the same peptide have been removed (id est multiple PSMs have been collapsed to one entry).
@@ -4353,7 +4351,7 @@ enum PWIZ_API_DECL CVID
     /// frag: z+2 ion: Fragmentation information, type of product: z+2 ion.
     MS_frag__z_2_ion = 1001368,
 
-    /// text format: Simple text file format of \"m/z [intensity]\" values for a PMF (or single MS2) search.
+    /// text format: Simple text file format of \"m/z [intensity]\" values for a PMF (or single MS-MS) search.
     MS_text_format = 1001369,
 
     /// Mascot:homology threshold: The Mascot result 'homology threshold'.
@@ -4470,7 +4468,7 @@ enum PWIZ_API_DECL CVID
     /// translation start codons: The translation start codons used to translate the nucleotides to amino acids.
     MS_translation_start_codons = 1001410,
 
-    /// search tolerance specification: Specification of the search tolerance.
+    /// search tolerance specification: 
     MS_search_tolerance_specification = 1001411,
 
     /// search tolerance plus value: 
@@ -4509,31 +4507,31 @@ enum PWIZ_API_DECL CVID
     /// translation table description: A URL that describes the translation table used to translate the nucleotides to amino acids.
     MS_translation_table_description = 1001423,
 
-    /// ProteinExtractor:Methodname: Name of the used method in the ProteinExtractor algorithm.
+    /// ProteinExtractor:Methodname: 
     MS_ProteinExtractor_Methodname = 1001424,
 
-    /// ProteinExtractor:GenerateNonRedundant: Flag indicating if a non redundant scoring should be generated.
+    /// ProteinExtractor:GenerateNonRedundant: 
     MS_ProteinExtractor_GenerateNonRedundant = 1001425,
 
-    /// ProteinExtractor:IncludeIdentified: Flag indicating if identified proteins should be included.
+    /// ProteinExtractor:IncludeIdentified: 
     MS_ProteinExtractor_IncludeIdentified = 1001426,
 
-    /// ProteinExtractor:MaxNumberOfProteins: The maximum number of proteins to consider.
+    /// ProteinExtractor:MaxNumberOfProteins: 
     MS_ProteinExtractor_MaxNumberOfProteins = 1001427,
 
-    /// ProteinExtractor:MaxProteinMass: The maximum considered mass for a protein.
+    /// ProteinExtractor:MaxProteinMass: 
     MS_ProteinExtractor_MaxProteinMass = 1001428,
 
-    /// ProteinExtractor:MinNumberOfPeptides: The minimum number of proteins to consider.
+    /// ProteinExtractor:MinNumberOfPeptides: 
     MS_ProteinExtractor_MinNumberOfPeptides = 1001429,
 
-    /// ProteinExtractor:UseMascot: Flag indicating to include Mascot scoring for calculation of the ProteinExtractor meta score.
+    /// ProteinExtractor:UseMascot: Flag indicating to include Mascot scoring for calculation of the ProteinExtractor metascore.
     MS_ProteinExtractor_UseMascot = 1001430,
 
-    /// ProteinExtractor:MascotPeptideScoreThreshold: Only peptides with scores higher than that threshold are taken into account in Mascot scoring for calculation of the ProteinExtractor meta score.
+    /// ProteinExtractor:MascotPeptideScoreThreshold: Only peptides with scores higher than that threshold are taken into account in Mascot scoring for calculation of the ProteinExtractor metascore.
     MS_ProteinExtractor_MascotPeptideScoreThreshold = 1001431,
 
-    /// ProteinExtractor:MascotUniqueScore: In the final result each protein must have at least one peptide above this Mascot score threshold in ProteinExtractor meta score calculation.
+    /// ProteinExtractor:MascotUniqueScore: In the final result each protein must have at least one peptide above this Mascot score threshold in ProteinExtractor metascore calculation.
     MS_ProteinExtractor_MascotUniqueScore = 1001432,
 
     /// ProteinExtractor:MascotUseIdentityScore: 
@@ -4542,37 +4540,37 @@ enum PWIZ_API_DECL CVID
     /// ProteinExtractor:MascotWeighting: Influence of Mascot search engine in the process of merging the search engine specific protein lists into the global protein list of ProteinExtractor.
     MS_ProteinExtractor_MascotWeighting = 1001434,
 
-    /// ProteinExtractor:UseSequest: Flag indicating to include SEQUEST scoring for calculation of the ProteinExtractor meta score.
+    /// ProteinExtractor:UseSequest: Flag indicating to include SEQUEST scoring for calculation of the ProteinExtractor metascore.
     MS_ProteinExtractor_UseSequest = 1001435,
 
-    /// ProteinExtractor:SequestPeptideScoreThreshold: Only peptides with scores higher than that threshold are taken into account in SEQUEST scoring for calculation of the ProteinExtractor meta score.
+    /// ProteinExtractor:SequestPeptideScoreThreshold: Only peptides with scores higher than that threshold are taken into account in SEQUEST scoring for calculation of the ProteinExtractor metascore.
     MS_ProteinExtractor_SequestPeptideScoreThreshold = 1001436,
 
-    /// ProteinExtractor:SequestUniqueScore: In the final result each protein must have at least one peptide above this SEQUEST score threshold in ProteinExtractor meta score calculation.
+    /// ProteinExtractor:SequestUniqueScore: In the final result each protein must have at least one peptide above this SEQUEST score threshold in ProteinExtractor metascore calculation.
     MS_ProteinExtractor_SequestUniqueScore = 1001437,
 
     /// ProteinExtractor:SequestWeighting: Influence of SEQUEST search engine in the process of merging the search engine specific protein lists into the global protein list of ProteinExtractor.
     MS_ProteinExtractor_SequestWeighting = 1001438,
 
-    /// ProteinExtractor:UseProteinSolver: Flag indicating to include ProteinSolver scoring for calculation of the ProteinExtractor meta score.
+    /// ProteinExtractor:UseProteinSolver: Flag indicating to include ProteinSolver scoring for calculation of the ProteinExtractor metascore.
     MS_ProteinExtractor_UseProteinSolver = 1001439,
 
-    /// ProteinExtractor:ProteinSolverPeptideScoreThreshold: Only peptides with scores higher than that threshold are taken into account in ProteinSolver scoring for calculation of the ProteinExtractor meta score.
+    /// ProteinExtractor:ProteinSolverPeptideScoreThreshold: Only peptides with scores higher than that threshold are taken into account in ProteinSolver scoring for calculation of the ProteinExtractor metascore.
     MS_ProteinExtractor_ProteinSolverPeptideScoreThreshold = 1001440,
 
-    /// ProteinExtractor:ProteinSolverUniqueScore: In the final result each protein must have at least one peptide above this ProteinSolver score threshold in ProteinExtractor meta score calculation.
+    /// ProteinExtractor:ProteinSolverUniqueScore: In the final result each protein must have at least one peptide above this ProteinSolver score threshold in ProteinExtractor metascore calculation.
     MS_ProteinExtractor_ProteinSolverUniqueScore = 1001441,
 
     /// ProteinExtractor:ProteinSolverWeighting: Influence of ProteinSolver search engine in the process of merging the search engine specific protein lists into the global protein list of ProteinExtractor.
     MS_ProteinExtractor_ProteinSolverWeighting = 1001442,
 
-    /// ProteinExtractor:UsePhenyx: Flag indicating to include Phenyx scoring for calculation of the ProteinExtractor meta score.
+    /// ProteinExtractor:UsePhenyx: Flag indicating to include Phenyx scoring for calculation of the ProteinExtractor metascore.
     MS_ProteinExtractor_UsePhenyx = 1001443,
 
-    /// ProteinExtractor:PhenyxPeptideScoreThreshold: Only peptides with scores higher than that threshold are taken into account in Phenyx scoring for calculation of the ProteinExtractor meta score.
+    /// ProteinExtractor:PhenyxPeptideScoreThreshold: Only peptides with scores higher than that threshold are taken into account in Phenyx scoring for calculation of the ProteinExtractor metascore.
     MS_ProteinExtractor_PhenyxPeptideScoreThreshold = 1001444,
 
-    /// ProteinExtractor:PhenyxUniqueScore: In the final result each protein must have at least one peptide above this Phenyx score threshold in ProteinExtractor meta score calculation.
+    /// ProteinExtractor:PhenyxUniqueScore: In the final result each protein must have at least one peptide above this Phenyx score threshold in ProteinExtractor metascore calculation.
     MS_ProteinExtractor_PhenyxUniqueScore = 1001445,
 
     /// ProteinExtractor:PhenyxWeighting: Influence of Phenyx search engine in the process of merging the search engine specific protein lists into the global protein list of ProteinExtractor.
@@ -4632,7 +4630,7 @@ enum PWIZ_API_DECL CVID
     /// DTASelect format: DTASelect file format.
     MS_DTASelect_format = 1001464,
 
-    /// MS2 format: MS2 file format for MS2 spectral data.
+    /// MS2 format: MS2 file format for MS/MS spectral data.
     MS_MS2_format = 1001466,
 
     /// taxonomy: NCBI TaxID: This term is used if a NCBI TaxID is specified, e.g. 9606 for Homo sapiens.
@@ -4683,17 +4681,17 @@ enum PWIZ_API_DECL CVID
     /// null-terminated ASCII string: Sequence of zero or more non-zero ASCII characters terminated by a single null (0) byte.
     MS_null_terminated_ASCII_string = 1001479,
 
-    /// SCIEX TOF/TOF nativeID format: Native format defined by jobRun=xsd:nonNegativeInteger spotLabel=xsd:string spectrum=xsd:nonNegativeInteger.
-    MS_SCIEX_TOF_TOF_nativeID_format = 1001480,
+    /// AB SCIEX TOF/TOF nativeID format: Native format defined by jobRun=xsd:nonNegativeInteger spotLabel=xsd:string spectrum=xsd:nonNegativeInteger.
+    MS_AB_SCIEX_TOF_TOF_nativeID_format = 1001480,
 
-    /// SCIEX TOF/TOF database: Applied Biosystems/MDS Analytical Technologies TOF/TOF instrument database.
-    MS_SCIEX_TOF_TOF_database = 1001481,
+    /// AB SCIEX TOF/TOF database: Applied Biosystems/MDS Analytical Technologies TOF/TOF instrument database.
+    MS_AB_SCIEX_TOF_TOF_database = 1001481,
 
-    /// 5800 TOF/TOF: SCIEX 5800 TOF-TOF Analyzer.
-    MS_5800_TOF_TOF = 1001482,
+    /// TOF/TOF 5800: AB SCIEX or Applied Biosystems|MDS Analytical Technologies AB SCIEX TOF/TOF 5800 Analyzer.
+    MS_TOF_TOF_5800 = 1001482,
 
-    /// SCIEX TOF/TOF Series Explorer Software: SCIEX or Applied Biosystems software for TOF/TOF data acquisition and analysis.
-    MS_SCIEX_TOF_TOF_Series_Explorer_Software = 1001483,
+    /// AB SCIEX TOF/TOF Series Explorer Software: AB SCIEX or Applied Biosystems software for TOF/TOF data acquisition and analysis.
+    MS_AB_SCIEX_TOF_TOF_Series_Explorer_Software = 1001483,
 
     /// intensity normalization: Normalization of data point intensities.
     MS_intensity_normalization = 1001484,
@@ -4914,11 +4912,11 @@ enum PWIZ_API_DECL CVID
     /// MALDI Solutions: Shimadzu Biotech software for data acquisition, processing, and analysis.
     MS_MALDI_Solutions = 1001558,
 
-    /// SCIEX TOF/TOF T2D nativeID format: Native format defined by file=xsd:IDREF.
-    MS_SCIEX_TOF_TOF_T2D_nativeID_format = 1001559,
+    /// AB SCIEX TOF/TOF T2D nativeID format: Native format defined by file=xsd:IDREF.
+    MS_AB_SCIEX_TOF_TOF_T2D_nativeID_format = 1001559,
 
-    /// SCIEX TOF/TOF T2D format: Applied Biosystems/MDS Analytical Technologies TOF/TOF instrument export format.
-    MS_SCIEX_TOF_TOF_T2D_format = 1001560,
+    /// AB SCIEX TOF/TOF T2D format: Applied Biosystems/MDS Analytical Technologies TOF/TOF instrument export format.
+    MS_AB_SCIEX_TOF_TOF_T2D_format = 1001560,
 
     /// Scaffold: Scaffold analysis software.
     MS_Scaffold = 1001561,
@@ -4971,7 +4969,7 @@ enum PWIZ_API_DECL CVID
     /// Scaffold: Minimum Peptide Probability: Minimum probability a peptide must have to be accepted for protein scoring.
     MS_Scaffold__Minimum_Peptide_Probability = 1001577,
 
-    /// minimum number of enzymatic termini: Minimum number of enzymatic termini a peptide must have to be accepted.
+    /// minimum number of enzymatic termini: Minimum number of enzymatic termini a pepide must have to be accepted.
     MS_minimum_number_of_enzymatic_termini = 1001578,
 
     /// Scaffold:Protein Probability: Scaffold protein probability score.
@@ -4992,7 +4990,7 @@ enum PWIZ_API_DECL CVID
     /// MaxQuant: MaxQuant is a quantitative proteomics software package designed for analyzing large mass spectrometric data sets. It is specifically aimed at high resolution MS data.
     MS_MaxQuant = 1001583,
 
-    /// combined pmf + ms-ms search: Search that includes data from Peptide Mass Fingerprint (PMF) and MS2 (aka Peptide Fragment Fingerprint - PFF).
+    /// combined pmf + ms-ms search: Search that includes data from Peptide Mass Fingerprint (PMF) and MS/MS (aka Peptide Fragment Fingerprint - PFF).
     MS_combined_pmf___ms_ms_search = 1001584,
 
     /// MyriMatch: Tabb Lab software for directly comparing peptides in a database to tandem mass spectra.
@@ -5082,7 +5080,7 @@ enum PWIZ_API_DECL CVID
     /// ProteomeDiscoverer:Spectrum Selector:Minimum Peak Count: Minimum number of peaks in a tandem mass spectrum that is allowed to pass the filter and to be subjected to further processing in the workflow.
     MS_ProteomeDiscoverer_Spectrum_Selector_Minimum_Peak_Count = 1001609,
 
-    /// ProteomeDiscoverer:MS Order: Level of the mass spectrum (MS2 ... MS10).
+    /// ProteomeDiscoverer:MS Order: Level of the mass spectrum (MS/MS=MS2 ... MS10).
     MS_ProteomeDiscoverer_MS_Order_OBSOLETE = 1001610,
 
     /// ProteomeDiscoverer:Polarity Mode: Polarity mode (positive or negative).
@@ -5136,7 +5134,7 @@ enum PWIZ_API_DECL CVID
     /// ProteomeDiscoverer:Non-Fragment Filter:Remove Precursor Overtones: Determines whether precursor overtone peaks in the spectrum are removed from the input spectrum.
     MS_ProteomeDiscoverer_Non_Fragment_Filter_Remove_Precursor_Overtones = 1001627,
 
-    /// ProteomeDiscoverer:Non-Fragment Filter:Remove Precursor Peak: Determines whether precursor artifact peaks from the MS2 input spectra are removed.
+    /// ProteomeDiscoverer:Non-Fragment Filter:Remove Precursor Peak: Determines whether precursor artifact peaks from the MS/MS input spectra are removed.
     MS_ProteomeDiscoverer_Non_Fragment_Filter_Remove_Precursor_Peak = 1001628,
 
     /// ProteomeDiscoverer:Spectrum Grouper:Allow Mass Analyzer Mismatch: Determines whether the fragment spectrum for scans with the same precursor mass is grouped, regardless of mass analyzer and activation type.
@@ -5184,11 +5182,11 @@ enum PWIZ_API_DECL CVID
     /// ProteomeDiscoverer:Spectrum Score Filter:Let Pass Above Scores: Determines whether spectra with scores above the threshold score are retained rather than filtered out.
     MS_ProteomeDiscoverer_Spectrum_Score_Filter_Let_Pass_Above_Scores = 1001643,
 
-    /// ProteomeDiscoverer:Dynamic Modification: Determine dynamic post-translational modifications (PTMs).
-    MS_ProteomeDiscoverer_Dynamic_Modification = 1001644,
+    /// ProteomeDiscoverer:Dynamic Modifications: Determine dynamic post-translational modifications (PTMs).
+    MS_ProteomeDiscoverer_Dynamic_Modifications = 1001644,
 
-    /// ProteomeDiscoverer:Static Modification: Static Modification to all occurrences of a named amino acid.
-    MS_ProteomeDiscoverer_Static_Modification = 1001645,
+    /// ProteomeDiscoverer:Static Modifications: Static Modification to all occurrences of a named amino acid.
+    MS_ProteomeDiscoverer_Static_Modifications = 1001645,
 
     /// ProteomeDiscoverer:Mascot:Decoy Search: Determines whether the Proteome Discoverer application searches an additional decoy database.
     MS_ProteomeDiscoverer_Mascot_Decoy_Search_OBSOLETE = 1001646,
@@ -5412,17 +5410,17 @@ enum PWIZ_API_DECL CVID
     /// ProteomeDiscoverer:SEQUEST:FT Medium Confidence XCorr Charge4: FT medium confidence XCorr parameter for charge >= 4.
     MS_ProteomeDiscoverer_SEQUEST_FT_Medium_Confidence_XCorr_Charge4 = 1001719,
 
-    /// ProteomeDiscoverer:1. Dynamic Modification: ProteomeDiscoverer's 1st dynamic post-translational modification (PTM) input parameter.
-    MS_ProteomeDiscoverer_1__Dynamic_Modification_OBSOLETE = 1001720,
+    /// ProteomeDiscoverer:1. Dynamic Modification: Determine 1st dynamic post-translational modifications (PTMs).
+    MS_ProteomeDiscoverer_1__Dynamic_Modification = 1001720,
 
-    /// ProteomeDiscoverer:2. Dynamic Modification: ProteomeDiscoverer's 2nd dynamic post-translational modification (PTM) input parameter.
-    MS_ProteomeDiscoverer_2__Dynamic_Modification_OBSOLETE = 1001721,
+    /// ProteomeDiscoverer:2. Dynamic Modification: Determine 2nd dynamic post-translational modifications (PTMs).
+    MS_ProteomeDiscoverer_2__Dynamic_Modification = 1001721,
 
-    /// ProteomeDiscoverer:3. Dynamic Modification: ProteomeDiscoverer's 3rd dynamic post-translational modification (PTM) input parameter.
-    MS_ProteomeDiscoverer_3__Dynamic_Modification_OBSOLETE = 1001722,
+    /// ProteomeDiscoverer:3. Dynamic Modification: Determine 3rd dynamic post-translational modifications (PTMs).
+    MS_ProteomeDiscoverer_3__Dynamic_Modification = 1001722,
 
-    /// ProteomeDiscoverer:4. Dynamic Modification: ProteomeDiscoverer's 4th dynamic post-translational modification (PTM) input parameter.
-    MS_ProteomeDiscoverer_4__Dynamic_Modification_OBSOLETE = 1001723,
+    /// ProteomeDiscoverer:4. Dynamic Modification: Determine 4th dynamic post-translational modifications (PTMs).
+    MS_ProteomeDiscoverer_4__Dynamic_Modification = 1001723,
 
     /// ProteomeDiscoverer:Static Modification for X: Static Modification for X.
     MS_ProteomeDiscoverer_Static_Modification_for_X = 1001724,
@@ -5641,10 +5639,10 @@ enum PWIZ_API_DECL CVID
     MS_Unify = 1001796,
 
     /// travelling wave ion mobility mass spectrometer: An ion mobility mass spectrometry technique based on the superimposition of travelling voltage waves on a radially-confining RF voltage in a gas-filled, stacked-ring ion guide.
-    MS_travelling_wave_ion_mobility_mass_spectrometer_OBSOLETE = 1001797,
+    MS_travelling_wave_ion_mobility_mass_spectrometer = 1001797,
 
     /// TWIMS (travelling wave ion mobility mass spectrometer): An ion mobility mass spectrometry technique based on the superimposition of travelling voltage waves on a radially-confining RF voltage in a gas-filled, stacked-ring ion guide.
-    MS_TWIMS_OBSOLETE = MS_travelling_wave_ion_mobility_mass_spectrometer_OBSOLETE,
+    MS_TWIMS = MS_travelling_wave_ion_mobility_mass_spectrometer,
 
     /// LECO software: LECO software for data acquisition and analysis.
     MS_LECO_software = 1001798,
@@ -5679,7 +5677,7 @@ enum PWIZ_API_DECL CVID
     /// technical replicate: The study variable is 'technical replicate'. The string value denotes the category of technical replicate, e.g. 'run generated from same sample'.
     MS_technical_replicate = 1001808,
 
-    /// biological replicate: The study variable is 'biological replicate'. This means, the run was generated from another individual or sample.
+    /// biological replicate: The study variable is 'biological replicate'. This means, the run was generated from another individuum or sample.
     MS_biological_replicate = 1001809,
 
     /// experimental condition 'case': The experimental condition is 'case' in contrast to 'control'.
@@ -5709,7 +5707,7 @@ enum PWIZ_API_DECL CVID
     /// one sample run: The raw file contains the run of one sample (e.g. spectral counting, LC-MS label-free).
     MS_one_sample_run = 1001818,
 
-    /// two sample run: The raw file contains the run of two samples (e.g. SILAC, metabolic labelling).
+    /// two sample run: The raw file contains the run of two samples (e.g. SILAC, metabolic labeling).
     MS_two_sample_run = 1001819,
 
     /// three sample run: The raw file contains the run of three samples (e.g. 3-plex SILAC).
@@ -5733,7 +5731,7 @@ enum PWIZ_API_DECL CVID
     /// mass trace reporting: rectangles: The mass trace of the features of this feature list specifies rectangles. Each mass trace has the syntax (RT_start,MZ_start,RT_end,MZ_end), i.e. opposite corners are given.
     MS_mass_trace_reporting__rectangles = 1001826,
 
-    /// mass trace reporting: polygons: The mass trace of the features of this feature list specifies polygons. Each mass trace has the syntax (RT_1, MZ_1, RT_2, MZ_2, ... , RT_i, MZ_i, ... , RT_n, MZ_n), where the line (RT_n, MZ_n)->(RT_1, MZ_1) is implicit.
+    /// mass trace reporting: polygons: The mass trace of the features of this feature list specifies polygons. Each mass trace has the syntax (RT_1, MZ_1, RT_2, MZ_2, ... , RT_i, MZ_i, ... , RT_n, MZ_n), where the line (RT_n, MZ_n)->(RT_1, MZ_1) is implicite.
     MS_mass_trace_reporting__polygons = 1001827,
 
     /// feature attribute: Attribute describing a feature.
@@ -5760,10 +5758,10 @@ enum PWIZ_API_DECL CVID
     /// SILAC quantitation analysis: SILAC workflow (heavy, light, and sometimes medium peak).
     MS_SILAC_quantitation_analysis = 1001835,
 
-    /// spectral counting quantitation analysis: Spectral counting workflow (number of identified MS2 spectra as approximation of peptide / protein quant).
+    /// spectral counting quantitation analysis: Spectral counting workflow (number of identified MS/MS spectra as approximation of peptide / protein quant).
     MS_spectral_counting_quantitation_analysis = 1001836,
 
-    /// iTRAQ quantitation analysis: Quantification analysis using the SCIEX iTRAQ isobaric labelling workflow, wherein 2-8 reporter ions are measured in MS2 spectra near 114 m/z.
+    /// iTRAQ quantitation analysis: Quantification analysis using the AB SCIEX iTRAQ isobaric labeling workflow, wherein 2-8 reporter ions are measured in MS/MS spectra near 114 m/z.
     MS_iTRAQ_quantitation_analysis = 1001837,
 
     /// SRM quantitation analysis: Selected Reaction Monitoring workflow (XIC quantitation of precursor / fragment mass pair).
@@ -5778,7 +5776,7 @@ enum PWIZ_API_DECL CVID
     /// LC-MS feature volume: Real (intensity times area) volume of the LC-MS feature.
     MS_LC_MS_feature_volume = 1001841,
 
-    /// peptide PSM count: The number of MS2 spectra identified for this peptide in spectral counting.
+    /// peptide PSM count: The number of MS/MS spectra identified for this peptide in spectral counting.
     MS_peptide_PSM_count = 1001842,
 
     /// MS1 feature maximum intensity: Maximum intensity of MS1 feature.
@@ -5793,7 +5791,7 @@ enum PWIZ_API_DECL CVID
     /// isotopic pattern area: Area of all peaks belonging to the isotopic pattern of light or heavy peak (e.g. 15N).
     MS_isotopic_pattern_area = 1001846,
 
-    /// reporter ion intensity: Intensity of MS2 reporter ion (e.g. iTraq).
+    /// reporter ion intensity: Intensity of MS/MS reporter ion (e.g. iTraq).
     MS_reporter_ion_intensity = 1001847,
 
     /// simple ratio of two values: Simple ratio of two values (enumerator and denominator).
@@ -5820,10 +5818,10 @@ enum PWIZ_API_DECL CVID
     /// t-test p-value: P-value of t-Test of two groups.
     MS_t_test_p_value = 1001855,
 
-    /// reporter ion raw value: Intensity (or area) of MS2 reporter ion (e.g. iTraq).
+    /// reporter ion raw value: Intensity (or area) of MS/MS reporter ion (e.g. iTraq).
     MS_reporter_ion_raw_value = 1001856,
 
-    /// reporter ion normalized value: Normalized value of MS2 reporter ion (e.g. iTraq).
+    /// reporter ion normalized value: Normalized value of MS/MS reporter ion (e.g. iTraq).
     MS_reporter_ion_normalized_value = 1001857,
 
     /// XIC area: Area of the extracted ion chromatogram (e.g. of a transition in SRM).
@@ -5856,7 +5854,7 @@ enum PWIZ_API_DECL CVID
     /// Progenesis normalization: Normalization as performed by Progenesis LC-MS.
     MS_Progenesis_normalization = 1001867,
 
-    /// distinct peptide-level q-value: Estimation of the q-value for distinct peptides once redundant identifications of the same peptide have been removed (id est multiple PSMs, possibly with different mass modifications, mapping to the same sequence have been collapsed to one entry).
+    /// distinct peptide-level q-value: Estimation of the q-value for distinct peptides once redundant identifications of the same peptide have been removed (id est multiple PSMs have been collapsed to one entry).
     MS_distinct_peptide_level_q_value = 1001868,
 
     /// protein-level q-value: Estimation of the q-value for proteins.
@@ -5895,7 +5893,7 @@ enum PWIZ_API_DECL CVID
     /// in-source collision-induced dissociation: The dissociation of an ion as a result of collisional excitation during ion transfer from an atmospheric pressure ion source and the mass spectrometer vacuum.
     MS_in_source_collision_induced_dissociation = 1001880,
 
-    /// mz5 format: mz5 file format, modelled after mzML.
+    /// mz5 format: mz5 file format, modeled after mzML.
     MS_mz5_format = 1001881,
 
     /// transition validation attribute: Attributes of the quality of a transition that affect its selection as appropriate.
@@ -5964,7 +5962,7 @@ enum PWIZ_API_DECL CVID
     /// MaxQuant:feature intensity: The data type feature intensity produced by MaxQuant.
     MS_MaxQuant_feature_intensity = 1001903,
 
-    /// MaxQuant:MS/MS count: The data type MS2 count produced by MaxQuant.
+    /// MaxQuant:MS/MS count: The data type MS/MS count produced by MaxQuant.
     MS_MaxQuant_MS_MS_count = 1001904,
 
     /// emPAI value: The emPAI value of protein abundance, produced from the emPAI algorithm.
@@ -6021,11 +6019,8 @@ enum PWIZ_API_DECL CVID
     /// ProteomeXchange accession number version number: Version number of a ProteomeXchange accession number.
     MS_ProteomeXchange_accession_number_version_number = 1001921,
 
-    /// Digital Object Identifier (DOI): DOI unique identifier of a publication.
+    /// Digital Object Identifier (DOI): DOI unique identifier.
     MS_Digital_Object_Identifier__DOI_ = 1001922,
-
-    /// doi (Digital Object Identifier (DOI)): DOI unique identifier of a publication.
-    MS_doi = MS_Digital_Object_Identifier__DOI_,
 
     /// external reference keyword: Free text attribute that can enrich the information about an entity.
     MS_external_reference_keyword = 1001923,
@@ -6132,16 +6127,16 @@ enum PWIZ_API_DECL CVID
     /// unspecific cleavage: Unspecific cleavage.
     MS_unspecific_cleavage = 1001956,
 
-    /// (?<=[ALIV])(?!P): Regular expression for leukocyte elastase.
+    /// (?<=[ALIV])(?!P): 
     MS______ALIV_____P_ = 1001957,
 
-    /// (?<=[HKR]P)(?!P): Regular expression for proline endopeptidase.
+    /// (?<=[HKR]P)(?!P): 
     MS______HKR_P____P_ = 1001958,
 
-    /// (?<=[^E]E): Regular expression for glutamyl endopeptidase.
+    /// (?<=[^E]E): 
     MS_______E_E_ = 1001959,
 
-    /// (?<=W): Regular expression for 2-iodobenzoate.
+    /// (?<=W): 
     MS_____W_ = 1001960,
 
     /// peptide spectrum match scoring algorithm: Algorithm used to score the match between a spectrum and a peptide ion.
@@ -6163,19 +6158,19 @@ enum PWIZ_API_DECL CVID
     MS_product_ion_mobility = 1001966,
 
     /// product ion drift time: The ion drift time of an MS2 product ion.
-    MS_product_ion_drift_time_OBSOLETE = 1001967,
+    MS_product_ion_drift_time = 1001967,
 
-    /// PSM-level PTM localization score: A score that assign confidence to the localization of an amino acid modification on a peptide sequence at the PSM-level.
-    MS_PSM_level_PTM_localization_score = 1001968,
+    /// PTM localization score: A score that assign confidence to the localization of an amino acid modification on a peptide sequence.
+    MS_PTM_localization_score = 1001968,
 
-    /// phosphoRS score: phosphoRS score for PTM site location at the PSM-level.
-    MS_phosphoRS_score = 1001969,
+    /// ProteomeDiscoverer:phosphoRS score: Peptide score based on the cumulative binomial probability that the observed match is a random event.
+    MS_ProteomeDiscoverer_phosphoRS_score = 1001969,
 
-    /// phosphoRS sequence probability: Probability that the respective isoform is correct.
-    MS_phosphoRS_sequence_probability = 1001970,
+    /// ProteomeDiscoverer:phosphoRS sequence probability: Probability that the respective isoform is correct.
+    MS_ProteomeDiscoverer_phosphoRS_sequence_probability = 1001970,
 
-    /// phosphoRS site probability: Estimate of the probability that the respective site is truly phosphorylated.
-    MS_phosphoRS_site_probability = 1001971,
+    /// ProteomeDiscoverer:phosphoRS site probability: Estimate of the probability that the respective site is truly phosphorylated.
+    MS_ProteomeDiscoverer_phosphoRS_site_probability = 1001971,
 
     /// PTM scoring algorithm version: Version of the post-translational modification scoring algorithm.
     MS_PTM_scoring_algorithm_version = 1001972,
@@ -6220,10 +6215,10 @@ enum PWIZ_API_DECL CVID
     MS_MaxQuant_PTM_Delta_Score = 1001983,
 
     /// Ascore: Ascore software.
-    MS_Ascore_1001984 = 1001984,
+    MS_Ascore = 1001984,
 
-    /// Ascore: A-score for PTM site location at the PSM-level.
-    MS_Ascore_1001985 = 1001985,
+    /// Ascore:Ascore: The Ascore score value from Ascore software.
+    MS_Ascore_Ascore = 1001985,
 
     /// H-Score: H-Score for peptide phosphorylation site location.
     MS_H_Score = 1001986,
@@ -6306,10 +6301,10 @@ enum PWIZ_API_DECL CVID
     /// decoy MRM transition (decoy SRM transition): A transition not expected to be present in the sample and used to calculate statistical confidence of target transition detections in some workflows.
     MS_decoy_MRM_transition = MS_decoy_SRM_transition,
 
-    /// isobaric label quantitation analysis: Quantitation analysis using an isobaric labelling workflow.
+    /// isobaric label quantitation analysis: Quantitation analysis using an isobaric labeling workflow.
     MS_isobaric_label_quantitation_analysis = 1002009,
 
-    /// TMT quantitation analysis: Quantitation analysis using the Thermo Fisher tandem mass tag (TMT) labelling workflow.
+    /// TMT quantitation analysis: Quantitation analysis using the Thermo Fisher tandem mass tag (TMT) labeling workflow.
     MS_TMT_quantitation_analysis = 1002010,
 
     /// desorption electrospray ionization: Combination of electrospray and desorption ionization method that ionizes gases, liquids and solids in open air under atmospheric pressure.
@@ -6522,11 +6517,11 @@ enum PWIZ_API_DECL CVID
     /// impact: Bruker Daltonics' impact: ESI Q-TOF, Nanospray, APCI, APPI, GC-APCI, CaptiveSpray.
     MS_impact = 1002077,
 
-    /// ProteomeDiscoverer:1. Static Modification: ProteomeDiscoverer's 1st static post-translational modification (PTM) input parameter.
-    MS_ProteomeDiscoverer_1__Static_Modification_OBSOLETE = 1002078,
+    /// ProteomeDiscoverer:1. Static Modification: Determine 1st static post-translational modifications (PTMs).
+    MS_ProteomeDiscoverer_1__Static_Modification = 1002078,
 
-    /// ProteomeDiscoverer:2. Static Modification: ProteomeDiscoverer's 2nd static post-translational modification (PTM) input parameter.
-    MS_ProteomeDiscoverer_2__Static_Modification_OBSOLETE = 1002079,
+    /// ProteomeDiscoverer:2. Static Modification: Determine 2nd static post-translational modifications (PTMs).
+    MS_ProteomeDiscoverer_2__Static_Modification = 1002079,
 
     /// ProteomeDiscoverer:Spectrum Selector:Precursor Clipping Range Before: Precursor clipping range before.
     MS_ProteomeDiscoverer_Spectrum_Selector_Precursor_Clipping_Range_Before = 1002080,
@@ -6558,7 +6553,7 @@ enum PWIZ_API_DECL CVID
     /// ProteomeDiscoverer:Peptide Without Protein XCorr Threshold: XCorr threshold for storing peptides that do not belong to a protein.
     MS_ProteomeDiscoverer_Peptide_Without_Protein_XCorr_Threshold = 1002089,
 
-    /// Calculate Probability Scores: Flag indicating that a probability score for the assessment that a reported peptide match is a random occurrence is calculated.
+    /// Calculate Probability Scores: Flag indicating that a probability score for the assessment that a reported peptide match is a random occurence is calculated.
     MS_Calculate_Probability_Scores = 1002090,
 
     /// ProteomeDiscoverer:Maximum Delta Cn: Delta Cn threshold for filtering out PSM's.
@@ -6636,7 +6631,7 @@ enum PWIZ_API_DECL CVID
     /// peptide consensus attribute: Attribute describing a peptide consensus.
     MS_peptide_consensus_attribute = 1002116,
 
-    /// small molecule list attribute: Attribute describing a small molecule list.
+    /// small molecule list attribute: Attribute describing a small mollecule list.
     MS_small_molecule_list_attribute = 1002117,
 
     /// small molecule attribute: Attribute describing a small molecule.
@@ -6717,7 +6712,7 @@ enum PWIZ_API_DECL CVID
     /// TOPP SpectraFilterScaler: Applies a filter to peak spectra after intensity scaling according to rank.
     MS_TOPP_SpectraFilterScaler = 1002143,
 
-    /// TOPP SpectraFilterSqrtMower: Applies a filter to peak spectra after intensity scaling to the square root.
+    /// TOPP SpectraFilterSqrtMower: Applies a filter to peak spectra after intensity scaling to the squareroot.
     MS_TOPP_SpectraFilterSqrtMower = 1002144,
 
     /// TOPP SpectraFilterThresholdMower: Applies a filter of peaks below a given threshold to peak spectra.
@@ -6822,31 +6817,31 @@ enum PWIZ_API_DECL CVID
     /// TOPP CompNovo: Performs a peptide/protein identification with the CompNovo engine.
     MS_TOPP_CompNovo = 1002178,
 
-    /// TOPP CompNovoCID: Performs a peptide/protein identification with the CompNovo engine in collision-induced dissociation (CID) mode.
+    /// TOPP CompNovoCID: Performs a peptide/protein identification with the CompNovo engine in collission-induced dissociation (CID) mode.
     MS_TOPP_CompNovoCID = 1002179,
 
     /// TOPP software adaptor: Software adaptor to an external program in the TOPP software.
     MS_TOPP_software_adaptor = 1002180,
 
-    /// TOPP InspectAdapter: Identifies MS2 spectra using the external program Inspect.
+    /// TOPP InspectAdapter: Identifies MS/MS spectra using the external program Inspect.
     MS_TOPP_InspectAdapter = 1002181,
 
-    /// TOPP MascotAdapter: Identifies MS2 spectra using the external program Mascot.
+    /// TOPP MascotAdapter: Identifies MS/MS spectra using the external program Mascot.
     MS_TOPP_MascotAdapter = 1002182,
 
-    /// TOPP MascotAdapterOnline: Identifies MS2 spectra using the online version of the external program Mascot.
+    /// TOPP MascotAdapterOnline: Identifies MS/MS spectra using the online version of the external program Mascot.
     MS_TOPP_MascotAdapterOnline = 1002183,
 
-    /// TOPP OMSSAAdapter: Identifies MS2 spectra using the external program OMSSA.
+    /// TOPP OMSSAAdapter: Identifies MS/MS spectra using the external program OMSSA.
     MS_TOPP_OMSSAAdapter = 1002184,
 
-    /// TOPP PepNovoAdapter: Identifies MS2 spectra using the external program PepNovo.
+    /// TOPP PepNovoAdapter: Identifies MS/MS spectra using the external program PepNovo.
     MS_TOPP_PepNovoAdapter = 1002185,
 
-    /// TOPP XTandemAdapter: Identifies MS2 spectra using the external program XTandem.
+    /// TOPP XTandemAdapter: Identifies MS/MS spectra using the external program XTandem.
     MS_TOPP_XTandemAdapter = 1002186,
 
-    /// TOPP SpecLibSearcher: Identifies peptide MS2 spectra by spectral matching with a searchable spectral library.
+    /// TOPP SpecLibSearcher: Identifies peptide MS/MS spectra by spectral matching with a searchable spectral library.
     MS_TOPP_SpecLibSearcher = 1002187,
 
     /// TOPP ConsensusID: Computes a consensus identification from peptide identifications of several identification engines.
@@ -6921,7 +6916,7 @@ enum PWIZ_API_DECL CVID
     /// Variance stabilizing normalization: The model incorporates data calibration (normalization), a model for the dependence of the variance on the mean intensity, and a variance stabilizing data transformation.
     MS_Variance_stabilizing_normalization = 1002211,
 
-    /// IPTL quantitation analysis: Quantification analysis using a labelling strategy where both peptide termini are labelled so that the peptides from different labelling schema are isobaric.
+    /// IPTL quantitation analysis: Quantification analysis using a labeling strategy where both peptide termini are labeled so that the peptides from different labeling schema are isobaric.
     MS_IPTL_quantitation_analysis = 1002212,
 
     /// PAnalyzer:conclusive protein: A protein identified by at least one unique (distinct, discrete) peptide (peptides are considered different only if they can be distinguished by evidence in mass spectrum).
@@ -6978,13 +6973,13 @@ enum PWIZ_API_DECL CVID
     /// ProteomeDiscoverer:Mascot:Significance High: Calculated relaxed significance when performing a decoy search for medium-confidence peptides.
     MS_ProteomeDiscoverer_Mascot_Significance_High = 1002230,
 
-    /// regular expressions for a GUID: ([A-Fa-f0-9]\{8\}-([A-Fa-f0-9]\{4\}-)\{3\}[A-Fa-f0-9]\{12\}).
-    MS_regular_expressions_for_a_GUID = 1002231,
+    /// ([A-Fa-f0-9]{8}-([A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}): 
+    MS___A_Fa_f0_9__8____A_Fa_f0_9__4____3__A_Fa_f0_9__12__ = 1002231,
 
-    /// ProteomeDiscoverer:Default FDR calculator: The default FDR calculator as globally unique identifier (GUID).
+    /// ProteomeDiscoverer:Default FDR calculator: The default FDR calculator.
     MS_ProteomeDiscoverer_Default_FDR_calculator = 1002232,
 
-    /// ProteomeDiscoverer:SEQUEST:Low resolution spectra contained: Flag indicating if low-resolution spectra are taken into consideration.
+    /// ProteomeDiscoverer:SEQUEST:Low resolution spectra contained: Flag indicating if low-resolution speatra are taken into consideration.
     MS_ProteomeDiscoverer_SEQUEST_Low_resolution_spectra_contained = 1002233,
 
     /// selected precursor m/z: Mass-to-charge ratio of a precursor ion selected for fragmentation.
@@ -7026,7 +7021,7 @@ enum PWIZ_API_DECL CVID
     /// mzidLib:CombineSearchEngines: A tool for combining results analysed in parallel in two or three search engines into a single mzIdentML file.
     MS_mzidLib_CombineSearchEngines = 1002246,
 
-    /// mzidLib:InsertMetaDataFromFasta: A tool for adding additional meta data from a FASTA file to DBSequence entries (sequence and description) in mzIdentML files.
+    /// mzidLib:InsertMetaDataFromFasta: A tool for adding additional metadata from a FASTA file to DBSequence entries (sequence and description) in mzIdentML files.
     MS_mzidLib_InsertMetaDataFromFasta = 1002247,
 
     /// SEQUEST:spscore: The SEQUEST result 'SpScore'.
@@ -7095,7 +7090,7 @@ enum PWIZ_API_DECL CVID
     /// Byonic:Best Score: Best (largest) Byonic score of a PSM.
     MS_Byonic_Best_Score = 1002269,
 
-    /// chromatography separation: A technique by which molecules are separated by chemical and physical properties such as hydrophobicity or vapour pressure.
+    /// chromatography separation: A technique by which molecules are separated by chemical and physical properties such as hydrophobicity or vapor pressure.
     MS_chromatography_separation = 1002270,
 
     /// liquid chromatography separation: Liquid chromatography (LC) is a separation technique in which the mobile phase is a liquid.
@@ -7140,16 +7135,16 @@ enum PWIZ_API_DECL CVID
     /// SRM proteingroup level quantitation: Selected Reaction Monitoring proteingroup level quantitation.
     MS_SRM_proteingroup_level_quantitation = 1002284,
 
-    /// Trans-Proteomic Pipeline: A suite of open source tools for the processing of MS2 proteomics data developed by the Seattle Proteome Center at the Institute for Systems Biology.
+    /// Trans-Proteomic Pipeline: A suite of open source tools for the processing of MS/MS proteomics data developed by the Seattle Proteome Center at the Institute for Systems Biology.
     MS_Trans_Proteomic_Pipeline = 1002285,
 
-    /// TPP (Trans-Proteomic Pipeline): A suite of open source tools for the processing of MS2 proteomics data developed by the Seattle Proteome Center at the Institute for Systems Biology.
+    /// TPP (Trans-Proteomic Pipeline): A suite of open source tools for the processing of MS/MS proteomics data developed by the Seattle Proteome Center at the Institute for Systems Biology.
     MS_TPP = MS_Trans_Proteomic_Pipeline,
 
     /// Trans-Proteomic Pipeline software: A software program that is a component of the Trans-Proteomic Pipeline.
     MS_Trans_Proteomic_Pipeline_software = 1002286,
 
-    /// PeptideProphet: A program in the TPP that calculates PSM probabilities for MS2 proteomics data searched with any of the supported sequence or spectral library search engines via the pepXML format.
+    /// PeptideProphet: A program in the TPP that calculates PSM probabilities for MS/MS proteomics data searched with any of the supported sequence or spectral library search engines via the pepXML format.
     MS_PeptideProphet = 1002287,
 
     /// iProphet: A program in the TPP that calculates distinct peptide probabilities based on several lines of corroborating evidence including search results from multiple search engines via the pepXML format.
@@ -7158,7 +7153,7 @@ enum PWIZ_API_DECL CVID
     /// ProteinProphet: A program in the TPP that calculates protein-level probabilities based on input PSM or peptide-level probabilities from PeptideProphet or iProphet. The output is written in the protXML format.
     MS_ProteinProphet = 1002289,
 
-    /// XPRESS: A program in the TPP that calculates PSM-level abundances based on 2-channel isotope-labelled data such as ICAT, SILAC, etc.
+    /// XPRESS: A program in the TPP that calculates PSM-level abundances based on 2-channel isotope-labeled data such as ICAT, SILAC, etc.
     MS_XPRESS = 1002290,
 
     /// Libra: A program in the TPP that calculates PSM, peptide, and protein-level abundances based on N-channel isobaric label peptide data such as iTRAQ, TMT, etc.
@@ -7278,11 +7273,11 @@ enum PWIZ_API_DECL CVID
     /// ProteomeDiscoverer:ion settings: Specifies the fragment ions and neutral losses that are calculated.
     MS_ProteomeDiscoverer_ion_settings = 1002329,
 
-    /// ProteomeDiscoverer:3. Static Modification: ProteomeDiscoverer's 3rd static post-translational modification (PTM) input parameter.
-    MS_ProteomeDiscoverer_3__Static_Modification_OBSOLETE = 1002330,
+    /// ProteomeDiscoverer:3. Static Modification: Determine 3rd static (fixed) post-translational modifications (PTMs).
+    MS_ProteomeDiscoverer_3__Static_Modification = 1002330,
 
-    /// ProteomeDiscoverer:5. Dynamic Modification: ProteomeDiscoverer's 5th dynamic post-translational modification (PTM) input parameter.
-    MS_ProteomeDiscoverer_5__Dynamic_Modification_OBSOLETE = 1002331,
+    /// ProteomeDiscoverer:5. Dynamic Modification: Determine 5th dynamic (variable) post-translational modifications (PTMs).
+    MS_ProteomeDiscoverer_5__Dynamic_Modification = 1002331,
 
     /// lab head: The scientist responsible for personnel, grants, and instrumentation in a functional laboratory group.
     MS_lab_head = 1002332,
@@ -7305,7 +7300,7 @@ enum PWIZ_API_DECL CVID
     /// Andromeda:score: The probability based score of the Andromeda search engine.
     MS_Andromeda_score = 1002338,
 
-    /// site:global FDR: Estimation of global false discovery rate of peptides with a post-translational modification.
+    /// site:global FDR: Estimation of global false discovery rate of peptides with a posttranslational modification.
     MS_site_global_FDR = 1002339,
 
     /// ProteomeXchange project tag: Tag that can be added to a ProteomeXchange dataset, to enable the grouping of datasets. One tag can be used for indicating that a given dataset is part of a bigger project, like e.g. the Human Proteome Project.
@@ -7318,7 +7313,7 @@ enum PWIZ_API_DECL CVID
     MS_MZmine = 1002342,
 
     /// ion stability type: Stability type of the ion.
-    MS_ion_stability_type_OBSOLETE = 1002343,
+    MS_ion_stability_type = 1002343,
 
     /// Maltcms: Modular Application Toolkit for Chromatography Mass-Spectrometry is an application framework mainly for developers.
     MS_Maltcms = 1002344,
@@ -7554,7 +7549,7 @@ enum PWIZ_API_DECL CVID
     /// Paragon input parameter: Search engine input parameters specific to Paragon.
     MS_Paragon_input_parameter = 1002421,
 
-    /// Paragon: sample type: The Paragon method setting indicating the type of sample at the high level, generally meaning the type of quantitation labelling or lack thereof. 'Identification' is indicated for samples without any labels for quantitation.
+    /// Paragon: sample type: The Paragon method setting indicating the type of sample at the high level, generally meaning the type of quantitation labeling or lack thereof. 'Identification' is indicated for samples without any labels for quantitation.
     MS_Paragon__sample_type = 1002422,
 
     /// Paragon: cysteine alkylation: The Paragon method setting indicating the actual cysteine alkylation agent; 'None' is indicated if there was no cysteine alkylation.
@@ -7601,483 +7596,6 @@ enum PWIZ_API_DECL CVID
 
     /// number of decoy sequences: The number of decoy sequences, if the concatenated target-decoy approach is used.
     MS_number_of_decoy_sequences = 1002437,
-
-    /// spectrum identification list result details: Information about the list of PSMs (SpectrumIdentificationList).
-    MS_spectrum_identification_list_result_details = 1002438,
-
-    /// final PSM list: A flag on a list of PSMs (SpectrumIdentificationList) to indicate that this is the final set of identifications to be interpreted by consuming software. Amongst the set of SpectrumIdentificationList(s) that are flagged with the term, each spectrum must not be referenced from more than one SpectrumIdentificationResult.
-    MS_final_PSM_list = 1002439,
-
-    /// intermediate PSM list: A flag on a list of PSMs (SpectrumIdentificationList) to indicate that this is not the final set of identifications to be interpreted by consuming software. This term should be used when results are provided from multiple search engines for the results from each search engine before they are combined to give consensus identifications. Amongst the set of SpectrumIdentificationList(s) that are flagged with the term, each spectrum may be referenced from more than one SpectrumIdentificationResult.
-    MS_intermediate_PSM_list = 1002440,
-
-    /// Andi-MS format: AIA Analytical Data Interchange file format for mass spectrometry data.
-    MS_Andi_MS_format = 1002441,
-
-    /// chromatograph file format: The format of the chromatography file being used. This could be a instrument or vendor specific proprietary file format or a converted open file format.
-    MS_chromatograph_file_format = 1002442,
-
-    /// Andi-CHROM format: AIA Analytical Data Interchange file format for chromatography data.
-    MS_Andi_CHROM_format = 1002443,
-
-    /// 6420 Triple Quadrupole LC/MS: The 6420 Quadrupole LC/MS system is a Agilent liquid chromatography instrument combined with a Agilent triple quadrupole mass spectrometer.
-    MS_6420_Triple_Quadrupole_LC_MS = 1002444,
-
-    /// 6460 Triple Quadrupole LC/MS: The 6460 Quadrupole LC/MS system is a Agilent liquid chromatography instrument combined with a Agilent triple quadrupole mass spectrometer. It is similar to the 6420 but adds Agilent Jet Stream (AJS) technology to increase sensitivity.
-    MS_6460_Triple_Quadrupole_LC_MS = 1002445,
-
-    /// 6490 Triple Quadrupole LC/MS: The 6490 Quadrupole LC/MS system is a Agilent liquid chromatography instrument combined with a Agilent triple quadrupole mass spectrometer. It is similar to the 6420 but adds the Agilent iFunnel technology to increase sensitivity.
-    MS_6490_Triple_Quadrupole_LC_MS = 1002446,
-
-    /// Paragon:special factor: The Paragon method setting indicating a list of one or more 'special factors', which generally capture secondary effects (relative to other settings) as a set of probabilities of modification features that override the assumed levels. For example the 'gel-based ID' special factor causes an increase probability of oxidation on several resides because of the air exposure impact on a gel, in addition to other effects.
-    MS_Paragon_special_factor = 1002447,
-
-    /// PEAKS:inChorusPeptideScore: The PEAKS inChorus peptide score.
-    MS_PEAKS_inChorusPeptideScore = 1002448,
-
-    /// PEAKS:inChorusProteinScore: The PEAKS inChorus protein score.
-    MS_PEAKS_inChorusProteinScore = 1002449,
-
-    /// param: b ion-H3PO4 DEPRECATED: Ion b-H3PO4: b ion with lost phosphoric acid.
-    MS_param__b_ion_H3PO4_DEPRECATED = 1002450,
-
-    /// param: y ion-H3PO4 DEPRECATED: Ion y-H3PO4: y ion with lost phosphoric acid.
-    MS_param__y_ion_H3PO4_DEPRECATED = 1002451,
-
-    /// Maui: The Maltcms Graphical User Interface.
-    MS_Maui = 1002452,
-
-    /// No fixed modifications searched: No fixed modifications are included as a parameter for the search, and therefore they are not reported.
-    MS_No_fixed_modifications_searched = 1002453,
-
-    /// No variable modifications searched: No variable modifications are included as a parameter for the search, and therefore they are not reported.
-    MS_No_variable_modifications_searched = 1002454,
-
-    /// H2O neutral loss: Neutral loss of water.
-    MS_H2O_neutral_loss = 1002455,
-
-    /// NH3 neutral loss: Neutral loss of ammonia.
-    MS_NH3_neutral_loss = 1002456,
-
-    /// H3PO4 neutral loss: Neutral loss of phosphoric acid.
-    MS_H3PO4_neutral_loss = 1002457,
-
-    /// PeptideShaker: PeptideShaker is a software for the interpretation of proteomics identification results.
-    MS_PeptideShaker = 1002458,
-
-    /// MS Amanda csv format: MS Amanda csv output format.
-    MS_MS_Amanda_csv_format = 1002459,
-
-    /// protein group-level global FNR: Estimation of the global false negative rate of protein groups.
-    MS_protein_group_level_global_FNR = 1002460,
-
-    /// protein group-level confidence: Estimation of the global confidence of protein groups.
-    MS_protein_group_level_confidence = 1002461,
-
-    /// distinct peptide-level global FNR: Estimation of the global false negative rate for distinct peptides once redundant identifications of the same peptide have been removed (id est multiple PSMs have been collapsed to one entry).
-    MS_distinct_peptide_level_global_FNR = 1002462,
-
-    /// distinct peptide-level global confidence: Estimation of the global confidence for distinct peptides once redundant identifications of the same peptide have been removed (id est multiple PSMs have been collapsed to one entry).
-    MS_distinct_peptide_level_global_confidence = 1002463,
-
-    /// PSM-level global FNR: Estimation of the global false negative rate of peptide spectrum matches.
-    MS_PSM_level_global_FNR = 1002464,
-
-    /// PSM-level global confidence: Estimation of the global confidence of peptide spectrum matches.
-    MS_PSM_level_global_confidence = 1002465,
-
-    /// PeptideShaker PSM score: The probability based PeptideShaker PSM score.
-    MS_PeptideShaker_PSM_score = 1002466,
-
-    /// PeptideShaker PSM confidence: The probability based PeptideShaker PSM confidence.
-    MS_PeptideShaker_PSM_confidence = 1002467,
-
-    /// PeptideShaker peptide score: The probability based PeptideShaker peptide score.
-    MS_PeptideShaker_peptide_score = 1002468,
-
-    /// PeptideShaker peptide confidence: The probability based PeptideShaker peptide confidence.
-    MS_PeptideShaker_peptide_confidence = 1002469,
-
-    /// PeptideShaker protein group score: The probability based PeptideShaker protein group score.
-    MS_PeptideShaker_protein_group_score = 1002470,
-
-    /// PeptideShaker protein group confidence: The probability based PeptideShaker protein group confidence.
-    MS_PeptideShaker_protein_group_confidence = 1002471,
-
-    /// trap-type collision-induced dissociation: A collision-induced dissociation process that occurs in a trap-type collision cell.
-    MS_trap_type_collision_induced_dissociation = 1002472,
-
-    /// ion series considered in search: The description of the ion fragment series (including charges and neutral losses) that are considered by the search engine.
-    MS_ion_series_considered_in_search = 1002473,
-
-    /// ProteoAnnotator:non-canonical gene model score: The sum of peptide-level scores for peptides mapped only to non-canonical gene models within the group.
-    MS_ProteoAnnotator_non_canonical_gene_model_score = 1002474,
-
-    /// ProteoAnnotator:count alternative peptides: The count of the number of peptide sequences mapped to non-canonical gene models only within the group.
-    MS_ProteoAnnotator_count_alternative_peptides = 1002475,
-
-    /// ion mobility drift time: Drift time of an ion or spectrum of ions as measured in an ion mobility mass spectrometer. This time might refer to the central value of a bin into which all ions within a narrow range of drift time have been aggregated.
-    MS_ion_mobility_drift_time = 1002476,
-
-    /// mean drift time array: Array of drift times, averaged from a matrix of binned m/z and drift time values, corresponding to spectrum of individual peaks encoded with an m/z array.
-    MS_mean_drift_time_array = 1002477,
-
-    /// mean charge array: Array of mean charge values where the mean charge is calculated as a weighted mean of the charges of individual peaks that are aggregated into a processed spectrum.
-    MS_mean_charge_array = 1002478,
-
-    /// regular expression: Regular expression.
-    MS_regular_expression = 1002479,
-
-    /// regular expression for a digital object identifier (DOI): (10[.][0-9]\{4,\}(?:[.][0-9]+)*/(?:(?![\"&\'<>])[^ \t\\r\n\\v\\f])+).
-    MS_regular_expression_for_a_digital_object_identifier__DOI_ = 1002480,
-
-    /// higher energy beam-type collision-induced dissociation: A collision-induced dissociation process wherein the projectile ion has the translational energy higher than approximately 1000 eV.
-    MS_higher_energy_beam_type_collision_induced_dissociation = 1002481,
-
-    /// statistical threshold: Estimated statistical threshold.
-    MS_statistical_threshold = 1002482,
-
-    /// PSM-level statistical threshold: Estimated statistical threshold at PSM-level.
-    MS_PSM_level_statistical_threshold = 1002483,
-
-    /// peptide-level statistical threshold: Estimated statistical threshold at peptide-level.
-    MS_peptide_level_statistical_threshold = 1002484,
-
-    /// protein-level statistical threshold: Estimated statistical threshold at protein-level.
-    MS_protein_level_statistical_threshold = 1002485,
-
-    /// protein group-level statistical threshold: Estimated statistical threshold at protein group-level.
-    MS_protein_group_level_statistical_threshold = 1002486,
-
-    /// MassIVE dataset identifier: Dataset identifier issued by the MassIVE repository. A dataset can refer to either a single sample as part of a study, or all samples that are part of the study corresponding to a publication.
-    MS_MassIVE_dataset_identifier = 1002487,
-
-    /// MassIVE dataset URI: URI that allows the access to one dataset in the MassIVE repository. A dataset can refer to either a single sample as part of a study, or all samples that are part of the study corresponding to a publication.
-    MS_MassIVE_dataset_URI = 1002488,
-
-    /// special processing: Details describing a special processing.
-    MS_special_processing = 1002489,
-
-    /// peptide-level scoring: Peptide-level scoring performed.
-    MS_peptide_level_scoring = 1002490,
-
-    /// modification localization scoring: Modification localization scoring performed.
-    MS_modification_localization_scoring = 1002491,
-
-    /// consensus scoring: Consensus multiple search engine approach performed.
-    MS_consensus_scoring = 1002492,
-
-    /// sample pre-fractionation: Sample pre-fractionation performed.
-    MS_sample_pre_fractionation = 1002493,
-
-    /// cross-linking search: Cross-linking search performed.
-    MS_cross_linking_search = 1002494,
-
-    /// no special processing: No special processing performed.
-    MS_no_special_processing = 1002495,
-
-    /// group PSMs by sequence: Group PSMs by distinct peptide sequence ignoring modifications.
-    MS_group_PSMs_by_sequence = 1002496,
-
-    /// group PSMs by sequence with modifications: Group PSMs by distinct peptide sequence with taking modifications into account.
-    MS_group_PSMs_by_sequence_with_modifications = 1002497,
-
-    /// group PSMs by sequence with modifications and charge: Group PSMs by distinct peptide sequence with taking modifications and charge into account.
-    MS_group_PSMs_by_sequence_with_modifications_and_charge = 1002498,
-
-    /// peptide level score: Peptide level score.
-    MS_peptide_level_score = 1002499,
-
-    /// peptide passes threshold: A Boolean attribute to determine whether the peptide has passed the threshold indicated in the file.
-    MS_peptide_passes_threshold = 1002500,
-
-    /// no PSM threshold: Indicating that no PSM threshold was used.
-    MS_no_PSM_threshold = 1002501,
-
-    /// no peptide-level threshold: Indicating that no peptide-level threshold was used.
-    MS_no_peptide_level_threshold = 1002502,
-
-    /// PSM is used for peptide-level scoring: Flags a PSM that it is used for peptide-level scoring.
-    MS_PSM_is_used_for_peptide_level_scoring = 1002503,
-
-    /// modification index: The order of modifications to be referenced elsewhere in the document.
-    MS_modification_index = 1002504,
-
-    /// regular expression for modification localization scoring: ([:digit:]+:[0|1]\{1\}.[:digit:]+:[:digit:]+[|]\{1\}[:digit:]+:(true|false)\{1\})
-    MS_regular_expression_for_modification_localization_scoring = 1002505,
-
-    /// modification position score: Modification position score.
-    MS_modification_position_score = 1002506,
-
-    /// modification rescoring:false localization rate: Mod position score: false localization rate.
-    MS_modification_rescoring_false_localization_rate = 1002507,
-
-    /// cross-linking attribute: Cross-linking attribute.
-    MS_cross_linking_attribute = 1002508,
-
-    /// cross-link donor: The Cross-linking donor, assigned according to the following rules: the export software SHOULD use the following rules to choose the cross-link donor as the: longer peptide, then higher peptide neutral mass, then alphabetical order.
-    MS_cross_link_donor = 1002509,
-
-    /// cross-link receiver: Cross-linking receiver, assigned according to the following rules: the export software SHOULD use the following rules to choose the cross-link donor as the: longer peptide, then higher peptide neutral mass, then alphabetical order.
-    MS_cross_link_receiver = 1002510,
-
-    /// cross-link spectrum identification item: Cross-linked spectrum identification item.
-    MS_cross_link_spectrum_identification_item = 1002511,
-
-    /// cross-linking score: Cross-linking scoring value.
-    MS_cross_linking_score = 1002512,
-
-    /// molecules per cell: The absolute abundance of protein in a cell.
-    MS_molecules_per_cell = 1002513,
-
-    /// absolute quantitation analysis: Absolute quantitation analysis.
-    MS_absolute_quantitation_analysis = 1002514,
-
-    /// internal peptide reference used: States whether an internal peptide reference is used or not in absolute quantitation analysis.
-    MS_internal_peptide_reference_used = 1002515,
-
-    /// internal protein reference used: States whether an internal protein reference is used or not in absolute quantitation analysis.
-    MS_internal_protein_reference_used = 1002516,
-
-    /// internal reference abundance: The absolute abundance of the spiked in reference peptide or protein used for absolute quantitation analysis.
-    MS_internal_reference_abundance = 1002517,
-
-    /// Progenesis:protein group normalised abundance: The data type normalised abundance for protein groups produced by Progenesis LC-MS.
-    MS_Progenesis_protein_group_normalised_abundance = 1002518,
-
-    /// Progenesis:protein group raw abundance: The data type raw abundance for protein groups produced by Progenesis LC-MS.
-    MS_Progenesis_protein_group_raw_abundance = 1002519,
-
-    /// peptide group ID: Peptide group identifier for peptide-level stats.
-    MS_peptide_group_ID = 1002520,
-
-    /// mass spectrometry imaging: A technique in which mass spectra are acquired in a spatially resolved manner. This is typically achieved by scanning a laser or primary ion beam over a sample and acquiring a mass spectrum at each position.
-    MS_mass_spectrometry_imaging = 1002521,
-
-    /// ProteomeDiscoverer:1. Static Terminal Modification: Determine 1st static terminal post-translational modifications (PTMs).
-    MS_ProteomeDiscoverer_1__Static_Terminal_Modification = 1002522,
-
-    /// Q Exactive HF: Thermo Scientific Q Exactive.
-    MS_Q_Exactive_HF = 1002523,
-
-    /// PepFinder: Thermo Scientific PepFinder BioPharma analysis software.
-    MS_PepFinder = 1002524,
-
-    /// TSQ 8000 Evo: Thermo Scientific TSQ 8000 Evo MS.
-    MS_TSQ_8000_Evo = 1002525,
-
-    /// Exactive Plus: Thermo Scientific Exactive Plus MS.
-    MS_Exactive_Plus = 1002526,
-
-    /// instrument specific scan attribute: Instrument specific scan properties that are associated with a value.
-    MS_instrument_specific_scan_attribute = 1002527,
-
-    /// synchronous prefilter selection: Synchronous prefilter selection.
-    MS_synchronous_prefilter_selection = 1002528,
-
-    /// SPS (synchronous prefilter selection): Synchronous prefilter selection.
-    MS_SPS = MS_synchronous_prefilter_selection,
-
-    /// resolution array: A data array of resolution values.
-    MS_resolution_array = 1002529,
-
-    /// baseline array: A data array of signal baseline values (the signal in the absence of analytes).
-    MS_baseline_array = 1002530,
-
-    /// UIMF format: SQLite-based file format created at Pacific Northwest National Lab. It stores an intermediate analysis of ion-mobility mass spectrometry data.
-    MS_UIMF_format = 1002531,
-
-    /// UIMF nativeID format: Native format defined by frame=xsd:nonNegativeInteger scan=xsd:nonNegativeInteger frameType=xsd:nonNegativeInteger.
-    MS_UIMF_nativeID_format = 1002532,
-
-    /// TripleTOF 6600: SCIEX TripleTOF 6600, a quadrupole - quadrupole - time-of-flight mass spectrometer.
-    MS_TripleTOF_6600 = 1002533,
-
-    /// ProLuCID:xcorr: The ProLuCID result 'XCorr'.
-    MS_ProLuCID_xcorr = 1002534,
-
-    /// ProLuCID:deltacn: The ProLuCID result 'DeltaCn'.
-    MS_ProLuCID_deltacn = 1002535,
-
-    /// D-Score: D-Score for PTM site location at the PSM-level.
-    MS_D_Score = 1002536,
-
-    /// MD-Score: MD-Score for PTM site location at the PSM-level.
-    MS_MD_Score = 1002537,
-
-    /// PTM localization confidence metric: Localization confidence metric for a post translational modification (PTM).
-    MS_PTM_localization_confidence_metric = 1002538,
-
-    /// PeptideShaker PTM confidence type: PeptideShaker quality criteria for the confidence of PTM localizations.
-    MS_PeptideShaker_PTM_confidence_type = 1002539,
-
-    /// PeptideShaker PSM confidence type: PeptideShaker quality criteria for the confidence of PSM's.
-    MS_PeptideShaker_PSM_confidence_type = 1002540,
-
-    /// PeptideShaker peptide confidence type: PeptideShaker quality criteria for the confidence of peptide identifications.
-    MS_PeptideShaker_peptide_confidence_type = 1002541,
-
-    /// PeptideShaker protein confidence type: PeptideShaker quality criteria for the confidence of protein identifications.
-    MS_PeptideShaker_protein_confidence_type = 1002542,
-
-    /// xiFDR: Target/Decoy based FDR estimation for cross-linking peptide-identifications.
-    MS_xiFDR = 1002543,
-
-    /// xi: Search engine for cross-linked peptides.
-    MS_xi = 1002544,
-
-    /// xi:score: The xi result 'Score'.
-    MS_xi_score = 1002545,
-
-    /// Skyline mzQuantML converter: A software package to convert Skyline report to mzQuantML.
-    MS_Skyline_mzQuantML_converter = 1002546,
-
-    /// normalized spectral abundance factor: A normalized spectral abundance factor (NSAF).
-    MS_normalized_spectral_abundance_factor = 1002547,
-
-    /// distributed normalized spectral abundance factor: A distributed normalized spectral abundance factor (dNSAF.
-    MS_distributed_normalized_spectral_abundance_factor = 1002548,
-
-    /// peptide-level PTM localization score: A score that assign confidence to the localization of an amino acid modification on a peptide sequence at the peptide-level.
-    MS_peptide_level_PTM_localization_score = 1002549,
-
-    /// peptide:phosphoRS score: phosphoRS score for PTM site location at the peptide-level.
-    MS_peptide_phosphoRS_score = 1002550,
-
-    /// peptide:Ascore: A-score for PTM site location at the peptide-level.
-    MS_peptide_Ascore = 1002551,
-
-    /// peptide:H-Score: H-Score for peptide phosphorylation site location at the peptide-level.
-    MS_peptide_H_Score = 1002552,
-
-    /// peptide:D-Score: D-Score for PTM site location at the peptide-level.
-    MS_peptide_D_Score = 1002553,
-
-    /// peptide:MD-Score: MD-Score for PTM site location at the peptide-level.
-    MS_peptide_MD_Score = 1002554,
-
-    /// PTM localization score threshold: Threshold for PTM site location score.
-    MS_PTM_localization_score_threshold = 1002555,
-
-    /// Ascore threshold: Threshold for Ascore PTM site location score.
-    MS_Ascore_threshold = 1002556,
-
-    /// D-Score threshold: Threshold for D-score PTM site location score.
-    MS_D_Score_threshold = 1002557,
-
-    /// MD-Score threshold: Threshold for MD-score PTM site location score.
-    MS_MD_Score_threshold = 1002558,
-
-    /// H-Score threshold: Threshold for H-score PTM site location score.
-    MS_H_Score_threshold = 1002559,
-
-    /// Mascot:PTM site assignment confidence threshold: Threshold for Mascot PTM site assignment confidence.
-    MS_Mascot_PTM_site_assignment_confidence_threshold = 1002561,
-
-    /// MSQuant:PTM-score threshold: Threshold for MSQuant:PTM-score.
-    MS_MSQuant_PTM_score_threshold = 1002562,
-
-    /// MaxQuant:PTM Score threshold: Threshold for MaxQuant:PTM Score.
-    MS_MaxQuant_PTM_Score_threshold = 1002563,
-
-    /// MaxQuant:P-site localization probability threshold: Threshold for MaxQuant:P-site localization probability.
-    MS_MaxQuant_P_site_localization_probability_threshold = 1002564,
-
-    /// MaxQuant:PTM Delta Score threshold: Threshold for MaxQuant:PTM Delta Score.
-    MS_MaxQuant_PTM_Delta_Score_threshold = 1002565,
-
-    /// MaxQuant:Phospho (STY) Probabilities threshold: Threshold for MaxQuant:Phospho (STY) Probabilities.
-    MS_MaxQuant_Phospho__STY__Probabilities_threshold = 1002566,
-
-    /// phosphoRS score threshold: Threshold for phosphoRS score.
-    MS_phosphoRS_score_threshold = 1002567,
-
-    /// phosphoRS site probability threshold: Threshold for phosphoRS site probability.
-    MS_phosphoRS_site_probability_threshold = 1002568,
-
-    /// ProteomeDiscoverer:Number of Spectra Processed At Once: Number of spectra processed at once in a ProteomeDiscoverer search.
-    MS_ProteomeDiscoverer_Number_of_Spectra_Processed_At_Once = 1002569,
-
-    /// sequence multiply subsumable protein: A protein for which the matched peptide sequences are the same, or a subset of, the matched peptide sequences for two or more other proteins combined. These other proteins need not all be in the same group.
-    MS_sequence_multiply_subsumable_protein = 1002570,
-
-    /// spectrum multiply subsumable protein: A protein for which the matched spectra are the same, or a subset of, the matched spectra for two or more other proteins combined. These other proteins need not all be in the same group.
-    MS_spectrum_multiply_subsumable_protein = 1002571,
-
-    /// protein detection statistical threshold: Estimated statistical threshold used for protein detection.
-    MS_protein_detection_statistical_threshold = 1002572,
-
-    /// spectrum identification statistical threshold: Estimated statistical threshold used for spectrum identification.
-    MS_spectrum_identification_statistical_threshold = 1002573,
-
-    /// ASAPRatio: A program in the TPP that calculates PSM, peptide, and protein-level abundances based on 2-channel isotope-labelled data such as ICAT, SILAC, etc.
-    MS_ASAPRatio = 1002574,
-
-    /// Tide: Tide open-source sequence search program developed at the University of Washington.
-    MS_Tide = 1002575,
-
-    /// Andromeda result file: Andromeda result file output format.
-    MS_Andromeda_result_file = 1002576,
-
-    /// 2000 QTRAP: SCIEX 2000 QTRAP.
-    MS_2000_QTRAP = 1002577,
-
-    /// 2500 QTRAP: SCIEX 2500 QTRAP.
-    MS_2500_QTRAP = 1002578,
-
-    /// 3500 QTRAP: SCIEX 3500 QTRAP.
-    MS_3500_QTRAP = 1002579,
-
-    /// QTRAP 4500: SCIEX QTRAP 4500.
-    MS_QTRAP_4500 = 1002580,
-
-    /// QTRAP 6500: SCIEX QTRAP 6500.
-    MS_QTRAP_6500 = 1002581,
-
-    /// QTRAP 6500+: SCIEX QTRAP 6500+.
-    MS_QTRAP_6500_ = 1002582,
-
-    /// TripleTOF 4600: SCIEX TripleTOF 4600 time-of-flight mass spectrometer.
-    MS_TripleTOF_4600 = 1002583,
-
-    /// TripleTOF 5600+: SCIEX TripleTOF 5600+ time-of-flight mass spectrometer.
-    MS_TripleTOF_5600_ = 1002584,
-
-    /// API 100: Applied Biosystems/MDS SCIEX API 100 MS.
-    MS_API_100 = 1002585,
-
-    /// API 100LC: Applied Biosystems/MDS SCIEX API 100LC MS.
-    MS_API_100LC = 1002586,
-
-    /// API 165: Applied Biosystems/MDS SCIEX API 165 MS.
-    MS_API_165 = 1002587,
-
-    /// API 300: Applied Biosystems/MDS SCIEX API 300 MS.
-    MS_API_300 = 1002588,
-
-    /// API 350: Applied Biosystems/MDS SCIEX API 350 MS.
-    MS_API_350 = 1002589,
-
-    /// API 365: Applied Biosystems/MDS SCIEX API 365 MS.
-    MS_API_365 = 1002590,
-
-    /// Triple Quad 3500: SCIEX Triple Quad 3500.
-    MS_Triple_Quad_3500 = 1002591,
-
-    /// Triple Quad 4500: SCIEX Triple Quad 4500.
-    MS_Triple_Quad_4500 = 1002592,
-
-    /// Triple Quad 5500: SCIEX Triple Quad 5500.
-    MS_Triple_Quad_5500 = 1002593,
-
-    /// Triple Quad 6500: SCIEX Triple Quad 6500.
-    MS_Triple_Quad_6500 = 1002594,
-
-    /// Triple Quad 6500+: SCIEX Triple Quad 6500+.
-    MS_Triple_Quad_6500_ = 1002595,
-
-    /// DeBunker:score threshold: Threshold for DeBunker PTM site location score.
-    MS_DeBunker_score_threshold = 10025560,
 
     /// unimod root node: The root node of the unimod modifications ontology.
     UNIMOD_unimod_root_node = 100000000,
@@ -8214,7 +7732,7 @@ enum PWIZ_API_DECL CVID
     /// HNE: 4-hydroxynonenal (HNE).
     UNIMOD_HNE = 100000053,
 
-    /// Glucuronyl: Hexuronic acid.
+    /// Glucuronyl: N-glucuronylation.
     UNIMOD_Glucuronyl = 100000054,
 
     /// Glutathione: Glutathione disulfide.
@@ -8310,8 +7828,8 @@ enum PWIZ_API_DECL CVID
     /// IBTP: Thio Ether Formation - BTP Adduct.
     UNIMOD_IBTP = 100000119,
 
-    /// GG: Ubiquitinylation residue.
-    UNIMOD_GG = 100000121,
+    /// GlyGly: Ubiquitinylation residue.
+    UNIMOD_GlyGly = 100000121,
 
     /// Formyl: Formylation.
     UNIMOD_Formyl = 100000122,
@@ -8418,14 +7936,14 @@ enum PWIZ_API_DECL CVID
     /// Hex(1)HexNAc(1)NeuAc(2): Hex1HexNAc1NeuAc2.
     UNIMOD_Hex_1_HexNAc_1_NeuAc_2_ = 100000160,
 
-    /// Hex(3)HexNAc(2)Phos(1): Hex(3) HexNAc(2) Phos.
-    UNIMOD_Hex_3_HexNAc_2_Phos_1_ = 100000161,
+    /// Hex(3)HexNAc(2)P(1): Hex3HexNAc2P1.
+    UNIMOD_Hex_3_HexNAc_2_P_1_ = 100000161,
 
     /// Delta:S(-1)Se(1): Selenium replaces sulfur.
     UNIMOD_Delta_S__1_Se_1_ = 100000162,
 
-    /// Delta:H(1)N(-1)18O(1): Glycosylated asparagine 18O labeling.
-    UNIMOD_Delta_H_1_N__1_18O_1_ = 100000170,
+    /// Delta:H(1)O(-1)18O(1): Glycosylated asparagine 18O labeling.
+    UNIMOD_Delta_H_1_O__1_18O_1_ = 100000170,
 
     /// NBS:13C(6): Shimadzu NBS-13C.
     UNIMOD_NBS_13C_6_ = 100000171,
@@ -8673,10 +8191,10 @@ enum PWIZ_API_DECL CVID
     /// Delta:H(4)C(2)O(-1)S(1): S-Ethylcystine from Serine.
     UNIMOD_Delta_H_4_C_2_O__1_S_1_ = 100000327,
 
-    /// Methyl:2H(3)13C(1): Monomethylation.
+    /// Methyl:2H(3)13C(1): Monomethylated arginine.
     UNIMOD_Methyl_2H_3_13C_1_ = 100000329,
 
-    /// Dimethyl:2H(6)13C(2): Dimethylation.
+    /// Dimethyl:2H(6)13C(2): Dimethylated arginine.
     UNIMOD_Dimethyl_2H_6_13C_2_ = 100000330,
 
     /// Thiophos-S-S-biotin: Thiophosphate labeled with biotin-HPDP.
@@ -8844,7 +8362,7 @@ enum PWIZ_API_DECL CVID
     /// Ser->LacticAcid: Lactic acid from N-term Ser.
     UNIMOD_Ser__LacticAcid = 100000403,
 
-    /// Phosphoadenosine: AMP.
+    /// Phosphoadenosine: AMP binding site.
     UNIMOD_Phosphoadenosine = 100000405,
 
     /// Hydroxycinnamyl: Hydroxycinnamyl.
@@ -9099,8 +8617,8 @@ enum PWIZ_API_DECL CVID
     /// Dibromo: Dibromo.
     UNIMOD_Dibromo = 100000534,
 
-    /// LRGG: Ubiquitination.
-    UNIMOD_LRGG = 100000535,
+    /// LeuArgGlyGly: Ubiquitination.
+    UNIMOD_LeuArgGlyGly = 100000535,
 
     /// CLIP_TRAQ_3: CLIP_TRAQ_3.
     UNIMOD_CLIP_TRAQ_3 = 100000536,
@@ -9669,11 +9187,11 @@ enum PWIZ_API_DECL CVID
     /// AEC-MAEC:2H(4): Deuterium cysteamine modification to S or T.
     UNIMOD_AEC_MAEC_2H_4_ = 100000792,
 
-    /// Hex(1)HexNAc(1): Hex1HexNAc1.
-    UNIMOD_Hex_1_HexNAc_1_ = 100000793,
+    /// Hex1HexNAc1: Hex1HexNAc1.
+    UNIMOD_Hex1HexNAc1 = 100000793,
 
-    /// Label:13C(6)+GG: 13C6 labeled ubiquitinylation residue.
-    UNIMOD_Label_13C_6__GG = 100000799,
+    /// Label:13C(6)+GlyGly: 13C6 labeled ubiquitinylation residue.
+    UNIMOD_Label_13C_6__GlyGly = 100000799,
 
     /// Biotin:Thermo-21345: Was PentylamineBiotin.
     UNIMOD_Biotin_Thermo_21345 = 100000800,
@@ -9726,8 +9244,11 @@ enum PWIZ_API_DECL CVID
     /// cGMP+RMP-loss: S-guanylation-2.
     UNIMOD_cGMP_RMP_loss = 100000851,
 
-    /// Label:2H(4)+GG: Ubiquitination 2H4 lysine.
-    UNIMOD_Label_2H_4__GG = 100000853,
+    /// Label:2H(4)+GlyGly: Ubiquitination 2H4 lysine.
+    UNIMOD_Label_2H_4__GlyGly = 100000853,
+
+    /// Label:13C(8)15N(2): 13C(8) 15N(2) Silac label.
+    UNIMOD_Label_13C_8_15N_2_ = 100000854,
 
     /// MG-H1: Methylglyoxal-derived hydroimidazolone.
     UNIMOD_MG_H1 = 100000859,
@@ -9741,8 +9262,8 @@ enum PWIZ_API_DECL CVID
     /// Label:13C(1)2H(3): SILAC.
     UNIMOD_Label_13C_1_2H_3_ = 100000862,
 
-    /// Label:13C(6)15N(2)+GG: 13C(6) 15N(2) Lysine glygly.
-    UNIMOD_Label_13C_6_15N_2__GG = 100000864,
+    /// Label:13C(6)15N(2)+GlyGly: 13C(6) 15N(2) Lysine glygly.
+    UNIMOD_Label_13C_6_15N_2__GlyGly = 100000864,
 
     /// ICPL:13C(6)2H(4): Bruker Daltonics SERVA-ICPL(TM) quantification chemistry, +10 Da form.
     UNIMOD_ICPL_13C_6_2H_4_ = 100000866,
@@ -9840,8 +9361,8 @@ enum PWIZ_API_DECL CVID
     /// Ethoxyformyl: Ethoxyformylation.
     UNIMOD_Ethoxyformyl = 100000915,
 
-    /// Label:13C(4)15N(2)+GG: 13C(4) 15N(2) Lysine glygly.
-    UNIMOD_Label_13C_4_15N_2__GG = 100000923,
+    /// Label:13C(4)15N(2)+GlyGly: 13C(4) 15N(2) Lysine glygly.
+    UNIMOD_Label_13C_4_15N_2__GlyGly = 100000923,
 
     /// ethylamino: Ethyl amino.
     UNIMOD_ethylamino = 100000926,
@@ -10800,8 +10321,8 @@ enum PWIZ_API_DECL CVID
     /// UgiJoullieProGlyProGly: Side reaction of PGPG with Side chain of aspartic or glutamic acid.
     UNIMOD_UgiJoullieProGlyProGly = 100001283,
 
-    /// IMEHex(2)NeuAc(1): Glycosylation with IME linked Hex(2) NeuAc.
-    UNIMOD_IMEHex_2_NeuAc_1_ = 100001286,
+    /// IMEHex(2)NeuAc: Glycosylation with IME linked Hex(2) NeuAc.
+    UNIMOD_IMEHex_2_NeuAc = 100001286,
 
     /// Arg-loss: Loss of arginine due to transpeptidation.
     UNIMOD_Arg_loss = 100001287,
@@ -11027,1113 +10548,6 @@ enum PWIZ_API_DECL CVID
 
     /// DiART6plex118: Accurate mass for DiART6plex 118.
     UNIMOD_DiART6plex118 = 100001396,
-
-    /// Iodoacetanilide: Iodoacetanilide derivative.
-    UNIMOD_Iodoacetanilide = 100001397,
-
-    /// Iodoacetanilide:13C(6): 13C labelled iodoacetanilide derivative.
-    UNIMOD_Iodoacetanilide_13C_6_ = 100001398,
-
-    /// Dap-DSP: Diaminopimelic acid-DSP monolinked.
-    UNIMOD_Dap_DSP = 100001399,
-
-    /// MurNAc: N-Acetylmuramic acid.
-    UNIMOD_MurNAc = 100001400,
-
-    /// Label:2H(7)15N(4): Label:2H(7)15N(4).
-    UNIMOD_Label_2H_7_15N_4_ = 100001402,
-
-    /// Label:2H(6)15N(1): Label:2H(6)15N(1).
-    UNIMOD_Label_2H_6_15N_1_ = 100001403,
-
-    /// EEEDVIEVYQEQTGG: Sumoylation by SUMO-1 after Cyanogen bromide (CNBr) cleavage.
-    UNIMOD_EEEDVIEVYQEQTGG = 100001405,
-
-    /// EDEDTIDVFQQQTGG: Sumoylation by SUMO-2/3 after Cyanogen bromide (CNBr) cleavage.
-    UNIMOD_EDEDTIDVFQQQTGG = 100001406,
-
-    /// Hex(5)HexNAc(4)NeuAc(2): Hex(5) HexNAc(4) NeuAc(2).
-    UNIMOD_Hex_5_HexNAc_4_NeuAc_2_ = 100001408,
-
-    /// Hex(5)HexNAc(4)NeuAc(1): Hex(5) HexNAc(4) NeuAc.
-    UNIMOD_Hex_5_HexNAc_4_NeuAc_1_ = 100001409,
-
-    /// dHex(1)Hex(5)HexNAc(4)NeuAc(1): DHex Hex(5) HexNAc(4) NeuAc.
-    UNIMOD_dHex_1_Hex_5_HexNAc_4_NeuAc_1_ = 100001410,
-
-    /// dHex(1)Hex(5)HexNAc(4)NeuAc(2): DHex Hex(5) HexNAc(4) NeuAc(2).
-    UNIMOD_dHex_1_Hex_5_HexNAc_4_NeuAc_2_ = 100001411,
-
-    /// s-GlcNAc: O3S1HexNAc1.
-    UNIMOD_s_GlcNAc = 100001412,
-
-    /// PhosphoHex(2): H1O3P1Hex2.
-    UNIMOD_PhosphoHex_2_ = 100001413,
-
-    /// Trimethyl:13C(3)2H(9): 3-fold methylation with fully labelled methyl groups.
-    UNIMOD_Trimethyl_13C_3_2H_9_ = 100001414,
-
-    /// 15N-oxobutanoic: Loss of ammonia (15N).
-    UNIMOD_15N_oxobutanoic = 100001419,
-
-    /// spermine: Spermine adduct.
-    UNIMOD_spermine = 100001420,
-
-    /// spermidine: Spermidine adduct.
-    UNIMOD_spermidine = 100001421,
-
-    /// Biotin:Thermo-21330: Biotin_PEG4.
-    UNIMOD_Biotin_Thermo_21330 = 100001423,
-
-    /// Pentose: Pentose.
-    UNIMOD_Pentose = 100001425,
-
-    /// Hex(1)Pent(1): Hex Pent.
-    UNIMOD_Hex_1_Pent_1_ = 100001426,
-
-    /// Hex(1)HexA(1): Hex HexA.
-    UNIMOD_Hex_1_HexA_1_ = 100001427,
-
-    /// Hex(1)Pent(2): Hex Pent(2).
-    UNIMOD_Hex_1_Pent_2_ = 100001428,
-
-    /// Hex(1)HexNAc(1)Phos(1): Hex HexNAc Phos.
-    UNIMOD_Hex_1_HexNAc_1_Phos_1_ = 100001429,
-
-    /// Hex(1)HexNAc(1)Sulf(1): Hex HexNAc Sulf.
-    UNIMOD_Hex_1_HexNAc_1_Sulf_1_ = 100001430,
-
-    /// Hex(1)NeuAc(1): Hex NeuAc.
-    UNIMOD_Hex_1_NeuAc_1_ = 100001431,
-
-    /// Hex(1)NeuGc(1): Hex NeuGc.
-    UNIMOD_Hex_1_NeuGc_1_ = 100001432,
-
-    /// HexNAc(3): HexNAc(3).
-    UNIMOD_HexNAc_3_ = 100001433,
-
-    /// HexNAc(1)NeuAc(1): HexNAc NeuAc.
-    UNIMOD_HexNAc_1_NeuAc_1_ = 100001434,
-
-    /// HexNAc(1)NeuGc(1): HexNAc NeuGc.
-    UNIMOD_HexNAc_1_NeuGc_1_ = 100001435,
-
-    /// Hex(1)HexNAc(1)dHex(1)Me(1): Hex HexNAc dHex Me.
-    UNIMOD_Hex_1_HexNAc_1_dHex_1_Me_1_ = 100001436,
-
-    /// Hex(1)HexNAc(1)dHex(1)Me(2): Hex HexNAc dHex Me(2).
-    UNIMOD_Hex_1_HexNAc_1_dHex_1_Me_2_ = 100001437,
-
-    /// Hex(2)HexNAc(1): Hex(2) HexNAc.
-    UNIMOD_Hex_2_HexNAc_1_ = 100001438,
-
-    /// Hex(1)HexA(1)HexNAc(1): Hex HexA HexNAc.
-    UNIMOD_Hex_1_HexA_1_HexNAc_1_ = 100001439,
-
-    /// Hex(2)HexNAc(1)Me(1): Hex(2) HexNAc Me.
-    UNIMOD_Hex_2_HexNAc_1_Me_1_ = 100001440,
-
-    /// Hex(3)Phos(1): Hex(3) Phos.
-    UNIMOD_Hex_3_Phos_1_ = 100001441,
-
-    /// Hex(1)NeuAc(1)Pent(1): Hex NeuAc Pent.
-    UNIMOD_Hex_1_NeuAc_1_Pent_1_ = 100001442,
-
-    /// Hex(2)HexNAc(1)Sulf(1): Hex(2) HexNAc Sulf.
-    UNIMOD_Hex_2_HexNAc_1_Sulf_1_ = 100001443,
-
-    /// Hex(2)NeuAc(1): Hex(2) NeuAc.
-    UNIMOD_Hex_2_NeuAc_1_ = 100001444,
-
-    /// dHex(2)Hex(2): Hex2 dHex2.
-    UNIMOD_dHex_2_Hex_2_ = 100001445,
-
-    /// dHex(1)Hex(2)HexA(1): DHex Hex(2) HexA.
-    UNIMOD_dHex_1_Hex_2_HexA_1_ = 100001446,
-
-    /// Hex(1)HexNAc(2)Sulf(1): Hex HexNAc(2) Sulf.
-    UNIMOD_Hex_1_HexNAc_2_Sulf_1_ = 100001447,
-
-    /// Hex(4): Hex(4).
-    UNIMOD_Hex_4_ = 100001448,
-
-    /// dHex(1)Hex(2)HexNAc(2)Pent(1): DHex Hex(2) HexNAc(2) Pent.
-    UNIMOD_dHex_1_Hex_2_HexNAc_2_Pent_1_ = 100001449,
-
-    /// Hex(2)HexNAc(2)NeuAc(1): Hex(2) HexNAc(2) NeuAc.
-    UNIMOD_Hex_2_HexNAc_2_NeuAc_1_ = 100001450,
-
-    /// Hex(3)HexNAc(2)Pent(1): Hex(3) HexNAc(2) Pent.
-    UNIMOD_Hex_3_HexNAc_2_Pent_1_ = 100001451,
-
-    /// Hex(4)HexNAc(2): Hex(4) HexNAc(2).
-    UNIMOD_Hex_4_HexNAc_2_ = 100001452,
-
-    /// dHex(1)Hex(4)HexNAc(1)Pent(1): DHex Hex(4) HexNAc Pent.
-    UNIMOD_dHex_1_Hex_4_HexNAc_1_Pent_1_ = 100001453,
-
-    /// dHex(1)Hex(3)HexNAc(2)Pent(1): DHex Hex(3) HexNAc(2) Pent.
-    UNIMOD_dHex_1_Hex_3_HexNAc_2_Pent_1_ = 100001454,
-
-    /// Hex(3)HexNAc(2)NeuAc(1): Hex(3) HexNAc(2) NeuAc.
-    UNIMOD_Hex_3_HexNAc_2_NeuAc_1_ = 100001455,
-
-    /// Hex(4)HexNAc(2)Pent(1): Hex(4) HexNAc(2) Pent.
-    UNIMOD_Hex_4_HexNAc_2_Pent_1_ = 100001456,
-
-    /// Hex(3)HexNAc(3)Pent(1): Hex(3) HexNAc(3) Pent.
-    UNIMOD_Hex_3_HexNAc_3_Pent_1_ = 100001457,
-
-    /// Hex(5)HexNAc(2)Phos(1): Hex(5) HexNAc(2) Phos.
-    UNIMOD_Hex_5_HexNAc_2_Phos_1_ = 100001458,
-
-    /// dHex(1)Hex(4)HexNAc(2)Pent(1): DHex Hex(4) HexNAc(2) Pent.
-    UNIMOD_dHex_1_Hex_4_HexNAc_2_Pent_1_ = 100001459,
-
-    /// Hex(7)HexNAc(1): Hex(7) HexNAc.
-    UNIMOD_Hex_7_HexNAc_1_ = 100001460,
-
-    /// Hex(4)HexNAc(2)NeuAc(1): Hex(4) HexNAc(2) NeuAc.
-    UNIMOD_Hex_4_HexNAc_2_NeuAc_1_ = 100001461,
-
-    /// dHex(1)Hex(5)HexNAc(2): DHex Hex(5) HexNAc(2).
-    UNIMOD_dHex_1_Hex_5_HexNAc_2_ = 100001462,
-
-    /// dHex(1)Hex(3)HexNAc(3)Pent(1): DHex Hex(3) HexNAc(3) Pent.
-    UNIMOD_dHex_1_Hex_3_HexNAc_3_Pent_1_ = 100001463,
-
-    /// Hex(3)HexNAc(4)Sulf(1): Hex(3) HexNAc(4) Sulf.
-    UNIMOD_Hex_3_HexNAc_4_Sulf_1_ = 100001464,
-
-    /// Hex(6)HexNAc(2): Hex(6) HexNAc(2).
-    UNIMOD_Hex_6_HexNAc_2_ = 100001465,
-
-    /// Hex(4)HexNAc(3)Pent(1): Hex(4) HexNAc(3) Pent.
-    UNIMOD_Hex_4_HexNAc_3_Pent_1_ = 100001466,
-
-    /// dHex(1)Hex(4)HexNAc(3): DHex Hex(4) HexNAc(3).
-    UNIMOD_dHex_1_Hex_4_HexNAc_3_ = 100001467,
-
-    /// Hex(5)HexNAc(3): Hex(5) HexNAc(3).
-    UNIMOD_Hex_5_HexNAc_3_ = 100001468,
-
-    /// Hex(3)HexNAc(4)Pent(1): Hex(3) HexNAc(4) Pent.
-    UNIMOD_Hex_3_HexNAc_4_Pent_1_ = 100001469,
-
-    /// Hex(6)HexNAc(2)Phos(1): Hex(6) HexNAc(2) Phos.
-    UNIMOD_Hex_6_HexNAc_2_Phos_1_ = 100001470,
-
-    /// dHex(1)Hex(4)HexNAc(3)Sulf(1): DHex Hex(4) HexNAc(3) Sulf.
-    UNIMOD_dHex_1_Hex_4_HexNAc_3_Sulf_1_ = 100001471,
-
-    /// dHex(1)Hex(5)HexNAc(2)Pent(1): DHex Hex(5) HexNAc(2) Pent.
-    UNIMOD_dHex_1_Hex_5_HexNAc_2_Pent_1_ = 100001472,
-
-    /// Hex(8)HexNAc(1): Hex(8) HexNAc.
-    UNIMOD_Hex_8_HexNAc_1_ = 100001473,
-
-    /// dHex(1)Hex(3)HexNAc(3)Pent(2): DHex Hex(3) HexNAc(3) Pent(2).
-    UNIMOD_dHex_1_Hex_3_HexNAc_3_Pent_2_ = 100001474,
-
-    /// dHex(2)Hex(3)HexNAc(3)Pent(1): DHex(2) Hex(3) HexNAc(3) Pent.
-    UNIMOD_dHex_2_Hex_3_HexNAc_3_Pent_1_ = 100001475,
-
-    /// dHex(1)Hex(3)HexNAc(4)Sulf(1): DHex Hex(3) HexNAc(4) Sulf.
-    UNIMOD_dHex_1_Hex_3_HexNAc_4_Sulf_1_ = 100001476,
-
-    /// dHex(1)Hex(6)HexNAc(2): DHex Hex(6) HexNAc(2).
-    UNIMOD_dHex_1_Hex_6_HexNAc_2_ = 100001477,
-
-    /// dHex(1)Hex(4)HexNAc(3)Pent(1): DHex Hex(4) HexNAc(3) Pent.
-    UNIMOD_dHex_1_Hex_4_HexNAc_3_Pent_1_ = 100001478,
-
-    /// Hex(4)HexNAc(4)Sulf(1): Hex(4) HexNAc(4) Sulf.
-    UNIMOD_Hex_4_HexNAc_4_Sulf_1_ = 100001479,
-
-    /// Hex(7)HexNAc(2): Hex(7) HexNAc(2).
-    UNIMOD_Hex_7_HexNAc_2_ = 100001480,
-
-    /// dHex(2)Hex(4)HexNAc(3): DHex(2) Hex(4) HexNAc(3).
-    UNIMOD_dHex_2_Hex_4_HexNAc_3_ = 100001481,
-
-    /// Hex(5)HexNAc(3)Pent(1): Hex(5) HexNAc(3) Pent.
-    UNIMOD_Hex_5_HexNAc_3_Pent_1_ = 100001482,
-
-    /// Hex(4)HexNAc(3)NeuGc(1): Hex(4) HexNAc(3) NeuGc.
-    UNIMOD_Hex_4_HexNAc_3_NeuGc_1_ = 100001483,
-
-    /// dHex(1)Hex(5)HexNAc(3): DHex Hex(5) HexNAc(3).
-    UNIMOD_dHex_1_Hex_5_HexNAc_3_ = 100001484,
-
-    /// dHex(1)Hex(3)HexNAc(4)Pent(1): DHex Hex(3) HexNAc(4) Pent.
-    UNIMOD_dHex_1_Hex_3_HexNAc_4_Pent_1_ = 100001485,
-
-    /// Hex(3)HexNAc(5)Sulf(1): Hex(3) HexNAc(5) Sulf.
-    UNIMOD_Hex_3_HexNAc_5_Sulf_1_ = 100001486,
-
-    /// Hex(6)HexNAc(3): Hex(6) HexNAc(3).
-    UNIMOD_Hex_6_HexNAc_3_ = 100001487,
-
-    /// Hex(3)HexNAc(4)NeuAc(1): Hex(3) HexNAc(4) NeuAc.
-    UNIMOD_Hex_3_HexNAc_4_NeuAc_1_ = 100001488,
-
-    /// Hex(4)HexNAc(4)Pent(1): Hex(4) HexNAc(4) Pent.
-    UNIMOD_Hex_4_HexNAc_4_Pent_1_ = 100001489,
-
-    /// Hex(7)HexNAc(2)Phos(1): Hex(7) HexNAc(2) Phos.
-    UNIMOD_Hex_7_HexNAc_2_Phos_1_ = 100001490,
-
-    /// Hex(4)HexNAc(4)Me(2)Pent(1): Hex(4) HexNAc(4) Me(2) Pent.
-    UNIMOD_Hex_4_HexNAc_4_Me_2_Pent_1_ = 100001491,
-
-    /// dHex(1)Hex(3)HexNAc(3)Pent(3): DHex Hex(3) HexNAc(3) Pent(3).
-    UNIMOD_dHex_1_Hex_3_HexNAc_3_Pent_3_ = 100001492,
-
-    /// dHex(1)Hex(5)HexNAc(3)Sulf(1): DHex Hex(5) HexNAc(3) Sulf.
-    UNIMOD_dHex_1_Hex_5_HexNAc_3_Sulf_1_ = 100001493,
-
-    /// dHex(2)Hex(3)HexNAc(3)Pent(2): DHex(2) Hex(3) HexNAc(3) Pent(2).
-    UNIMOD_dHex_2_Hex_3_HexNAc_3_Pent_2_ = 100001494,
-
-    /// Hex(6)HexNAc(3)Phos(1): Hex(6) HexNAc(3) Phos.
-    UNIMOD_Hex_6_HexNAc_3_Phos_1_ = 100001495,
-
-    /// Hex(4)HexNAc(5): Hex(4) HexNAc(5).
-    UNIMOD_Hex_4_HexNAc_5_ = 100001496,
-
-    /// dHex(3)Hex(3)HexNAc(3)Pent(1): DHex(3) Hex(3) HexNAc(3) Pent.
-    UNIMOD_dHex_3_Hex_3_HexNAc_3_Pent_1_ = 100001497,
-
-    /// dHex(2)Hex(4)HexNAc(3)Pent(1): DHex(2) Hex(4) HexNAc(3) Pent.
-    UNIMOD_dHex_2_Hex_4_HexNAc_3_Pent_1_ = 100001498,
-
-    /// dHex(1)Hex(4)HexNAc(4)Sulf(1): DHex Hex(4) HexNAc(4) Sulf.
-    UNIMOD_dHex_1_Hex_4_HexNAc_4_Sulf_1_ = 100001499,
-
-    /// dHex(1)Hex(7)HexNAc(2): DHex Hex(7) HexNAc(2).
-    UNIMOD_dHex_1_Hex_7_HexNAc_2_ = 100001500,
-
-    /// dHex(1)Hex(4)HexNAc(3)NeuAc(1): DHex Hex(4) HexNAc(3) NeuAc.
-    UNIMOD_dHex_1_Hex_4_HexNAc_3_NeuAc_1_ = 100001501,
-
-    /// Hex(7)HexNAc(2)Phos(2): Hex(7) HexNAc(2) Phos(2).
-    UNIMOD_Hex_7_HexNAc_2_Phos_2_ = 100001502,
-
-    /// Hex(5)HexNAc(4)Sulf(1): Hex(5) HexNAc(4) Sulf.
-    UNIMOD_Hex_5_HexNAc_4_Sulf_1_ = 100001503,
-
-    /// Hex(8)HexNAc(2): Hex(8) HexNAc(2).
-    UNIMOD_Hex_8_HexNAc_2_ = 100001504,
-
-    /// dHex(1)Hex(3)HexNAc(4)Pent(2): DHex Hex(3) HexNAc(4) Pent(2).
-    UNIMOD_dHex_1_Hex_3_HexNAc_4_Pent_2_ = 100001505,
-
-    /// dHex(1)Hex(4)HexNAc(3)NeuGc(1): DHex Hex(4) HexNAc(3) NeuGc.
-    UNIMOD_dHex_1_Hex_4_HexNAc_3_NeuGc_1_ = 100001506,
-
-    /// dHex(2)Hex(3)HexNAc(4)Pent(1): DHex(2) Hex(3) HexNAc(4) Pent.
-    UNIMOD_dHex_2_Hex_3_HexNAc_4_Pent_1_ = 100001507,
-
-    /// dHex(1)Hex(3)HexNAc(5)Sulf(1): DHex Hex(3) HexNAc(5) Sulf.
-    UNIMOD_dHex_1_Hex_3_HexNAc_5_Sulf_1_ = 100001508,
-
-    /// dHex(1)Hex(6)HexNAc(3): DHex Hex(6) HexNAc(3).
-    UNIMOD_dHex_1_Hex_6_HexNAc_3_ = 100001509,
-
-    /// dHex(1)Hex(3)HexNAc(4)NeuAc(1): DHex Hex(3) HexNAc(4) NeuAc.
-    UNIMOD_dHex_1_Hex_3_HexNAc_4_NeuAc_1_ = 100001510,
-
-    /// dHex(3)Hex(3)HexNAc(4): DHex(3) Hex(3) HexNAc(4).
-    UNIMOD_dHex_3_Hex_3_HexNAc_4_ = 100001511,
-
-    /// dHex(1)Hex(4)HexNAc(4)Pent(1): DHex Hex(4) HexNAc(4) Pent.
-    UNIMOD_dHex_1_Hex_4_HexNAc_4_Pent_1_ = 100001512,
-
-    /// Hex(4)HexNAc(5)Sulf(1): Hex(4) HexNAc(5) Sulf.
-    UNIMOD_Hex_4_HexNAc_5_Sulf_1_ = 100001513,
-
-    /// Hex(7)HexNAc(3): Hex(7) HexNAc(3).
-    UNIMOD_Hex_7_HexNAc_3_ = 100001514,
-
-    /// dHex(1)Hex(4)HexNAc(3)NeuAc(1)Sulf(1): DHex Hex(4) HexNAc(3) NeuAc Sulf.
-    UNIMOD_dHex_1_Hex_4_HexNAc_3_NeuAc_1_Sulf_1_ = 100001515,
-
-    /// Hex(5)HexNAc(4)Me(2)Pent(1): Hex(5) HexNAc(4) Me(2) Pent.
-    UNIMOD_Hex_5_HexNAc_4_Me_2_Pent_1_ = 100001516,
-
-    /// Hex(3)HexNAc(6)Sulf(1): Hex(3) HexNAc(6) Sulf.
-    UNIMOD_Hex_3_HexNAc_6_Sulf_1_ = 100001517,
-
-    /// dHex(1)Hex(6)HexNAc(3)Sulf(1): DHex Hex(6) HexNAc(3) Sulf.
-    UNIMOD_dHex_1_Hex_6_HexNAc_3_Sulf_1_ = 100001518,
-
-    /// dHex(1)Hex(4)HexNAc(5): DHex Hex(4) HexNAc(5).
-    UNIMOD_dHex_1_Hex_4_HexNAc_5_ = 100001519,
-
-    /// dHex(1)Hex(5)HexA(1)HexNAc(3)Sulf(1): DHex Hex(5) HexA HexNAc(3) Sulf.
-    UNIMOD_dHex_1_Hex_5_HexA_1_HexNAc_3_Sulf_1_ = 100001520,
-
-    /// Hex(7)HexNAc(3)Phos(1): Hex(7) HexNAc(3) Phos.
-    UNIMOD_Hex_7_HexNAc_3_Phos_1_ = 100001521,
-
-    /// Hex(6)HexNAc(4)Me(3): Hex(6) HexNAc(4) Me(3).
-    UNIMOD_Hex_6_HexNAc_4_Me_3_ = 100001522,
-
-    /// dHex(2)Hex(4)HexNAc(4)Sulf(1): DHex(2) Hex(4) HexNAc(4) Sulf.
-    UNIMOD_dHex_2_Hex_4_HexNAc_4_Sulf_1_ = 100001523,
-
-    /// Hex(4)HexNAc(3)NeuAc(2): Hex(4) HexNAc(3) NeuAc(2).
-    UNIMOD_Hex_4_HexNAc_3_NeuAc_2_ = 100001524,
-
-    /// dHex(1)Hex(3)HexNAc(4)Pent(3): DHex Hex(3) HexNAc(4) Pent(3).
-    UNIMOD_dHex_1_Hex_3_HexNAc_4_Pent_3_ = 100001525,
-
-    /// dHex(2)Hex(5)HexNAc(3)Pent(1): DHex(2) Hex(5) HexNAc(3) Pent.
-    UNIMOD_dHex_2_Hex_5_HexNAc_3_Pent_1_ = 100001526,
-
-    /// dHex(1)Hex(5)HexNAc(4)Sulf(1): DHex Hex(5) HexNAc(4) Sulf.
-    UNIMOD_dHex_1_Hex_5_HexNAc_4_Sulf_1_ = 100001527,
-
-    /// dHex(2)Hex(3)HexNAc(4)Pent(2): DHex(2) Hex(3) HexNAc(4) Pent(2).
-    UNIMOD_dHex_2_Hex_3_HexNAc_4_Pent_2_ = 100001528,
-
-    /// dHex(1)Hex(5)HexNAc(3)NeuAc(1): DHex Hex(5) HexNAc(3) NeuAc.
-    UNIMOD_dHex_1_Hex_5_HexNAc_3_NeuAc_1_ = 100001529,
-
-    /// Hex(3)HexNAc(6)Sulf(2): Hex(3) HexNAc(6) Sulf(2).
-    UNIMOD_Hex_3_HexNAc_6_Sulf_2_ = 100001530,
-
-    /// Hex(9)HexNAc(2): Hex(9) HexNAc(2).
-    UNIMOD_Hex_9_HexNAc_2_ = 100001531,
-
-    /// Hex(4)HexNAc(6): Hex(4) HexNAc(6).
-    UNIMOD_Hex_4_HexNAc_6_ = 100001532,
-
-    /// dHex(3)Hex(3)HexNAc(4)Pent(1): DHex(3) Hex(3) HexNAc(4) Pent.
-    UNIMOD_dHex_3_Hex_3_HexNAc_4_Pent_1_ = 100001533,
-
-    /// dHex(1)Hex(5)HexNAc(3)NeuGc(1): DHex Hex(5) HexNAc(3) NeuGc.
-    UNIMOD_dHex_1_Hex_5_HexNAc_3_NeuGc_1_ = 100001534,
-
-    /// dHex(2)Hex(4)HexNAc(4)Pent(1): DHex(2) Hex(4) HexNAc(4) Pent.
-    UNIMOD_dHex_2_Hex_4_HexNAc_4_Pent_1_ = 100001535,
-
-    /// dHex(1)Hex(4)HexNAc(5)Sulf(1): DHex Hex(4) HexNAc(5) Sulf.
-    UNIMOD_dHex_1_Hex_4_HexNAc_5_Sulf_1_ = 100001536,
-
-    /// dHex(1)Hex(7)HexNAc(3): DHex Hex(7) HexNAc(3).
-    UNIMOD_dHex_1_Hex_7_HexNAc_3_ = 100001537,
-
-    /// dHex(1)Hex(5)HexNAc(4)Pent(1): DHex Hex(5) HexNAc(4) Pent.
-    UNIMOD_dHex_1_Hex_5_HexNAc_4_Pent_1_ = 100001538,
-
-    /// dHex(1)Hex(5)HexA(1)HexNAc(3)Sulf(2): DHex Hex(5) HexA HexNAc(3) Sulf(2).
-    UNIMOD_dHex_1_Hex_5_HexA_1_HexNAc_3_Sulf_2_ = 100001539,
-
-    /// Hex(3)HexNAc(7): Hex(3) HexNAc(7).
-    UNIMOD_Hex_3_HexNAc_7_ = 100001540,
-
-    /// dHex(2)Hex(5)HexNAc(4): DHex(2) Hex(5) HexNAc(4).
-    UNIMOD_dHex_2_Hex_5_HexNAc_4_ = 100001541,
-
-    /// dHex(2)Hex(4)HexNAc(3)NeuAc(1)Sulf(1): DHex(2) Hex(4) HexNAc(3) NeuAc Sulf.
-    UNIMOD_dHex_2_Hex_4_HexNAc_3_NeuAc_1_Sulf_1_ = 100001542,
-
-    /// dHex(1)Hex(5)HexNAc(4)Sulf(2): DHex Hex(5) HexNAc(4) Sulf(2).
-    UNIMOD_dHex_1_Hex_5_HexNAc_4_Sulf_2_ = 100001543,
-
-    /// dHex(1)Hex(5)HexNAc(4)Me(2)Pent(1): DHex Hex(5) HexNAc(4) Me(2) Pent.
-    UNIMOD_dHex_1_Hex_5_HexNAc_4_Me_2_Pent_1_ = 100001544,
-
-    /// Hex(5)HexNAc(4)NeuGc(1): Hex(5) HexNAc(4) NeuGc.
-    UNIMOD_Hex_5_HexNAc_4_NeuGc_1_ = 100001545,
-
-    /// dHex(1)Hex(3)HexNAc(6)Sulf(1): DHex Hex(3) HexNAc(6) Sulf.
-    UNIMOD_dHex_1_Hex_3_HexNAc_6_Sulf_1_ = 100001546,
-
-    /// dHex(1)Hex(6)HexNAc(4): DHex Hex(6) HexNAc(4).
-    UNIMOD_dHex_1_Hex_6_HexNAc_4_ = 100001547,
-
-    /// dHex(1)Hex(5)HexNAc(3)NeuAc(1)Sulf(1): DHex Hex(5) HexNAc(3) NeuAc Sulf.
-    UNIMOD_dHex_1_Hex_5_HexNAc_3_NeuAc_1_Sulf_1_ = 100001548,
-
-    /// Hex(7)HexNAc(4): Hex(7) HexNAc(4).
-    UNIMOD_Hex_7_HexNAc_4_ = 100001549,
-
-    /// dHex(1)Hex(5)HexNAc(3)NeuGc(1)Sulf(1): DHex Hex(5) HexNAc(3) NeuGc Sulf.
-    UNIMOD_dHex_1_Hex_5_HexNAc_3_NeuGc_1_Sulf_1_ = 100001550,
-
-    /// Hex(4)HexNAc(5)NeuAc(1): Hex(4) HexNAc(5) NeuAc.
-    UNIMOD_Hex_4_HexNAc_5_NeuAc_1_ = 100001551,
-
-    /// Hex(6)HexNAc(4)Me(3)Pent(1): Hex(6) HexNAc(4) Me(3) Pent.
-    UNIMOD_Hex_6_HexNAc_4_Me_3_Pent_1_ = 100001552,
-
-    /// dHex(1)Hex(7)HexNAc(3)Sulf(1): DHex Hex(7) HexNAc(3) Sulf.
-    UNIMOD_dHex_1_Hex_7_HexNAc_3_Sulf_1_ = 100001553,
-
-    /// dHex(1)Hex(7)HexNAc(3)Phos(1): DHex Hex(7) HexNAc(3) Phos.
-    UNIMOD_dHex_1_Hex_7_HexNAc_3_Phos_1_ = 100001554,
-
-    /// dHex(1)Hex(5)HexNAc(5): DHex Hex(5) HexNAc(5).
-    UNIMOD_dHex_1_Hex_5_HexNAc_5_ = 100001555,
-
-    /// dHex(1)Hex(4)HexNAc(4)NeuAc(1)Sulf(1): DHex Hex(4) HexNAc(4) NeuAc Sulf.
-    UNIMOD_dHex_1_Hex_4_HexNAc_4_NeuAc_1_Sulf_1_ = 100001556,
-
-    /// dHex(3)Hex(4)HexNAc(4)Sulf(1): DHex(3) Hex(4) HexNAc(4) Sulf.
-    UNIMOD_dHex_3_Hex_4_HexNAc_4_Sulf_1_ = 100001557,
-
-    /// Hex(3)HexNAc(7)Sulf(1): Hex(3) HexNAc(7) Sulf.
-    UNIMOD_Hex_3_HexNAc_7_Sulf_1_ = 100001558,
-
-    /// Hex(6)HexNAc(5): Hex(6) HexNAc(5).
-    UNIMOD_Hex_6_HexNAc_5_ = 100001559,
-
-    /// Hex(5)HexNAc(4)NeuAc(1)Sulf(1): Hex(5) HexNAc(4) NeuAc Sulf.
-    UNIMOD_Hex_5_HexNAc_4_NeuAc_1_Sulf_1_ = 100001560,
-
-    /// Hex(3)HexNAc(6)NeuAc(1): Hex(3) HexNAc(6) NeuAc.
-    UNIMOD_Hex_3_HexNAc_6_NeuAc_1_ = 100001561,
-
-    /// dHex(2)Hex(3)HexNAc(6): DHex(2) Hex(3) HexNAc(6).
-    UNIMOD_dHex_2_Hex_3_HexNAc_6_ = 100001562,
-
-    /// Hex(1)HexNAc(1)NeuGc(1): Hex HexNAc NeuGc.
-    UNIMOD_Hex_1_HexNAc_1_NeuGc_1_ = 100001563,
-
-    /// dHex(1)Hex(2)HexNAc(1): DHex Hex(2) HexNAc.
-    UNIMOD_dHex_1_Hex_2_HexNAc_1_ = 100001564,
-
-    /// HexNAc(3)Sulf(1): HexNAc(3) Sulf.
-    UNIMOD_HexNAc_3_Sulf_1_ = 100001565,
-
-    /// Hex(3)HexNAc(1): Hex(3) HexNAc.
-    UNIMOD_Hex_3_HexNAc_1_ = 100001566,
-
-    /// Hex(1)HexNAc(1)Kdn(1)Sulf(1): Hex HexNAc Kdn Sulf.
-    UNIMOD_Hex_1_HexNAc_1_Kdn_1_Sulf_1_ = 100001567,
-
-    /// HexNAc(2)NeuAc(1): HexNAc(2) NeuAc.
-    UNIMOD_HexNAc_2_NeuAc_1_ = 100001568,
-
-    /// HexNAc(1)Kdn(2): HexNAc Kdn(2).
-    UNIMOD_HexNAc_1_Kdn_2_ = 100001570,
-
-    /// Hex(3)HexNAc(1)Me(1): Hex(3) HexNAc Me.
-    UNIMOD_Hex_3_HexNAc_1_Me_1_ = 100001571,
-
-    /// Hex(2)HexA(1)Pent(1)Sulf(1): Hex(2) HexA Pent Sulf.
-    UNIMOD_Hex_2_HexA_1_Pent_1_Sulf_1_ = 100001572,
-
-    /// HexNAc(2)NeuGc(1): HexNAc(2) NeuGc.
-    UNIMOD_HexNAc_2_NeuGc_1_ = 100001573,
-
-    /// Hex(4)Phos(1): Hex(4) Phos.
-    UNIMOD_Hex_4_Phos_1_ = 100001575,
-
-    /// Hex(1)HexNAc(1)NeuAc(1)Sulf(1): Hex HexNAc NeuAc Sulf.
-    UNIMOD_Hex_1_HexNAc_1_NeuAc_1_Sulf_1_ = 100001577,
-
-    /// Hex(1)HexA(1)HexNAc(2): Hex HexA HexNAc(2).
-    UNIMOD_Hex_1_HexA_1_HexNAc_2_ = 100001578,
-
-    /// dHex(1)Hex(2)HexNAc(1)Sulf(1): DHex Hex(2) HexNAc Sulf.
-    UNIMOD_dHex_1_Hex_2_HexNAc_1_Sulf_1_ = 100001579,
-
-    /// dHex(1)HexNAc(3): DHex HexNAc(3).
-    UNIMOD_dHex_1_HexNAc_3_ = 100001580,
-
-    /// dHex(1)Hex(1)HexNAc(1)Kdn(1): DHex Hex HexNAc Kdn.
-    UNIMOD_dHex_1_Hex_1_HexNAc_1_Kdn_1_ = 100001581,
-
-    /// Hex(1)HexNAc(3): Hex HexNAc(3).
-    UNIMOD_Hex_1_HexNAc_3_ = 100001582,
-
-    /// HexNAc(2)NeuAc(1)Sulf(1): HexNAc(2) NeuAc Sulf.
-    UNIMOD_HexNAc_2_NeuAc_1_Sulf_1_ = 100001583,
-
-    /// dHex(2)Hex(3): DHex(2) Hex(3).
-    UNIMOD_dHex_2_Hex_3_ = 100001584,
-
-    /// Hex(2)HexA(1)HexNAc(1)Sulf(1): Hex(2) HexA HexNAc Sulf.
-    UNIMOD_Hex_2_HexA_1_HexNAc_1_Sulf_1_ = 100001585,
-
-    /// dHex(2)Hex(2)HexA(1): DHex(2) Hex(2) HexA.
-    UNIMOD_dHex_2_Hex_2_HexA_1_ = 100001586,
-
-    /// dHex(1)Hex(1)HexNAc(2)Sulf(1): DHex Hex HexNAc(2) Sulf.
-    UNIMOD_dHex_1_Hex_1_HexNAc_2_Sulf_1_ = 100001587,
-
-    /// dHex(1)Hex(1)HexNAc(1)NeuAc(1): DHex Hex HexNAc NeuAc.
-    UNIMOD_dHex_1_Hex_1_HexNAc_1_NeuAc_1_ = 100001588,
-
-    /// Hex(2)HexNAc(2)Sulf(1): Hex(2) HexNAc(2) Sulf.
-    UNIMOD_Hex_2_HexNAc_2_Sulf_1_ = 100001589,
-
-    /// Hex(5): Hex(5).
-    UNIMOD_Hex_5_ = 100001590,
-
-    /// HexNAc(4): HexNAc(4).
-    UNIMOD_HexNAc_4_ = 100001591,
-
-    /// HexNAc(1)NeuGc(2): HexNAc NeuGc(2).
-    UNIMOD_HexNAc_1_NeuGc_2_ = 100001592,
-
-    /// dHex(1)Hex(1)HexNAc(1)NeuGc(1): DHex Hex HexNAc NeuGc.
-    UNIMOD_dHex_1_Hex_1_HexNAc_1_NeuGc_1_ = 100001593,
-
-    /// dHex(2)Hex(2)HexNAc(1): DHex(2) Hex(2) HexNAc.
-    UNIMOD_dHex_2_Hex_2_HexNAc_1_ = 100001594,
-
-    /// Hex(2)HexNAc(1)NeuGc(1): Hex(2) HexNAc NeuGc.
-    UNIMOD_Hex_2_HexNAc_1_NeuGc_1_ = 100001595,
-
-    /// dHex(1)Hex(3)HexNAc(1): DHex Hex(3) HexNAc.
-    UNIMOD_dHex_1_Hex_3_HexNAc_1_ = 100001596,
-
-    /// dHex(1)Hex(2)HexA(1)HexNAc(1): DHex Hex(2) HexA HexNAc.
-    UNIMOD_dHex_1_Hex_2_HexA_1_HexNAc_1_ = 100001597,
-
-    /// Hex(1)HexNAc(3)Sulf(1): Hex HexNAc(3) Sulf.
-    UNIMOD_Hex_1_HexNAc_3_Sulf_1_ = 100001598,
-
-    /// Hex(4)HexNAc(1): Hex(4) HexNAc.
-    UNIMOD_Hex_4_HexNAc_1_ = 100001599,
-
-    /// Hex(1)HexNAc(2)NeuAc(1): Hex HexNAc(2) NeuAc.
-    UNIMOD_Hex_1_HexNAc_2_NeuAc_1_ = 100001600,
-
-    /// Hex(1)HexNAc(2)NeuGc(1): Hex HexNAc(2) NeuGc.
-    UNIMOD_Hex_1_HexNAc_2_NeuGc_1_ = 100001602,
-
-    /// Hex(5)Phos(1): Hex(5) Phos.
-    UNIMOD_Hex_5_Phos_1_ = 100001604,
-
-    /// dHex(2)Hex(1)HexNAc(1)Kdn(1): DHex(2) Hex HexNAc Kdn.
-    UNIMOD_dHex_2_Hex_1_HexNAc_1_Kdn_1_ = 100001606,
-
-    /// dHex(1)Hex(3)HexNAc(1)Sulf(1): DHex Hex(3) HexNAc Sulf.
-    UNIMOD_dHex_1_Hex_3_HexNAc_1_Sulf_1_ = 100001607,
-
-    /// dHex(1)Hex(1)HexNAc(3): DHex Hex HexNAc(3).
-    UNIMOD_dHex_1_Hex_1_HexNAc_3_ = 100001608,
-
-    /// dHex(1)Hex(2)HexA(1)HexNAc(1)Sulf(1): DHex Hex(2) HexA HexNAc Sulf.
-    UNIMOD_dHex_1_Hex_2_HexA_1_HexNAc_1_Sulf_1_ = 100001609,
-
-    /// Hex(2)HexNAc(3): Hex(2) HexNAc(3).
-    UNIMOD_Hex_2_HexNAc_3_ = 100001610,
-
-    /// Hex(1)HexNAc(2)NeuAc(1)Sulf(1): Hex HexNAc(2) NeuAc Sulf.
-    UNIMOD_Hex_1_HexNAc_2_NeuAc_1_Sulf_1_ = 100001611,
-
-    /// dHex(2)Hex(4): DHex(2) Hex(4).
-    UNIMOD_dHex_2_Hex_4_ = 100001612,
-
-    /// dHex(2)HexNAc(2)Kdn(1): DHex(2) HexNAc(2) Kdn.
-    UNIMOD_dHex_2_HexNAc_2_Kdn_1_ = 100001614,
-
-    /// dHex(1)Hex(2)HexNAc(2)Sulf(1): DHex Hex(2) HexNAc(2) Sulf.
-    UNIMOD_dHex_1_Hex_2_HexNAc_2_Sulf_1_ = 100001615,
-
-    /// dHex(1)HexNAc(4): DHex HexNAc(4).
-    UNIMOD_dHex_1_HexNAc_4_ = 100001616,
-
-    /// Hex(1)HexNAc(1)NeuAc(1)NeuGc(1): Hex HexNAc NeuAc NeuGc.
-    UNIMOD_Hex_1_HexNAc_1_NeuAc_1_NeuGc_1_ = 100001617,
-
-    /// dHex(1)Hex(1)HexNAc(2)Kdn(1): DHex Hex HexNAc(2) Kdn.
-    UNIMOD_dHex_1_Hex_1_HexNAc_2_Kdn_1_ = 100001618,
-
-    /// Hex(1)HexNAc(1)NeuGc(2): Hex HexNAc NeuGc(2).
-    UNIMOD_Hex_1_HexNAc_1_NeuGc_2_ = 100001619,
-
-    /// Hex(1)HexNAc(1)NeuAc(2)Ac(1): Ac Hex HexNAc NeuAc(2).
-    UNIMOD_Hex_1_HexNAc_1_NeuAc_2_Ac_1_ = 100001620,
-
-    /// dHex(2)Hex(2)HexA(1)HexNAc(1): DHex(2) Hex(2) HexA HexNAc.
-    UNIMOD_dHex_2_Hex_2_HexA_1_HexNAc_1_ = 100001621,
-
-    /// dHex(1)Hex(1)HexNAc(3)Sulf(1): DHex Hex HexNAc(3) Sulf.
-    UNIMOD_dHex_1_Hex_1_HexNAc_3_Sulf_1_ = 100001622,
-
-    /// Hex(2)HexA(1)NeuAc(1)Pent(1)Sulf(1): Hex(2) HexA NeuAc Pent Sulf.
-    UNIMOD_Hex_2_HexA_1_NeuAc_1_Pent_1_Sulf_1_ = 100001623,
-
-    /// dHex(1)Hex(1)HexNAc(2)NeuAc(1): DHex Hex HexNAc(2) NeuAc.
-    UNIMOD_dHex_1_Hex_1_HexNAc_2_NeuAc_1_ = 100001624,
-
-    /// dHex(1)Hex(3)HexA(1)HexNAc(1): DHex Hex(3) HexA HexNAc.
-    UNIMOD_dHex_1_Hex_3_HexA_1_HexNAc_1_ = 100001625,
-
-    /// Hex(2)HexNAc(3)Sulf(1): Hex(2) HexNAc(3) Sulf.
-    UNIMOD_Hex_2_HexNAc_3_Sulf_1_ = 100001626,
-
-    /// Hex(5)HexNAc(1): Hex(5) HexNAc.
-    UNIMOD_Hex_5_HexNAc_1_ = 100001627,
-
-    /// HexNAc(5): HexNAc(5).
-    UNIMOD_HexNAc_5_ = 100001628,
-
-    /// dHex(1)Hex(1)HexNAc(2)NeuGc(1): DHex Hex HexNAc(2) NeuGc.
-    UNIMOD_dHex_1_Hex_1_HexNAc_2_NeuGc_1_ = 100001629,
-
-    /// Hex(1)HexNAc(1)NeuAc(2)Ac(2): Ac(2) Hex HexNAc NeuAc(2).
-    UNIMOD_Hex_1_HexNAc_1_NeuAc_2_Ac_2_ = 100001630,
-
-    /// Hex(2)HexNAc(2)NeuGc(1): Hex(2) HexNAc(2) NeuGc.
-    UNIMOD_Hex_2_HexNAc_2_NeuGc_1_ = 100001631,
-
-    /// Hex(5)Phos(3): Hex(5) Phos(3).
-    UNIMOD_Hex_5_Phos_3_ = 100001632,
-
-    /// Hex(6)Phos(1): Hex(6) Phos.
-    UNIMOD_Hex_6_Phos_1_ = 100001633,
-
-    /// dHex(1)Hex(2)HexA(1)HexNAc(2): DHex Hex(2) HexA HexNAc(2).
-    UNIMOD_dHex_1_Hex_2_HexA_1_HexNAc_2_ = 100001634,
-
-    /// dHex(2)Hex(3)HexNAc(1)Sulf(1): DHex(2) Hex(3) HexNAc Sulf.
-    UNIMOD_dHex_2_Hex_3_HexNAc_1_Sulf_1_ = 100001635,
-
-    /// Hex(1)HexNAc(3)NeuAc(1): Hex HexNAc(3) NeuAc.
-    UNIMOD_Hex_1_HexNAc_3_NeuAc_1_ = 100001636,
-
-    /// dHex(2)Hex(1)HexNAc(3): DHex(2) Hex HexNAc(3).
-    UNIMOD_dHex_2_Hex_1_HexNAc_3_ = 100001637,
-
-    /// Hex(1)HexNAc(3)NeuGc(1): Hex HexNAc(3) NeuGc.
-    UNIMOD_Hex_1_HexNAc_3_NeuGc_1_ = 100001638,
-
-    /// dHex(1)Hex(1)HexNAc(2)NeuAc(1)Sulf(1): DHex Hex HexNAc(2) NeuAc Sulf.
-    UNIMOD_dHex_1_Hex_1_HexNAc_2_NeuAc_1_Sulf_1_ = 100001639,
-
-    /// dHex(1)Hex(3)HexA(1)HexNAc(1)Sulf(1): DHex Hex(3) HexA HexNAc Sulf.
-    UNIMOD_dHex_1_Hex_3_HexA_1_HexNAc_1_Sulf_1_ = 100001640,
-
-    /// dHex(1)Hex(1)HexA(1)HexNAc(3): DHex Hex HexA HexNAc(3).
-    UNIMOD_dHex_1_Hex_1_HexA_1_HexNAc_3_ = 100001641,
-
-    /// Hex(2)HexNAc(2)NeuAc(1)Sulf(1): Hex(2) HexNAc(2) NeuAc Sulf.
-    UNIMOD_Hex_2_HexNAc_2_NeuAc_1_Sulf_1_ = 100001642,
-
-    /// dHex(2)Hex(2)HexNAc(2)Sulf(1): DHex(2) Hex(2) HexNAc(2) Sulf.
-    UNIMOD_dHex_2_Hex_2_HexNAc_2_Sulf_1_ = 100001643,
-
-    /// dHex(2)Hex(1)HexNAc(2)Kdn(1): DHex(2) Hex HexNAc(2) Kdn.
-    UNIMOD_dHex_2_Hex_1_HexNAc_2_Kdn_1_ = 100001644,
-
-    /// dHex(1)Hex(1)HexNAc(4): DHex Hex HexNAc(4).
-    UNIMOD_dHex_1_Hex_1_HexNAc_4_ = 100001645,
-
-    /// Hex(2)HexNAc(4): Hex(2) HexNAc(4).
-    UNIMOD_Hex_2_HexNAc_4_ = 100001646,
-
-    /// Hex(2)HexNAc(1)NeuGc(2): Hex(2) HexNAc NeuGc(2).
-    UNIMOD_Hex_2_HexNAc_1_NeuGc_2_ = 100001647,
-
-    /// dHex(2)Hex(4)HexNAc(1): DHex(2) Hex(4) HexNAc.
-    UNIMOD_dHex_2_Hex_4_HexNAc_1_ = 100001648,
-
-    /// Hex(1)HexNAc(2)NeuAc(2): Hex HexNAc(2) NeuAc(2).
-    UNIMOD_Hex_1_HexNAc_2_NeuAc_2_ = 100001649,
-
-    /// dHex(2)Hex(1)HexNAc(2)NeuAc(1): DHex(2) Hex HexNAc(2) NeuAc.
-    UNIMOD_dHex_2_Hex_1_HexNAc_2_NeuAc_1_ = 100001650,
-
-    /// dHex(1)Hex(2)HexNAc(3)Sulf(1): DHex Hex(2) HexNAc(3) Sulf.
-    UNIMOD_dHex_1_Hex_2_HexNAc_3_Sulf_1_ = 100001651,
-
-    /// dHex(1)HexNAc(5): DHex HexNAc(5).
-    UNIMOD_dHex_1_HexNAc_5_ = 100001652,
-
-    /// dHex(2)Hex(1)HexNAc(2)NeuGc(1): DHex(2) Hex HexNAc(2) NeuGc.
-    UNIMOD_dHex_2_Hex_1_HexNAc_2_NeuGc_1_ = 100001653,
-
-    /// dHex(3)Hex(2)HexNAc(2): DHex(3) Hex(2) HexNAc(2).
-    UNIMOD_dHex_3_Hex_2_HexNAc_2_ = 100001654,
-
-    /// Hex(3)HexNAc(3)Sulf(1): Hex(3) HexNAc(3) Sulf.
-    UNIMOD_Hex_3_HexNAc_3_Sulf_1_ = 100001655,
-
-    /// dHex(2)Hex(2)HexNAc(2)Sulf(2): DHex(2) Hex(2) HexNAc(2) Sulf(2).
-    UNIMOD_dHex_2_Hex_2_HexNAc_2_Sulf_2_ = 100001656,
-
-    /// dHex(1)Hex(2)HexNAc(2)NeuGc(1): DHex Hex(2) HexNAc(2) NeuGc.
-    UNIMOD_dHex_1_Hex_2_HexNAc_2_NeuGc_1_ = 100001657,
-
-    /// dHex(1)Hex(1)HexNAc(3)NeuAc(1): DHex Hex HexNAc(3) NeuAc.
-    UNIMOD_dHex_1_Hex_1_HexNAc_3_NeuAc_1_ = 100001658,
-
-    /// Hex(6)Phos(3): Hex(6) Phos(3).
-    UNIMOD_Hex_6_Phos_3_ = 100001659,
-
-    /// dHex(1)Hex(3)HexA(1)HexNAc(2): DHex Hex(3) HexA HexNAc(2).
-    UNIMOD_dHex_1_Hex_3_HexA_1_HexNAc_2_ = 100001660,
-
-    /// dHex(1)Hex(1)HexNAc(3)NeuGc(1): DHex Hex HexNAc(3) NeuGc.
-    UNIMOD_dHex_1_Hex_1_HexNAc_3_NeuGc_1_ = 100001661,
-
-    /// Hex(1)HexNAc(2)NeuAc(2)Sulf(1): Hex HexNAc(2) NeuAc(2) Sulf.
-    UNIMOD_Hex_1_HexNAc_2_NeuAc_2_Sulf_1_ = 100001662,
-
-    /// dHex(2)Hex(3)HexA(1)HexNAc(1)Sulf(1): DHex(2) Hex(3) HexA HexNAc Sulf.
-    UNIMOD_dHex_2_Hex_3_HexA_1_HexNAc_1_Sulf_1_ = 100001663,
-
-    /// Hex(1)HexNAc(1)NeuAc(3): Hex HexNAc NeuAc(3).
-    UNIMOD_Hex_1_HexNAc_1_NeuAc_3_ = 100001664,
-
-    /// Hex(2)HexNAc(3)NeuGc(1): Hex(2) HexNAc(3) NeuGc.
-    UNIMOD_Hex_2_HexNAc_3_NeuGc_1_ = 100001665,
-
-    /// dHex(1)Hex(2)HexNAc(2)NeuAc(1)Sulf(1): DHex Hex(2) HexNAc(2) NeuAc Sulf.
-    UNIMOD_dHex_1_Hex_2_HexNAc_2_NeuAc_1_Sulf_1_ = 100001666,
-
-    /// dHex(3)Hex(1)HexNAc(2)Kdn(1): DHex(3) Hex HexNAc(2) Kdn.
-    UNIMOD_dHex_3_Hex_1_HexNAc_2_Kdn_1_ = 100001667,
-
-    /// dHex(2)Hex(3)HexNAc(2)Sulf(1): DHex(2) Hex(3) HexNAc(2) Sulf.
-    UNIMOD_dHex_2_Hex_3_HexNAc_2_Sulf_1_ = 100001668,
-
-    /// dHex(2)Hex(2)HexNAc(2)Kdn(1): DHex(2) Hex(2) HexNAc(2) Kdn.
-    UNIMOD_dHex_2_Hex_2_HexNAc_2_Kdn_1_ = 100001669,
-
-    /// dHex(2)Hex(2)HexA(1)HexNAc(2)Sulf(1): DHex(2) Hex(2) HexA HexNAc(2) Sulf.
-    UNIMOD_dHex_2_Hex_2_HexA_1_HexNAc_2_Sulf_1_ = 100001670,
-
-    /// dHex(1)Hex(2)HexNAc(4): DHex Hex(2) HexNAc(4).
-    UNIMOD_dHex_1_Hex_2_HexNAc_4_ = 100001671,
-
-    /// Hex(1)HexNAc(1)NeuGc(3): Hex HexNAc NeuGc(3).
-    UNIMOD_Hex_1_HexNAc_1_NeuGc_3_ = 100001672,
-
-    /// dHex(1)Hex(1)HexNAc(3)NeuAc(1)Sulf(1): DHex Hex HexNAc(3) NeuAc Sulf.
-    UNIMOD_dHex_1_Hex_1_HexNAc_3_NeuAc_1_Sulf_1_ = 100001673,
-
-    /// dHex(1)Hex(3)HexA(1)HexNAc(2)Sulf(1): DHex Hex(3) HexA HexNAc(2) Sulf.
-    UNIMOD_dHex_1_Hex_3_HexA_1_HexNAc_2_Sulf_1_ = 100001674,
-
-    /// dHex(1)Hex(1)HexNAc(2)NeuAc(2): DHex Hex HexNAc(2) NeuAc(2).
-    UNIMOD_dHex_1_Hex_1_HexNAc_2_NeuAc_2_ = 100001675,
-
-    /// dHex(3)HexNAc(3)Kdn(1): DHex(3) HexNAc(3) Kdn.
-    UNIMOD_dHex_3_HexNAc_3_Kdn_1_ = 100001676,
-
-    /// Hex(2)HexNAc(3)NeuAc(1)Sulf(1): Hex(2) HexNAc(3) NeuAc Sulf.
-    UNIMOD_Hex_2_HexNAc_3_NeuAc_1_Sulf_1_ = 100001678,
-
-    /// dHex(2)Hex(2)HexNAc(3)Sulf(1): DHex(2) Hex(2) HexNAc(3) Sulf.
-    UNIMOD_dHex_2_Hex_2_HexNAc_3_Sulf_1_ = 100001679,
-
-    /// dHex(2)HexNAc(5): DHex(2) HexNAc(5).
-    UNIMOD_dHex_2_HexNAc_5_ = 100001680,
-
-    /// Hex(2)HexNAc(2)NeuAc(2): Hex(2) HexNAc(2) NeuAc(2).
-    UNIMOD_Hex_2_HexNAc_2_NeuAc_2_ = 100001681,
-
-    /// dHex(2)Hex(2)HexNAc(2)NeuAc(1): DHex(2) Hex(2) HexNAc(2) NeuAc.
-    UNIMOD_dHex_2_Hex_2_HexNAc_2_NeuAc_1_ = 100001682,
-
-    /// dHex(1)Hex(3)HexNAc(3)Sulf(1): DHex Hex(3) HexNAc(3) Sulf.
-    UNIMOD_dHex_1_Hex_3_HexNAc_3_Sulf_1_ = 100001683,
-
-    /// dHex(2)Hex(2)HexNAc(2)NeuGc(1): DHex(2) Hex(2) HexNAc(2) NeuGc.
-    UNIMOD_dHex_2_Hex_2_HexNAc_2_NeuGc_1_ = 100001684,
-
-    /// Hex(2)HexNAc(5): Hex(2) HexNAc(5).
-    UNIMOD_Hex_2_HexNAc_5_ = 100001685,
-
-    /// dHex(1)Hex(3)HexNAc(2)NeuGc(1): DHex Hex(3) HexNAc(2) NeuGc.
-    UNIMOD_dHex_1_Hex_3_HexNAc_2_NeuGc_1_ = 100001686,
-
-    /// Hex(1)HexNAc(3)NeuAc(2): Hex HexNAc(3) NeuAc(2).
-    UNIMOD_Hex_1_HexNAc_3_NeuAc_2_ = 100001687,
-
-    /// dHex(1)Hex(2)HexNAc(3)NeuAc(1): DHex Hex(2) HexNAc(3) NeuAc.
-    UNIMOD_dHex_1_Hex_2_HexNAc_3_NeuAc_1_ = 100001688,
-
-    /// dHex(3)Hex(2)HexNAc(3): DHex(3) Hex(2) HexNAc(3).
-    UNIMOD_dHex_3_Hex_2_HexNAc_3_ = 100001689,
-
-    /// Hex(7)Phos(3): Hex(7) Phos(3).
-    UNIMOD_Hex_7_Phos_3_ = 100001690,
-
-    /// dHex(1)Hex(4)HexA(1)HexNAc(2): DHex Hex(4) HexA HexNAc(2).
-    UNIMOD_dHex_1_Hex_4_HexA_1_HexNAc_2_ = 100001691,
-
-    /// Hex(3)HexNAc(3)NeuAc(1): Hex(3) HexNAc(3) NeuAc.
-    UNIMOD_Hex_3_HexNAc_3_NeuAc_1_ = 100001692,
-
-    /// dHex(1)Hex(3)HexA(2)HexNAc(2): DHex Hex(3) HexA(2) HexNAc(2).
-    UNIMOD_dHex_1_Hex_3_HexA_2_HexNAc_2_ = 100001693,
-
-    /// Hex(2)HexNAc(2)NeuAc(2)Sulf(1): Hex(2) HexNAc(2) NeuAc(2) Sulf.
-    UNIMOD_Hex_2_HexNAc_2_NeuAc_2_Sulf_1_ = 100001694,
-
-    /// dHex(2)Hex(2)HexNAc(2)NeuAc(1)Sulf(1): DHex(2) Hex(2) HexNAc(2) NeuAc Sulf.
-    UNIMOD_dHex_2_Hex_2_HexNAc_2_NeuAc_1_Sulf_1_ = 100001695,
-
-    /// Hex(3)HexNAc(3)NeuGc(1): Hex(3) HexNAc(3) NeuGc.
-    UNIMOD_Hex_3_HexNAc_3_NeuGc_1_ = 100001696,
-
-    /// dHex(4)Hex(1)HexNAc(2)Kdn(1): DHex(4) Hex HexNAc(2) Kdn.
-    UNIMOD_dHex_4_Hex_1_HexNAc_2_Kdn_1_ = 100001697,
-
-    /// dHex(3)Hex(2)HexNAc(2)Kdn(1): DHex(3) Hex(2) HexNAc(2) Kdn.
-    UNIMOD_dHex_3_Hex_2_HexNAc_2_Kdn_1_ = 100001698,
-
-    /// dHex(3)Hex(2)HexA(1)HexNAc(2)Sulf(1): DHex(3) Hex(2) HexA HexNAc(2) Sulf.
-    UNIMOD_dHex_3_Hex_2_HexA_1_HexNAc_2_Sulf_1_ = 100001699,
-
-    /// Hex(2)HexNAc(4)NeuAc(1): Hex(2) HexNAc(4) NeuAc.
-    UNIMOD_Hex_2_HexNAc_4_NeuAc_1_ = 100001700,
-
-    /// dHex(2)Hex(2)HexNAc(4): DHex(2) Hex(2) HexNAc(4).
-    UNIMOD_dHex_2_Hex_2_HexNAc_4_ = 100001701,
-
-    /// dHex(2)Hex(3)HexA(1)HexNAc(2)Sulf(1): DHex(2) Hex(3) HexA HexNAc(2) Sulf.
-    UNIMOD_dHex_2_Hex_3_HexA_1_HexNAc_2_Sulf_1_ = 100001702,
-
-    /// dHex(4)HexNAc(3)Kdn(1): DHex(4) HexNAc(3) Kdn.
-    UNIMOD_dHex_4_HexNAc_3_Kdn_1_ = 100001703,
-
-    /// Hex(2)HexNAc(1)NeuGc(3): Hex(2) HexNAc NeuGc(3).
-    UNIMOD_Hex_2_HexNAc_1_NeuGc_3_ = 100001705,
-
-    /// dHex(4)Hex(1)HexNAc(1)Kdn(2): DHex(4) Hex HexNAc Kdn(2).
-    UNIMOD_dHex_4_Hex_1_HexNAc_1_Kdn_2_ = 100001706,
-
-    /// dHex(1)Hex(2)HexNAc(3)NeuAc(1)Sulf(1): DHex Hex(2) HexNAc(3) NeuAc Sulf.
-    UNIMOD_dHex_1_Hex_2_HexNAc_3_NeuAc_1_Sulf_1_ = 100001707,
-
-    /// dHex(1)Hex(2)HexNAc(2)NeuAc(2): DHex Hex(2) HexNAc(2) NeuAc(2).
-    UNIMOD_dHex_1_Hex_2_HexNAc_2_NeuAc_2_ = 100001708,
-
-    /// dHex(3)Hex(1)HexNAc(3)Kdn(1): DHex(3) Hex HexNAc(3) Kdn.
-    UNIMOD_dHex_3_Hex_1_HexNAc_3_Kdn_1_ = 100001709,
-
-    /// Hex(3)HexNAc(3)NeuAc(1)Sulf(1): Hex(3) HexNAc(3) NeuAc Sulf.
-    UNIMOD_Hex_3_HexNAc_3_NeuAc_1_Sulf_1_ = 100001711,
-
-    /// Hex(3)HexNAc(2)NeuAc(2): Hex(3) HexNAc(2) NeuAc(2).
-    UNIMOD_Hex_3_HexNAc_2_NeuAc_2_ = 100001712,
-
-    /// Hex(3)HexNAc(3)NeuGc(1)Sulf(1): Hex(3) HexNAc(3) NeuGc Sulf.
-    UNIMOD_Hex_3_HexNAc_3_NeuGc_1_Sulf_1_ = 100001713,
-
-    /// dHex(1)Hex(2)HexNAc(2)NeuGc(2): DHex Hex(2) HexNAc(2) NeuGc(2).
-    UNIMOD_dHex_1_Hex_2_HexNAc_2_NeuGc_2_ = 100001714,
-
-    /// dHex(2)Hex(3)HexNAc(2)NeuGc(1): DHex(2) Hex(3) HexNAc(2) NeuGc.
-    UNIMOD_dHex_2_Hex_3_HexNAc_2_NeuGc_1_ = 100001715,
-
-    /// dHex(1)Hex(3)HexA(1)HexNAc(3)Sulf(1): DHex Hex(3) HexA HexNAc(3) Sulf.
-    UNIMOD_dHex_1_Hex_3_HexA_1_HexNAc_3_Sulf_1_ = 100001716,
-
-    /// Hex(2)HexNAc(3)NeuAc(2): Hex(2) HexNAc(3) NeuAc(2).
-    UNIMOD_Hex_2_HexNAc_3_NeuAc_2_ = 100001717,
-
-    /// dHex(2)Hex(2)HexNAc(3)NeuAc(1): DHex(2) Hex(2) HexNAc(3) NeuAc.
-    UNIMOD_dHex_2_Hex_2_HexNAc_3_NeuAc_1_ = 100001718,
-
-    /// dHex(4)Hex(2)HexNAc(3): DHex(4) Hex(2) HexNAc(3).
-    UNIMOD_dHex_4_Hex_2_HexNAc_3_ = 100001719,
-
-    /// Hex(2)HexNAc(3)NeuAc(1)NeuGc(1): Hex(2) HexNAc(3) NeuAc NeuGc.
-    UNIMOD_Hex_2_HexNAc_3_NeuAc_1_NeuGc_1_ = 100001720,
-
-    /// dHex(2)Hex(2)HexNAc(3)NeuGc(1): DHex(2) Hex(2) HexNAc(3) NeuGc.
-    UNIMOD_dHex_2_Hex_2_HexNAc_3_NeuGc_1_ = 100001721,
-
-    /// dHex(3)Hex(3)HexNAc(3): DHex(3) Hex(3) HexNAc(3).
-    UNIMOD_dHex_3_Hex_3_HexNAc_3_ = 100001722,
-
-    /// Hex(8)Phos(3): Hex(8) Phos(3).
-    UNIMOD_Hex_8_Phos_3_ = 100001723,
-
-    /// dHex(1)Hex(2)HexNAc(2)NeuAc(2)Sulf(1): DHex Hex(2) HexNAc(2) NeuAc(2) Sulf.
-    UNIMOD_dHex_1_Hex_2_HexNAc_2_NeuAc_2_Sulf_1_ = 100001724,
-
-    /// Hex(2)HexNAc(3)NeuGc(2): Hex(2) HexNAc(3) NeuGc(2).
-    UNIMOD_Hex_2_HexNAc_3_NeuGc_2_ = 100001725,
-
-    /// dHex(4)Hex(2)HexNAc(2)Kdn(1): DHex(4) Hex(2) HexNAc(2) Kdn.
-    UNIMOD_dHex_4_Hex_2_HexNAc_2_Kdn_1_ = 100001726,
-
-    /// dHex(1)Hex(2)HexNAc(4)NeuAc(1): DHex Hex(2) HexNAc(4) NeuAc.
-    UNIMOD_dHex_1_Hex_2_HexNAc_4_NeuAc_1_ = 100001727,
-
-    /// dHex(3)Hex(2)HexNAc(4): DHex(3) Hex(2) HexNAc(4).
-    UNIMOD_dHex_3_Hex_2_HexNAc_4_ = 100001728,
-
-    /// Hex(1)HexNAc(1)NeuGc(4): Hex HexNAc NeuGc(4).
-    UNIMOD_Hex_1_HexNAc_1_NeuGc_4_ = 100001729,
-
-    /// dHex(4)Hex(1)HexNAc(3)Kdn(1): DHex(4) Hex HexNAc(3) Kdn.
-    UNIMOD_dHex_4_Hex_1_HexNAc_3_Kdn_1_ = 100001730,
-
-    /// Hex(4)HexNAc(4)Sulf(2): Hex(4) HexNAc(4) Sulf(2).
-    UNIMOD_Hex_4_HexNAc_4_Sulf_2_ = 100001732,
-
-    /// dHex(3)Hex(2)HexNAc(3)Kdn(1): DHex(3) Hex(2) HexNAc(3) Kdn.
-    UNIMOD_dHex_3_Hex_2_HexNAc_3_Kdn_1_ = 100001733,
-
-    /// dHex(2)Hex(2)HexNAc(5): DHex(2) Hex(2) HexNAc(5).
-    UNIMOD_dHex_2_Hex_2_HexNAc_5_ = 100001735,
-
-    /// dHex(2)Hex(3)HexA(1)HexNAc(3)Sulf(1): DHex(2) Hex(3) HexA HexNAc(3) Sulf.
-    UNIMOD_dHex_2_Hex_3_HexA_1_HexNAc_3_Sulf_1_ = 100001736,
-
-    /// dHex(1)Hex(4)HexA(1)HexNAc(3)Sulf(1): DHex Hex(4) HexA HexNAc(3) Sulf.
-    UNIMOD_dHex_1_Hex_4_HexA_1_HexNAc_3_Sulf_1_ = 100001737,
-
-    /// Hex(3)HexNAc(3)NeuAc(2): Hex(3) HexNAc(3) NeuAc(2).
-    UNIMOD_Hex_3_HexNAc_3_NeuAc_2_ = 100001738,
-
-    /// dHex(2)Hex(3)HexNAc(3)NeuAc(1): DHex(2) Hex(3) HexNAc(3) NeuAc.
-    UNIMOD_dHex_2_Hex_3_HexNAc_3_NeuAc_1_ = 100001739,
-
-    /// dHex(4)Hex(3)HexNAc(3): DHex(4) Hex(3) HexNAc(3).
-    UNIMOD_dHex_4_Hex_3_HexNAc_3_ = 100001740,
-
-    /// dHex(2)Hex(3)HexNAc(3)NeuGc(1): DHex(2) Hex(3) HexNAc(3) NeuGc.
-    UNIMOD_dHex_2_Hex_3_HexNAc_3_NeuGc_1_ = 100001741,
-
-    /// Hex(9)Phos(3): Hex(9) Phos(3).
-    UNIMOD_Hex_9_Phos_3_ = 100001742,
-
-    /// dHex(2)HexNAc(7): DHex(2) HexNAc(7).
-    UNIMOD_dHex_2_HexNAc_7_ = 100001743,
-
-    /// Hex(2)HexNAc(1)NeuGc(4): Hex(2) HexNAc NeuGc(4).
-    UNIMOD_Hex_2_HexNAc_1_NeuGc_4_ = 100001744,
-
-    /// Hex(3)HexNAc(3)NeuAc(2)Sulf(1): Hex(3) HexNAc(3) NeuAc(2) Sulf.
-    UNIMOD_Hex_3_HexNAc_3_NeuAc_2_Sulf_1_ = 100001745,
-
-    /// dHex(2)Hex(3)HexNAc(5): DHex(2) Hex(3) HexNAc(5).
-    UNIMOD_dHex_2_Hex_3_HexNAc_5_ = 100001746,
-
-    /// dHex(1)Hex(2)HexNAc(2)NeuGc(3): DHex Hex(2) HexNAc(2) NeuGc(3).
-    UNIMOD_dHex_1_Hex_2_HexNAc_2_NeuGc_3_ = 100001747,
-
-    /// dHex(2)Hex(4)HexA(1)HexNAc(3)Sulf(1): DHex(2) Hex(4) HexA HexNAc(3) Sulf.
-    UNIMOD_dHex_2_Hex_4_HexA_1_HexNAc_3_Sulf_1_ = 100001748,
-
-    /// Hex(2)HexNAc(3)NeuAc(3): Hex(2) HexNAc(3) NeuAc(3).
-    UNIMOD_Hex_2_HexNAc_3_NeuAc_3_ = 100001749,
-
-    /// dHex(1)Hex(3)HexNAc(3)NeuAc(2): DHex Hex(3) HexNAc(3) NeuAc(2).
-    UNIMOD_dHex_1_Hex_3_HexNAc_3_NeuAc_2_ = 100001750,
-
-    /// dHex(3)Hex(3)HexNAc(3)NeuAc(1): DHex(3) Hex(3) HexNAc(3) NeuAc.
-    UNIMOD_dHex_3_Hex_3_HexNAc_3_NeuAc_1_ = 100001751,
-
-    /// Hex(2)HexNAc(3)NeuGc(3): Hex(2) HexNAc(3) NeuGc(3).
-    UNIMOD_Hex_2_HexNAc_3_NeuGc_3_ = 100001752,
-
-    /// Hex(10)Phos(3): Hex(10) Phos(3).
-    UNIMOD_Hex_10_Phos_3_ = 100001753,
-
-    /// dHex(1)Hex(2)HexNAc(4)NeuAc(2): DHex Hex(2) HexNAc(4) NeuAc(2).
-    UNIMOD_dHex_1_Hex_2_HexNAc_4_NeuAc_2_ = 100001754,
-
-    /// Hex(1)HexNAc(1)NeuGc(5): Hex HexNAc NeuGc(5).
-    UNIMOD_Hex_1_HexNAc_1_NeuGc_5_ = 100001755,
-
-    /// Hex(4)HexNAc(4)NeuAc(1)Sulf(2): Hex(4) HexNAc(4) NeuAc Sulf(2).
-    UNIMOD_Hex_4_HexNAc_4_NeuAc_1_Sulf_2_ = 100001756,
-
-    /// Hex(4)HexNAc(4)NeuGc(1)Sulf(2): Hex(4) HexNAc(4) NeuGc Sulf(2).
-    UNIMOD_Hex_4_HexNAc_4_NeuGc_1_Sulf_2_ = 100001757,
-
-    /// dHex(2)Hex(3)HexNAc(3)NeuAc(2): DHex(2) Hex(3) HexNAc(3) NeuAc(2).
-    UNIMOD_dHex_2_Hex_3_HexNAc_3_NeuAc_2_ = 100001758,
-
-    /// Hex(4)HexNAc(4)NeuAc(1)Sulf(3): Hex(4) HexNAc(4) NeuAc Sulf(3).
-    UNIMOD_Hex_4_HexNAc_4_NeuAc_1_Sulf_3_ = 100001759,
-
-    /// dHex(2)Hex(2)HexNAc(2): DHex(2) Hex(2) HexNAc(2).
-    UNIMOD_dHex_2_Hex_2_HexNAc_2_ = 100001760,
-
-    /// dHex(1)Hex(3)HexNAc(2): DHex Hex(3) HexNAc(2).
-    UNIMOD_dHex_1_Hex_3_HexNAc_2_ = 100001761,
-
-    /// dHex(1)Hex(2)HexNAc(3): DHex Hex(2) HexNAc(3).
-    UNIMOD_dHex_1_Hex_2_HexNAc_3_ = 100001762,
-
-    /// Hex(3)HexNAc(3): Hex(3) HexNAc(3).
-    UNIMOD_Hex_3_HexNAc_3_ = 100001763,
-
-    /// dHex(1)Hex(3)HexNAc(2)Sulf(1): DHex Hex(3) HexNAc(2) Sulf.
-    UNIMOD_dHex_1_Hex_3_HexNAc_2_Sulf_1_ = 100001764,
-
-    /// dHex(2)Hex(3)HexNAc(2): DHex(2) Hex(3) HexNAc(2).
-    UNIMOD_dHex_2_Hex_3_HexNAc_2_ = 100001765,
-
-    /// dHex(1)Hex(4)HexNAc(2): DHex Hex(4) HexNAc(2).
-    UNIMOD_dHex_1_Hex_4_HexNAc_2_ = 100001766,
-
-    /// dHex(2)Hex(2)HexNAc(3): DHex(2) Hex(2) HexNAc(3).
-    UNIMOD_dHex_2_Hex_2_HexNAc_3_ = 100001767,
-
-    /// dHex(1)Hex(3)HexNAc(3): DHex Hex(3) HexNAc(3).
-    UNIMOD_dHex_1_Hex_3_HexNAc_3_ = 100001768,
-
-    /// Hex(4)HexNAc(3): Hex(4) HexNAc(3).
-    UNIMOD_Hex_4_HexNAc_3_ = 100001769,
-
-    /// dHex(2)Hex(4)HexNAc(2): DHex(2) Hex(4) HexNAc(2).
-    UNIMOD_dHex_2_Hex_4_HexNAc_2_ = 100001770,
-
-    /// dHex(2)Hex(3)HexNAc(3): DHex(2) Hex(3) HexNAc(3).
-    UNIMOD_dHex_2_Hex_3_HexNAc_3_ = 100001771,
-
-    /// Hex(3)HexNAc(5): Hex(3) HexNAc(5).
-    UNIMOD_Hex_3_HexNAc_5_ = 100001772,
-
-    /// Hex(4)HexNAc(3)NeuAc(1): Hex(4) HexNAc(3) NeuAc.
-    UNIMOD_Hex_4_HexNAc_3_NeuAc_1_ = 100001773,
-
-    /// dHex(2)Hex(3)HexNAc(4): DHex(2) Hex(3) HexNAc(4).
-    UNIMOD_dHex_2_Hex_3_HexNAc_4_ = 100001774,
-
-    /// dHex(1)Hex(3)HexNAc(5): DHex Hex(3) HexNAc(5).
-    UNIMOD_dHex_1_Hex_3_HexNAc_5_ = 100001775,
-
-    /// Hex(3)HexNAc(6): Hex(3) HexNAc(6).
-    UNIMOD_Hex_3_HexNAc_6_ = 100001776,
-
-    /// Hex(4)HexNAc(4)NeuAc(1): Hex(4) HexNAc(4) NeuAc.
-    UNIMOD_Hex_4_HexNAc_4_NeuAc_1_ = 100001777,
-
-    /// dHex(2)Hex(4)HexNAc(4): DHex(2) Hex(4) HexNAc(4).
-    UNIMOD_dHex_2_Hex_4_HexNAc_4_ = 100001778,
-
-    /// Hex(6)HexNAc(4): Hex(6) HexNAc(4).
-    UNIMOD_Hex_6_HexNAc_4_ = 100001779,
-
-    /// Hex(5)HexNAc(5): Hex(5) HexNAc(5).
-    UNIMOD_Hex_5_HexNAc_5_ = 100001780,
-
-    /// dHex(1)Hex(3)HexNAc(6): DHex Hex(3) HexNAc(6).
-    UNIMOD_dHex_1_Hex_3_HexNAc_6_ = 100001781,
-
-    /// dHex(1)Hex(4)HexNAc(4)NeuAc(1): DHex Hex(4) HexNAc(4) NeuAc.
-    UNIMOD_dHex_1_Hex_4_HexNAc_4_NeuAc_1_ = 100001782,
-
-    /// dHex(3)Hex(4)HexNAc(4): DHex(3) Hex(4) HexNAc(4).
-    UNIMOD_dHex_3_Hex_4_HexNAc_4_ = 100001783,
-
-    /// dHex(1)Hex(3)HexNAc(5)NeuAc(1): DHex Hex(3) HexNAc(5) NeuAc.
-    UNIMOD_dHex_1_Hex_3_HexNAc_5_NeuAc_1_ = 100001784,
-
-    /// dHex(2)Hex(4)HexNAc(5): DHex(2) Hex(4) HexNAc(5).
-    UNIMOD_dHex_2_Hex_4_HexNAc_5_ = 100001785,
-
-    /// Hex(1)HexNAc(1)NeuAc(1)Ac(1): Ac Hex HexNAc NeuAc.
-    UNIMOD_Hex_1_HexNAc_1_NeuAc_1_Ac_1_ = 100001786,
 
     /// unit: A unit of measurement is a standardized quantity of a physical quality.
     UO_unit = 200000000,

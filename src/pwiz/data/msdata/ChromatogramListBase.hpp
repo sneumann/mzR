@@ -1,5 +1,5 @@
 //
-// $Id: ChromatogramListBase.hpp 9490 2016-03-22 22:20:36Z pcbrefugee $
+// $Id: ChromatogramListBase.hpp 1189 2009-08-14 17:36:06Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -43,11 +43,6 @@ class PWIZ_API_DECL ChromatogramListBase : public ChromatogramList
 
     /// set DataProcessing
     virtual void setDataProcessingPtr(DataProcessingPtr dp) {dp_ = dp;}
-
-    const char* polarityStringForFilter(CVID polarityType) const
-    {
-        return (polarityType == MS_negative_scan) ? "- " : ""; // For backward compatibility, let assumptions about postive ion mode remain
-    }
 
     protected:
 

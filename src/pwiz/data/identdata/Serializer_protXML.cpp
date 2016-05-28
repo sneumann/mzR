@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_protXML.cpp 6705 2014-09-19 16:27:34Z chambm $
+// $Id: Serializer_protXML.cpp 4922 2013-09-05 22:33:08Z pcbrefugee $
 //
 //
 // Original author: Brian Pratt <brian.pratt .@. insilicos.com>
@@ -149,7 +149,7 @@ struct Handler_protXML : public SAXParser::Handler
             {
                 // no match with anything previously loaded
                 SearchDatabasePtr sdb(new SearchDatabase());
-                sdb->id = "DB_" + lexical_cast<string>(mzid.dataCollection.inputs.searchDatabase.size()+1);
+                sdb->id = reference_database;
                 sdb->name = reference_database;
                 sdb->version = "unknown";
                 sdb->releaseDate = "unknown";

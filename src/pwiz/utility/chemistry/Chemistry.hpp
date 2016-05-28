@@ -1,5 +1,5 @@
 //
-// $Id: Chemistry.hpp 6865 2014-10-31 21:47:12Z chambm $ 
+// $Id: Chemistry.hpp 2778 2011-06-14 16:08:39Z chambm $ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -24,6 +24,9 @@
 #ifndef _CHEMISTRY_HPP_
 #define _CHEMISTRY_HPP_
 
+#ifndef PRE_BUILD
+#include "Rcpp.h"
+#endif
 
 #include "pwiz/utility/misc/Export.hpp"
 #include <iosfwd>
@@ -77,7 +80,7 @@ namespace Element {
 /// enumeration of the elements
 enum PWIZ_API_DECL Type
 {
-    C, H, O, N, S, P, _13C, _2H, _18O, _15N,
+    C, H, O, N, S, P,
     He, Li, Be, B, F, Ne, 
     Na, Mg, Al, Si, Cl, Ar, K, Ca, 
     Sc, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Zn, 

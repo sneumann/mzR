@@ -1,5 +1,5 @@
 //
-// $Id: IdentDataTest.cpp 6865 2014-10-31 21:47:12Z chambm $
+// $Id: IdentDataTest.cpp 4334 2013-02-11 20:09:33Z chambm $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -374,9 +374,9 @@ void testConversion()
     unit_assert_operator_equal("ELVISLIVESK", tmtProteomePeptide.sequence());
     unit_assert_operator_equal(2, tmtProteomePeptide.modifications().size());
     unit_assert_operator_equal(1, tmtProteomePeptide.modifications().count(ModificationMap::NTerminus()));
-    unit_assert_equal(229.1629, tmtProteomePeptide.modifications().find(ModificationMap::NTerminus())->second.monoisotopicDeltaMass(), 1e-4);
+    unit_assert_operator_equal(229.1629, tmtProteomePeptide.modifications().find(ModificationMap::NTerminus())->second.monoisotopicDeltaMass());
     unit_assert_operator_equal(1, tmtProteomePeptide.modifications().count(10));
-    unit_assert_equal(229.1629, tmtProteomePeptide.modifications().find(10)->second.monoisotopicDeltaMass(), 1e-4);
+    unit_assert_operator_equal(229.1629, tmtProteomePeptide.modifications().find(10)->second.monoisotopicDeltaMass());
 }
 
 void testCleavageAgent()

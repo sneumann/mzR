@@ -1,5 +1,5 @@
 //
-// $Id: ChromatogramList_mz5.cpp 7032 2014-12-31 22:46:22Z pcbrefugee $
+// $Id: ChromatogramList_mz5.cpp 3484 2012-04-04 19:55:33Z mwilhelm42 $
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -198,16 +198,10 @@ void ChromatogramList_mz5Impl::initialize() const
             index.resize(dsend);
             conn_->readDataSet(Configuration_mz5::ChromatogramIndex, dsend,
                     &index[0]);
-            hsize_t last = 0, current = 0;
-            hsize_t overflow_correction = 0; // mz5 writes these as 32 bit values, so deal with overflow
+            size_t last = 0, current = 0;
             for (size_t i = 0; i < index.size(); ++i)
             {
-                current = static_cast<hsize_t> (index[i]) + overflow_correction;
-                if (last > current)
-                {
-                    overflow_correction += 0x0100000000; // This assumes no chromatogram has more than 4GB of data
-                    current = static_cast<hsize_t> (index[i]) + overflow_correction;
-                }
+                current = static_cast<size_t> (index[i]);
                 chromatogramRanges_.insert(make_pair(i, make_pair(last, current)));
                 last = current;
             }

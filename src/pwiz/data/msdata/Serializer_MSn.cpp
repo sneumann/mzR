@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_MSn.cpp 8888 2015-09-24 20:16:23Z kaipot $
+// $Id: Serializer_MSn.cpp 5245 2013-12-09 22:53:47Z kaipot $
 //
 //
 // Original author: Barbara Frewen <ferwen@u.washington.edu>
@@ -30,7 +30,6 @@
 #include "pwiz/utility/chemistry/Chemistry.hpp"
 #include "zlib.h"
 #include <time.h>
-#include "SpectrumWorkerThreads.hpp"
 
 
 namespace pwiz {
@@ -101,14 +100,14 @@ namespace
     // if no accurate mass, compute it from mz and charge
     double calculateMass(double mz, int charge)
     {
-        return (mz * charge) - ((charge - 1) * Proton);
+        return (mz * charge) - (charge * Proton);
     }
 
     size_t getChargeStates(const SelectedIon& si, vector<int>& charges, vector<double>& masses)
     {
         int startingChargesCount = charges.size();
         CVParam chargeParam = si.cvParam(MS_charge_state);
-        CVParam massParam = si.cvParam(MS_accurate_mass_OBSOLETE);
+        CVParam massParam = si.cvParam(MS_accurate_mass);
         double mz = si.cvParam(MS_selected_ion_m_z).valueAs<double>();
         if (!chargeParam.empty())
         {
@@ -213,7 +212,7 @@ namespace
             }
 
             // Write EZ lines if accurate masses are available
-            CVParam massParam = si.cvParam(MS_accurate_mass_OBSOLETE);
+            CVParam massParam = si.cvParam(MS_accurate_mass);
             if( !massParam.empty() ){
               for(int i=0; i < numChargeStates; i++){
                 os << "I\tEZ\t" << charges[i] << "\t" << masses[i] << "\t0\t0" << endl; // pad last two fields with 0
@@ -362,7 +361,7 @@ namespace
         if (version == 3)
         {
           int numEzStates = 0;
-          CVParam massParam = si.cvParam(MS_accurate_mass_OBSOLETE);
+          CVParam massParam = si.cvParam(MS_accurate_mass);
           if (!massParam.empty())
           {
             numEzStates = numChargeStates;
@@ -438,11 +437,9 @@ void Serializer_MSn::Impl::write(ostream& os, const MSData& msd,
     // Go through the spectrum list and write each spectrum
     bool ms1File = MSn_Type_MS1 == _filetype || MSn_Type_BMS1 == _filetype || MSn_Type_CMS1 == _filetype;
     SpectrumList& sl = *msd.run.spectrumListPtr;
-    SpectrumWorkerThreads spectrumWorkers(sl);
     for (size_t i=0, end=sl.size(); i < end; ++i)
     {
-        //SpectrumPtr s = sl.spectrum(i, true);
-        SpectrumPtr s = spectrumWorkers.processBatch(i);
+        SpectrumPtr s = sl.spectrum(i, true);
         int msLevel = s->cvParam(MS_ms_level).valueAs<int>();
         if ((ms1File && msLevel == 1) ||
             (!ms1File && msLevel == 2 && !s->precursors.empty() && !s->precursors[0].selectedIons.empty()))

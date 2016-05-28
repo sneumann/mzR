@@ -1,3 +1,20 @@
+CHANGES IN VERSION 2.7.1
+------------------------
+ o revert added compiler switch, and fixed boost code instead to get rid of warnings
+
+CHANGES IN VERSION 2.5.8
+------------------------
+ o fix compiler Warning with clang on MacOS
+
+CHANGES IN VERSION 2.5.7
+------------------------
+ o fix compilation with clang on MacOS
+
+CHANGES IN VERSION 2.5.6
+------------------------
+ o fix compilation on new windows toolchain, 
+   thanks to Kasper Daniel Hansen and Dan Tenenbaum 
+
 CHANGES IN VERSION 2.5.3
 ------------------------
  o new pwiz.version() function returning the pwiz backend version (KK)

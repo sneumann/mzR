@@ -1,5 +1,5 @@
 //
-// $Id: DefaultReaderList.cpp 7095 2015-01-16 22:39:29Z pcbrefugee $
+// $Id: DefaultReaderList.cpp 3703 2012-06-15 18:23:36Z pcbrefugee $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -28,14 +28,12 @@
 #include "pwiz/utility/minimxml/SAXParser.hpp"
 #include "DefaultReaderList.hpp"
 #include "Serializer_mzid.hpp"
-//#include "Serializer_idpDB.hpp"
 #include "Serializer_pepXML.hpp"
 #include "Serializer_protXML.hpp"
-#ifndef NO_MASCOT_READER
-#include "MascotReader.hpp"
-#endif
+//#include "MascotReader.hpp"
 //#include "References.hpp"
-#include "pwiz/data/msdata/Version.hpp"
+#include "pwiz/data/identdata/Version.hpp"
+#include "boost/regex.hpp"
 
 
 using namespace pwiz::util;
@@ -50,7 +48,7 @@ namespace {
 
 AnalysisSoftwarePtr getPwizSoftware(IdentData& mzid)
 {
-    string version = pwiz::msdata::Version::str();
+    string version = pwiz::identdata::Version::str();
 
     AnalysisSoftwarePtr result;
 
@@ -295,62 +293,6 @@ class Reader_protXML : public Reader
     virtual const char *getType() const {return "protXML";}
 };
 
-
-/*class Reader_idpDB : public Reader
-{
-    public:
-
-    virtual std::string identify(const std::string& filename, const std::string& head) const
-    {
-        string result;
-        try {result = string((bal::iends_with(filename, ".idpDB") && bal::starts_with(head, "SQLite")) ? getType() : "");}
-        catch(...) {}
-        return result;
-    }
-
-    virtual void read(const std::string& filename, const std::string& head, IdentDataPtr& result, const Config& config) const
-    {
-        if (!result.get())
-            throw ReaderFail("[Reader_idpDB::read] NULL valued IdentDataPtr passed in.");
-        return read(filename, head, *result, config);
-    }
-    
-    virtual void read(const std::string& filename, const std::string& head, IdentData& result, const Config& config) const
-    {
-        Serializer_idpDB::Config serializerConfig;
-        serializerConfig.readSequenceCollection = !config.ignoreSequenceCollectionAndAnalysisData;
-        serializerConfig.readAnalysisData = !config.ignoreSequenceCollectionAndAnalysisData;
-        Serializer_idpDB serializer(serializerConfig);
-        serializer.read(filename, result, 0, config.iterationListenerRegistry);
-
-        fillInCommonMetadata(filename, result);
-    }
-
-    virtual void read(const std::string& filename,
-                      const std::string& head,
-                      std::vector<IdentDataPtr>& results,
-                      const Config& config) const
-    {
-        Serializer_idpDB::Config serializerConfig;
-        serializerConfig.readSequenceCollection = !config.ignoreSequenceCollectionAndAnalysisData;
-        serializerConfig.readAnalysisData = !config.ignoreSequenceCollectionAndAnalysisData;
-        Serializer_idpDB serializer(serializerConfig);
-
-        vector<string> analysisNames;
-        serializer.readIds(filename, analysisNames);
-
-        for (size_t i=0; i < analysisNames.size(); ++i)
-        {
-            results.push_back(IdentDataPtr(new IdentData));
-            results.back()->id = analysisNames[i];
-            serializer.read(filename, *results.back(), i, config.iterationListenerRegistry);
-        }
-    }
-
-    virtual const char *getType() const {return "idpDB";}
-};*/
-
-
 } // namespace
 
 
@@ -360,10 +302,7 @@ PWIZ_API_DECL DefaultReaderList::DefaultReaderList()
     push_back(ReaderPtr(new Reader_mzid));
     push_back(ReaderPtr(new Reader_pepXML));
     push_back(ReaderPtr(new Reader_protXML));
-#ifndef NO_MASCOT_READER
-    push_back(ReaderPtr(new MascotReader));
-#endif
-    //push_back(ReaderPtr(new Reader_idpDB));
+    //push_back(ReaderPtr(new MascotReader));
 }
 
 

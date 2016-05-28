@@ -1,5 +1,5 @@
 //
-// $Id: IO.cpp 8934 2015-10-06 22:03:06Z pcbrefugee $
+// $Id: IO.cpp 5043 2013-10-07 19:05:24Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -28,7 +28,6 @@
 #include "pwiz/utility/minimxml/SAXParser.hpp"
 #include "pwiz/utility/misc/Filesystem.hpp"
 #include "pwiz/utility/misc/Std.hpp"
-#include "SpectrumWorkerThreads.hpp"
 
 namespace pwiz {
 namespace msdata {
@@ -1661,15 +1660,12 @@ void write(minimxml::XMLWriter& writer, const BinaryDataArray& binaryDataArray,
     }
     switch (usedConfig.numpress) {
         case BinaryDataEncoder::Numpress_Linear:
-            write(writer, MS_32_bit_float); // This should actually be ignored by any reader since numpress defines word size and format, but it makes output standards-compliant and is pretty close to true anyway
             write(writer, MS_MS_Numpress_linear_prediction_compression);
             break;
         case BinaryDataEncoder::Numpress_Pic:
-            write(writer, MS_32_bit_integer); // This should actually be ignored by any reader since numpress defines word size and format, but it makes output standards-compliant and is pretty close to true anyway
             write(writer, MS_MS_Numpress_positive_integer_compression);
             break;
         case BinaryDataEncoder::Numpress_Slof:
-            write(writer, MS_32_bit_float); // This should actually be ignored by any reader since numpress defines word size and format, but it makes output standards-compliant and is pretty close to true anyway
             write(writer, MS_MS_Numpress_short_logged_float_compression);
             break;
         case BinaryDataEncoder::Numpress_None:
@@ -1857,13 +1853,11 @@ struct HandlerBinaryDataArray : public HandlerParamContainer
         switch (cvidBinaryDataType)
         {
             case MS_32_bit_float:
-                if (BinaryDataEncoder::Numpress_None == config.numpress)
-                    config.precision = BinaryDataEncoder::Precision_32;
+                config.precision = BinaryDataEncoder::Precision_32;
                 break;
             case MS_64_bit_float:
                 config.precision = BinaryDataEncoder::Precision_64;
                 break;
-            case MS_32_bit_integer:
             case CVID_Unknown:
                 if (BinaryDataEncoder::Numpress_None == config.numpress) // 32 vs 64 bit is meaningless in numpress
                     throw runtime_error("[IO::HandlerBinaryDataArray] Missing binary data type.");
@@ -2240,7 +2234,6 @@ void write(minimxml::XMLWriter& writer, const SpectrumList& spectrumList, const 
                                         spectrumList.dataProcessingPtr()->id));
 
     writer.startElement("spectrumList", attributes);
-    SpectrumWorkerThreads spectrumWorkers(spectrumList);
 
     for (size_t i=0; i<spectrumList.size(); i++)
     {
@@ -2262,8 +2255,7 @@ void write(minimxml::XMLWriter& writer, const SpectrumList& spectrumList, const 
 
         // write the spectrum
 
-        //SpectrumPtr spectrum = spectrumList.spectrum(i, true);
-        SpectrumPtr spectrum = spectrumWorkers.processBatch(i);
+        SpectrumPtr spectrum = spectrumList.spectrum(i, true);
         BOOST_ASSERT(spectrum->binaryDataArrayPtrs.empty() ||
                      spectrum->defaultArrayLength == spectrum->getMZArray()->data.size());
         if (spectrum->index != i) throw runtime_error("[IO::write(SpectrumList)] Bad index.");

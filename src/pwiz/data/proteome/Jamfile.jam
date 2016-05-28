@@ -1,5 +1,5 @@
 #
-# $Id: Jamfile.jam 6909 2014-11-19 17:18:29Z chambm $
+# $Id: Jamfile.jam 2304 2010-10-20 16:50:47Z chambm $
 #
 #
 # Original author: Darren Kessner <darren@proteowizard.org>
@@ -60,6 +60,7 @@ lib pwiz_data_proteome
         <library>/ext/boost//iostreams/<boost-iostreams-zlib>on
         <library>/ext/boost//filesystem
         <library>/ext/boost//thread
+        <library>/ext/boost//regex
         <library>/ext/zlib//z
     : # default-build
     : # usage-requirements
@@ -70,6 +71,7 @@ lib pwiz_data_proteome
         <library>/ext/boost//iostreams/<boost-iostreams-zlib>on
         <library>/ext/boost//filesystem
         <library>/ext/boost//thread
+        <library>/ext/boost//regex
         <library>/ext/zlib//z
     ;
 

@@ -1,5 +1,5 @@
 //
-// $Id: MSIHandler.cpp 7297 2015-03-12 05:30:33Z paragmallick $
+// $Id: MSIHandler.cpp 2051 2010-06-15 18:39:13Z chambm $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -24,7 +24,7 @@
 #include "MSIHandler.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 namespace pwiz {
-namespace util {
+namespace utility {
 
 
 MSIHandler::Record::Record(const std::vector<std::string>& fields)
