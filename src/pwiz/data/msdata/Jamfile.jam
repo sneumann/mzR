@@ -1,5 +1,5 @@
 #
-# $Id: Jamfile.jam 4990 2013-09-24 18:52:40Z pcbrefugee $
+# $Id: Jamfile.jam 6909 2014-11-19 17:18:29Z chambm $
 #
 #
 # Original author: Darren Kessner <darren@proteowizard.org>
@@ -72,6 +72,7 @@ lib pwiz_data_msdata
         RAMPAdapter.cpp
         Reader.cpp
         References.cpp
+        SpectrumWorkerThreads.cpp
     : # requirements
         <library>pwiz_data_msdata_version
         <library>../common//pwiz_data_common
@@ -82,7 +83,6 @@ lib pwiz_data_msdata
         <library>/ext/boost//iostreams/<boost-iostreams-zlib>on
         <library>/ext/boost//filesystem
         <library>/ext/boost//thread
-        <library>/ext/boost//regex
         <library>/ext/zlib//z
         [ mz5-build <library>mz5//pwiz_data_msdata_mz5 ]
     : # default-build
@@ -95,7 +95,6 @@ lib pwiz_data_msdata
         <library>/ext/boost//iostreams/<boost-iostreams-zlib>on
         <library>/ext/boost//filesystem
         <library>/ext/boost//thread
-        <library>/ext/boost//regex
         <library>/ext/zlib//z
         [ mz5-build <library>mz5//pwiz_data_msdata_mz5 ]
     ;

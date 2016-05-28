@@ -1,5 +1,5 @@
 //
-// $Id: IO.hpp 2820 2011-06-27 22:51:16Z chambm $
+// $Id: IO.hpp 6865 2014-10-31 21:47:12Z chambm $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -208,7 +208,7 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const BibliographicReferen
 PWIZ_API_DECL void read(std::istream& is, BibliographicReference& bibliographicReference);
 
 
-enum PWIZ_API_DECL AnalysisDataFlag {IgnoreAnalysisData, ReadAnalysisData};
+enum PWIZ_API_DECL AnalysisDataFlag {IgnoreAnalysisData, ReadAnalysisData, IgnoreProteinDetectionList};
 
 
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const DataCollection& dataCollection,

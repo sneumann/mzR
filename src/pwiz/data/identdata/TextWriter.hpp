@@ -1,5 +1,5 @@
 //
-// $Id: TextWriter.hpp 2820 2011-06-27 22:51:16Z chambm $
+// $Id: TextWriter.hpp 8868 2015-09-22 20:51:26Z kaipot $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -380,7 +380,7 @@ class PWIZ_API_DECL TextWriter
     TextWriter& operator()(const SpectrumIdentificationList& sil)
     {
         (*this)("SpectrumIdentificationList: ");
-        (*this)((Identifiable)sil);
+        (*this)((const IdentifiableParamContainer&)sil);
         if (!sil.empty())
             child()("numSequencesSearched: ", sil.numSequencesSearched);
         if (!sil.fragmentationTable.empty())

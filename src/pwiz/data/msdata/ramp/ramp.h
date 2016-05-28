@@ -158,7 +158,6 @@ struct ScanHeaderStruct
    int seqNum; // number in sequence observed file (1-based)
    int acquisitionNum; // scan number as declared in File (may be gaps)
    int  msLevel;
-   int  polarity; // 1 - positive, 0 - negative
    int  peaksCount;
    double totIonCurrent;
    double retentionTime;        /* in seconds */
@@ -182,7 +181,7 @@ struct ScanHeaderStruct
    int mergedResultScanNum; /* scan number of the resultant merged scan */
    int mergedResultStartScanNum; /* smallest scan number of the scanOrigin for merged scan */
    int mergedResultEndScanNum; /* largest scan number of the scanOrigin for merged scan */
-   const char* filterLine;
+   std::string filterLine;
    ramp_fileoffset_t filePosition; /* where in the file is this header? */
 };
 
