@@ -1,9 +1,5 @@
 
-<<<<<<< HEAD
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o RcppExports.o
-=======
-MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
->>>>>>> devel
 
 OBJECTS= $(MZROBJECTS) R_init_mzR.o rampR.o
 
@@ -11,21 +7,6 @@ PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
-<<<<<<< HEAD
-PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -D_MSC_VER  -fgnu89-inline
-
-## Faster Linker on BioC build farm:
-## https://github.com/sneumann/mzR/issues/21#issuecomment-87802019
-
-ifeq ($(ULDAR),"")
-	LD_ULDAR=""
-else
-	LD_ULDAR="-Wl,--dynamic-linker=$(ULDAR)/ld.exe"
-endif
-
-PKG_LIBS = $(LD_ULDAR) $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lpwiz
-
-=======
 
 PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -fgnu89-inline
 
@@ -41,8 +22,6 @@ endif
 
 PKG_LIBS = $(LD_ULDAR) $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lpwiz
 
->>>>>>> devel
-
 all: clean $(SHLIB)
 
 %.o: %.c
@@ -50,11 +29,7 @@ all: clean $(SHLIB)
 
 %.o: %.cpp
 	$(CXX) $(ALL_CPPFLAGS) -c $< -o $@
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> devel
 clean:
 	rm -f $(OBJECTS)
 
