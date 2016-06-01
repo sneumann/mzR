@@ -1,5 +1,5 @@
 //
-// $Id: examples.cpp 5759 2014-02-19 22:26:29Z chambm $ 
+// $Id: examples.cpp 6943 2014-11-26 17:07:14Z chambm $ 
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -196,6 +196,7 @@ PWIZ_API_DECL void initializeBasicSpectrumIdentification(IdentData& mzid)
     sdb->numDatabaseSequences = 5;
     sdb->numResidues = 52;
     sdb->set(MS_database_type_amino_acid);
+    sdb->set(MS_decoy_DB_accession_regexp, "^DECOY");
     sdb->databaseName.userParams.push_back(UserParam("SwissProt"));
     mzid.dataCollection.inputs.searchDatabase.push_back(sdb);
 
@@ -233,11 +234,9 @@ PWIZ_API_DECL void initializeBasicSpectrumIdentification(IdentData& mzid)
     sip->additionalSearchParams.set(MS_parent_mass_type_mono);
     sip->additionalSearchParams.set(MS_fragment_mass_type_mono);
     sip->additionalSearchParams.set(MS_param__a_ion);
-    sip->additionalSearchParams.set(MS_param__a_ion_NH3);
     sip->additionalSearchParams.set(MS_param__b_ion);
-    sip->additionalSearchParams.set(MS_param__b_ion_NH3);
     sip->additionalSearchParams.set(MS_param__y_ion);
-    sip->additionalSearchParams.set(MS_param__y_ion_NH3);
+    sip->additionalSearchParams.set(MS_NH3_neutral_loss);
     sip->additionalSearchParams.userParams.push_back(UserParam("INSTRUMENT", "Default"));
     sip->additionalSearchParams.userParams.push_back(UserParam("MASS", "Monoisotopic"));
     sip->additionalSearchParams.userParams.push_back(UserParam("PFA", "1"));

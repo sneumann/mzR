@@ -1,5 +1,5 @@
 #
-# $Id: Jamfile.jam 2791 2011-06-20 16:39:34Z chambm $
+# $Id: Jamfile.jam 6909 2014-11-19 17:18:29Z chambm $
 #
 #
 # Original author: Darren Kessner <darren@proteowizard.org>
@@ -27,11 +27,9 @@ lib pwiz_utility_minimxml
         SAXParser.cpp 
     : # requirements
         <toolset>msvc,<link>shared:<define>PWIZ_DYN_LINK
-        <library>/ext/boost//regex
         <library>../misc//pwiz_utility_misc
     : # default-build
     : # usage-requirements
-        <library>/ext/boost//regex
         <library>../misc//pwiz_utility_misc
     ;
 
