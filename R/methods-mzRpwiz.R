@@ -1,14 +1,14 @@
 setMethod("get3Dmap",
           signature="mzRpwiz",
-          function(object,scans,lowMz,highMz,resMz) 
+          function(object,scans,lowMz,highMz,resMz)
           return(object@backend$get3DMap(scans,lowMz,highMz,resMz)))
-         
+
 ##setMethod("writeMSfile",
 ##          signature="mzRpwiz",
 ##          function(object, filename, outformat)
 ##          object@backend$writeMSfile(filename, outformat))
 
-setMethod("length", 
+setMethod("length",
           signature=c("mzRpwiz"),
           function(x) return(x@backend$getLastScan()))
 
@@ -16,45 +16,45 @@ setMethod("instrumentInfo",
           signature="mzRpwiz",
           function(object)
           return(object@backend$getInstrumentInfo()))
-          
+
 setMethod("chromatogramsInfo",
           signature="mzRpwiz",
-          function(object) 
-          return(object@backend$getChromatogramsInfo()))          
-          
-          
+          function(object)
+          return(object@backend$getChromatogramsInfo()))
+
+
 setMethod("manufacturer",
           signature="mzRpwiz",
           function(object) {
-            info <- instrumentInfo(object)           
+            info <- instrumentInfo(object)
             return(info$manufacturer)
           })
 
 setMethod("model",
           signature="mzRpwiz",
           function(object) {
-            info <- instrumentInfo(object)           
+            info <- instrumentInfo(object)
             return(info$model)
           })
 
 setMethod("ionisation",
           signature="mzRpwiz",
           function(object) {
-            info <- instrumentInfo(object)           
+            info <- instrumentInfo(object)
             return(info$ionisation)
           })
 
 setMethod("analyzer",
           signature="mzRpwiz",
           function(object) {
-            info <- instrumentInfo(object)           
+            info <- instrumentInfo(object)
             return(info$analyzer)
           })
 
 setMethod("detector",
           signature="mzRpwiz",
           function(object) {
-            info <- instrumentInfo(object)           
+            info <- instrumentInfo(object)
             return(info$detector)
           })
 
@@ -71,7 +71,7 @@ setMethod("header",
               return(data.frame(t(sapply(scans,function(x) unlist(object@backend$getScanHeaderInfo(x))))))
             }
           })
-          
+
 setMethod("peaks",
           signature=c("mzRpwiz"),
           function(object, scans) {
@@ -117,30 +117,34 @@ setMethod("runInfo",
             ll$'msLevels' <- unique(hd$msLevel)
             return(ll)
           })
-          
+
 setMethod("softwareInfo",
           signature="mzRpwiz",
           function(object) {
-            info <- instrumentInfo(object) 
+            info <- instrumentInfo(object)
             return(info$software)
           })
-          
+
 setMethod("sampleInfo",
           signature="mzRpwiz",
           function(object) {
-            info <- instrumentInfo(object)  
+            info <- instrumentInfo(object)
             return(info$sample)
           })
-          
+
 setMethod("sourceInfo",
           signature="mzRpwiz",
           function(object) {
-            info <- instrumentInfo(object)   
+            info <- instrumentInfo(object)
             return(info$source)
           })
 
-setMethod("close", "mzRpwiz", 
-          function(con, ...) invisible(TRUE))
+setMethod("close",
+          signature = "mzRpwiz",
+          function(con,...) {
+              con@backend$close()
+              invisible(TRUE)
+          })
 
 
 
