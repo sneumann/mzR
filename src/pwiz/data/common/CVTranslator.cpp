@@ -1,5 +1,5 @@
 //
-// $Id: CVTranslator.cpp 5759 2014-02-19 22:26:29Z chambm $
+// $Id: CVTranslator.cpp 7331 2015-03-24 16:11:12Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -177,8 +177,6 @@ void CVTranslator::Impl::insertCVTerms()
 {
     for (vector<CVID>::const_iterator cvid=cvids().begin(); cvid!=cvids().end(); ++cvid)
     {
-        if (cvIsA(*cvid, MS_purgatory)) continue;
-
         const CVTermInfo& info = cvTermInfo(*cvid);
 
         if (info.isObsolete) continue;

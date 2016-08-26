@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.7.4
+------------------------
+ o upgrade pwiz
+ o ensure file connections are cleaned and closed for pwiz.
+
 CHANGES IN VERSION 2.7.1
 ------------------------
  o revert added compiler switch, and fixed boost code instead to get rid of warnings
@@ -12,13 +17,13 @@ CHANGES IN VERSION 2.5.7
 
 CHANGES IN VERSION 2.5.6
 ------------------------
- o fix compilation on new windows toolchain, 
-   thanks to Kasper Daniel Hansen and Dan Tenenbaum 
+ o fix compilation on new windows toolchain,
+   thanks to Kasper Daniel Hansen and Dan Tenenbaum
 
 CHANGES IN VERSION 2.5.3
 ------------------------
  o new pwiz.version() function returning the pwiz backend version (KK)
- 
+
 CHANGES IN VERSION 2.5.2
 ------------------------
  o Provide pre-compiled windows libraries, again thanks to Qiang Kou (KK)
@@ -34,7 +39,7 @@ CHANGES IN VERSION 2.3.3
 CHANGES IN VERSION 2.3.2
 ------------------------
  o Fix typo/bug in peaks,mzRpwiz <2015-07-31 Fri>
- 
+
 CHANGES IN VERSION 2.3.1
 ------------------------
  o update Rcpp version message to point to support site <2015-05-08 Fri>
@@ -48,10 +53,10 @@ CHANGES IN VERSION 2.1.11
 -------------------------
  o Using generics from BiocGenerics (fileName, score) and ProtGenerics
    [2015-02-28 Sat]
- 
+
 CHANGES IN VERSION 2.1.10
 -------------------------
- o Add instrumentInfo() and runInfo() for CDF backend (closes issue #22) 
+ o Add instrumentInfo() and runInfo() for CDF backend (closes issue #22)
  o Add precompiled libpwiz.a to reduce compile time on Windows (closes issue #21), thanks to KK
 
 CHANGES IN VERSION 2.1.9
@@ -71,14 +76,14 @@ CHANGES IN VERSION 2.1.6
 ------------------------
  o adding an acquisitionNum column to psms (closes issue #17)
    [2015-02-05 Thu]
-   
+
 CHANGES IN VERSION 2.1.5
 ------------------------
  o don't print '1' to the console when calling get3Dmap
    [2015-01-29 Thu]
  o add sequence length in psms output (closes issue #19)
    [2015-02-04 Wed]
- 
+
 CHANGES IN VERSION 2.1.4
 ------------------------
  o documentation and vignette: mzIdentML version 1.1 support only
@@ -105,7 +110,7 @@ CHANGES IN VERSION 1.99.1
 -------------------------
  o annoucning pwiz in vignette and that it will become the default
    backend in Bioc 3.1 [2014-09-25 Thu]
- o adding a dummy close for pwiz backend to avoid breaking code 
+ o adding a dummy close for pwiz backend to avoid breaking code
    that properly closes the previous ramp backend [2014-09-21 Sun]
  o Not using ListBuilder to make psms data.frame and fix segfautls,
    via KK [2014-09-27 Sat]
@@ -138,7 +143,7 @@ CHANGES IN VERSION 1.11.8
 
 CHANGES IN VERSION 1.11.6
 -------------------------
- o removed one redundant parser which fixes inconsistencies 
+ o removed one redundant parser which fixes inconsistencies
    in the scan headers
 
 CHANGES IN VERSION 1.11.5
@@ -177,7 +182,7 @@ CHANGES IN VERSION 1.9.3
 
 CHANGES IN VERSION 1.9.2
 ------------------------
- o version bump for Rcpp 0.10.6 <2013-10-30 Wed> 
+ o version bump for Rcpp 0.10.6 <2013-10-30 Wed>
 
 CHANGES IN VERSION 1.9.1
 ------------------------
@@ -209,7 +214,7 @@ CHANGES IN VERSION 1.5.8
 
 CHANGES IN VERSION 1.5.7
 ------------------------
- o only load Rcpp modules after checking for Rcpp 
+ o only load Rcpp modules after checking for Rcpp
    version conflict (DT)
 
 CHANGES IN VERSION 1.5.6
@@ -223,13 +228,13 @@ CHANGES IN VERSION 1.5.5
 CHANGES IN VERSION 1.5.4
 ------------------------
  o requiring Rcpp (>= 0.10.1) LG <2012-12-05 Wed>
- o catching Rcpp build-time version (thanks to 
+ o catching Rcpp build-time version (thanks to
    Dan for help!) LG <2012-12-05 Wed>
- o checking Rcpp installed vs building versions 
+ o checking Rcpp installed vs building versions
    and warn if these are different. LG <2012-12-05 Wed>
- 
+
 CHANGES IN VERSION 1.5.3
 ------------------------
- o bumping version to force rebuild due to Rcpp 
-   change LG <2012-12-05 Wed> 
- o added NEWS file <2012-12-05 Wed> 
+ o bumping version to force rebuild due to Rcpp
+   change LG <2012-12-05 Wed>
+ o added NEWS file <2012-12-05 Wed>

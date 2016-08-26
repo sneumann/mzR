@@ -1,5 +1,5 @@
 //
-// $Id: IOTest.cpp 5759 2014-02-19 22:26:29Z chambm $
+// $Id: IOTest.cpp 6478 2014-07-08 20:01:38Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -985,13 +985,11 @@ void initializeTestData(MSData& msd)
     ParamGroupPtr pg1(new ParamGroup);
     pg1->id = "CommonMS1SpectrumParams";
     pg1->cvParams.push_back(MS_positive_scan);
-    pg1->cvParams.push_back(MS_full_scan);
     msd.paramGroupPtrs.push_back(pg1);
 
     ParamGroupPtr pg2(new ParamGroup);
     pg2->id = "CommonMS2SpectrumParams";
     pg2->cvParams.push_back(MS_positive_scan);
-    pg2->cvParams.push_back(MS_full_scan);
     msd.paramGroupPtrs.push_back(pg2);
 
     // sampleList

@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_mzML.cpp 3013 2011-09-27 06:57:13Z pcbrefugee $
+// $Id: SpectrumList_mzML.cpp 8725 2015-08-04 15:49:57Z pcbrefugee $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -29,6 +29,7 @@
 #include "pwiz/utility/minimxml/SAXParser.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include <boost/bind.hpp>
+#include <boost/thread.hpp>
 
 
 namespace pwiz {
@@ -55,6 +56,7 @@ class SpectrumList_mzMLImpl : public SpectrumList_mzML
     virtual size_t find(const std::string& id) const;
     virtual IndexList findSpotID(const std::string& spotID) const;
     virtual SpectrumPtr spectrum(size_t index, bool getBinaryData) const;
+    virtual SpectrumPtr spectrum(size_t index, DetailLevel detailLevel) const;
     virtual SpectrumPtr spectrum(const SpectrumPtr &seed, bool getBinaryData) const;
     virtual SpectrumPtr spectrum(size_t index, IO::BinaryDataFlag binaryDataFlag, const SpectrumPtr *defaults) const;
 
@@ -63,6 +65,7 @@ class SpectrumList_mzMLImpl : public SpectrumList_mzML
     const MSData& msd_;
     int schemaVersion_;
     mutable bool indexed_;
+    mutable boost::mutex readMutex;
 
     Index_mzML_Ptr index_;
 };
@@ -105,6 +108,11 @@ IndexList SpectrumList_mzMLImpl::findSpotID(const string& spotID) const
     return index_->findSpectrumBySpotID(spotID);
 }
 
+SpectrumPtr SpectrumList_mzMLImpl::spectrum(size_t index, DetailLevel detailLevel) const
+{
+    return spectrum(index, (detailLevel == DetailLevel_FullData) ? IO::ReadBinaryData : IO::IgnoreBinaryData, NULL);
+}
+
 SpectrumPtr SpectrumList_mzMLImpl::spectrum(size_t index, bool getBinaryData) const
 {
     return spectrum(index, getBinaryData ? IO::ReadBinaryData : IO::IgnoreBinaryData, NULL);
@@ -119,6 +127,7 @@ SpectrumPtr SpectrumList_mzMLImpl::spectrum(const SpectrumPtr &seed, bool getBin
 
 SpectrumPtr SpectrumList_mzMLImpl::spectrum(size_t index, IO::BinaryDataFlag binaryDataFlag, const SpectrumPtr *defaults) const
 {
+    boost::lock_guard<boost::mutex> lock(readMutex);  // lock_guard will unlock mutex when out of scope or when exception thrown (during destruction)
     //boost::call_once(indexInitialized_.flag, boost::bind(&SpectrumList_mzMLImpl::createIndex, this));
     if (index >= index_->spectrumCount())
         throw runtime_error("[SpectrumList_mzML::spectrum()] Index out of bounds.");

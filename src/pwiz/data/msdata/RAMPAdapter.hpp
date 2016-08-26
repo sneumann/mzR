@@ -26,7 +26,7 @@
 
 #include <stdlib.h>
 #include "pwiz/utility/misc/Export.hpp"
-#include "pwiz/data/msdata/ramp/ramp.h"
+#include "ramp.h"
 #include "boost/shared_ptr.hpp"
 #include <string>
 #include <vector>

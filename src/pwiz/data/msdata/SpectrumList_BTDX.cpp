@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_BTDX.cpp 4922 2013-09-05 22:33:08Z pcbrefugee $
+// $Id: SpectrumList_BTDX.cpp 6585 2014-08-07 22:49:28Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -27,6 +27,7 @@
 #include "References.hpp"
 #include "pwiz/utility/minimxml/SAXParser.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include <boost/thread.hpp>
 
 
 namespace pwiz {
@@ -59,6 +60,7 @@ class SpectrumList_BTDXImpl : public SpectrumList_BTDX
     vector<SpectrumIdentity> index_;
     map<string,size_t> idToIndex_;
     mutable vector<SpectrumPtr> spectrumCache_;
+    mutable boost::mutex readMutex;
 
     void createIndex();
     void createMaps();
@@ -282,6 +284,7 @@ class HandlerCompound : public SAXParser::Handler
 
 SpectrumPtr SpectrumList_BTDXImpl::spectrum(size_t index, bool getBinaryData) const
 {
+    boost::lock_guard<boost::mutex> lock(readMutex);  // lock_guard will unlock mutex when out of scope or when exception thrown (during destruction)
     if (index > index_.size())
         throw runtime_error("[SpectrumList_BTDX::spectrum()] Index out of bounds.");
 

@@ -1,5 +1,5 @@
 //
-// $Id: TabReader.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id: TabReader.hpp 7297 2015-03-12 05:30:33Z paragmallick $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -33,7 +33,7 @@
 
 
 namespace pwiz {
-namespace utility {
+namespace util {
 
 struct PWIZ_API_DECL TabHandler
 {

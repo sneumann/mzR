@@ -9,6 +9,11 @@ RcppPwiz::RcppPwiz()
     allScanHeaderInfo = Rcpp::List::create();
     isInCacheAllScanHeaderInfo = FALSE;
 }
+/* Destructor*/
+RcppPwiz::~RcppPwiz()
+{
+  RcppPwiz::close();
+}
 
 void RcppPwiz::open(const string& fileName)
 {
@@ -17,6 +22,22 @@ void RcppPwiz::open(const string& fileName)
     msd = new MSDataFile(fileName);
 
 }
+
+/* Release all memory on close. */
+void RcppPwiz::close()
+{
+  if (msd != NULL)
+    {
+      delete msd;
+      msd = NULL;
+      instrumentInfo = Rcpp::List::create();
+      chromatogramsInfo = Rcpp::DataFrame::create();
+      isInCacheInstrumentInfo = FALSE;
+      allScanHeaderInfo = Rcpp::List::create();
+      isInCacheAllScanHeaderInfo = FALSE;
+    }
+}
+
 /*
 void RcppPwiz::writeMSfile(const string& file, const string& format)
 {

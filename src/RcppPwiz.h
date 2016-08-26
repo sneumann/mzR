@@ -52,9 +52,10 @@ private:
 public:
 
     RcppPwiz();
+    virtual ~RcppPwiz();
 
     void open(const string& fileNames);
-
+    void close();
     //void writeMSfile(const string& filenames, const string& format);
 
     string getFilename();

@@ -30,11 +30,6 @@
 
 using boost::shared_ptr;
 
-#ifdef _WIN32
-namespace boost {
-    void tss_cleanup_implemented() {}
-};
-#endif
 
 namespace pwiz {
 namespace data {
