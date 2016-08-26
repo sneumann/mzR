@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_mzXML.cpp 6141 2014-05-05 21:03:47Z chambm $
+// $Id: Serializer_mzXML.cpp 9172 2015-11-25 19:46:23Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -32,6 +32,7 @@
 #include "pwiz/utility/minimxml/SAXParser.hpp"
 #include "pwiz/utility/misc/Filesystem.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include "SpectrumWorkerThreads.hpp"
 
 namespace pwiz {
 namespace msdata {
@@ -157,7 +158,10 @@ string translate_SourceFileTypeToRunID(const SourceFile& sf, CVID sourceFileType
 
         // location="file://path/to/source.d/AcqData" name="msprofile.bin"
         case MS_Agilent_MassHunter_format:
-            if (nameExtension == ".bin" && bfs::path(sf.location).leaf() == "AcqData")
+            if (bfs::path(sf.location).leaf() == "AcqData" &&
+                (bal::iends_with(sf.name, "msprofile.bin") ||
+                 bal::iends_with(sf.name, "mspeak.bin") ||
+                 bal::iends_with(sf.name, "msscan.bin")))
                 return bfs::basename(bfs::path(sf.location).parent_path().leaf());
             return "";
 
@@ -199,7 +203,7 @@ string translate_SourceFileTypeToRunID(const SourceFile& sf, CVID sourceFileType
         // location="file://path/to/source" name="spectrum-id.t2d"
         // location="file://path/to/source/MS" name="spectrum-id.t2d"
         // location="file://path/to/source/MSMS" name="spectrum-id.t2d"
-        case MS_AB_SCIEX_TOF_TOF_T2D_format:
+        case MS_SCIEX_TOF_TOF_T2D_format:
             // need the full list of T2Ds to create a run ID (from the common prefix)
             return sf.location;
 
@@ -523,14 +527,17 @@ void write_peaks(XMLWriter& xmlWriter, const vector<MZIntensityPair>& mzIntensit
     BinaryDataEncoder encoder(bdeConfig);
     string encoded;
     size_t binaryByteCount; // size before base64 encoding
+    XMLWriter::Attributes attributes;
 
     if (!mzIntensityPairs.empty())
         encoder.encode(reinterpret_cast<const double*>(&mzIntensityPairs[0]), 
                        mzIntensityPairs.size()*2, encoded, &binaryByteCount);
     else
+    {
         binaryByteCount = 0;
+        attributes.add("xsi:nil", "true");
+    }
 
-    XMLWriter::Attributes attributes;
     string precision = bdeConfig.precision == BinaryDataEncoder::Precision_32 ? "32" : "64";
     if (bdeConfig.compression == BinaryDataEncoder::Compression_Zlib)
     {
@@ -613,7 +620,7 @@ IndexEntry write_scan(XMLWriter& xmlWriter,
     string totIonCurrent = spectrum.cvParam(MS_total_ion_current).value;
     string filterLine = spectrum.cvParam(MS_filter_string).value;
 	string compensationVoltage;
-	if (spectrum.hasCVParam(MS_FAIMS))
+    if (spectrum.hasCVParam(MS_FAIMS_compensation_voltage))
         compensationVoltage = spectrum.cvParam(MS_FAIMS_compensation_voltage).value;
     bool isCentroided = spectrum.hasCVParam(MS_centroid_spectrum);
 
@@ -694,6 +701,7 @@ void write_scans(XMLWriter& xmlWriter, const MSData& msd,
     if (!sl.get()) return;
 
     CVID defaultNativeIdFormat = id::getDefaultNativeIDFormat(msd);
+    SpectrumWorkerThreads spectrumWorkers(*sl);
 
     for (size_t i=0; i<sl->size(); i++)
     {
@@ -708,7 +716,8 @@ void write_scans(XMLWriter& xmlWriter, const MSData& msd,
         if (status == IterationListener::Status_Cancel)
             break;
 
-        SpectrumPtr spectrum = sl->spectrum(i, true);
+        //SpectrumPtr spectrum = sl->spectrum(i, true);
+        SpectrumPtr spectrum = spectrumWorkers.processBatch(i);
 
         // Thermo spectra not from "controllerType=0 controllerNumber=1" are ignored
         if (defaultNativeIdFormat == MS_Thermo_nativeID_format &&
@@ -842,7 +851,7 @@ CVID translate_parentFilenameToSourceFileType(const string& name)
     else if (bal::iequals(name, "msprofile.bin"))               return MS_Agilent_MassHunter_format;
     else if (bal::iequals(name, "mspeak.bin"))                  return MS_Agilent_MassHunter_format;
     else if (bal::iequals(name, "msscan.bin"))                  return MS_Agilent_MassHunter_format;
-    else if (fileExtension == ".t2d")                           return MS_AB_SCIEX_TOF_TOF_T2D_format;
+    else if (fileExtension == ".t2d")                           return MS_SCIEX_TOF_TOF_T2D_format;
 
     // check for known open formats
     else if (fileExtension == ".mzdata")                        return MS_PSI_mzData_format;
@@ -881,7 +890,7 @@ CVID translateSourceFileTypeToNativeIdFormat(CVID sourceFileType)
         // for these sources we must assume the scan number came from the index
         case MS_ABI_WIFF_format:
         case MS_Bruker_FID_format:
-        case MS_AB_SCIEX_TOF_TOF_T2D_format:
+        case MS_SCIEX_TOF_TOF_T2D_format:
         case MS_Waters_raw_format:
         case MS_Micromass_PKL_format:
             return MS_scan_number_only_nativeID_format;
@@ -1042,7 +1051,8 @@ void fillInMetadata(MSData& msd)
         if (!ir.second)
         {
             // found duplicate URI: remove all the .raw sourceFiles (leave only the mzXML)
-            msd.fileDescription.sourceFilePtrs.assign(1, msd.fileDescription.sourceFilePtrs[0]);
+            SourceFilePtr firstSourceFile = msd.fileDescription.sourceFilePtrs[0];
+            msd.fileDescription.sourceFilePtrs.assign(1, firstSourceFile);
             break;
         }
     }
@@ -1056,7 +1066,7 @@ void fillInMetadata(MSData& msd)
         sf->set(sourceFileType);
         sf->set(translateSourceFileTypeToNativeIdFormat(sourceFileType));
 
-        if (sourceFileType == MS_Bruker_FID_format || sourceFileType == MS_AB_SCIEX_TOF_TOF_T2D_format)
+        if (sourceFileType == MS_Bruker_FID_format || sourceFileType == MS_SCIEX_TOF_TOF_T2D_format)
         {       
             // each source file is translated to a run ID and added to a set of potential ids;
             // if they all have a common prefix, that is used as the id, otherwise it stays empty

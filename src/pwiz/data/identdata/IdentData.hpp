@@ -1,5 +1,5 @@
 //
-// $Id: IdentData.hpp 3942 2012-09-06 21:42:10Z chambm $
+// $Id: IdentData.hpp 8868 2015-09-22 20:51:26Z kaipot $
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -740,7 +740,7 @@ TYPEDEF_SHARED_PTR(SpectrumIdentificationResult);
 ///
 /// Represents the set of all search results from
 /// SpectrumIdentification.
-struct PWIZ_API_DECL SpectrumIdentificationList : public Identifiable
+struct PWIZ_API_DECL SpectrumIdentificationList : public IdentifiableParamContainer
 {
     SpectrumIdentificationList(const std::string& id_ = "",
                                const std::string& name_ = "");
@@ -1055,10 +1055,10 @@ PWIZ_API_DECL CVID cleavageAgent(const Enzyme& ez);
 PWIZ_API_DECL std::vector<CVID> cleavageAgents(const Enzymes& enzymes);
 
 /// returns a regular expression for an identdata::Enzyme
-PWIZ_API_DECL boost::regex cleavageAgentRegex(const Enzyme& ez);
+PWIZ_API_DECL std::string cleavageAgentRegex(const Enzyme& ez);
 
 /// returns a list of regular expressions for an identdata::Enzymes instance
-PWIZ_API_DECL std::vector<boost::regex> cleavageAgentRegexes(const Enzymes& enzymes);
+PWIZ_API_DECL std::vector<std::string> cleavageAgentRegexes(const Enzymes& enzymes);
 
 /// sets Unimod CV terms (if possible) for all SearchModifications and Modification elements
 PWIZ_API_DECL void snapModificationsToUnimod(const SpectrumIdentification& si);

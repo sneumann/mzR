@@ -1,5 +1,5 @@
 //
-// $Id: cvgen.cpp 5759 2014-02-19 22:26:29Z chambm $
+// $Id: cvgen.cpp 6909 2014-11-19 17:18:29Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -24,11 +24,12 @@
 #include "obo.hpp"
 #include "boost/filesystem/path.hpp"
 #include "boost/filesystem/fstream.hpp"
-#include "boost/regex.hpp"
+#include "boost/xpressive/xpressive_dynamic.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 
 using namespace pwiz::data;
 namespace bfs = boost::filesystem;
+namespace bxp = boost::xpressive;
 
 
 //
@@ -40,7 +41,7 @@ namespace bfs = boost::filesystem;
 void writeCopyright(ostream& os, const string& filename)
 {
     os << "//\n"
-       << "// $Id: cvgen.cpp 5759 2014-02-19 22:26:29Z chambm $" << endl
+       << "// $Id: cvgen.cpp 6909 2014-11-19 17:18:29Z chambm $" << endl
        << "//\n"
           "//\n"
           "// Darren Kessner <darren@proteowizard.org>\n"
@@ -118,6 +119,17 @@ size_t enumValue(const Term& term, size_t index)
 {
     return term.id + (enumBlockSize_ * index);
 }
+
+
+// OBO format can use C-style escape characters; these need to be escaped when writing a quoted string
+string escape_copy(const string& str)
+{
+    string copy(str);
+    bal::replace_all(copy, "\\", "\\\\");
+    bal::replace_all(copy, "\"", "\\\"");
+    return copy;
+}
+
 
 
 vector< map<Term::id_type, const Term*> > termMaps;
@@ -286,9 +298,9 @@ void writeCpp(const vector<OBO>& obos, const string& basename, const bfs::path& 
             correctName += " (" + term.prefix + ":" + lexical_cast<string>(enumValue(term, obo-obos.begin())) + ")";
 
         os << "    {" << eName << ", "
-           << "\"" << term.prefix << ":" << (term.prefix != "UNIMOD" ? setw(7) : setw(1) )  << setfill('0') << term.id << "\", "
-           << "\"" << correctName << "\", "
-           << "\"" << term.def << "\", "
+           << "\"" << term.prefix << ":" << (term.prefix != "UNIMOD" ? setw(7) : setw(1) ) << setfill('0') << term.id << "\", "
+           << "\"" << escape_copy(correctName) << "\", "
+           << "\"" << escape_copy(term.def) << "\", "
            << (term.isObsolete ? "true" : "false") // setw(7) screws up direct output
            << "},\n";
     }
@@ -473,8 +485,8 @@ void writeCpp(const vector<OBO>& obos, const string& basename, const bfs::path& 
         string version;
         for (size_t i=0; i < obo->header.size(); ++i)
         {
-            boost::regex e(".*?[^-]version: (\\S+)");
-            boost::smatch what;
+            bxp::sregex e = bxp::sregex::compile(".*?[^-]version: (\\S+)");
+            bxp::smatch what;
             if (regex_match(obo->header[i], what, e))
             {
                 version = what[1];
@@ -487,14 +499,14 @@ void writeCpp(const vector<OBO>& obos, const string& basename, const bfs::path& 
             // since UNIMOD doesn't update its 'date' field,
             // we use the maximum "date_time_modified" property_value
             string max_date_time_modified;
-            boost::regex e("(\\d+-\\d+-\\d+).*");
-            boost::smatch what;
+            bxp::sregex e = bxp::sregex::compile("(\\d+-\\d+-\\d+).*");
+            bxp::smatch what;
             BOOST_FOREACH(const Term& term, obo->terms)
             BOOST_FOREACH(const NameValuePair& nameValuePair, term.propertyValues)
                 if (nameValuePair.first == "date_time_modified" &&
                     regex_match(nameValuePair.second, what, e))
                 {
-                    if (max_date_time_modified.empty() || what[1] > max_date_time_modified)
+                    if (max_date_time_modified.empty() || what[1].str() > max_date_time_modified)
                         max_date_time_modified = what[1];
                     continue; // to the next term
                 }
@@ -505,8 +517,8 @@ void writeCpp(const vector<OBO>& obos, const string& basename, const bfs::path& 
         {
             for (size_t i=0; i < obo->header.size(); ++i)
             {
-                boost::regex e("\\s*date: (\\S+).*");
-                boost::smatch what;
+                bxp::sregex e = bxp::sregex::compile("\\s*date: (\\S+).*");
+                bxp::smatch what;
                 if (regex_match(obo->header[i], what, e))
                 {
                     version = what[1];

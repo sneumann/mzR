@@ -1,5 +1,5 @@
 //
-// $Id: BinaryDataEncoder.cpp 5533 2014-01-14 14:14:43Z pcbrefugee $
+// $Id: BinaryDataEncoder.cpp 6945 2014-11-26 18:58:33Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -38,9 +38,7 @@
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/data/msdata/MSNumpress.hpp"
 
-#ifndef PRE_BUILD
 #include <Rcpp.h>
-#endif
 
 namespace pwiz {
 namespace msdata {
@@ -49,11 +47,7 @@ namespace msdata {
 using namespace pwiz::util;
 using namespace pwiz::cv;
 using namespace boost::iostreams;
-using namespace ms::numpress;
 
-#ifndef PRE_BUILD
-using namespace Rcpp;
-#endif
 //
 // BinaryDataEncoder::Impl
 //
@@ -223,17 +217,9 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
             else
                 byteBuffer = reinterpret_cast<const void*>(&numpressed[0]);
         } catch (int e) {
-#ifndef PRE_BUILD
-            Rcerr << "MZNumpress encoder threw exception: " << e << endl;
-#else
-			cerr << "MZNumpress encoder threw exception: " << e << endl;
-#endif
+          Rcpp::Rcerr << "MZNumpress encoder threw exception: " << e << endl;
         } catch (...) {
-#ifndef PRE_BUILD
-            Rcerr << "Unknown exception while encoding " << dataSize << " doubles" << endl;
-#else
-			cerr << "Unknown exception while encoding " << dataSize << " doubles" << endl;
-#endif
+          Rcpp::Rcerr << "Unknown exception while encoding " << dataSize << " doubles" << endl;
         }
 
     }

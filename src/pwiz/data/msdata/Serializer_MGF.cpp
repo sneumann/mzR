@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_MGF.cpp 4008 2012-10-16 17:16:55Z pcbrefugee $
+// $Id: Serializer_MGF.cpp 6585 2014-08-07 22:49:28Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -27,6 +27,7 @@
 #include "pwiz/utility/misc/Filesystem.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include <boost/spirit/include/karma.hpp>
+#include "SpectrumWorkerThreads.hpp"
 
 
 namespace pwiz {
@@ -71,9 +72,11 @@ void Serializer_MGF::Impl::write(ostream& os, const MSData& msd,
 
     os << std::setprecision(10); // 1234.567890
     SpectrumList& sl = *msd.run.spectrumListPtr;
+    SpectrumWorkerThreads spectrumWorkers(sl);
     for (size_t i=0, end=sl.size(); i < end; ++i)
     {
-        SpectrumPtr s = sl.spectrum(i, true);
+        //SpectrumPtr s = sl.spectrum(i, true);
+        SpectrumPtr s = spectrumWorkers.processBatch(i);
         Scan* scan = !s->scanList.empty() ? &s->scanList.scans[0] : 0;
 
         if (s->cvParam(MS_ms_level).valueAs<int>() > 1 &&
