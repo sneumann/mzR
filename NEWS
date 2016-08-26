@@ -1,10 +1,7 @@
-CHANGES IN VERSION 2.7.X
-------------------------
- o ensure file connections are cleaned and closed for pwiz.
-
 CHANGES IN VERSION 2.7.4
 ------------------------
  o upgrade pwiz
+ o ensure file connections are cleaned and closed for pwiz.
 
 CHANGES IN VERSION 2.7.1
 ------------------------
