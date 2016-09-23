@@ -157,3 +157,5 @@ setMethod("show",
             invisible(NULL)
           })
 
+setMethod("isolationWindow", "mzRramp",
+          function(object, ...) .isolationWindow(fileName(object), ...))

@@ -18,14 +18,17 @@ setGeneric("analyzer", function(object) standardGeneric("analyzer"))
 setGeneric("detector", function(object) standardGeneric("detector"))
 setGeneric("isInitialized", function(object) standardGeneric("isInitialized"))
 setGeneric("initializeRamp",
-           signature=c("object"),
+           signature = c("object"),
            function(object) standardGeneric("initializeRamp"))
-setGeneric("header", function(object,scans,...) standardGeneric("header"))
-setGeneric("peaksCount", function(object,scans,...) standardGeneric("peaksCount"))
+setGeneric("header", function(object, scans, ...) standardGeneric("header"))
+setGeneric("peaksCount",
+           function(object, scans, ...) standardGeneric("peaksCount"))
 setGeneric("get3Dmap",
-           signature=c("object"),
-           function(object,scans,lowMz,highMz,resMz,...) standardGeneric("get3Dmap"))
-
+           signature = c("object"),
+           function(object, scans, lowMz, highMz, resMz, ...)
+               standardGeneric("get3Dmap"))
+setGeneric("isolationWindow",
+           function(object, ...) standardGeneric("isolationWindow"))
 
 ### BiocGenerics
 ## setGeneric("score", function(x, ...) standardGeneric("score"))

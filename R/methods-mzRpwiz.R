@@ -161,3 +161,5 @@ pwiz.version <- function() {
     .Call('mzR_pwiz_version', PACKAGE = 'mzR')
 }
 
+setMethod("isolationWindow", "mzRpwiz",
+          function(object, ...) .isolationWindow(fileName(object), ...))
