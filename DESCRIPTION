@@ -19,7 +19,7 @@ License: Artistic-2.0
 LazyLoad: yes
 Depends: Rcpp (>= 0.10.1), methods, utils
 Imports: Biobase, BiocGenerics (>= 0.13.6), ProtGenerics
-Suggests: msdata (>= 0.3.5), RUnit, mzID, BiocStyle, knitr
+Suggests: msdata (>= 0.3.5), RUnit, mzID, BiocStyle, knitr, XML
 VignetteBuilder: knitr
 LinkingTo: Rcpp, zlibbioc
 RcppModules: Ramp, Pwiz, Ident
