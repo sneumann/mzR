@@ -95,7 +95,7 @@ cRamp::cRamp( const char* fileName,bool declaredScansOnly ) :
         //      if (m_runInfo->m_data.scanCount < 0) { // undeclared scan count
         // this will provoke reading of index, which sets scan count
         rampScanInfo* tmp = getScanHeaderInfo ( 1 );
-        free(tmp);
+        delete(tmp); // was free - but see https://github.com/sneumann/mzR/issues/52
         // }
         // END HENRY
     }

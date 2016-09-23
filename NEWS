@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.7.5
+------------------------
+ o Apply Martin's free/delete patch - see
+   https://github.com/sneumann/mzR/issues/52 <2016-09-22 Thu>
+ 
 CHANGES IN VERSION 2.7.4
 ------------------------
  o upgrade pwiz
