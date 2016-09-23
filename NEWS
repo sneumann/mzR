@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.7.6
+------------------------
+ o new isolationWindow accessor <2016-09-23 Fri>
+ 
 CHANGES IN VERSION 2.7.5
 ------------------------
  o Apply Martin's free/delete patch - see
