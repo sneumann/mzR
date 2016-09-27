@@ -19,8 +19,7 @@ PWIZOBJECTS=\
 ./boost/regex/src/w32_regex_traits.o \
 ./boost/iostreams/src/zlib.o \
 ./boost/iostreams/src/file_descriptor.o \
-./boost/thread/pthread/once.o \
-./boost/thread/pthread/thread.o \
+./boost/thread/win32/thread.o \
 ./boost/filesystem/src/operations.o \
 ./boost/filesystem/src/path.o \
 ./boost/filesystem/src/utf8_codecvt_facet.o \
@@ -55,6 +54,7 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/SpectrumList_BTDX.o \
 ./pwiz/data/msdata/SpectrumInfo.o \
 ./pwiz/data/msdata/RAMPAdapter.o \
+./pwiz/data/msdata/ramp/wglob.o \
 ./pwiz/data/msdata/LegacyAdapter.o \
 ./pwiz/data/msdata/SpectrumIterator.o \
 ./pwiz/data/msdata/MSDataFile.o \
@@ -91,8 +91,7 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
 ./pwiz/utility/misc/sha1calc.o \
-./random_access_gzFile.o \
-./RcppExports.o
+./random_access_gzFile.o 
 
 
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o RcppExports.o
