@@ -19,9 +19,14 @@ PWIZOBJECTS=\
 ./boost/regex/src/w32_regex_traits.o \
 ./boost/iostreams/src/zlib.o \
 ./boost/iostreams/src/file_descriptor.o \
+./boost/thread/win32/tss_pe.o \
+./boost/thread/win32/tss_dll.o \
 ./boost/thread/win32/thread.o \
 ./boost/filesystem/src/operations.o \
 ./boost/filesystem/src/path.o \
+./boost/filesystem/src/path_traits.o \
+./boost/filesystem/src/windows_file_codecvt.o \
+./boost/filesystem/src/codecvt_error_category.o \
 ./boost/filesystem/src/utf8_codecvt_facet.o \
 ./boost/chrono/src/chrono.o \
 ./boost/chrono/src/process_cpu_clocks.o \
@@ -98,12 +103,15 @@ MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o Rc
 
 OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o R_init_mzR.o
 
-PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE
+PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
 
+ZLIB_CFLAGS+=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'|\
+    "${R_HOME}/bin/R" --vanilla --slave)
+	
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
+PKG_CPPFLAGS=$(ZLIB_CFLAGS) -D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
 
-PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -fgnu89-inline
+PKG_CFLAGS=$(ZLIB_CFLAGS) -D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -fgnu89-inline
 
 
 ## Faster Linker on BioC build farm:
@@ -116,6 +124,9 @@ else
 endif
 
 PKG_LIBS = $(LD_ULDAR) $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf
+
+PKG_LIBS+=$(shell echo 'zlibbioc::pkgconfig("PKG_LIBS_shared")' |\
+    "${R_HOME}/bin/R" --vanilla --slave)
 
 all: clean $(SHLIB)
 
