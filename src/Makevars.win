@@ -19,15 +19,18 @@ PWIZOBJECTS=\
 ./boost/regex/src/w32_regex_traits.o \
 ./boost/iostreams/src/zlib.o \
 ./boost/iostreams/src/file_descriptor.o \
-./boost/thread/pthread/once.o \
-./boost/thread/pthread/thread.o \
 ./boost/filesystem/src/operations.o \
 ./boost/filesystem/src/path.o \
+./boost/filesystem/src/path_traits.o \
 ./boost/filesystem/src/utf8_codecvt_facet.o \
-./boost/chrono/src/chrono.o \
+./boost/filesystem/src/windows_file_codecvt.o \
+./boost/filesystem/src/codecvt_error_category.o \
 ./boost/chrono/src/process_cpu_clocks.o \
 ./boost/chrono/src/thread_clock.o \
-./pwiz/data/msdata/Version.o \
+./boost/chrono/src/chrono.o \
+./boost/thread/win32/tss_pe.o \
+./boost/thread/win32/thread.o \
+./boost_aux/boost/nowide/iostream.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
@@ -35,6 +38,7 @@ PWIZOBJECTS=\
 ./pwiz/data/common/BinaryIndexStream.o \
 ./pwiz/data/common/diff_std.o \
 ./pwiz/data/common/Unimod.o \
+./pwiz/data/msdata/Version.o \
 ./pwiz/data/msdata/SpectrumList_MGF.o \
 ./pwiz/data/msdata/DefaultReaderList.o \
 ./pwiz/data/msdata/ChromatogramList_mzML.o \
@@ -60,8 +64,9 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/MSDataFile.o \
 ./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
-./pwiz/data/msdata/Index_mzML.o \
 ./pwiz/data/msdata/SpectrumWorkerThreads.o \
+./pwiz/data/msdata/Index_mzML.o \
+./pwiz/data/msdata/ramp/wglob.o \
 ./pwiz/data/identdata/IdentDataFile.o \
 ./pwiz/data/identdata/IdentData.o \
 ./pwiz/data/identdata/DefaultReaderList.o \
@@ -70,14 +75,13 @@ PWIZOBJECTS=\
 ./pwiz/data/identdata/Serializer_pepXML.o \
 ./pwiz/data/identdata/Serializer_mzid.o \
 ./pwiz/data/identdata/IO.o \
+./pwiz/data/identdata/Version.o \
 ./pwiz/data/identdata/References.o \
 ./pwiz/data/identdata/MascotReader.o \
 ./pwiz/data/proteome/Modification.o \
 ./pwiz/data/proteome/Digestion.o \
 ./pwiz/data/proteome/Peptide.o \
 ./pwiz/data/proteome/AminoAcid.o \
-./pwiz/utility/minimxml/XMLWriter.o \
-./pwiz/utility/minimxml/SAXParser.o \
 ./pwiz/utility/chemistry/Chemistry.o \
 ./pwiz/utility/chemistry/ChemistryData.o \
 ./pwiz/utility/chemistry/MZTolerance.o \
@@ -90,19 +94,23 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/random_access_compressed_ifstream.o \
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
-./pwiz/utility/misc/sha1calc.o \
-./random_access_gzFile.o \
-./RcppExports.o
+./pwiz/utility/minimxml/XMLWriter.o \
+./pwiz/utility/minimxml/SAXParser.o \
+./random_access_gzFile.o 
 
+#./boost/thread/win32/tss_dll.o \
 
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o RcppExports.o
 
 OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o R_init_mzR.o
 
-PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE
+PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
+
+ZLIB_CFLAGS+=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'|\
+    "${R_HOME}/bin/R" --vanilla --slave)
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
+PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(ZLIB_CFLAGS) $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
 
 PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -fgnu89-inline
 
@@ -117,6 +125,10 @@ else
 endif
 
 PKG_LIBS = $(LD_ULDAR) $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf
+
+PKG_LIBS+=$(shell echo 'zlibbioc::pkgconfig("PKG_LIBS_shared")' |\
+    "${R_HOME}/bin/R" --vanilla --slave)
+
 
 all: clean $(SHLIB)
 
