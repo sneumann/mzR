@@ -1,14 +1,120 @@
+PWIZOBJECTS=\
+./boost/system/src/error_code.o \
+./boost/regex/src/posix_api.o \
+./boost/regex/src/fileiter.o \
+./boost/regex/src/regex_raw_buffer.o \
+./boost/regex/src/cregex.o \
+./boost/regex/src/regex_debug.o \
+./boost/regex/src/instances.o \
+./boost/regex/src/icu.o \
+./boost/regex/src/usinstances.o \
+./boost/regex/src/regex.o \
+./boost/regex/src/wide_posix_api.o \
+./boost/regex/src/regex_traits_defaults.o \
+./boost/regex/src/winstances.o \
+./boost/regex/src/wc_regex_traits.o \
+./boost/regex/src/c_regex_traits.o \
+./boost/regex/src/cpp_regex_traits.o \
+./boost/regex/src/static_mutex.o \
+./boost/regex/src/w32_regex_traits.o \
+./boost/iostreams/src/zlib.o \
+./boost/iostreams/src/file_descriptor.o \
+./boost/thread/win32/tss_pe.o \
+./boost/thread/win32/tss_dll.o \
+./boost/thread/win32/thread.o \
+./boost/filesystem/src/operations.o \
+./boost/filesystem/src/path.o \
+./boost/filesystem/src/path_traits.o \
+./boost/filesystem/src/windows_file_codecvt.o \
+./boost/filesystem/src/codecvt_error_category.o \
+./boost/filesystem/src/utf8_codecvt_facet.o \
+./boost/chrono/src/chrono.o \
+./boost/chrono/src/process_cpu_clocks.o \
+./boost/chrono/src/thread_clock.o \
+./pwiz/data/msdata/Version.o \
+./pwiz/data/common/MemoryIndex.o \
+./pwiz/data/common/CVTranslator.o \
+./pwiz/data/common/cv.o \
+./pwiz/data/common/ParamTypes.o \
+./pwiz/data/common/BinaryIndexStream.o \
+./pwiz/data/common/diff_std.o \
+./pwiz/data/common/Unimod.o \
+./pwiz/data/msdata/SpectrumList_MGF.o \
+./pwiz/data/msdata/DefaultReaderList.o \
+./pwiz/data/msdata/ChromatogramList_mzML.o \
+./pwiz/data/msdata/examples.o \
+./pwiz/data/msdata/Serializer_mzML.o \
+./pwiz/data/msdata/Serializer_MSn.o \
+./pwiz/data/msdata/Reader.o \
+./pwiz/data/msdata/Serializer_MGF.o \
+./pwiz/data/msdata/Serializer_mzXML.o \
+./pwiz/data/msdata/SpectrumList_mzML.o \
+./pwiz/data/msdata/SpectrumList_MSn.o \
+./pwiz/data/msdata/BinaryDataEncoder.o \
+./pwiz/data/msdata/Diff.o \
+./pwiz/data/msdata/MSData.o \
+./pwiz/data/msdata/References.o \
+./pwiz/data/msdata/SpectrumList_mzXML.o \
+./pwiz/data/msdata/IO.o \
+./pwiz/data/msdata/SpectrumList_BTDX.o \
+./pwiz/data/msdata/SpectrumInfo.o \
+./pwiz/data/msdata/RAMPAdapter.o \
+./pwiz/data/msdata/ramp/wglob.o \
+./pwiz/data/msdata/LegacyAdapter.o \
+./pwiz/data/msdata/SpectrumIterator.o \
+./pwiz/data/msdata/MSDataFile.o \
+./pwiz/data/msdata/MSNumpress.o \
+./pwiz/data/msdata/SpectrumListCache.o \
+./pwiz/data/msdata/Index_mzML.o \
+./pwiz/data/msdata/SpectrumWorkerThreads.o \
+./pwiz/data/identdata/IdentDataFile.o \
+./pwiz/data/identdata/IdentData.o \
+./pwiz/data/identdata/DefaultReaderList.o \
+./pwiz/data/identdata/Reader.o \
+./pwiz/data/identdata/Serializer_protXML.o \
+./pwiz/data/identdata/Serializer_pepXML.o \
+./pwiz/data/identdata/Serializer_mzid.o \
+./pwiz/data/identdata/IO.o \
+./pwiz/data/identdata/References.o \
+./pwiz/data/identdata/MascotReader.o \
+./pwiz/data/proteome/Modification.o \
+./pwiz/data/proteome/Digestion.o \
+./pwiz/data/proteome/Peptide.o \
+./pwiz/data/proteome/AminoAcid.o \
+./pwiz/utility/minimxml/XMLWriter.o \
+./pwiz/utility/minimxml/SAXParser.o \
+./pwiz/utility/chemistry/Chemistry.o \
+./pwiz/utility/chemistry/ChemistryData.o \
+./pwiz/utility/chemistry/MZTolerance.o \
+./pwiz/utility/misc/IntegerSet.o \
+./pwiz/utility/misc/Base64.o \
+./pwiz/utility/misc/IterationListener.o \
+./pwiz/utility/misc/MSIHandler.o \
+./pwiz/utility/misc/Filesystem.o \
+./pwiz/utility/misc/TabReader.o \
+./pwiz/utility/misc/random_access_compressed_ifstream.o \
+./pwiz/utility/misc/SHA1.o \
+./pwiz/utility/misc/SHA1Calculator.o \
+./pwiz/utility/misc/sha1calc.o \
+./random_access_gzFile.o 
+
 
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o RcppExports.o
 
-OBJECTS= $(MZROBJECTS) R_init_mzR.o rampR.o
+OBJECTS=$(MZROBJECTS) $(PWIZOBJECTS) rampR.o R_init_mzR.o
 
-PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE
+PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB  -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
 
+#ZLIB_CFLAGS=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'|\
+#    "${R_HOME}/bin/R" --vanilla --slave)
+
+#ZLIB_CFLAGS="-Id:\local330\include"
+ZLIB_LDFLAGS="-lz"
+	
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
+PKG_CPPFLAGS=$(ZLIB_CFLAGS) -D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS)  # last include only for cross-compiling
 
-PKG_CFLAGS=-D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -fgnu89-inline
+PKG_CFLAGS=$(ZLIB_CFLAGS) -D_LARGEFILE_SOURCE -I./win/$(R_ARCH) -fgnu89-inline
 
 
 ## Faster Linker on BioC build farm:
@@ -20,7 +126,8 @@ else
 	LD_ULDAR="-Wl,--dynamic-linker=$(ULDAR)/ld.exe"
 endif
 
-PKG_LIBS = $(LD_ULDAR) $(shell $(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ) $(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lpwiz
+#PKG_LIBS = $(LD_ULDAR) $(shell "${R_HOME}/bin/${R_ARCH_BIN}/Rscript.exe" -e "zlibbioc::pkgconfig(\"PKG_LIBS_shared\")") $(PWIZ_LDFLAGS) -lws2_32 -lnetcdf
+PKG_LIBS=$(PWIZ_LDFLAGS) -lws2_32 -lnetcdf -lz
 
 all: clean $(SHLIB)
 
@@ -32,26 +139,3 @@ all: clean $(SHLIB)
 	
 clean:
 	rm -f $(OBJECTS)
-
-## As an alternative, one can also add this code in a file 'configure'
-##
-##    PKG_LIBS=`${R_HOME}/bin/Rscript -e "Rcpp:::LdFlags()"`
-##
-##    sed -e "s|@PKG_LIBS@|${PKG_LIBS}|" \
-##        src/Makevars.in > src/Makevars
-##
-## which together with the following file 'src/Makevars.in'
-##
-##    PKG_LIBS = @PKG_LIBS@
-##
-## can be used to create src/Makevars dynamically. This scheme is more
-## powerful and can be expanded to also check for and link with other
-## libraries.  It should be complemented by a file 'cleanup'
-##
-##    rm src/Makevars
-##
-## which removes the autogenerated file src/Makevars.
-##
-## Of course, autoconf can also be used to write configure files. This is
-## done by a number of packages, but recommended only for more advanced users
-## comfortable with autoconf and its related tools.
