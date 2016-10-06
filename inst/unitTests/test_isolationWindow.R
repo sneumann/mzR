@@ -1,6 +1,6 @@
 test_isolationWindow <- function() {
     library("msdata")
-    f <- msdata::proteomics(full.names = TRUE)
+    f <- msdata::proteomics(full.names = TRUE, pattern = "TMT_")
     rw1 <- openMSfile(f, backend = "Ramp")
     rw2 <- openMSfile(f, backend = "pwiz")
     i1 <- isolationWindow(f)
