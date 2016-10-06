@@ -51,7 +51,7 @@
 
 \examples{
 library("msdata")
-f <- msdata::proteomics(full.names = TRUE)
+f <- msdata::proteomics(full.names = TRUE, pattern = "TMT_")
 isolationWindow(f)
 
 rw <- openMSfile(f)
