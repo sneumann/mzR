@@ -127,7 +127,7 @@ else
 endif
 
 #PKG_LIBS = $(LD_ULDAR) $(shell "${R_HOME}/bin/${R_ARCH_BIN}/Rscript.exe" -e "zlibbioc::pkgconfig(\"PKG_LIBS_shared\")") $(PWIZ_LDFLAGS) -lws2_32 -lnetcdf
-PKG_LIBS=$(PWIZ_LDFLAGS) -lws2_32 -lnetcdf -lz
+PKG_LIBS=$(PWIZ_LDFLAGS) -L./win/$(R_ARCH) -lws2_32 -lnetcdf -lz
 
 all: clean $(SHLIB)
 
