@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <cstring>
 
-#include <boost/config.hpp>
+#include <boost/config.hpp> // for BOOST_DEDUCED_TYPENAME
 #if defined(BOOST_NO_STDC_NAMESPACE)
 namespace std{ 
     using ::memcpy; 
@@ -28,7 +28,11 @@ namespace archive {
 // implementation of binary_binary_oarchive
 
 template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+#if !defined(__BORLANDC__)
+BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
+#else
+void
+#endif
 basic_binary_oarchive<Archive>::init(){
     // write signature in an archive version independent manner
     const std::string file_signature(BOOST_ARCHIVE_SIGNATURE());

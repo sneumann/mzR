@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_DISTANCE)
 #define FUSION_INCLUDE_DISTANCE
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/iterator/distance.hpp>
 
 #endif

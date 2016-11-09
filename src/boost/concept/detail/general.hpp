@@ -4,7 +4,6 @@
 #ifndef BOOST_CONCEPT_DETAIL_GENERAL_DWA2006429_HPP
 # define BOOST_CONCEPT_DETAIL_GENERAL_DWA2006429_HPP
 
-# include <boost/config.hpp>
 # include <boost/preprocessor/cat.hpp>
 # include <boost/concept/detail/backward_compatibility.hpp>
 
@@ -69,8 +68,7 @@ struct requirement_<void(*)(Model)>
 #  define BOOST_CONCEPT_ASSERT_FN( ModelFnPtr )             \
     typedef ::boost::concepts::detail::instantiate<          \
     &::boost::concepts::requirement_<ModelFnPtr>::failed>    \
-      BOOST_PP_CAT(boost_concept_check,__LINE__)             \
-      BOOST_ATTRIBUTE_UNUSED
+      BOOST_PP_CAT(boost_concept_check,__LINE__)
 
 }}
 

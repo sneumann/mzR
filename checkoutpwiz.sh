@@ -12,7 +12,7 @@ cd pwiz
 PWIZREPO=http://svn.code.sf.net/p/proteowizard/code/trunk/pwiz/
 svn co --non-recursive $PWIZREPO .
 
-for DIR in data/msdata data/common utility/chemistry/ utility/misc/ utility/math/ utility/minimxml/ ; do 
+for DIR in data/msdata data/identdata data/proteome data/common utility/chemistry/ utility/misc/ utility/math/ utility/minimxml/ ; do 
     svn co $PWIZREPO/pwiz/$DIR $DIR
 done
 
@@ -35,9 +35,9 @@ for DIR in smart_ptr  config config mpl detail iostreams exception function_type
     ratio chrono atomic move variant archive functional integer locale predef ; do 
     svn co $BOOSTREPO/$DIR $DIR
 done
-       
+
 BOOSTLIBSREPO=http://svn.boost.org/svn/boost/tags/release/$BOOSTVER/libs
-for DIR in iostreams/src thread/src/pthread/ filesystem/src/ regex/src system/src ; do 
+for DIR in chrono/src iostreams/src thread/src/pthread/ filesystem/src/ regex/src system/src ; do 
     svn co $BOOSTLIBSREPO/$DIR $DIR
 done
 

@@ -31,7 +31,6 @@
 #include <stdexcept>
 #include <iostream>
 
-#include <Rcpp.h>
 
 namespace pwiz {
 namespace msdata {
@@ -55,7 +54,7 @@ class PWIZ_API_DECL SpectrumListBase : public SpectrumList
         boost::hash<const char*> H;
         if (warn_msg_hashes.insert(H(msg)).second) // .second is true iff value is new
         {
-            Rcpp::Rcerr << msg << std::endl;
+            std::cerr << msg << std::endl;
         }
     }
 

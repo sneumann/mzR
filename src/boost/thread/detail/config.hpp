@@ -15,7 +15,8 @@
 //#define BOOST_THREAD_DONT_PROVIDE_INTERRUPTIONS
 // ATTRIBUTE_MAY_ALIAS
 
-#if defined(__GNUC__) && !defined(__INTEL_COMPILER)
+#if defined(__GNUC__) && (__GNUC__ * 100 + __GNUC_MINOR__) > 302 \
+    && !defined(__INTEL_COMPILER)
 
   // GCC since 3.3 has may_alias attribute that helps to alleviate optimizer issues with
   // regard to violation of the strict aliasing rules.
@@ -239,29 +240,13 @@
     ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
     ! defined(BOOST_NO_CXX11_DECLTYPE) && \
     ! defined(BOOST_NO_CXX11_DECLTYPE_N3276) && \
-    ! defined(BOOST_NO_CXX11_TRAILING_RESULT_TYPES) && \
+    ! defined(BOOST_NO_CXX11_AUTO) && \
     ! defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && \
     ! defined(BOOST_NO_CXX11_HDR_TUPLE)
 
 #define BOOST_THREAD_PROVIDES_VARIADIC_THREAD
 #endif
 #endif
-
-#if ! defined BOOST_THREAD_PROVIDES_FUTURE_WHEN_ALL_WHEN_ANY \
- && ! defined BOOST_THREAD_DONT_PROVIDE_FUTURE_WHEN_ALL_WHEN_ANY
-
-#if ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
-    ! defined(BOOST_NO_CXX11_HDR_TUPLE)
-
-#define BOOST_THREAD_PROVIDES_FUTURE_WHEN_ALL_WHEN_ANY
-#endif
-#endif
-
-//    ! defined(BOOST_NO_SFINAE_EXPR) &&
-//    ! defined(BOOST_NO_CXX11_RVALUE_REFERENCES) &&
-//    ! defined(BOOST_NO_CXX11_AUTO) &&
-//    ! defined(BOOST_NO_CXX11_DECLTYPE) &&
-//    ! defined(BOOST_NO_CXX11_DECLTYPE_N3276) &&
 
 
 // MAKE_READY_AT_THREAD_EXIT
@@ -353,12 +338,6 @@
 
 #endif
 
-
-//#if ! defined BOOST_NO_CXX11_RVALUE_REFERENCES || defined BOOST_THREAD_USES_MOVE
-#if ! defined BOOST_NO_CXX11_RVALUE_REFERENCES
-#define BOOST_THREAD_FUTURE_USES_OPTIONAL
-#endif
-
 #if BOOST_WORKAROUND(__BORLANDC__, < 0x600)
 #  pragma warn -8008 // Condition always true/false
 #  pragma warn -8080 // Identifier declared but never used
@@ -384,9 +363,7 @@
 // compatibility with the rest of Boost's auto-linking code:
 #if defined(BOOST_THREAD_DYN_LINK) || defined(BOOST_ALL_DYN_LINK)
 # undef  BOOST_THREAD_USE_LIB
-# if !defined(BOOST_THREAD_USE_DLL)
-#  define BOOST_THREAD_USE_DLL
-# endif
+# define BOOST_THREAD_USE_DLL
 #endif
 
 #if defined(BOOST_THREAD_BUILD_DLL)   //Build dll

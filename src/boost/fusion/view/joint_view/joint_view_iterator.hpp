@@ -7,7 +7,6 @@
 #if !defined(FUSION_JOINT_VIEW_ITERATOR_07162005_0140)
 #define FUSION_JOINT_VIEW_ITERATOR_07162005_0140
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/support/iterator_base.hpp>
 #include <boost/fusion/iterator/equal_to.hpp>
 #include <boost/fusion/iterator/mpl/convert_iterator.hpp>
@@ -41,7 +40,6 @@ namespace boost { namespace fusion
         typedef Category category;
         BOOST_STATIC_ASSERT((!result_of::equal_to<first_type, last_type>::value));
 
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         joint_view_iterator(First const& in_first, Concat const& in_concat)
             : first(first_converter::call(in_first))
             , concat(concat_converter::call(in_concat))
@@ -55,15 +53,6 @@ namespace boost { namespace fusion
         joint_view_iterator& operator= (joint_view_iterator const&);
     };
 }}
-
-#ifdef BOOST_FUSION_WORKAROUND_FOR_LWG_2408
-namespace std
-{
-    template <typename Category, typename First, typename Last, typename Concat>
-    struct iterator_traits< ::boost::fusion::joint_view_iterator<Category, First, Last, Concat> >
-    { };
-}
-#endif
 
 #endif
 

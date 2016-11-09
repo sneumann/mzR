@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <cstring>
 
-#include <boost/config.hpp>
+#include <boost/config.hpp> // for BOOST_DEDUCED_TYPENAME
 #if defined(BOOST_NO_STDC_NAMESPACE)
 namespace std{ 
     using ::memcpy; 
@@ -32,11 +32,11 @@ namespace archive {
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // implementation of binary_binary_archive
 template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_binary_iarchive<Archive>::load_override(class_name_type & t){
+BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
+basic_binary_iarchive<Archive>::load_override(class_name_type & t, int){
     std::string cn;
     cn.reserve(BOOST_SERIALIZATION_MAX_KEY_SIZE);
-    load_override(cn);
+    load_override(cn, 0);
     if(cn.size() > (BOOST_SERIALIZATION_MAX_KEY_SIZE - 1))
         boost::serialization::throw_exception(
             archive_exception(archive_exception::invalid_class_name)
@@ -47,13 +47,11 @@ basic_binary_iarchive<Archive>::load_override(class_name_type & t){
 }
 
 template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_binary_iarchive<Archive>::init(void){
+BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
+basic_binary_iarchive<Archive>::init(){
     // read signature in an archive version independent manner
     std::string file_signature;
-    
-    #if 0 // commented out since it interfers with derivation
-    BOOST_TRY {
+    try {
         std::size_t l;
         this->This()->load(l);
         if(l == std::strlen(BOOST_ARCHIVE_SIGNATURE())) {
@@ -67,16 +65,10 @@ basic_binary_iarchive<Archive>::init(void){
                 this->This()->load_binary(&(*file_signature.begin()), l);
         }
     }
-    BOOST_CATCH(archive_exception const &) {  // catch stream_error archive exceptions
+    catch(archive_exception const &) {  // catch stream_error archive exceptions
         // will cause invalid_signature archive exception to be thrown below
         file_signature = "";   
     }
-    BOOST_CATCH_END
-    #else
-    // https://svn.boost.org/trac/boost/ticket/7301
-    * this->This() >> file_signature;
-    #endif
-
     if(file_signature != BOOST_ARCHIVE_SIGNATURE())
         boost::serialization::throw_exception(
             archive_exception(archive_exception::invalid_signature)
@@ -121,7 +113,10 @@ basic_binary_iarchive<Archive>::init(void){
     #if BOOST_WORKAROUND(__MWERKS__, BOOST_TESTED_AT(0x3205))
     this->set_library_version(input_library_version);
     #else
-    detail::basic_iarchive::set_library_version(input_library_version);
+    #if ! BOOST_WORKAROUND(BOOST_MSVC, <= 1200)
+    detail::
+    #endif
+    basic_iarchive::set_library_version(input_library_version);
     #endif
     
     if(BOOST_ARCHIVE_VERSION() < input_library_version)

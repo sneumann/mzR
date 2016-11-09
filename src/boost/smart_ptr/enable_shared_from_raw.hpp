@@ -4,7 +4,7 @@
 //
 //  enable_shared_from_raw.hpp
 //
-//  Copyright 2002, 2009, 2014 Peter Dimov
+//  Copyright 2002, 2009 Peter Dimov
 //  Copyright 2008-2009 Frank Mori Hess
 //
 //  Distributed under the Boost Software License, Version 1.0.
@@ -53,18 +53,9 @@ protected:
 
 private:
 
-    void init_if_expired() const
+    void init_weak_once() const
     {
         if( weak_this_.expired() )
-        {
-            shared_this_.reset( static_cast<void*>(0), detail::esft2_deleter_wrapper() );
-            weak_this_ = shared_this_;
-        }
-    }
-
-    void init_if_empty() const
-    {
-        if( weak_this_._empty() )
         {
             shared_this_.reset( static_cast<void*>(0), detail::esft2_deleter_wrapper() );
             weak_this_ = shared_this_;
@@ -81,26 +72,16 @@ private:
     template< class X, class Y > friend inline void detail::sp_enable_shared_from_this( boost::shared_ptr<X> * ppx, Y const * py, boost::enable_shared_from_raw const * pe );
 #endif
 
-    shared_ptr<void const volatile> shared_from_this() const
+    shared_ptr<void> shared_from_this()
     {
-        init_if_expired();
-        return shared_ptr<void const volatile>( weak_this_ );
+        init_weak_once();
+        return shared_ptr<void>( weak_this_ );
     }
 
-    shared_ptr<void const volatile> shared_from_this() const volatile
+    shared_ptr<const void> shared_from_this() const
     {
-        return const_cast< enable_shared_from_raw const * >( this )->shared_from_this();
-    }
-
-    weak_ptr<void const volatile> weak_from_this() const
-    {
-        init_if_empty();
-        return weak_this_;
-    }
-
-    weak_ptr<void const volatile> weak_from_this() const volatile
-    {
-        return const_cast< enable_shared_from_raw const * >( this )->weak_from_this();
+        init_weak_once();
+        return shared_ptr<const void>( weak_this_ );
     }
 
     // Note: invoked automatically by shared_ptr; do not call
@@ -126,11 +107,9 @@ private:
         }
     }
 
-    mutable weak_ptr<void const volatile> weak_this_;
-
+    mutable weak_ptr<void> weak_this_;
 private:
-
-    mutable shared_ptr<void const volatile> shared_this_;
+    mutable shared_ptr<void> shared_this_;
 };
 
 template<typename T>
@@ -145,7 +124,7 @@ boost::weak_ptr<T> weak_from_raw(T *p)
 {
     BOOST_ASSERT(p != 0);
     boost::weak_ptr<T> result;
-    result._internal_aliasing_assign(p->enable_shared_from_raw::weak_from_this(), p);
+    result._internal_aliasing_assign(p->enable_shared_from_raw::weak_this_, p);
     return result;
 }
 

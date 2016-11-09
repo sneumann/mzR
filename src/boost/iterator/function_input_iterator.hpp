@@ -20,8 +20,6 @@
 
 namespace boost {
 
-namespace iterators {
-
     namespace impl {
 
         template <class Function, class Input>
@@ -35,7 +33,7 @@ namespace iterators {
         {
         public:
             function_input_iterator() {}
-            function_input_iterator(Function & f_, Input state_ = Input())
+            function_input_iterator(Function & f_, Input state_ = Input()) 
                 : f(&f_), state(state_) {}
 
             void increment() {
@@ -46,7 +44,7 @@ namespace iterators {
                 ++state;
             }
 
-            typename Function::result_type const &
+            typename Function::result_type const & 
                 dereference() const {
                     return (value ? value : value = (*f)()).get();
             }
@@ -111,7 +109,7 @@ namespace iterators {
     } // namespace impl
 
     template <class Function, class Input>
-    class function_input_iterator
+    class function_input_iterator 
         : public mpl::if_<
             function_types::is_function_pointer<Function>,
             impl::function_pointer_input_iterator<Function,Input>,
@@ -156,14 +154,7 @@ namespace iterators {
         bool operator==(infinite &) const { return false; };
         bool operator==(infinite const &) const { return false; };
     };
-
-} // namespace iterators
-
-using iterators::function_input_iterator;
-using iterators::make_function_input_iterator;
-using iterators::infinite;
-
-} // namespace boost
+}
 
 #endif
 

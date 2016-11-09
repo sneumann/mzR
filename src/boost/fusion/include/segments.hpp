@@ -7,7 +7,6 @@
 #if !defined(BOOST_FUSION_INCLUDE_SEGMENTS)
 #define BOOST_FUSION_INCLUDE_SEGMENTS
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/sequence/intrinsic/segments.hpp>
 
 #endif

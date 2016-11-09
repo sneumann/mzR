@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_ZIP_VIEW)
 #define FUSION_INCLUDE_ZIP_VIEW
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/view/zip_view.hpp>
 
 #endif

@@ -28,7 +28,7 @@ private: // representation
 
 public: // structors
 
-    ~backup_holder() BOOST_NOEXCEPT
+    ~backup_holder()
     {
         delete backup_;
     }
@@ -63,12 +63,12 @@ public: // modifiers
 
 public: // queries
 
-    T& get() BOOST_NOEXCEPT
+    T& get()
     {
         return *backup_;
     }
 
-    const T& get() const BOOST_NOEXCEPT
+    const T& get() const
     {
         return *backup_;
     }

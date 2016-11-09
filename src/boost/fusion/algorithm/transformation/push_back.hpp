@@ -7,7 +7,6 @@
 #if !defined(FUSION_PUSH_BACK_07162005_0235)
 #define FUSION_PUSH_BACK_07162005_0235
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/support/detail/as_fusion_element.hpp>
 #include <boost/fusion/view/joint_view/joint_view.hpp>
 #include <boost/fusion/view/single_view/single_view.hpp>
@@ -27,8 +26,8 @@ namespace boost { namespace fusion
     }
 
     template <typename Sequence, typename T>
-    BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-    inline typename
+    inline 
+    typename
         lazy_enable_if<
             traits::is_sequence<Sequence>
           , result_of::push_back<Sequence const, T>

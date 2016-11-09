@@ -6,8 +6,8 @@
  Implementation of the symplectic MacLachlan stepper for separable Hamiltonian system.
  [end_description]
  
- Copyright 2011-2013 Karsten Ahnert
- Copyright 2011-2013 Mario Mulansky
+ Copyright 2009-2011 Karsten Ahnert
+ Copyright 2009-2011 Mario Mulansky
  
  Distributed under the Boost Software License, Version 1.0.
  (See accompanying file LICENSE_1_0.txt or
@@ -23,10 +23,6 @@
 
 #include <boost/numeric/odeint/algebra/range_algebra.hpp>
 #include <boost/numeric/odeint/algebra/default_operations.hpp>
-#include <boost/numeric/odeint/algebra/algebra_dispatcher.hpp>
-#include <boost/numeric/odeint/algebra/operations_dispatcher.hpp>
-
-#include <boost/numeric/odeint/util/resizer.hpp>
 
 #include <boost/array.hpp>
 
@@ -89,8 +85,8 @@ template<
     class CoorDeriv = Coor ,
     class MomentumDeriv = Coor ,
     class Time = Value ,
-    class Algebra = typename algebra_dispatcher< Coor >::algebra_type ,
-    class Operations = typename operations_dispatcher< Coor >::operations_type ,
+    class Algebra = range_algebra ,
+    class Operations = default_operations ,
     class Resizer = initially_resizer
     >
 #ifndef DOXYGEN_SKIP

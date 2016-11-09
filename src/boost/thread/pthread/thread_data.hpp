@@ -15,6 +15,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/optional.hpp>
 #include <boost/assert.hpp>
 #ifdef BOOST_THREAD_USES_CHRONO
 #include <boost/chrono/system_clocks.hpp>
@@ -25,9 +26,7 @@
 #include <utility>
 
 #if defined(__ANDROID__)
-# ifndef PAGE_SIZE
-#  define PAGE_SIZE 4096
-# endif
+#include <asm/page.h> // http://code.google.com/p/android/issues/detail?id=39983
 #endif
 
 #include <pthread.h>
@@ -115,13 +114,8 @@ namespace boost
             boost::detail::thread_exit_callback_node* thread_exit_callbacks;
             std::map<void const*,boost::detail::tss_data_node> tss_data;
 
-//#if defined BOOST_THREAD_PROVIDES_INTERRUPTIONS
-            // These data must be at the end so that the access to the other fields doesn't change
-            // when BOOST_THREAD_PROVIDES_INTERRUPTIONS is defined.
-            // Another option is to have them always
             pthread_mutex_t* cond_mutex;
             pthread_cond_t* current_cond;
-//#endif
             typedef std::vector<std::pair<condition_variable*, mutex*>
             //, hidden_allocator<std::pair<condition_variable*, mutex*> >
             > notify_list_t;
@@ -141,10 +135,8 @@ namespace boost
                 thread_handle(0),
                 done(false),join_started(false),joined(false),
                 thread_exit_callbacks(0),
-//#if defined BOOST_THREAD_PROVIDES_INTERRUPTIONS
                 cond_mutex(0),
                 current_cond(0),
-//#endif
                 notify(),
                 async_states_()
 //#if defined BOOST_THREAD_PROVIDES_INTERRUPTIONS
@@ -228,11 +220,11 @@ namespace boost
 
     namespace this_thread
     {
-        namespace hiden
-        {
-          void BOOST_THREAD_DECL sleep_for(const timespec& ts);
-          void BOOST_THREAD_DECL sleep_until(const timespec& ts);
-        }
+      namespace hiden
+      {
+        void BOOST_THREAD_DECL sleep_for(const timespec& ts);
+        void BOOST_THREAD_DECL sleep_until(const timespec& ts);
+      }
 
 #ifdef BOOST_THREAD_USES_CHRONO
 #ifdef BOOST_THREAD_SLEEP_FOR_IS_STEADY
@@ -244,27 +236,6 @@ namespace boost
         }
 #endif
 #endif // BOOST_THREAD_USES_CHRONO
-
-        namespace no_interruption_point
-        {
-          namespace hiden
-          {
-            void BOOST_THREAD_DECL sleep_for(const timespec& ts);
-            void BOOST_THREAD_DECL sleep_until(const timespec& ts);
-          }
-
-    #ifdef BOOST_THREAD_USES_CHRONO
-    #ifdef BOOST_THREAD_SLEEP_FOR_IS_STEADY
-
-          inline
-          void BOOST_SYMBOL_VISIBLE sleep_for(const chrono::nanoseconds& ns)
-          {
-              return boost::this_thread::no_interruption_point::hiden::sleep_for(boost::detail::to_timespec(ns));
-          }
-    #endif
-    #endif // BOOST_THREAD_USES_CHRONO
-
-        } // no_interruption_point
 
         void BOOST_THREAD_DECL yield() BOOST_NOEXCEPT;
 

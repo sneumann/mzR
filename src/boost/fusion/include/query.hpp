@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_QUERY)
 #define FUSION_INCLUDE_QUERY
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/algorithm/query.hpp>
 
 #endif

@@ -37,11 +37,11 @@ namespace boost
     basic_lockable_adapter()
     {}
 
-    void lock() const
+    void lock()
     {
       lockable().lock();
     }
-    void unlock() const
+    void unlock()
     {
       lockable().unlock();
     }
@@ -56,7 +56,7 @@ namespace boost
   public:
     typedef Lockable mutex_type;
 
-    bool try_lock() const
+    bool try_lock()
     {
       return this->lockable().try_lock();
     }
@@ -71,12 +71,12 @@ namespace boost
     typedef TimedLock mutex_type;
 
     template <typename Clock, typename Duration>
-    bool try_lock_until(chrono::time_point<Clock, Duration> const & abs_time) const
+    bool try_lock_until(chrono::time_point<Clock, Duration> const & abs_time)
     {
       return this->lockable().try_lock_until(abs_time);
     }
     template <typename Rep, typename Period>
-    bool try_lock_for(chrono::duration<Rep, Period> const & rel_time) const
+    bool try_lock_for(chrono::duration<Rep, Period> const & rel_time)
     {
       return this->lockable().try_lock_for(rel_time);
     }
@@ -91,26 +91,26 @@ namespace boost
   public:
     typedef SharableLock mutex_type;
 
-    void lock_shared() const
+    void lock_shared()
     {
       this->lockable().lock_shared();
     }
-    bool try_lock_shared() const
+    bool try_lock_shared()
     {
       return this->lockable().try_lock_shared();
     }
-    void unlock_shared() const
+    void unlock_shared()
     {
       this->lockable().unlock_shared();
     }
 
     template <typename Clock, typename Duration>
-    bool try_lock_shared_until(chrono::time_point<Clock, Duration> const & abs_time) const
+    bool try_lock_shared_until(chrono::time_point<Clock, Duration> const & abs_time)
     {
       return this->lockable().try_lock_shared_until(abs_time);
     }
     template <typename Rep, typename Period>
-    bool try_lock_shared_for(chrono::duration<Rep, Period> const & rel_time) const
+    bool try_lock_shared_for(chrono::duration<Rep, Period> const & rel_time)
     {
       return this->lockable().try_lock_shared_for(rel_time);
     }
@@ -126,95 +126,95 @@ namespace boost
   public:
     typedef UpgradableLock mutex_type;
 
-    void lock_upgrade() const
+    void lock_upgrade()
     {
       this->lockable().lock_upgrade();
     }
 
-    bool try_lock_upgrade() const
+    bool try_lock_upgrade()
     {
       return this->lockable().try_lock_upgrade();
     }
 
-    void unlock_upgrade() const
+    void unlock_upgrade()
     {
       this->lockable().unlock_upgrade();
     }
 
     template <typename Clock, typename Duration>
-    bool try_lock_upgrade_until(chrono::time_point<Clock, Duration> const & abs_time) const
+    bool try_lock_upgrade_until(chrono::time_point<Clock, Duration> const & abs_time)
     {
       return this->lockable().try_lock_upgrade_until(abs_time);
     }
     template <typename Rep, typename Period>
-    bool try_lock_upgrade_for(chrono::duration<Rep, Period> const & rel_time) const
+    bool try_lock_upgrade_for(chrono::duration<Rep, Period> const & rel_time)
     {
       return this->lockable().try_lock_upgrade_for(rel_time);
     }
 
-    bool try_unlock_shared_and_lock() const
+    bool try_unlock_shared_and_lock()
     {
       return this->lockable().try_unlock_shared_and_lock();
     }
 
     template <typename Clock, typename Duration>
-    bool try_unlock_shared_and_lock_until(chrono::time_point<Clock, Duration> const & abs_time) const
+    bool try_unlock_shared_and_lock_until(chrono::time_point<Clock, Duration> const & abs_time)
     {
       return this->lockable().try_unlock_shared_and_lock_until(abs_time);
     }
     template <typename Rep, typename Period>
-    bool try_unlock_shared_and_lock_for(chrono::duration<Rep, Period> const & rel_time) const
+    bool try_unlock_shared_and_lock_for(chrono::duration<Rep, Period> const & rel_time)
     {
       return this->lockable().try_unlock_shared_and_lock_for(rel_time);
     }
 
-    void unlock_and_lock_shared() const
+    void unlock_and_lock_shared()
     {
       this->lockable().unlock_and_lock_shared();
     }
 
-    bool try_unlock_shared_and_lock_upgrade() const
+    bool try_unlock_shared_and_lock_upgrade()
     {
       return this->lockable().try_unlock_shared_and_lock_upgrade();
     }
 
     template <typename Clock, typename Duration>
-    bool try_unlock_shared_and_lock_upgrade_until(chrono::time_point<Clock, Duration> const & abs_time) const
+    bool try_unlock_shared_and_lock_upgrade_until(chrono::time_point<Clock, Duration> const & abs_time)
     {
       return this->lockable().try_unlock_shared_and_lock_upgrade_until(abs_time);
     }
     template <typename Rep, typename Period>
-    bool try_unlock_shared_and_lock_upgrade_for(chrono::duration<Rep, Period> const & rel_time) const
+    bool try_unlock_shared_and_lock_upgrade_for(chrono::duration<Rep, Period> const & rel_time)
     {
       return this->lockable().try_unlock_shared_and_lock_upgrade_for(rel_time);
     }
 
-    void unlock_and_lock_upgrade() const
+    void unlock_and_lock_upgrade()
     {
       this->lockable().unlock_and_lock_upgrade();
     }
 
-    void unlock_upgrade_and_lock() const
+    void unlock_upgrade_and_lock()
     {
       this->lockable().unlock_upgrade_and_lock();
     }
 
-    bool try_unlock_upgrade_and_lock() const
+    bool try_unlock_upgrade_and_lock()
     {
       return this->lockable().try_unlock_upgrade_and_lock();
     }
     template <typename Clock, typename Duration>
-    bool try_unlock_upgrade_and_lock_until(chrono::time_point<Clock, Duration> const & abs_time) const
+    bool try_unlock_upgrade_and_lock_until(chrono::time_point<Clock, Duration> const & abs_time)
     {
       return this->lockable().try_unlock_upgrade_and_lock_until(abs_time);
     }
     template <typename Rep, typename Period>
-    bool try_unlock_upgrade_and_lock_for(chrono::duration<Rep, Period> const & rel_time) const
+    bool try_unlock_upgrade_and_lock_for(chrono::duration<Rep, Period> const & rel_time)
     {
       return this->lockable().try_unlock_upgrade_and_lock_for(rel_time);
     }
 
-    void unlock_upgrade_and_lock_shared() const
+    void unlock_upgrade_and_lock_shared()
     {
       this->lockable().unlock_upgrade_and_lock_shared();
     }

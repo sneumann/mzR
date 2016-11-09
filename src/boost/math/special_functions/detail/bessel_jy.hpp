@@ -286,11 +286,8 @@ namespace boost { namespace math {
             reflect = true;
             v = -v;                             // v is non-negative from here
          }
-         if (v > static_cast<T>((std::numeric_limits<int>::max)()))
-         {
-            *J = *Y = policies::raise_evaluation_error<T>(function, "Order of Bessel function is too large to evaluate: got %1%", v, pol);
-            return 1;
-         }
+         if(v > static_cast<T>((std::numeric_limits<int>::max)()))
+            policies::raise_evaluation_error<T>(function, "Order of Bessel function is too large to evaluate: got %1%", v, pol);
          n = iround(v, pol);
          u = v - n;                              // -1/2 <= u < 1/2
 
@@ -458,7 +455,6 @@ namespace boost { namespace math {
             CF1_jy(v, x, &fv, &s, pol);
             // tiny initial value to prevent overflow
             T init = sqrt(tools::min_value<T>());
-            BOOST_MATH_INSTRUMENT_VARIABLE(init);
             prev = fv * s * init;
             current = s * init;
             if(v < max_factorial<T>::value)
@@ -519,14 +515,7 @@ namespace boost { namespace math {
             {
                gamma = u * tools::epsilon<T>() / x;
             }
-            BOOST_MATH_INSTRUMENT_VARIABLE(current);
-            BOOST_MATH_INSTRUMENT_VARIABLE(W);
-            BOOST_MATH_INSTRUMENT_VARIABLE(q);
-            BOOST_MATH_INSTRUMENT_VARIABLE(gamma);
-            BOOST_MATH_INSTRUMENT_VARIABLE(p);
-            BOOST_MATH_INSTRUMENT_VARIABLE(t);
             Ju = sign(current) * sqrt(W / (q + gamma * (p - t)));
-            BOOST_MATH_INSTRUMENT_VARIABLE(Ju);
 
             Jv = Ju * ratio;                    // normalization
 

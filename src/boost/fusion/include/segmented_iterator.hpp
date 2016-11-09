@@ -7,7 +7,6 @@
 #if !defined(BOOST_FUSION_INCLUDE_SEGMENTED_ITERATOR)
 #define BOOST_FUSION_INCLUDE_SEGMENTED_ITERATOR
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/iterator/segmented_iterator.hpp>
 
 #endif

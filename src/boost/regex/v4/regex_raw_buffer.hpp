@@ -129,7 +129,7 @@ public:
    {
       if(size_type(last - end) < n)
          resize(n + (end - start));
-      pointer result = end;
+      register pointer result = end;
       end += n;
       return result;
    }

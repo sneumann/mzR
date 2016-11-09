@@ -8,7 +8,6 @@
 #if !defined(BOOST_FUSION_REPETITIVE_VIEW_NEXT_IMPL_HPP_INCLUDED)
 #define BOOST_FUSION_REPETITIVE_VIEW_NEXT_IMPL_HPP_INCLUDED
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/iterator/next.hpp>
 #include <boost/fusion/iterator/equal_to.hpp>
 
@@ -42,7 +41,6 @@ namespace boost { namespace fusion
                     >
                 type;
 
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type call(Iterator const& i)
                 {
                     return type(i.seq, next(i.pos));
@@ -59,7 +57,6 @@ namespace boost { namespace fusion
                     > 
                 type;
 
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type call(Iterator const& i)
                 {
                     return type(i.seq);
@@ -80,7 +77,6 @@ namespace boost { namespace fusion
 
                 typedef Iterator type;
 
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type call(Iterator const& i)
                 {
                     return type(i);

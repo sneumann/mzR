@@ -267,15 +267,14 @@ void mapfile::lock(pointer* node)const
            read_size = std::fread(*node + sizeof(int), _size % buf_size, 1, hfile); 
         else
            read_size = std::fread(*node + sizeof(int), buf_size, 1, hfile);
+#ifndef BOOST_NO_EXCEPTIONS 
         if((read_size == 0) || (std::ferror(hfile)))
         { 
-#ifndef BOOST_NO_EXCEPTIONS 
-           unlock(node);
            throw std::runtime_error("Unable to read file."); 
-#else 
-           BOOST_REGEX_NOEH_ASSERT((0 == std::ferror(hfile)) && (read_size != 0)); 
-#endif 
         } 
+#else 
+        BOOST_REGEX_NOEH_ASSERT((0 == std::ferror(hfile)) && (read_size != 0)); 
+#endif 
       }
       else
       {

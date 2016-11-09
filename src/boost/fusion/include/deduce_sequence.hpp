@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_DEDUCE_SEQUENCE)
 #define FUSION_INCLUDE_DEDUCE_SEQUENCE
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/support/deduce_sequence.hpp>
 
 #endif

@@ -8,7 +8,6 @@
 #if !defined(FUSION_CONVERT_20061213_2207)
 #define FUSION_CONVERT_20061213_2207
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/container/deque/detail/convert_impl.hpp>
 #include <boost/fusion/container/deque/deque.hpp>
 
@@ -39,7 +38,6 @@ namespace boost { namespace fusion
     }
 
     template <typename Sequence>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::as_deque<Sequence>::type
     as_deque(Sequence& seq)
     {
@@ -48,7 +46,6 @@ namespace boost { namespace fusion
     }
 
     template <typename Sequence>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::as_deque<Sequence const>::type
     as_deque(Sequence const& seq)
     {

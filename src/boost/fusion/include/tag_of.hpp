@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_TAG_OF)
 #define FUSION_INCLUDE_TAG_OF
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/support/tag_of.hpp>
 
 #endif

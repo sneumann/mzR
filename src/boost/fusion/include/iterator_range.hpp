@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_ITERATOR_RANGE)
 #define FUSION_INCLUDE_ITERATOR_RANGE
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/view/iterator_range.hpp>
 
 #endif

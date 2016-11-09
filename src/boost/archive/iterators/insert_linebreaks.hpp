@@ -2,7 +2,7 @@
 #define BOOST_ARCHIVE_ITERATORS_INSERT_LINEBREAKS_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -18,10 +18,12 @@
 
 #include <boost/assert.hpp>
 
-#include <boost/config.hpp>
+#include <boost/config.hpp> // for BOOST_DEDUCED_TYPENAME
 #if defined(BOOST_NO_STDC_NAMESPACE)
 namespace std{ using ::memcpy; }
 #endif
+
+#include <boost/serialization/pfto.hpp>
 
 #include <boost/iterator/iterator_adaptor.hpp>
 #include <boost/iterator/iterator_traits.hpp>
@@ -35,7 +37,7 @@ namespace iterators {
 template<
     class Base, 
     int N, 
-    class CharType = typename boost::iterator_value<Base>::type
+    class CharType = BOOST_DEDUCED_TYPENAME boost::iterator_value<Base>::type
 >
 class insert_linebreaks : 
     public iterator_adaptor<
@@ -81,8 +83,8 @@ private:
 public:
     // make composible buy using templated constructor
     template<class T>
-    insert_linebreaks(T  start) :
-        super_t(Base(static_cast< T >(start))),
+    insert_linebreaks(BOOST_PFTO_WRAPPER(T)  start) :
+        super_t(Base(BOOST_MAKE_PFTO_WRAPPER(static_cast< T >(start)))),
         m_count(0)
     {}
     // intel 7.1 doesn't like default copy constructor

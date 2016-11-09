@@ -7,7 +7,6 @@
 #if !defined(BOOST_FUSION_VALUE_AT_IMPL_09262006_1926)
 #define BOOST_FUSION_VALUE_AT_IMPL_09262006_1926
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/tuple/tuple.hpp>
 
 namespace boost { namespace fusion

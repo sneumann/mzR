@@ -2,7 +2,7 @@
 #define BOOST_ARCHIVE_BASIC_TEXT_OARCHIVE_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -24,8 +24,11 @@
 // in such cases.   So we can't use basic_ostream<OStream::char_type> but rather
 // use two template parameters
 
+#include <boost/assert.hpp>
 #include <boost/config.hpp>
+#include <boost/serialization/pfto.hpp>
 #include <boost/detail/workaround.hpp>
+
 #include <boost/archive/detail/common_oarchive.hpp>
 #include <boost/serialization/string.hpp>
 
@@ -39,36 +42,30 @@
 namespace boost {
 namespace archive {
 
-namespace detail {
-    template<class Archive> class interface_oarchive;
-} // namespace detail
-
 /////////////////////////////////////////////////////////////////////////
 // class basic_text_oarchive 
 template<class Archive>
-class BOOST_SYMBOL_VISIBLE basic_text_oarchive : 
+class basic_text_oarchive : 
     public detail::common_oarchive<Archive>
 {
-#ifdef BOOST_NO_MEMBER_TEMPLATE_FRIENDS
-public:
-#else
 protected:
-    #if BOOST_WORKAROUND(BOOST_MSVC, < 1500)
-        // for some inexplicable reason insertion of "class" generates compile erro
-        // on msvc 7.1
-        friend detail::interface_oarchive<Archive>;
-    #else
-        friend class detail::interface_oarchive<Archive>;
-    #endif
+#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300) \
+|| BOOST_WORKAROUND(__BORLANDC__,BOOST_TESTED_AT(0x560))
+public:
+#elif defined(BOOST_MSVC)
+    // for some inexplicable reason insertion of "class" generates compile erro
+    // on msvc 7.1
+    friend detail::interface_oarchive<Archive>;
+#else
+    friend class detail::interface_oarchive<Archive>;
 #endif
-
     enum {
         none,
         eol,
         space
     } delimiter;
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
     newtoken();
 
     void newline(){
@@ -79,25 +76,25 @@ protected:
     // extra stuff to get it passed borland compilers
     typedef detail::common_oarchive<Archive> detail_common_oarchive;
     template<class T>
-    void save_override(T & t){
-        this->detail_common_oarchive::save_override(t);
+    void save_override(T & t, BOOST_PFTO int){
+        this->detail_common_oarchive::save_override(t, 0);
     }
 
     // start new objects on a new line
-    void save_override(const object_id_type & t){
+    void save_override(const object_id_type & t, int){
         this->This()->newline();
-        this->detail_common_oarchive::save_override(t);
+        this->detail_common_oarchive::save_override(t, 0);
     }
 
     // text file don't include the optional information 
-    void save_override(const class_id_optional_type & /* t */){}
+    void save_override(const class_id_optional_type & /* t */, int){}
 
-    void save_override(const class_name_type & t){
+    void save_override(const class_name_type & t, int){
         const std::string s(t);
         * this->This() << s;
     }
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
     init();
 
     basic_text_oarchive(unsigned int flags) :

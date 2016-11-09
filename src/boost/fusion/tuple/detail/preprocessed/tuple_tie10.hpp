@@ -9,83 +9,73 @@
 namespace boost { namespace fusion
 {
     template <typename T0>
-    BOOST_FUSION_GPU_ENABLED
     inline tuple<T0&>
-    tie(T0 & arg0)
+    tie(T0 & _0)
     {
         return tuple<T0&>(
-            arg0);
+            _0);
     }
     template <typename T0 , typename T1>
-    BOOST_FUSION_GPU_ENABLED
     inline tuple<T0& , T1&>
-    tie(T0 & arg0 , T1 & arg1)
+    tie(T0 & _0 , T1 & _1)
     {
         return tuple<T0& , T1&>(
-            arg0 , arg1);
+            _0 , _1);
     }
     template <typename T0 , typename T1 , typename T2>
-    BOOST_FUSION_GPU_ENABLED
     inline tuple<T0& , T1& , T2&>
-    tie(T0 & arg0 , T1 & arg1 , T2 & arg2)
+    tie(T0 & _0 , T1 & _1 , T2 & _2)
     {
         return tuple<T0& , T1& , T2&>(
-            arg0 , arg1 , arg2);
+            _0 , _1 , _2);
     }
     template <typename T0 , typename T1 , typename T2 , typename T3>
-    BOOST_FUSION_GPU_ENABLED
     inline tuple<T0& , T1& , T2& , T3&>
-    tie(T0 & arg0 , T1 & arg1 , T2 & arg2 , T3 & arg3)
+    tie(T0 & _0 , T1 & _1 , T2 & _2 , T3 & _3)
     {
         return tuple<T0& , T1& , T2& , T3&>(
-            arg0 , arg1 , arg2 , arg3);
+            _0 , _1 , _2 , _3);
     }
     template <typename T0 , typename T1 , typename T2 , typename T3 , typename T4>
-    BOOST_FUSION_GPU_ENABLED
     inline tuple<T0& , T1& , T2& , T3& , T4&>
-    tie(T0 & arg0 , T1 & arg1 , T2 & arg2 , T3 & arg3 , T4 & arg4)
+    tie(T0 & _0 , T1 & _1 , T2 & _2 , T3 & _3 , T4 & _4)
     {
         return tuple<T0& , T1& , T2& , T3& , T4&>(
-            arg0 , arg1 , arg2 , arg3 , arg4);
+            _0 , _1 , _2 , _3 , _4);
     }
     template <typename T0 , typename T1 , typename T2 , typename T3 , typename T4 , typename T5>
-    BOOST_FUSION_GPU_ENABLED
     inline tuple<T0& , T1& , T2& , T3& , T4& , T5&>
-    tie(T0 & arg0 , T1 & arg1 , T2 & arg2 , T3 & arg3 , T4 & arg4 , T5 & arg5)
+    tie(T0 & _0 , T1 & _1 , T2 & _2 , T3 & _3 , T4 & _4 , T5 & _5)
     {
         return tuple<T0& , T1& , T2& , T3& , T4& , T5&>(
-            arg0 , arg1 , arg2 , arg3 , arg4 , arg5);
+            _0 , _1 , _2 , _3 , _4 , _5);
     }
     template <typename T0 , typename T1 , typename T2 , typename T3 , typename T4 , typename T5 , typename T6>
-    BOOST_FUSION_GPU_ENABLED
     inline tuple<T0& , T1& , T2& , T3& , T4& , T5& , T6&>
-    tie(T0 & arg0 , T1 & arg1 , T2 & arg2 , T3 & arg3 , T4 & arg4 , T5 & arg5 , T6 & arg6)
+    tie(T0 & _0 , T1 & _1 , T2 & _2 , T3 & _3 , T4 & _4 , T5 & _5 , T6 & _6)
     {
         return tuple<T0& , T1& , T2& , T3& , T4& , T5& , T6&>(
-            arg0 , arg1 , arg2 , arg3 , arg4 , arg5 , arg6);
+            _0 , _1 , _2 , _3 , _4 , _5 , _6);
     }
     template <typename T0 , typename T1 , typename T2 , typename T3 , typename T4 , typename T5 , typename T6 , typename T7>
-    BOOST_FUSION_GPU_ENABLED
     inline tuple<T0& , T1& , T2& , T3& , T4& , T5& , T6& , T7&>
-    tie(T0 & arg0 , T1 & arg1 , T2 & arg2 , T3 & arg3 , T4 & arg4 , T5 & arg5 , T6 & arg6 , T7 & arg7)
+    tie(T0 & _0 , T1 & _1 , T2 & _2 , T3 & _3 , T4 & _4 , T5 & _5 , T6 & _6 , T7 & _7)
     {
         return tuple<T0& , T1& , T2& , T3& , T4& , T5& , T6& , T7&>(
-            arg0 , arg1 , arg2 , arg3 , arg4 , arg5 , arg6 , arg7);
+            _0 , _1 , _2 , _3 , _4 , _5 , _6 , _7);
     }
     template <typename T0 , typename T1 , typename T2 , typename T3 , typename T4 , typename T5 , typename T6 , typename T7 , typename T8>
-    BOOST_FUSION_GPU_ENABLED
     inline tuple<T0& , T1& , T2& , T3& , T4& , T5& , T6& , T7& , T8&>
-    tie(T0 & arg0 , T1 & arg1 , T2 & arg2 , T3 & arg3 , T4 & arg4 , T5 & arg5 , T6 & arg6 , T7 & arg7 , T8 & arg8)
+    tie(T0 & _0 , T1 & _1 , T2 & _2 , T3 & _3 , T4 & _4 , T5 & _5 , T6 & _6 , T7 & _7 , T8 & _8)
     {
         return tuple<T0& , T1& , T2& , T3& , T4& , T5& , T6& , T7& , T8&>(
-            arg0 , arg1 , arg2 , arg3 , arg4 , arg5 , arg6 , arg7 , arg8);
+            _0 , _1 , _2 , _3 , _4 , _5 , _6 , _7 , _8);
     }
     template <typename T0 , typename T1 , typename T2 , typename T3 , typename T4 , typename T5 , typename T6 , typename T7 , typename T8 , typename T9>
-    BOOST_FUSION_GPU_ENABLED
     inline tuple<T0& , T1& , T2& , T3& , T4& , T5& , T6& , T7& , T8& , T9&>
-    tie(T0 & arg0 , T1 & arg1 , T2 & arg2 , T3 & arg3 , T4 & arg4 , T5 & arg5 , T6 & arg6 , T7 & arg7 , T8 & arg8 , T9 & arg9)
+    tie(T0 & _0 , T1 & _1 , T2 & _2 , T3 & _3 , T4 & _4 , T5 & _5 , T6 & _6 , T7 & _7 , T8 & _8 , T9 & _9)
     {
         return tuple<T0& , T1& , T2& , T3& , T4& , T5& , T6& , T7& , T8& , T9&>(
-            arg0 , arg1 , arg2 , arg3 , arg4 , arg5 , arg6 , arg7 , arg8 , arg9);
+            _0 , _1 , _2 , _3 , _4 , _5 , _6 , _7 , _8 , _9);
     }
 }}

@@ -10,7 +10,6 @@
 #include <boost/math/tools/precision.hpp>
 #include <boost/math/tools/promotion.hpp>
 #include <boost/math/policies/error_handling.hpp>
-#include <boost/math/special_functions/math_fwd.hpp>
 
 namespace boost{ namespace math{
 

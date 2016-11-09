@@ -5,7 +5,7 @@
  * Subject to the Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date$
+ * $Date: 2012-09-22 23:33:33 +0100 (Sat, 22 Sep 2012) $
  */
 
 #include <string>
@@ -430,9 +430,9 @@ namespace local_time{
       dst_calc_rules_ = shared_ptr<dst_calc_rule>(
         new partial_date_dst_rule(
           partial_date_dst_rule::start_rule(
-            static_cast<unsigned short>(sd), static_cast<date_time::months_of_year>(sm)),
+            sd, static_cast<date_time::months_of_year>(sm)),
           partial_date_dst_rule::end_rule(
-            static_cast<unsigned short>(ed), static_cast<date_time::months_of_year>(em))
+            ed, static_cast<date_time::months_of_year>(em))
           )
       );
     }
