@@ -206,6 +206,9 @@ Rcpp::List RcppPwiz::getScanHeaderInfo ( int whichScan  )
         names.push_back("mergedResultEndScanNum");
         res[i++] = Rcpp::wrap(header.mergedResultEndScanNum);
 
+	// delete adapter issue #64
+	delete adapter;
+	adapter = NULL;
         res.attr("names") = names;
         return res;
     }
@@ -279,6 +282,9 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( )
                 mergedResultStartScanNum[whichScan-1] = scanHeader.mergedResultStartScanNum;
                 mergedResultEndScanNum[whichScan-1] = scanHeader.mergedResultEndScanNum;
             }
+	    // delete adapter issue #64
+	    delete adapter;
+	    adapter = NULL;
 
             Rcpp::List header(21);
             std::vector<std::string> names;
