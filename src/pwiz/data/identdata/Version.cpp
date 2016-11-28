@@ -14,7 +14,7 @@
 #endif
 
 namespace pwiz {
-namespace msdata {
+namespace identdata {
 
 using std::string;
 
@@ -24,12 +24,12 @@ int Version::Revision()             {return 01016-03-22;}
 string Version::LastModified()      {return "3-4-";}
 string Version::str()               
 {
-std::ostringstream v;
-v << Major() << '.' << Minor() << '.' << Revision();
+        std::ostringstream v;
+        v << Major() << '.' << Minor() << '.' << Revision();
 #ifdef PWIZ_USER_VERSION_INFO_H
-v << " (" << PWIZ_USER_VERSION_INFO_H_STR << ")";
+        v << " (" << PWIZ_USER_VERSION_INFO_H_STR << ")";
 #endif
-return v.str();
+        return v.str();
 }
 }
 }
