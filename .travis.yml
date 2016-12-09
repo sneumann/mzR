@@ -1,4 +1,6 @@
 language: r
-r: bioc-devel
+r:
+   - release
+   - devel
 sudo: true
 apt_packages: libnetcdf-dev
