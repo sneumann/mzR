@@ -55,11 +55,11 @@
 \alias{peaksCount,mzRpwiz,missing-method}
 \alias{peaksCount,mzRpwiz,numeric-method}
 \alias{peaks,mzRramp-method}
-\alias{peaks,mzRramp-method}
+\alias{scans,mzRramp-method}
 \alias{peaks,mzRpwiz-method}
-\alias{peaks,mzRpwiz-method}
+\alias{scans,mzRpwiz-method}
 \alias{peaks,mzRnetCDF-method}
-\alias{peaks,mzRnetCDF-method}
+\alias{scans,mzRnetCDF-method}
 \alias{runInfo,mzRramp-method}
 \alias{runInfo,mzRpwiz-method}
 \alias{runInfo,mzRnetCDF-method}
@@ -152,6 +152,10 @@
     \item{peaks}{\code{signature(object = "mzRramp", scans = "numeric")}: ... }
     \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "missing")}: ... }
     \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
+    \item{scans}{\code{signature(object = "mzRramp", scans = "missing")}: ... }
+    \item{scans}{\code{signature(object = "mzRramp", scans = "numeric")}: ... }
+    \item{scans}{\code{signature(object = "mzRnetCDF", scans = "missing")}: ... }
+    \item{scans}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
     \item{runInfo}{\code{signature(object = "mzRramp")}: ... }
 
   }
