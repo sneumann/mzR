@@ -20,7 +20,7 @@ setMethod("length",
 setMethod("peaks", "mzRramp",
           function(object, scans) .peaks(object, scans))
 
-setMethod("scans", "mzRramp",
+setMethod("spectra", "mzRramp",
           function(object, scans) .peaks(object, scans))
 
 setMethod("peaksCount",

@@ -45,7 +45,7 @@ setMethod("peaks", "mzRnetCDF",
               }
           })
 
-setMethod("scans", "mzRnetCDF",
+setMethod("spectra", "mzRnetCDF",
           function(object, scans) peaks(object, scans))
 
 ## setMethod("peaksCount",

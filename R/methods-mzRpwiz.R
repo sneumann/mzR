@@ -74,7 +74,7 @@ setMethod("header",
 
 setMethod("peaks", "mzRpwiz",
           function(object, scans) .peaks(object, scans))
-setMethod("scans", "mzRpwiz",
+setMethod("spectra", "mzRpwiz",
           function(object, scans) .peaks(object, scans))
 
 setMethod("peaksCount",

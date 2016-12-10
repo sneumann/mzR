@@ -77,11 +77,11 @@ test_mzData.gz <- function() {
     close(mzdata)    
 }
 
-test_peaks_scans <- function() {
+test_peaks_spectra <- function() {
     library("msdata")
     f <- proteomics(full.names = TRUE)
     x <- openMSfile(f[1])
     p <- peaks(x, 1:10)
-    s <- scans(x, 1:10)
+    s <- spectra(x, 1:10)
     checkIdentical(p, s)
 }

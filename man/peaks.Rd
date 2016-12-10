@@ -1,6 +1,6 @@
 \name{peaks}
 \alias{peaks}
-\alias{scans}
+\alias{spectra}
 \alias{header}
 \alias{peaksCount}
 \alias{get3Dmap}
@@ -16,7 +16,7 @@
 
  peaks(object, ...) 
 
- scans(object, ...) ## same as peaks
+ spectra(object, ...) ## same as peaks
 
  get3Dmap(object, scans, lowMz, highMz, resMz, ...)
 }
@@ -35,10 +35,10 @@
 
 \description{
 
-  Access the MS raw data. The \code{peaks}, \code{scans} (can be used
+  Access the MS raw data. The \code{peaks}, \code{spectra} (can be used
   interchangeably) and \code{peaksCount} functions return the (m/z,
   intensity) pairs and the number peaks in the
-  spectrum/spectra. \code{peaks} and \code{scans} return a single matrix
+  spectrum/spectra. \code{peaks} and \code{spectra} return a single matrix
   if \code{scans} is a \code{numeric} of length 1 and a list of matrices
   if several scans are asked for or no \code{scans} argument is provided
   (i.e all spectra in the oject are retured). \code{peaksCount} will
