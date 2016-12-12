@@ -2,6 +2,7 @@ language: r
 r: bioc-devel
 sudo: true
 r_packages:
+  - knitr
   - XML
   - plyr
   - doParallel
