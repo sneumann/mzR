@@ -42,8 +42,8 @@ test_oldramp.mzData <- function() {
 
 test_oldramp.mzData.gz <- function() {
     cdfpath <- system.file("microtofq", package = "msdata")
-    filename <- list.files(cdfpath, pattern="MM14.mzdata.gz",
-                       full.names=TRUE, recursive = TRUE)
+    filename <- list.files(cdfpath, pattern = "MM14.mzdata.gz",
+                       full.names = TRUE, recursive = TRUE)
 
     rampid <- mzR:::rampOpen(filename)
     if (rampid < 0)
