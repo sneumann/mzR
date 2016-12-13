@@ -15,4 +15,4 @@ apt_packages:
 # Set CXX1X for R-devel, as R-devel does not detect CXX1X support for gcc 4.6.3,
 # Thanks to jimhester pointing this out!
 before_install:
-  - echo "$TRAVIS_R_VERSION_STRING" ; if [[ "$TRAVIS_R_VERSION_STRING" = 'devel' ]]; then mkdir ~/.R && echo 'SHLIB_CXX1XLD=g++ -std=c++0x \nCXX1X=g++ -std=c++0x -g -O2 -fPIC ' > ~/.R/Makevars; fi
+  - echo "$TRAVIS_R_VERSION_STRING" ; if [[ "$TRAVIS_R_VERSION_STRING" = 'bioc-devel' ]]; then mkdir ~/.R && echo 'SHLIB_CXX1XLD=g++ -std=c++0x \nCXX1X=g++ -std=c++0x -g -O2 -fPIC ' > ~/.R/Makevars; fi
