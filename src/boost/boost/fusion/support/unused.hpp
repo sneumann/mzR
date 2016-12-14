@@ -33,8 +33,10 @@ namespace boost { namespace fusion
         {
         }
 
+      // Workaround: https://github.com/boostorg/fusion/pull/96/files
         template <typename T>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
+	BOOST_FUSION_CONSTEXPR_THIS
+	BOOST_FUSION_GPU_ENABLED
         unused_type const&
         operator=(T const&) const BOOST_NOEXCEPT
         {
@@ -49,7 +51,7 @@ namespace boost { namespace fusion
             return *this;
         }
 
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
+        BOOST_FUSION_CONSTEXPR_THIS BOOST_FUSION_GPU_ENABLED
         unused_type const&
         operator=(unused_type const&) const BOOST_NOEXCEPT
         {
@@ -64,8 +66,8 @@ namespace boost { namespace fusion
         }
     };
 
-    // STN: hack following https://svn.boost.org/trac/boost/ticket/11517 and https://github.com/boostorg/fusion/pull/96
-    BOOST_CONSTEXPR_OR_CONST unused_type const unused = unused_type();
+  // Workaround: https://github.com/boostorg/fusion/pull/96/files
+    BOOST_CONSTEXPR_OR_CONST unused_type unused = unused_type();
 
     namespace detail
     {
