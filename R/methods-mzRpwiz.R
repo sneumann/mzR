@@ -59,38 +59,28 @@ setMethod("detector",
           })
 
 setMethod("header",
-          signature=c("mzRpwiz","missing"),
+          signature = c("mzRpwiz", "missing"),
           function(object) return(object@backend$getAllScanHeaderInfo()))
 
 setMethod("header",
-          signature=c("mzRpwiz","numeric"),
+          signature = c("mzRpwiz", "numeric"),
           function(object, scans) {
-            if (length(scans)==1) {
+            if (length(scans) == 1) {
               return(object@backend$getScanHeaderInfo(scans))
             } else {
               return(data.frame(t(sapply(scans,function(x) unlist(object@backend$getScanHeaderInfo(x))))))
             }
           })
 
-setMethod("peaks",
-          signature=c("mzRpwiz"),
-          function(object, scans) {
-              if (missing(scans))
-                  scans <- 1:length(object)
-
-              if (length(scans) == 1) {
-                  return(object@backend$getPeakList(scans)$peaks)
-              } else {
-                  return(sapply(scans,
-                                function(x) object@backend$getPeakList(x)$peaks,
-                                simplify = FALSE))
-              }
-          })
+setMethod("peaks", "mzRpwiz",
+          function(object, scans) .peaks(object, scans))
+setMethod("spectra", "mzRpwiz",
+          function(object, scans) .peaks(object, scans))
 
 setMethod("peaksCount",
-          signature=c("mzRpwiz","numeric"),
-          function(object,scans) {
-            if (length(scans)==1) {
+          signature = c("mzRpwiz", "numeric"),
+          function(object, scans) {
+            if (length(scans) == 1) {
               return(object@backend$getPeakList(scans)$peaksCount)
             } else {
               return(sapply(scans,function(x) object@backend$getPeakList(x)$peaksCount))
@@ -98,14 +88,14 @@ setMethod("peaksCount",
           })
 
 setMethod("peaksCount",
-          signature=c("mzRpwiz","missing"),
+          signature = c("mzRpwiz", "missing"),
           function(object) {
             n <- length(object)
             return(peaksCount(object,1:n))
           })
 
 setMethod("runInfo",
-          signature="mzRpwiz",
+          signature = "mzRpwiz",
           function(object) {
             hd <- header(object)
             ll <- list()
