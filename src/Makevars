@@ -19,8 +19,6 @@ PWIZOBJECTS=\
 ./boost/libs/regex/src/w32_regex_traits.o \
 ./boost/libs/iostreams/src/zlib.o \
 ./boost/libs/iostreams/src/file_descriptor.o \
-./boost/libs/thread/src/pthread/once.o \
-./boost/libs/thread/src/pthread/thread.o \
 ./boost/libs/filesystem/src/operations.o \
 ./boost/libs/filesystem/src/path.o \
 ./boost/libs/filesystem/src/utf8_codecvt_facet.o \
@@ -95,9 +93,21 @@ PWIZOBJECTS=\
 ./random_access_gzFile.o \
 ./RcppExports.o
 
+UNIXOBJS=./boost/libs/thread/src/pthread/once.o \
+./boost/libs/thread/src/pthread/thread.o \
+
+WINOBJS=./boost/libs/filesystem/src/path_traits.o \
+./boost/libs/filesystem/src/windows_file_codecvt.o \
+./boost/libs/filesystem/src/codecvt_error_category.o \
+./boost/libs/thread/src/win32/tss_pe.o \
+./boost/libs/thread/src/win32/tss_dll.o \
+./boost/libs/thread/src/win32/thread.o \
+./pwiz/data/msdata/ramp/wglob.o \
+./boost_aux/boost/nowide/iostream.o
+
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
 
-OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o R_init_mzR.o
+OBJECTS= $(WINOBJS) $(MZROBJECTS) $(PWIZOBJECTS) rampR.o R_init_mzR.o
 
 ## Generate dependency files
 #DEPFLAGS = -MT $@ -MMD -MP 
@@ -108,11 +118,19 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) rampR.o R_init_mzR.o
 ##
 PWIZ_LDFLAGS=-L./pwiz
 PWIZ_LDFLAGS=-lpthread 
-PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -DWITHOUT_MZ5 -I./boost $(DEPFLAGS)
+
+## Unix:
+#PWIZ_CPPFLAGS=-I./boost_aux/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -DWITHOUT_MZ5 -I./boost $(DEPFLAGS)
+
+
+PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -DWITHOUT_MZ5 -fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
+
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS) `nc-config --cflags || /bin/true`
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ` $(PWIZ_LDFLAGS) `nc-config --libs || echo "-lnetcdf"` 
+
+#PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ` $(PWIZ_LDFLAGS) `nc-config --libs || echo "-lnetcdf"` 
+PKG_LIBS=-lws2_32 -lnetcdf -lz
 
 all: clean $(SHLIB)
 
