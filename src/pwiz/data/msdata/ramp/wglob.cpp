@@ -65,9 +65,9 @@ int glob(const char* pattern,int flags,int* unused, glob_t* pglob)
 
 	if(!pattern || !pglob || flags || unused)	//errors , unsupported features
 		{
-		//std::cout<<"Error: invalid argument or unsupported mode in wglob.cxx (int glob(...)) \n";
-		//std::cout<<"Suggestion: Second and third arguments must be NULL (unsupported features) \n";
-		//exit(1);
+		std::cout<<"Error: invalid argument or unsupported mode in wglob.cxx (int glob(...)) \n";
+		std::cout<<"Suggestion: Second and third arguments must be NULL (unsupported features) \n";
+		exit(1);
 		}
 	pglob->gl_pathc = 0;
 	pglob->gl_pathv = NULL;

@@ -4,6 +4,7 @@ CHANGES IN VERSION 2.9.1
    <2016-11-20 Sun>
  o Use spectra in addition to peaks (see issue #15)
    <2016-12-09 Fri>
+ o New pwiz (commit 946d23d75dc70a7a4913d8e05e3d59b9255f278e)
 
 CHANGES IN VERSION 2.9.0
 ------------------------

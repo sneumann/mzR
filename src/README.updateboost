@@ -1,0 +1,25 @@
+Hi,
+
+mzR requires regular updates of the embedded pwiz and boost libraries.
+Theoretically, both could simply be downloaded from their respective 
+websites and placed under the mzR/src directory. However, the official 
+downloads contain far more files than required for mzR, and to avoid 
+massive downloads, only the required files are shipped as part of mzR. 
+
+For boost, delete the existing version of boost from mzR/src/boost,
+download the full distribution, e.g. boost_1_58_0.tar.gz
+and untar into mzR/src/boost. Compile locally with R CMD INSTALL mzR 
+to make sure that everything works. To detect the minimal set of files, 
+use
+
+	strace -e open -f R CMD INSTALL .. 2>&1 | grep 'boost/[^=]* = [0-9]' | grep -v boost_aux | cut -d \" -f 2  2>&1 | sort | uniq >/tmp/boost-includes.log
+
+This command logs all access to files under mzR/src/boost.
+Then the files can be extracted from the full boost tree:
+
+	tar cf - $(sed -e 's/\.o/.cpp/g' /tmp/boost-includes.log) | tar -C newboost -xvf -
+
+
+
+
+

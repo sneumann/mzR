@@ -1,4 +1,4 @@
-// $Id: random_access_compressed_ifstream.cpp 6141 2014-05-05 21:03:47Z chambm $
+// $Id: random_access_compressed_ifstream.cpp 9706 2016-05-12 00:42:42Z brendanx $
 //
 // This is just an istream which chooses its streambuf implementation
 // based on whether the file is gzipped or not.  Could be extended
@@ -270,8 +270,10 @@ public:
                         test_invariant();
                     }
                 }
-                if (this->maxbufsize(n) > this->desired_readbuf_len) {
+                else {
+                    // Failed to reallocate. So, stick with the old size and stop trying.
                     this->desired_readbuf_len = this->maxbufsize(n);
+                    break;
                 }
             }
         }
