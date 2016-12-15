@@ -35,7 +35,9 @@
 #include <boost/mpl/or.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/range/iterator_range.hpp>
+#if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
 #include <boost/static_assert.hpp>
+#endif
 
 #if defined(BOOST_SPIRIT_DEBUG)
 #include <iosfwd>
@@ -328,12 +330,14 @@ namespace boost { namespace spirit { namespace lex { namespace lexertl
     struct token : token<Iterator, lex::omit, HasState, Idtype>
     {
     private: // precondition assertions
+#if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
         BOOST_STATIC_ASSERT((mpl::is_sequence<AttributeTypes>::value || 
                             is_same<AttributeTypes, lex::omit>::value));
+#endif
         typedef token<Iterator, lex::omit, HasState, Idtype> base_type;
 
     protected: 
-        //  If no additional token value types are given, the token will 
+        //  If no additional token value types are given, the the token will 
         //  hold the plain pair of iterators pointing to the matched range
         //  in the underlying input sequence. Otherwise the token value is 
         //  stored as a variant and will again hold the pair of iterators but

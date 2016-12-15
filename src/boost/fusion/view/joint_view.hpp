@@ -7,7 +7,6 @@
 #if !defined(FUSION_SEQUENCE_VIEW_JOINT_VIEW_10022005_0610)
 #define FUSION_SEQUENCE_VIEW_JOINT_VIEW_10022005_0610
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/view/joint_view/joint_view.hpp>
 #include <boost/fusion/view/joint_view/joint_view_iterator.hpp>
 

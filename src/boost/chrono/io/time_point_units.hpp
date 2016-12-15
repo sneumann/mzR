@@ -1,6 +1,5 @@
 //  (C) Copyright Howard Hinnant
 //  (C) Copyright 2011 Vicente J. Botet Escriba
-//  Copyright (c) Microsoft Corporation 2014
 //  Use, modification and distribution are subject to the Boost Software License,
 //  Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt).
@@ -105,7 +104,6 @@ namespace boost
        * @return The epoch string associated to the @c process_real_cpu_clock.
        */
       virtual string_type do_get_epoch(process_real_cpu_clock) const=0;
-#if ! BOOST_OS_WINDOWS || BOOST_PLAT_WINDOWS_DESKTOP
       /**
        *
        * @param c a dummy instance of @c process_user_cpu_clock.
@@ -124,7 +122,6 @@ namespace boost
        * @return The epoch string associated to the @c process_cpu_clock.
        */
       virtual string_type do_get_epoch(process_cpu_clock) const=0;
-#endif
 #endif
 #if defined(BOOST_CHRONO_HAS_THREAD_CLOCK)
       /**
@@ -200,7 +197,6 @@ namespace boost
       {
         return clock_string<process_real_cpu_clock,CharT>::since();
       }
-#if ! BOOST_OS_WINDOWS || BOOST_PLAT_WINDOWS_DESKTOP
       /**
        * @param c a dummy instance of @c process_user_cpu_clock.
        * @return The epoch string returned by @c clock_string<process_user_cpu_clock,CharT>::since().
@@ -226,7 +222,6 @@ namespace boost
         return clock_string<process_cpu_clock,CharT>::since();
       }
 
-#endif
 #endif
 #if defined(BOOST_CHRONO_HAS_THREAD_CLOCK)
       /**

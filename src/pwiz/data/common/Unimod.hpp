@@ -1,5 +1,5 @@
 //
-// $Id: Unimod.hpp 4922 2013-09-05 22:33:08Z pcbrefugee $
+// $Id: Unimod.hpp 9934 2016-08-02 17:48:03Z chambm $
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -92,6 +92,7 @@ BOOST_BITFIELD_EX(Classification, PWIZ_API_DECL,
     (PostTranslational)(1<<11)
     (PreTranslational)(1<<12)
     (Substitution)(1<<13)
+    (SynthPepProtectGP)(1<<14)
 )
 BOOST_BITFIELD_DOMAIN_OPERATORS(Classification)
 

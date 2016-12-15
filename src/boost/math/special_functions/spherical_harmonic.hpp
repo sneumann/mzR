@@ -11,7 +11,6 @@
 #pragma once
 #endif
 
-#include <boost/math/special_functions/math_fwd.hpp>
 #include <boost/math/special_functions/legendre.hpp>
 #include <boost/math/tools/workaround.hpp>
 #include <complex>

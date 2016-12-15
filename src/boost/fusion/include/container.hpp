@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_CONTAINER)
 #define FUSION_INCLUDE_CONTAINER
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/container.hpp>
 
 #endif

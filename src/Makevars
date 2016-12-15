@@ -19,8 +19,9 @@ PWIZOBJECTS=\
 ./boost/regex/src/w32_regex_traits.o \
 ./boost/iostreams/src/zlib.o \
 ./boost/iostreams/src/file_descriptor.o \
-./boost/thread/pthread/once.o \
-./boost/thread/pthread/thread.o \
+./boost/thread/src/pthread/once.o \
+./boost/thread/src/pthread/once_atomic.o \
+./boost/thread/src/pthread/thread.o \
 ./boost/filesystem/src/operations.o \
 ./boost/filesystem/src/path.o \
 ./boost/filesystem/src/utf8_codecvt_facet.o \

@@ -2,7 +2,7 @@
 #define BOOST_ARCHIVE_BASIC_TEXT_IARCHIVE_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -25,6 +25,7 @@
 // use two template parameters
 
 #include <boost/config.hpp>
+#include <boost/serialization/pfto.hpp>
 #include <boost/detail/workaround.hpp>
 
 #include <boost/archive/detail/common_iarchive.hpp>
@@ -39,43 +40,37 @@
 namespace boost {
 namespace archive {
 
-namespace detail {
-    template<class Archive> class interface_iarchive;
-} // namespace detail
-
 /////////////////////////////////////////////////////////////////////////
 // class basic_text_iarchive - read serialized objects from a input text stream
 template<class Archive>
-class BOOST_SYMBOL_VISIBLE basic_text_iarchive : 
+class basic_text_iarchive : 
     public detail::common_iarchive<Archive>
 {
-#ifdef BOOST_NO_MEMBER_TEMPLATE_FRIENDS
-public:
-#else
 protected:
-    #if BOOST_WORKAROUND(BOOST_MSVC, < 1500)
-        // for some inexplicable reason insertion of "class" generates compile erro
-        // on msvc 7.1
-        friend detail::interface_iarchive<Archive>;
-    #else
-        friend class detail::interface_iarchive<Archive>;
-    #endif
+#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
+public:
+#elif defined(BOOST_MSVC)
+    // for some inexplicable reason insertion of "class" generates compile erro
+    // on msvc 7.1
+    friend detail::interface_iarchive<Archive>;
+#else
+    friend class detail::interface_iarchive<Archive>;
 #endif
     // intermediate level to support override of operators
     // fot templates in the absence of partial function 
     // template ordering
     typedef detail::common_iarchive<Archive> detail_common_iarchive;
     template<class T>
-    void load_override(T & t){
-        this->detail_common_iarchive::load_override(t);
+    void load_override(T & t, BOOST_PFTO int){
+        this->detail_common_iarchive::load_override(t, 0);
     }
     // text file don't include the optional information 
-    void load_override(class_id_optional_type & /*t*/){}
+    void load_override(class_id_optional_type & /*t*/, int){}
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-    load_override(class_name_type & t);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
+    load_override(class_name_type & t, int);
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
     init(void);
 
     basic_text_iarchive(unsigned int flags) : 

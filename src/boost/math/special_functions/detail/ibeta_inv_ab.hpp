@@ -153,7 +153,7 @@ T ibeta_inv_ab_imp(const T& b, const T& z, const T& p, const T& q, bool swap_ab,
    boost::uintmax_t max_iter = policies::get_max_root_iterations<Policy>();
    std::pair<T, T> r = bracket_and_solve_root(f, guess, factor, swap_ab ? true : false, tol, max_iter, pol);
    if(max_iter >= policies::get_max_root_iterations<Policy>())
-      return policies::raise_evaluation_error<T>("boost::math::ibeta_invab_imp<%1%>(%1%,%1%,%1%)", "Unable to locate the root within a reasonable number of iterations, closest approximation so far was %1%", r.first, pol);
+      policies::raise_evaluation_error<T>("boost::math::ibeta_invab_imp<%1%>(%1%,%1%,%1%)", "Unable to locate the root within a reasonable number of iterations, closest approximation so far was %1%", r.first, pol);
    return (r.first + r.second) / 2;
 }
 
@@ -172,10 +172,9 @@ typename tools::promote_args<RT1, RT2, RT3>::type
       policies::discrete_quantile<>,
       policies::assert_undefined<> >::type forwarding_policy;
 
-   static const char* function = "boost::math::ibeta_inva<%1%>(%1%,%1%,%1%)";
    if(p == 0)
    {
-      return policies::raise_overflow_error<result_type>(function, 0, Policy());
+      return tools::max_value<result_type>();
    }
    if(p == 1)
    {
@@ -189,7 +188,7 @@ typename tools::promote_args<RT1, RT2, RT3>::type
          static_cast<value_type>(p), 
          static_cast<value_type>(1 - static_cast<value_type>(p)), 
          false, pol), 
-      function);
+      "boost::math::ibeta_inva<%1%>(%1%,%1%,%1%)");
 }
 
 template <class RT1, class RT2, class RT3, class Policy>
@@ -205,10 +204,9 @@ typename tools::promote_args<RT1, RT2, RT3>::type
       policies::discrete_quantile<>,
       policies::assert_undefined<> >::type forwarding_policy;
 
-   static const char* function = "boost::math::ibetac_inva<%1%>(%1%,%1%,%1%)";
    if(q == 1)
    {
-      return policies::raise_overflow_error<result_type>(function, 0, Policy());
+      return tools::max_value<result_type>();
    }
    if(q == 0)
    {
@@ -222,7 +220,7 @@ typename tools::promote_args<RT1, RT2, RT3>::type
          static_cast<value_type>(1 - static_cast<value_type>(q)), 
          static_cast<value_type>(q), 
          false, pol),
-      function);
+      "boost::math::ibetac_inva<%1%>(%1%,%1%,%1%)");
 }
 
 template <class RT1, class RT2, class RT3, class Policy>
@@ -238,14 +236,13 @@ typename tools::promote_args<RT1, RT2, RT3>::type
       policies::discrete_quantile<>,
       policies::assert_undefined<> >::type forwarding_policy;
 
-   static const char* function = "boost::math::ibeta_invb<%1%>(%1%,%1%,%1%)";
    if(p == 0)
    {
       return tools::min_value<result_type>();
    }
    if(p == 1)
    {
-      return policies::raise_overflow_error<result_type>(function, 0, Policy());
+      return tools::max_value<result_type>();
    }
 
    return policies::checked_narrowing_cast<result_type, forwarding_policy>(
@@ -255,14 +252,13 @@ typename tools::promote_args<RT1, RT2, RT3>::type
          static_cast<value_type>(p), 
          static_cast<value_type>(1 - static_cast<value_type>(p)), 
          true, pol),
-      function);
+      "boost::math::ibeta_invb<%1%>(%1%,%1%,%1%)");
 }
 
 template <class RT1, class RT2, class RT3, class Policy>
 typename tools::promote_args<RT1, RT2, RT3>::type 
       ibetac_invb(RT1 a, RT2 x, RT3 q, const Policy& pol)
 {
-   static const char* function = "boost::math::ibeta_invb<%1%>(%1%, %1%, %1%)";
    typedef typename tools::promote_args<RT1, RT2, RT3>::type result_type;
    typedef typename policies::evaluation<result_type, Policy>::type value_type;
    typedef typename policies::normalise<
@@ -278,7 +274,7 @@ typename tools::promote_args<RT1, RT2, RT3>::type
    }
    if(q == 0)
    {
-      return policies::raise_overflow_error<result_type>(function, 0, Policy());
+      return tools::max_value<result_type>();
    }
 
    return policies::checked_narrowing_cast<result_type, forwarding_policy>(
@@ -286,9 +282,9 @@ typename tools::promote_args<RT1, RT2, RT3>::type
          static_cast<value_type>(a), 
          static_cast<value_type>(x), 
          static_cast<value_type>(1 - static_cast<value_type>(q)), 
-         static_cast<value_type>(q),
+         static_cast<value_type>(q), 
          true, pol),
-         function);
+         "boost::math::ibetac_invb<%1%>(%1%,%1%,%1%)");
 }
 
 template <class RT1, class RT2, class RT3>

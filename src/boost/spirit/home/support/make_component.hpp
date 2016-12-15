@@ -258,7 +258,7 @@ namespace boost { namespace spirit { namespace detail
             typedef typename
                 proto::reverse_fold_tree<
                     proto::_
-                  , proto::make<fusion::nil_>
+                  , proto::make<fusion::nil>
                   , make_binary_helper<Grammar>
                 >::template impl<Expr, State, Data>
             reverse_fold_tree;
@@ -362,6 +362,13 @@ namespace boost { namespace spirit { namespace detail
                 )>::type
             lhs_component;
 
+#ifndef BOOST_SPIRIT_USE_PHOENIX_V3
+            typedef typename
+                proto::result_of::value<
+                    typename proto::result_of::child_c<Expr, 1>::type
+                >::type
+            rhs_component;
+#else
             typedef
                 typename mpl::eval_if_c<
                     phoenix::is_actor<
@@ -373,6 +380,7 @@ namespace boost { namespace spirit { namespace detail
                     >
                 >::type
                 rhs_component;
+#endif
 
             typedef typename
                 result_of::make_cons<
@@ -388,6 +396,24 @@ namespace boost { namespace spirit { namespace detail
                     result<make_component_(elements_type, Data)>::type
             result_type;
 
+#ifndef BOOST_SPIRIT_USE_PHOENIX_V3
+            result_type operator()(
+                typename impl::expr_param expr
+              , typename impl::state_param state
+              , typename impl::data_param data
+            ) const
+            {
+                elements_type elements =
+                    detail::make_cons(
+                        Grammar()(
+                            proto::child_c<0>(expr), state, data)   // LHS
+                      , detail::make_cons(
+                            proto::value(proto::child_c<1>(expr)))  // RHS
+                    );
+
+                return make_component_()(elements, data);
+            }
+#else
             result_type operator()(
                 typename impl::expr_param expr
               , typename impl::state_param state
@@ -440,6 +466,7 @@ namespace boost { namespace spirit { namespace detail
 
                 return make_component_()(elements, data);
             }
+#endif
         };
     };
 }}}

@@ -71,11 +71,6 @@ private:
 
 typedef normal_distribution<double> normal;
 
-#ifdef BOOST_MSVC
-#pragma warning(push)
-#pragma warning(disable:4127)
-#endif
-
 template <class RealType, class Policy>
 inline const std::pair<RealType, RealType> range(const normal_distribution<RealType, Policy>& /*dist*/)
 { // Range of permissible values for random variable x.
@@ -92,7 +87,8 @@ inline const std::pair<RealType, RealType> range(const normal_distribution<RealT
 
 template <class RealType, class Policy>
 inline const std::pair<RealType, RealType> support(const normal_distribution<RealType, Policy>& /*dist*/)
-{ // This is range values for random variable x where cdf rises from 0 to 1, and outside it, the pdf is zero.
+{ // Range of supported values for random variable x.
+   // This is range where cdf rises from 0 to 1, and outside it, the pdf is zero.
   if (std::numeric_limits<RealType>::has_infinity)
   { 
      return std::pair<RealType, RealType>(-std::numeric_limits<RealType>::infinity(), std::numeric_limits<RealType>::infinity()); // - to + infinity.
@@ -103,10 +99,6 @@ inline const std::pair<RealType, RealType> support(const normal_distribution<Rea
    return std::pair<RealType, RealType>(-max_value<RealType>(),  max_value<RealType>()); // - to + max value.
   }
 }
-
-#ifdef BOOST_MSVC
-#pragma warning(pop)
-#endif
 
 template <class RealType, class Policy>
 inline RealType pdf(const normal_distribution<RealType, Policy>& dist, const RealType& x)

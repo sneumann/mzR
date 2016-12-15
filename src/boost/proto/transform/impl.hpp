@@ -17,7 +17,7 @@
 #include <boost/proto/detail/any.hpp>
 #include <boost/proto/detail/static_const.hpp>
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma warning(push)
 # pragma warning(disable : 4714) // function 'xxx' marked as __forceinline not inlined
 #endif
@@ -345,7 +345,7 @@ namespace boost { namespace proto
 
 }} // namespace boost::proto
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma warning(pop)
 #endif
 

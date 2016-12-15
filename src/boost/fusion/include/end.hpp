@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_END)
 #define FUSION_INCLUDE_END
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/sequence/intrinsic/end.hpp>
 
 #endif

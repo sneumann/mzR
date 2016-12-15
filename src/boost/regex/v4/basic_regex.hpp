@@ -236,7 +236,9 @@ public:
    }
    std::pair<const_iterator, const_iterator> BOOST_REGEX_CALL subexpression(std::size_t n)const
    {
-      const std::pair<std::size_t, std::size_t>& pi = this->m_subs.at(n);
+      if(n == 0)
+         boost::throw_exception(std::out_of_range("0 is not a valid subexpression index."));
+      const std::pair<std::size_t, std::size_t>& pi = this->m_subs.at(n - 1);
       std::pair<const_iterator, const_iterator> p(expression() + pi.first, expression() + pi.second);
       return p;
    }
@@ -264,7 +266,7 @@ public:
    }
    size_type BOOST_REGEX_CALL mark_count()const
    {
-      return this->m_mark_count - 1;
+      return this->m_mark_count;
    }
    const re_detail::re_syntax_base* get_first_state()const
    {

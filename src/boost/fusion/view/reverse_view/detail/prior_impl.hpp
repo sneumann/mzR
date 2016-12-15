@@ -7,7 +7,6 @@
 #if !defined(FUSION_PRIOR_IMPL_07202005_0857)
 #define FUSION_PRIOR_IMPL_07202005_0857
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/iterator/next.hpp>
 #include <boost/fusion/iterator/prior.hpp>
 
@@ -33,7 +32,6 @@ namespace boost { namespace fusion
     
                 typedef reverse_view_iterator<typename wrapped::type> type;
     
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type
                 call(Iterator const& i)
                 {

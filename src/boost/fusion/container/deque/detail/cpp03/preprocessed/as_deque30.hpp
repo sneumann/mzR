@@ -8,7 +8,6 @@
 ==============================================================================*/
 namespace boost { namespace fusion { namespace detail
 {
-BOOST_FUSION_BARRIER_BEGIN
     template <>
     struct as_deque<1>
     {
@@ -20,7 +19,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -41,7 +39,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -62,7 +59,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -83,7 +79,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -104,7 +99,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -125,7 +119,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -146,7 +139,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -167,7 +159,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -188,7 +179,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -209,7 +199,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -230,7 +219,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -251,7 +239,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -272,7 +259,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -293,7 +279,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -314,7 +299,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -335,7 +319,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -356,7 +339,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -377,7 +359,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -398,7 +379,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -419,7 +399,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -440,7 +419,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19 , T20> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -461,7 +439,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19 , T20 , T21> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -482,7 +459,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19 , T20 , T21 , T22> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -503,7 +479,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19 , T20 , T21 , T22 , T23> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -524,7 +499,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19 , T20 , T21 , T22 , T23 , T24> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -545,7 +519,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19 , T20 , T21 , T22 , T23 , T24 , T25> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -566,7 +539,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19 , T20 , T21 , T22 , T23 , T24 , T25 , T26> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -587,7 +559,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19 , T20 , T21 , T22 , T23 , T24 , T25 , T26 , T27> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -608,7 +579,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19 , T20 , T21 , T22 , T23 , T24 , T25 , T26 , T27 , T28> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -629,7 +599,6 @@ BOOST_FUSION_BARRIER_BEGIN
             typedef deque<T0 , T1 , T2 , T3 , T4 , T5 , T6 , T7 , T8 , T9 , T10 , T11 , T12 , T13 , T14 , T15 , T16 , T17 , T18 , T19 , T20 , T21 , T22 , T23 , T24 , T25 , T26 , T27 , T28 , T29> type;
         };
         template <typename Iterator>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static typename apply<Iterator>::type
         call(Iterator const& i0)
         {
@@ -639,5 +608,4 @@ BOOST_FUSION_BARRIER_BEGIN
             return result(*i0 , *i1 , *i2 , *i3 , *i4 , *i5 , *i6 , *i7 , *i8 , *i9 , *i10 , *i11 , *i12 , *i13 , *i14 , *i15 , *i16 , *i17 , *i18 , *i19 , *i20 , *i21 , *i22 , *i23 , *i24 , *i25 , *i26 , *i27 , *i28 , *i29);
         }
     };
-BOOST_FUSION_BARRIER_END
 }}}

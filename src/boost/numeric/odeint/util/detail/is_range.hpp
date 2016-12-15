@@ -6,8 +6,7 @@
  is_range implementation. Taken from the boost::range library.
  [end_description]
 
- Copyright 2011-2013 Karsten Ahnert
- Copyright 2011-2013 Thorsten Ottosen
+ Copyright Thorsten Ottosen 2003-2004
 
 
 

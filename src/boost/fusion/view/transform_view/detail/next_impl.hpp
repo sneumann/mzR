@@ -7,7 +7,6 @@
 #if !defined(FUSION_NEXT_IMPL_07162005_1029)
 #define FUSION_NEXT_IMPL_07162005_1029
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/iterator/next.hpp>
 
 namespace boost { namespace fusion
@@ -38,7 +37,6 @@ namespace boost { namespace fusion
                 typedef typename Iterator::transform_type transform_type;
                 typedef transform_view_iterator<next_type, transform_type> type;
 
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type
                 call(Iterator const& i)
                 {
@@ -61,7 +59,6 @@ namespace boost { namespace fusion
                 typedef typename Iterator::transform_type transform_type;
                 typedef transform_view_iterator2<next1_type, next2_type, transform_type> type;
 
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type
                 call(Iterator const& i)
                 {

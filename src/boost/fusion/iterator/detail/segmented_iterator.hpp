@@ -7,7 +7,6 @@
 #if !defined(BOOST_FUSION_SEGMENTED_ITERATOR_SEGMENTED_ITERATOR_HPP_INCLUDED)
 #define BOOST_FUSION_SEGMENTED_ITERATOR_SEGMENTED_ITERATOR_HPP_INCLUDED
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/fusion/sequence/intrinsic_fwd.hpp>
 #include <boost/fusion/iterator/iterator_facade.hpp>
@@ -35,7 +34,7 @@ namespace boost { namespace fusion
     struct segmented_iterator
       : iterator_facade<segmented_iterator<Context>, forward_traversal_tag>
     {
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED explicit segmented_iterator(Context const& ctx)
+        explicit segmented_iterator(Context const& ctx)
           : context(ctx)
         {}
 
@@ -52,7 +51,6 @@ namespace boost { namespace fusion
                 >::type
             type;
 
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static type call(It const& it)
             {
                 return *it.context.car.first;
@@ -72,7 +70,6 @@ namespace boost { namespace fusion
                 >::type
             type;
 
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static type call(It const& it)
             {
                 return fusion::deref_data(it.context.car.first);
@@ -132,7 +129,6 @@ namespace boost { namespace fusion
             typedef detail::segmented_next_impl<typename It::context_type> impl;
             typedef segmented_iterator<typename impl::type> type;
 
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static type call(It const& it)
             {
                 return type(impl::call(it.context));

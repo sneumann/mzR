@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_ALL)
 #define FUSION_INCLUDE_ALL
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/algorithm/query/all.hpp>
 
 #endif

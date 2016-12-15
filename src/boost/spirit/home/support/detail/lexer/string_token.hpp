@@ -56,7 +56,11 @@ struct basic_string_token
         if (_charset.length () == max_chars_)
         {
             _negated = !_negated;
+#if defined _MSC_VER && _MSC_VER <= 1200
+            _charset.erase ();
+#else
             _charset.clear ();
+#endif
         }
         else if (_charset.length () > max_chars_ / 2)
         {
@@ -123,7 +127,11 @@ struct basic_string_token
     void clear ()
     {
         _negated = false;
-        _charset.clear ();
+#if defined _MSC_VER && _MSC_VER <= 1200
+            _charset.erase ();
+#else
+            _charset.clear ();
+#endif
     }
 
     void intersect (basic_string_token &rhs_, basic_string_token &overlap_)

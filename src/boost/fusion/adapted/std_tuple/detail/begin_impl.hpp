@@ -7,7 +7,6 @@
 #if !defined(BOOST_FUSION_BEGIN_IMPL_09242011_1744)
 #define BOOST_FUSION_BEGIN_IMPL_09242011_1744
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/adapted/std_tuple/std_tuple_iterator.hpp>
 
 namespace boost { namespace fusion
@@ -27,7 +26,6 @@ namespace boost { namespace fusion
             {
                 typedef std_tuple_iterator<Sequence, 0> type;
 
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type
                 call(Sequence& v)
                 {

@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_GREATER_EQUAL)
 #define FUSION_INCLUDE_GREATER_EQUAL
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/sequence/comparison/greater_equal.hpp>
 
 #endif

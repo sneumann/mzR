@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_REMOVE)
 #define FUSION_INCLUDE_REMOVE
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/algorithm/transformation/remove.hpp>
 
 #endif

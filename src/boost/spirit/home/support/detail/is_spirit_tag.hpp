@@ -11,6 +11,10 @@
 #pragma once
 #endif
 
+#ifndef BOOST_SPIRIT_USE_PHOENIX_V3
+#define BOOST_SPIRIT_IS_TAG()
+#else
 #define BOOST_SPIRIT_IS_TAG() typedef void is_spirit_tag;
+#endif
 
 #endif

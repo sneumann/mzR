@@ -6,9 +6,8 @@
  Base class for all explicit Runge Kutta stepper which are also error steppers.
  [end_description]
 
- Copyright 2010-2013 Karsten Ahnert
- Copyright 2010-2012 Mario Mulansky
- Copyright 2012 Christoph Koke
+ Copyright 2009-2011 Karsten Ahnert
+ Copyright 2009-2011 Mario Mulansky
 
  Distributed under the Boost Software License, Version 1.0.
  (See accompanying file LICENSE_1_0.txt or
@@ -152,22 +151,6 @@ public:
 
 
     /*
-     * named Version 2: do_step_dxdt_impl( sys , in , dxdt , t , dt )
-     *
-     * this version is needed when this stepper is used for initializing 
-     * multistep stepper like adams-bashforth. Hence we provide an explicitely
-     * named version that is not disabled. Meant for internal use only.
-     */
-    template < class System, class StateInOut, class DerivIn >
-    void do_step_dxdt_impl( System system, StateInOut &x, const DerivIn &dxdt,
-                            time_type t, time_type dt )
-    {
-        this->stepper().do_step_impl( system , x , dxdt , t , x , dt );
-    }
-
-
-
-    /*
      * Version 3 : do_step( sys , in , t , out , dt )
      *
      * this version does not solve the forwarding problem, boost.range can not be used
@@ -197,21 +180,10 @@ public:
     {
         this->stepper().do_step_impl( system , in , dxdt , t , out , dt );
     }
-    
-    /*
-     * named Version 4: do_step_dxdt_impl( sys , in , dxdt , t , out, dt )
-     *
-     * this version is needed when this stepper is used for initializing 
-     * multistep stepper like adams-bashforth. Hence we provide an explicitely
-     * named version that is not disabled. Meant for internal use only.
-     */
-    template < class System, class StateIn, class DerivIn, class StateOut >
-    void do_step_dxdt_impl( System system, const StateIn &in,
-                            const DerivIn &dxdt, time_type t, StateOut &out,
-                            time_type dt )
-    {
-        this->stepper().do_step_impl( system , in , dxdt , t , out , dt );
-    }
+
+
+
+
 
     /*
      * Version  5 :do_step( sys , x , t , dt , xerr )
@@ -290,7 +262,7 @@ private:
     {
         typename odeint::unwrap_reference< System >::type &sys = system;
         m_resizer.adjust_size( x , detail::bind( &internal_stepper_base_type::template resize_impl<StateInOut> , detail::ref( *this ) , detail::_1 ) );
-        sys( x , m_dxdt.m_v , t );
+        sys( x , m_dxdt.m_v ,t );
         this->stepper().do_step_impl( system , x , m_dxdt.m_v , t , x , dt );
     }
 

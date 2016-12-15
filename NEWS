@@ -1,3 +1,14 @@
+CHANGES IN VERSION 2.9.1
+------------------------
+
+CHANGES IN VERSION 2.9.0
+------------------------
+ o Version for Bioc devel 3.5
+ 
+CHANGES IN VERSION 2.8.0
+------------------------
+ o Version for Bioc release 3.4
+ 
 CHANGES IN VERSION 2.7.13
 -------------------------
  o Fix waring on OSX (see issue #60)

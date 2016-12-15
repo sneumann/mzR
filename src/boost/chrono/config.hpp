@@ -2,7 +2,6 @@
 
 //  Copyright Beman Dawes 2003, 2006, 2008
 //  Copyright 2009-2011 Vicente J. Botet Escriba
-//  Copyright (c) Microsoft Corporation 2014
 
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -13,7 +12,6 @@
 #define BOOST_CHRONO_CONFIG_HPP
 
 #include <boost/config.hpp>
-#include <boost/predef.h>
 
 #if !defined BOOST_CHRONO_VERSION
 #define BOOST_CHRONO_VERSION 1
@@ -66,16 +64,13 @@
 #     define BOOST_CHRONO_HAS_PROCESS_CLOCKS
 #   endif
 #   define BOOST_CHRONO_HAS_CLOCK_STEADY
-#   if BOOST_PLAT_WINDOWS_DESKTOP
-#     define BOOST_CHRONO_HAS_THREAD_CLOCK
-#   endif
+#   define BOOST_CHRONO_HAS_THREAD_CLOCK
 #   define BOOST_CHRONO_THREAD_CLOCK_IS_STEADY true
 # endif
 
 # if defined( BOOST_CHRONO_MAC_API )
 #   define BOOST_CHRONO_HAS_PROCESS_CLOCKS
 #   define BOOST_CHRONO_HAS_CLOCK_STEADY
-#   define BOOST_CHRONO_HAS_THREAD_CLOCK
 #   define BOOST_CHRONO_THREAD_CLOCK_IS_STEADY true
 # endif
 
@@ -97,7 +92,7 @@
 #     undef BOOST_CHRONO_HAS_THREAD_CLOCK
 #     undef BOOST_CHRONO_THREAD_CLOCK_IS_STEADY
 #   endif
-#   if (defined(__HP_aCC) || defined(__GNUC__)) && defined(__hpux)
+#   if defined(__HP_aCC) && defined(__hpux)
 #     undef BOOST_CHRONO_HAS_THREAD_CLOCK
 #     undef BOOST_CHRONO_THREAD_CLOCK_IS_STEADY
 #   endif
@@ -111,6 +106,8 @@
 #undef BOOST_CHRONO_THREAD_CLOCK_IS_STEADY
 #endif
 
+//#undef BOOST_CHRONO_HAS_PROCESS_CLOCKS
+
 // unicode support  ------------------------------//
 
 #if defined(BOOST_NO_CXX11_UNICODE_LITERALS) || defined(BOOST_NO_CXX11_CHAR16_T) || defined(BOOST_NO_CXX11_CHAR32_T)
@@ -119,14 +116,20 @@
 #define BOOST_CHRONO_HAS_UNICODE_SUPPORT 1
 #endif
 
-#ifndef BOOST_CHRONO_LIB_CONSTEXPR
+#if ! defined BOOST_NOEXCEPT
+#if defined(BOOST_NO_CXX11_NOEXCEPT)
+#define BOOST_NOEXCEPT
+#else
+#define BOOST_NOEXCEPT noexcept
+#endif
+#endif
+
 #if defined( BOOST_NO_CXX11_NUMERIC_LIMITS )
 #define BOOST_CHRONO_LIB_CONSTEXPR
 #elif defined(_LIBCPP_VERSION) &&  !defined(_LIBCPP_CONSTEXPR)
   #define BOOST_CHRONO_LIB_CONSTEXPR
 #else
   #define BOOST_CHRONO_LIB_CONSTEXPR BOOST_CONSTEXPR
-#endif
 #endif
 
 #if defined( BOOST_NO_CXX11_NUMERIC_LIMITS )
@@ -138,6 +141,7 @@
 #  define BOOST_CHRONO_LIB_NOEXCEPT_OR_THROW noexcept
 #endif
 #endif
+
 
 #if defined BOOST_CHRONO_PROVIDE_HYBRID_ERROR_HANDLING \
  && defined BOOST_CHRONO_DONT_PROVIDE_HYBRID_ERROR_HANDLING

@@ -2,7 +2,7 @@
 #define BOOST_SERIALIZATION_EXPORT_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -86,6 +86,9 @@ struct ptr_serialization_support
 {
 # if defined(BOOST_MSVC) || defined(__SUNPRO_CC)
     virtual BOOST_DLLEXPORT void instantiate() BOOST_USED;
+# elif defined(__BORLANDC__)   
+    static BOOST_DLLEXPORT void instantiate() BOOST_USED;
+    enum { x = sizeof(instantiate(),3) };
 # else
     static BOOST_DLLEXPORT void instantiate() BOOST_USED;
     typedef instantiate_function<
@@ -99,11 +102,17 @@ BOOST_DLLEXPORT void
 ptr_serialization_support<Archive,Serializable>::instantiate()
 {
     export_impl<Archive,Serializable>::enable_save(
-        typename Archive::is_saving()
+        #if ! defined(__BORLANDC__)
+        BOOST_DEDUCED_TYPENAME 
+        #endif
+        Archive::is_saving()
     );
 
     export_impl<Archive,Serializable>::enable_load(
-        typename Archive::is_loading()
+        #if ! defined(__BORLANDC__)
+        BOOST_DEDUCED_TYPENAME 
+        #endif
+        Archive::is_loading()
     );
 }
 

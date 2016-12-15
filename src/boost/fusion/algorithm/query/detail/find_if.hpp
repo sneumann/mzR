@@ -9,7 +9,6 @@
 #if !defined(FUSION_FIND_IF_05052005_1107)
 #define FUSION_FIND_IF_05052005_1107
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/mpl/apply.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
@@ -184,7 +183,6 @@ namespace detail
         type;
 
         template <typename Iterator>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static type
         recursive_call(Iterator const& iter, mpl::true_)
         {
@@ -192,7 +190,6 @@ namespace detail
         }
 
         template <typename Iterator>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static type
         recursive_call(Iterator const& iter, mpl::false_)
         {
@@ -200,7 +197,6 @@ namespace detail
         }
 
         template <typename Iterator>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static type
         recursive_call(Iterator const& iter)
         {
@@ -209,7 +205,6 @@ namespace detail
         }
 
         template <typename Iterator, typename Tag>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static type
         choose_call(Iterator const& iter, Tag)
         {
@@ -217,7 +212,6 @@ namespace detail
         }
 
         template <typename Iterator>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static type
         choose_call(Iterator const& iter, random_access_traversal_tag)
         {
@@ -226,7 +220,6 @@ namespace detail
         }
 
         template <typename Iterator>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static type
         iter_call(Iterator const& iter)
         {
@@ -234,7 +227,6 @@ namespace detail
         }
 
         template <typename Sequence>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static type
         call(Sequence& seq)
         {

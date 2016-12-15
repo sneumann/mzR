@@ -9,7 +9,6 @@
 #ifndef BOOST_FUSION_CONTAINER_SET_DETAIL_END_IMPL_HPP
 #define BOOST_FUSION_CONTAINER_SET_DETAIL_END_IMPL_HPP
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/iterator/basic_iterator.hpp>
 
 namespace boost { namespace fusion { namespace extension
@@ -32,7 +31,6 @@ namespace boost { namespace fusion { namespace extension
                 >
             type;
 
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static type
             call(Seq& seq)
             {

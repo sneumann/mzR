@@ -1,5 +1,5 @@
 #
-# $Id: Jamroot.jam 9161 2015-11-20 01:04:18Z pcbrefugee $
+# $Id: Jamroot.jam 10125 2016-10-20 18:31:25Z chambm $
 #
 #
 # Original author: Darren Kessner <darren@proteowizard.org>
@@ -60,8 +60,12 @@ ECHO
 #                           (mzML, mzXML, MGF, etc - no binary formats
 #                           like mz5 or vendor-specifics )
 #
+#   There are some aliases to build commonly used subsets of pwiz:
 #
-#   If you just want to build a subset of pwiz, add a target to 
+#   msconvert (just the command-line executable, copied to <BUILD_DIR>/<TOOLSET_DIR>)
+#   executables (all the pwiz core tools, copied to <BUILD_DIR>/<TOOLSET_DIR>)
+#
+#   If you just want to build a specific subset of pwiz, add a target to 
 # your command line.  For example to build just the msdata file 
 # read/write stuff, add:
 #
@@ -467,8 +471,8 @@ echo ProteoWizard $(version-tag:J=.) $(PWIZ_SVNREVDATE:J=) $(PLATFORM) $(PROCESS
 
 # create a VERSION file which can be used by TC to parse the canonical pwiz version
 make VERSION : : @make_VERSION : <location>$(PWIZ_BUILD_PATH) ;
-actions make_VERSION { @($(STDOUT):E=$(version-tag:J=.)) > "$(<)" }
-
+actions make_VERSION { @($(STDOUT):E=$(version-tag:]=.)) > "$(<)" }
+#actions make_VERSION { @($(STDOUT):E=$(version-tag:]=.)) > "$(<)" ; @($(STDOUT):E=<version>$(version-tag:J=.)</version>) > "$(PWIZ_BUILD_PATH)/VERSION.xml" }
 
 import tar ;
 using tar ;
@@ -621,7 +625,8 @@ rule install-vendor-api-dependencies ( properties * )
     local dependencies ;
     if <toolset>msvc in $(properties) && <link>static in $(properties) && ! [ without-binary-msdata ]
     {
-        if [ path.exists pwiz_aux/msrc/utility/vendor_api/ABI ] { dependencies += <dependency>$(PWIZ_ROOT_PATH)/pwiz_aux/msrc/utility/vendor_api/ABI//install_pwiz_vendor_api_abi/$(location) ; }
+        if [ path.exists pwiz_aux/msrc/utility/vendor_api/ABI ] { dependencies += <dependency>$(PWIZ_ROOT_PATH)/pwiz_aux/msrc/utility/vendor_api/ABI//install_pwiz_vendor_api_abi_dlls/$(location) ; }
+        if [ path.exists pwiz_aux/msrc/utility/vendor_api/ABI ] { dependencies += <dependency>$(PWIZ_ROOT_PATH)/pwiz_aux/msrc/utility/vendor_api/ABI//install_pwiz_vendor_api_abi_sqlite/$(location) ; }
         if [ path.exists pwiz_aux/msrc/utility/vendor_api/ABI/T2D ] { dependencies += <dependency>$(PWIZ_ROOT_PATH)/pwiz_aux/msrc/utility/vendor_api/ABI/T2D//install_pwiz_vendor_api_abi_t2d/$(location) ; }
         if [ path.exists pwiz_aux/msrc/utility/vendor_api/Agilent ] { dependencies += <dependency>$(PWIZ_ROOT_PATH)/pwiz_aux/msrc/utility/vendor_api/Agilent//install_pwiz_vendor_api_agilent/$(location) ; }
         if [ path.exists pwiz_aux/msrc/utility/vendor_api/Bruker ] { dependencies += <dependency>$(PWIZ_ROOT_PATH)/pwiz_aux/msrc/utility/vendor_api/Bruker//install_pwiz_vendor_api_bruker/$(location) ; }
@@ -705,6 +710,15 @@ install msconvert
       <conditional>@gcc-install-dll-path
     ;
 explicit msconvert ;
+
+install msbenchmark
+    : pwiz_tools/examples//msbenchmark
+    : <conditional>@install-type
+      <conditional>@install-location
+      <conditional>@install-vendor-api-dependencies
+      <conditional>@gcc-install-dll-path
+    ;
+explicit msbenchmark ;
 
 install idconvert
     : pwiz_tools/commandline//idconvert
@@ -987,10 +1001,28 @@ rule msparser-path ( properties * )
         {
             lib-location = "$(ProgramFilesLibs)\\Matrix Science\\Mascot Parser\\vs2013" ;
         }
+        else
+        {
+            if ! $(.warn-once)
+            {
+                .warn-once = true ;
+                echo "Warning: Not using Mascot Parser due to unsupported version of MSVC." ;
+            }
+            lib-location = "" ;
+        }
     } 
     else if <toolset>gcc in $(properties)
     {
         lib-location = "/usr/local/msparser/gnu" ;
+    }
+    else
+    {
+        if ! $(.warn-once)
+        {
+            .warn-once = true ;
+            echo "Note: Not using Mascot Parser due to unsupported compiler." ;
+        }
+        lib-location = "" ;
     }
 
     if [ without-binary-msdata ] 
@@ -998,7 +1030,7 @@ rule msparser-path ( properties * )
         if ! $(.warn-once)
         {
             .warn-once = true ;
-            echo "Not using Mascot Parser due to --without-binary-msdata ." ;
+            echo "Note: Not using Mascot Parser due to --without-binary-msdata ." ;
         }
     }
     # Check for msparser existence.
@@ -1180,7 +1212,7 @@ bcp.copy-boost-dependencies copy_boost_subset
     # scan all source files for boost dependencies
     [ path.glob-tree $(PWIZ_ROOT_PATH)/pwiz : *.cpp *.hpp ]
     [ path.glob-tree $(PWIZ_ROOT_PATH)/pwiz_aux : *.cpp *.hpp ]
-    [ path.glob-tree $(PWIZ_ROOT_PATH)/pwiz_tools : *.cpp *.hpp ]
+    [ path.glob-tree $(PWIZ_ROOT_PATH)/pwiz_tools : *.cpp *.hpp *.h ]
     [ path.glob-tree $(PWIZ_LIBRARIES_PATH)/boost_aux : *.cpp *.hpp ]
     [ path.glob-tree $(PWIZ_LIBRARIES_PATH)/SQLite : *.cpp *.h ]
 
@@ -1235,6 +1267,16 @@ tar.create boost_$(BOOST_VERSION:J=_).tar.bz2
     exclude:pwiz_tools/Shared/Lib/mysql.*
     exclude:pwiz_tools/Shared/Lib/zlib.*
     exclude:pwiz_tools/Shared/Lib/Microsoft.VC*
+    exclude:pwiz_aux/msrc/utility/vendor_api/ABI/Clearcore*.dll
+    exclude:pwiz_aux/msrc/utility/vendor_api/ABI/Sciex*.dll
+    exclude:pwiz_aux/msrc/utility/vendor_api/ABI/OFX*.dll
+    exclude:pwiz_aux/msrc/utility/vendor_api/ABI/LicenseKey.h
+    exclude:pwiz_aux/msrc/utility/vendor_api/Agilent/x*
+    exclude:pwiz_aux/msrc/utility/vendor_api/Bruker/x*
+    exclude:pwiz_aux/msrc/utility/vendor_api/Shimadzu/x*
+    exclude:pwiz_aux/msrc/utility/vendor_api/thermo/x64
+    exclude:pwiz_aux/msrc/utility/vendor_api/thermo/x86
+    exclude:pwiz_aux/msrc/utility/vendor_api/Waters/*_x*
 ;
 
 # the SUBSET file acts as flag so that building a subset tarball doesn't build a source tarball

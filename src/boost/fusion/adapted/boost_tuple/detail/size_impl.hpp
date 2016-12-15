@@ -7,7 +7,6 @@
 #if !defined(BOOST_FUSION_SIZE_IMPL_09272006_0724)
 #define BOOST_FUSION_SIZE_IMPL_09272006_0724
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/mpl/int.hpp>
 

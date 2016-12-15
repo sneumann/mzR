@@ -22,6 +22,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/detail/workaround.hpp>
 #if (BOOST_WORKAROUND(__BORLANDC__, >= 0x560) && BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x570)))\
+      || BOOST_WORKAROUND(BOOST_MSVC, < 1300) \
       || BOOST_WORKAROUND(__MWERKS__, BOOST_TESTED_AT(0x3003))
 //
 // Borland C++ Builder 6, and Visual C++ 6,
@@ -44,8 +45,10 @@ namespace boost{
 #endif
 #ifdef BOOST_MSVC
 #pragma warning(pop)
-#pragma warning(push)
-#pragma warning(disable:4700)
+#endif
+#if BOOST_WORKAROUND(BOOST_MSVC, > 1300)
+#  pragma warning(push)
+#  pragma warning(disable:4700)
 #endif
 
 template <class BidirectionalIterator,
@@ -72,6 +75,7 @@ public:
       : end(last), re(*p), flags(f), subs(v){}
 #if !BOOST_WORKAROUND(__HP_aCC, < 60700)
 #if (BOOST_WORKAROUND(__BORLANDC__, >= 0x560) && BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x570)))\
+      || BOOST_WORKAROUND(BOOST_MSVC, < 1300) \
       || BOOST_WORKAROUND(__MWERKS__, BOOST_TESTED_AT(0x3003)) \
       || BOOST_WORKAROUND(__HP_aCC, < 60700)
    template <class T>
@@ -205,6 +209,7 @@ public:
    }
 #if !BOOST_WORKAROUND(__HP_aCC, < 60700)
 #if (BOOST_WORKAROUND(__BORLANDC__, >= 0x560) && BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x570)))\
+      || BOOST_WORKAROUND(BOOST_MSVC, < 1300) \
       || BOOST_WORKAROUND(__MWERKS__, BOOST_TESTED_AT(0x3003)) \
       || BOOST_WORKAROUND(__HP_aCC, < 60700)
    template <class T>
@@ -291,6 +296,7 @@ inline regex_token_iterator<typename std::basic_string<charT, ST, SA>::const_ite
 {
    return regex_token_iterator<typename std::basic_string<charT, ST, SA>::const_iterator, charT, traits>(p.begin(), p.end(), e, submatch, m);
 }
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1300)
 template <class charT, class traits, std::size_t N>
 inline regex_token_iterator<const charT*, charT, traits> make_regex_token_iterator(const charT* p, const basic_regex<charT, traits>& e, const int (&submatch)[N], regex_constants::match_flag_type m = regex_constants::match_default)
 {
@@ -301,6 +307,7 @@ inline regex_token_iterator<typename std::basic_string<charT, ST, SA>::const_ite
 {
    return regex_token_iterator<typename std::basic_string<charT, ST, SA>::const_iterator, charT, traits>(p.begin(), p.end(), e, submatch, m);
 }
+#endif
 template <class charT, class traits>
 inline regex_token_iterator<const charT*, charT, traits> make_regex_token_iterator(const charT* p, const basic_regex<charT, traits>& e, const std::vector<int>& submatch, regex_constants::match_flag_type m = regex_constants::match_default)
 {
@@ -312,8 +319,10 @@ inline regex_token_iterator<typename std::basic_string<charT, ST, SA>::const_ite
    return regex_token_iterator<typename std::basic_string<charT, ST, SA>::const_iterator, charT, traits>(p.begin(), p.end(), e, submatch, m);
 }
 
+#if BOOST_WORKAROUND(BOOST_MSVC, > 1300)
+#  pragma warning(pop)
+#endif
 #ifdef BOOST_MSVC
-#pragma warning(pop)
 #pragma warning(push)
 #pragma warning(disable: 4103)
 #endif

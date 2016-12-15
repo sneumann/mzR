@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_LESS)
 #define FUSION_INCLUDE_LESS
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/sequence/comparison/less.hpp>
 
 #endif

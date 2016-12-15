@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_OUT)
 #define FUSION_INCLUDE_OUT
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/sequence/io/out.hpp>
 
 #endif

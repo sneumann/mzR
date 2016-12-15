@@ -1,7 +1,6 @@
 //  boost/chrono/process_cpu_clocks.hpp  -----------------------------------------------------------//
 
 //  Copyright 2009-2011 Vicente J. Botet Escriba
-//  Copyright (c) Microsoft Corporation 2014
 
 //  Distributed under the Boost Software License, Version 1.0.
 //  See http://www.boost.org/LICENSE_1_0.txt
@@ -44,7 +43,6 @@ namespace boost { namespace chrono {
 #endif
     };
 
-#if ! BOOST_OS_WINDOWS || BOOST_PLAT_WINDOWS_DESKTOP
     class BOOST_CHRONO_DECL process_user_cpu_clock {
     public:
         typedef nanoseconds                          duration;
@@ -72,7 +70,6 @@ namespace boost { namespace chrono {
         static BOOST_CHRONO_INLINE time_point now(system::error_code & ec );
 #endif
     };
-#endif
 
         template <typename Rep>
         struct process_times
@@ -86,15 +83,12 @@ namespace boost { namespace chrono {
                 : real(0)
                 , user(0)
                 , system(0){}
-
-#if ! defined BOOST_CHRONO_DONT_PROVIDES_DEPRECATED_IO_SINCE_V2_0_0
             template <typename Rep2>
             explicit process_times(
                 Rep2 r)
                 : real(r)
                 , user(r)
                 , system(r){}
-#endif
             template <typename Rep2>
             explicit process_times(
                 process_times<Rep2> const& rhs)
@@ -113,12 +107,10 @@ namespace boost { namespace chrono {
             rep   user;    // user cpu time
             rep system;  // system cpu time
 
-#if ! defined BOOST_CHRONO_DONT_PROVIDES_DEPRECATED_IO_SINCE_V2_0_0
             operator rep() const
             {
               return real;
             }
-#endif
             template <typename Rep2>
             bool operator==(process_times<Rep2> const& rhs) {
                 return (real==rhs.real &&
@@ -188,7 +180,7 @@ namespace boost { namespace chrono {
             }
 
             template <class CharT, class Traits>
-            void read(std::basic_istream<CharT, Traits>& is)
+            void read(std::basic_istream<CharT, Traits>& is) const
             {
                 typedef std::istreambuf_iterator<CharT, Traits> in_iterator;
                 in_iterator i(is);
@@ -300,7 +292,6 @@ namespace chrono
 
 
   typedef process_times<nanoseconds::rep> process_cpu_clock_times;
-#if ! BOOST_OS_WINDOWS || BOOST_PLAT_WINDOWS_DESKTOP
     class BOOST_CHRONO_DECL process_cpu_clock
     {
     public:
@@ -317,7 +308,6 @@ namespace chrono
         static BOOST_CHRONO_INLINE time_point now(system::error_code & ec );
 #endif
     };
-#endif
 
     template <class CharT, class Traits, typename Rep>
     std::basic_ostream<CharT, Traits>&
@@ -331,7 +321,7 @@ namespace chrono
     template <class CharT, class Traits, typename Rep>
     std::basic_istream<CharT, Traits>&
     operator>>(std::basic_istream<CharT, Traits>& is,
-        process_times<Rep>& rhs)
+        process_times<Rep> const& rhs)
     {
         rhs.read(is);
         return is;
@@ -382,7 +372,6 @@ namespace chrono
       }
     };
 
-#if ! BOOST_OS_WINDOWS || BOOST_PLAT_WINDOWS_DESKTOP
     template<class CharT>
     struct clock_string<process_user_cpu_clock, CharT>
     {
@@ -447,7 +436,6 @@ namespace chrono
         return str;
       }
     };
-#endif
 
 } // namespace chrono
 } // namespace boost

@@ -23,7 +23,11 @@ public:
     class iterator
     {
     public:
+#if defined _MSC_VER && _MSC_VER <= 1200
+        friend basic_input;
+#else
         friend class basic_input;
+#endif
 
         struct data
         {
@@ -477,7 +481,11 @@ public:
         }
     };
 
+#if defined _MSC_VER && _MSC_VER <= 1200
+    friend iterator;
+#else
     friend class iterator;
+#endif
 
     // Make it explict that we are NOT taking a copy of state_machine_!
     basic_input (const basic_state_machine<typename Traits::char_type>

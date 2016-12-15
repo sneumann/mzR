@@ -282,11 +282,6 @@ struct const_copy_argument<void> {
   typedef void type;
 };
 
-template<>
-struct const_copy_argument<void const> {
-  typedef void type;
-};
-
 
 // Does the same as const_copy_argument, but passes references through as such
 template<class T>

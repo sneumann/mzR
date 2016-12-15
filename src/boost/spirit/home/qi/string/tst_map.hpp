@@ -54,20 +54,16 @@ namespace boost { namespace spirit { namespace qi
                 Iterator save = first;
                 typename map_type::const_iterator
                     i = map.find(filter(*first++));
-
-                if (i != map.end())
+                if (i == map.end())
                 {
-                    if (T* p = node::find(i->second.root, first, last, filter))
-                    {
-                        return p;
-                    }
-                   
-                    if (i->second.data)
-                    {
-                        return i->second.data;
-                    }
+                    first = save;
+                    return 0;
                 }
-                first = save;
+                if (T* p = node::find(i->second.root, first, last, filter))
+                {
+                    return p;
+                }
+                return i->second.data;
             }
             return 0;
         }

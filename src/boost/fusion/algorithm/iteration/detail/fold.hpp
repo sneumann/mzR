@@ -47,7 +47,7 @@ namespace boost { namespace fusion
     {
         template<typename State, typename It, typename F>
         struct BOOST_PP_CAT(BOOST_FUSION_FOLD_NAME, _lvalue_state)
-          : fusion::detail::result_of_with_decltype<
+          : boost::result_of<
                 F(
                 typename add_reference<typename add_const<State>::type>::type,
                 BOOST_FUSION_FOLD_IMPL_INVOKE_IT_META_TRANSFORM(It))
@@ -57,11 +57,38 @@ namespace boost { namespace fusion
         template<typename Result,int N>
         struct BOOST_PP_CAT(unrolled_,BOOST_FUSION_FOLD_NAME)
         {
-            template<typename State3, typename It3, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
+            template<typename State, typename It0, typename F>
             static Result
-            call_3(State3 const& state3,It3 const& it3,F& f)
+            call(State const& state,It0 const& it0,F f)
             {
+                typedef typename
+                    result_of::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION<
+                        It0 const
+                    >::type
+                It1;
+                It1 it1 = fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it0);
+                typedef typename
+                    result_of::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION<
+                        It1
+                    >::type
+                It2;
+                It2 it2 = fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it1);
+                typedef typename
+                    result_of::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION<
+                        It2
+                    >::type
+                It3;
+                It3 it3 = fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it2);
+
+                typedef typename BOOST_PP_CAT(BOOST_FUSION_FOLD_NAME, _lvalue_state)<State,It0,F>::type State1;
+                State1 const state1=f(state,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it0));
+
+                typedef typename BOOST_PP_CAT(BOOST_FUSION_FOLD_NAME, _lvalue_state)<State1,It1,F>::type State2;
+                State2 const state2=f(state1,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it1));
+
+                typedef typename BOOST_PP_CAT(BOOST_FUSION_FOLD_NAME, _lvalue_state)<State2,It2,F>::type State3;
+                State3 const state3=f(state2,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it2));
+
                 return BOOST_PP_CAT(unrolled_,BOOST_FUSION_FOLD_NAME)<
                     Result
                   , N-4
@@ -70,95 +97,52 @@ namespace boost { namespace fusion
                     fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it3),
                     f);
             }
-
-            template<typename State2, typename It2, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call_2(State2 const& state2,It2 const& it2,F& f)
-            {
-                return call_3(
-                    f(state2,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it2)),
-                    fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it2),
-                    f);
-            }
-
-            template<typename State1, typename It1, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call_1(State1 const& state1,It1 const& it1,F& f)
-            {
-                return call_2(
-                    f(state1,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it1)),
-                    fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it1),
-                    f);
-            }
-
-            template<typename State, typename It0, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call(State const& state,It0 const& it0,F f)
-            {
-                return call_1(
-                    f(state,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it0)),
-                    fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it0),
-                    f);
-            }
         };
 
         template<typename Result>
         struct BOOST_PP_CAT(unrolled_,BOOST_FUSION_FOLD_NAME)<Result,3>
         {
-            template<typename State2, typename It2, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call_2(State2 const& state2,It2 const& it2,F& f)
-            {
-                return f(state2,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it2));
-            }
-
-            template<typename State1, typename It1, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call_1(State1 const& state1,It1 const& it1,F& f)
-            {
-                return call_2(
-                    f(state1,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it1)),
-                    fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it1),
-                    f);
-            }
-
             template<typename State, typename It0, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static Result
             call(State const& state,It0 const& it0,F f)
             {
-                return call_1(
-                    f(state,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it0)),
-                    fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it0),
-                    f);
+                typedef typename
+                    result_of::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION<
+                        It0 const
+                    >::type
+                It1;
+                It1 it1 = fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it0);
+                typedef typename
+                    result_of::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION<
+                        It1
+                    >::type
+                It2;
+                It2 it2 = fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it1);
+
+                typedef typename BOOST_PP_CAT(BOOST_FUSION_FOLD_NAME, _lvalue_state)<State,It0,F>::type State1;
+                State1 const state1=f(state,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it0));
+
+                typedef typename BOOST_PP_CAT(BOOST_FUSION_FOLD_NAME, _lvalue_state)<State1,It1,F>::type State2;
+                State2 const state2=f(state1,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it1));
+
+                return f(state2,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it2));
             }
         };
 
         template<typename Result>
         struct BOOST_PP_CAT(unrolled_,BOOST_FUSION_FOLD_NAME)<Result,2>
         {
-            template<typename State1, typename It1, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call_1(State1 const& state1,It1 const& it1,F& f)
-            {
-                return f(state1,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it1));
-            }
-
             template<typename State, typename It0, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static Result
             call(State const& state,It0 const& it0,F f)
             {
-                return call_1(
-                    f(state,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it0)),
-                    fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it0),
-                    f);
+                typedef typename BOOST_PP_CAT(BOOST_FUSION_FOLD_NAME, _lvalue_state)<State,It0,F>::type State1;
+                State1 const state1=f(state,BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(it0));
+
+                return f(
+                    state1,
+                    BOOST_FUSION_FOLD_IMPL_INVOKE_IT_TRANSFORM(
+                        fusion::BOOST_FUSION_FOLD_IMPL_NEXT_IT_FUNCTION(it0)));
             }
         };
 
@@ -166,7 +150,6 @@ namespace boost { namespace fusion
         struct BOOST_PP_CAT(unrolled_,BOOST_FUSION_FOLD_NAME)<Result,1>
         {
             template<typename State, typename It0, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static Result
             call(State const& state,It0 const& it0,F f)
             {
@@ -179,9 +162,8 @@ namespace boost { namespace fusion
         struct BOOST_PP_CAT(unrolled_,BOOST_FUSION_FOLD_NAME)<Result,0>
         {
             template<typename State, typename It0, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static Result
-            call(State const& state,It0 const&, F)
+            call(State const& state,It0 const& it0, F)
             {
                 return static_cast<Result>(state);
             }
@@ -327,7 +309,7 @@ namespace boost { namespace fusion
         {
             typedef typename
                 BOOST_PP_CAT(result_of_unrolled_,BOOST_FUSION_FOLD_NAME)<
-                    typename fusion::detail::result_of_with_decltype<
+                    typename boost::result_of<
                         F(
                             StateRef,
                             BOOST_FUSION_FOLD_IMPL_INVOKE_IT_META_TRANSFORM(
@@ -358,7 +340,6 @@ namespace boost { namespace fusion
                 >::type
             type;
 
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static type
             call(StateRef state, Seq& seq, F f)
             {
@@ -382,7 +363,6 @@ namespace boost { namespace fusion
         {
             typedef StateRef type;
 
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static StateRef
             call(StateRef state, Seq&, F)
             {
@@ -417,7 +397,6 @@ namespace boost { namespace fusion
     }
 
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::BOOST_FUSION_FOLD_NAME<
         Seq
       , State const
@@ -432,7 +411,6 @@ namespace boost { namespace fusion
     }
 
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::BOOST_FUSION_FOLD_NAME<
         Seq const
       , State const
@@ -447,7 +425,6 @@ namespace boost { namespace fusion
     }
 
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::BOOST_FUSION_FOLD_NAME<
         Seq
       , State const
@@ -462,7 +439,6 @@ namespace boost { namespace fusion
     }
 
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::BOOST_FUSION_FOLD_NAME<
         Seq const
       , State const

@@ -15,7 +15,6 @@
 #include <boost/range/iterator_range.hpp>
 #include <boost/range/value_type.hpp>
 #include <boost/range/reference.hpp>
-#include <boost/range/concepts.hpp>
 
 namespace boost
 {
@@ -121,9 +120,6 @@ namespace boost
         inline select_first_range<StdPairRng>
         operator|( const StdPairRng& r, map_keys_forwarder )
         {
-            BOOST_RANGE_CONCEPT_ASSERT((
-                SinglePassRangeConcept<const StdPairRng>));
-
             return operator|( r,
                 boost::adaptors::transformed( select_first<StdPairRng>() ) );
         }
@@ -132,8 +128,6 @@ namespace boost
         inline select_second_mutable_range<StdPairRng>
         operator|( StdPairRng& r, map_values_forwarder )
         {
-            BOOST_RANGE_CONCEPT_ASSERT((SinglePassRangeConcept<StdPairRng>));
-
             return operator|( r,
                 boost::adaptors::transformed( select_second_mutable<StdPairRng>() ) );
         }
@@ -142,9 +136,6 @@ namespace boost
         inline select_second_const_range<StdPairRng>
         operator|( const StdPairRng& r, map_values_forwarder )
         {
-            BOOST_RANGE_CONCEPT_ASSERT((
-                SinglePassRangeConcept<const StdPairRng>));
-
             return operator|( r,
                 boost::adaptors::transformed( select_second_const<StdPairRng>() ) );
         }
@@ -170,9 +161,6 @@ namespace boost
         inline select_first_range<StdPairRange>
         keys(const StdPairRange& rng)
         {
-            BOOST_RANGE_CONCEPT_ASSERT((
-                SinglePassRangeConcept<const StdPairRange>));
-
             return select_first_range<StdPairRange>(
                 range_detail::select_first<StdPairRange>(), rng );
         }
@@ -181,9 +169,6 @@ namespace boost
         inline select_second_const_range<StdPairRange>
         values(const StdPairRange& rng)
         {
-            BOOST_RANGE_CONCEPT_ASSERT((
-                SinglePassRangeConcept<const StdPairRange>));
-
             return select_second_const_range<StdPairRange>(
                 range_detail::select_second_const<StdPairRange>(), rng );
         }
@@ -192,8 +177,6 @@ namespace boost
         inline select_second_mutable_range<StdPairRange>
         values(StdPairRange& rng)
         {
-            BOOST_RANGE_CONCEPT_ASSERT((SinglePassRangeConcept<StdPairRange>));
-
             return select_second_mutable_range<StdPairRange>(
                 range_detail::select_second_mutable<StdPairRange>(), rng );
         }

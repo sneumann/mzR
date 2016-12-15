@@ -8,7 +8,6 @@
 #if !defined(FUSION_AT_IMPL_20060124_1933)
 #define FUSION_AT_IMPL_20060124_1933
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/container/vector.hpp>
 #include <boost/fusion/sequence/intrinsic/at.hpp>
 #include <boost/fusion/container/vector/convert.hpp>
@@ -44,7 +43,6 @@ namespace boost { namespace fusion
             };
 
             template<typename Seq>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             typename result<poly_at(Seq&)>::type
             operator()(Seq& seq) const
             {
@@ -52,14 +50,12 @@ namespace boost { namespace fusion
             }
 
             template<typename Seq>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             typename result<poly_at(Seq const&)>::type
             operator()(Seq const& seq) const
             {
                 return fusion::at<N>(seq);
             }
 
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             unused_type operator()(unused_type const&) const
             {
                 return unused_type();
@@ -82,7 +78,6 @@ namespace boost { namespace fusion
                     typename result_of::transform<
                     typename Seq::sequences, detail::poly_at<N> >::type>::type type;
 
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type
                 call(Seq& seq)
                 {

@@ -29,7 +29,11 @@ public:
     class iterator
     {
     public:
+#if defined _MSC_VER && _MSC_VER <= 1200
+        friend basic_state_machine;
+#else
         friend class basic_state_machine;
+#endif
 
         struct data
         {
@@ -82,7 +86,7 @@ public:
                     bol_index == rhs_.bol_index &&
                     eol_index == rhs_.eol_index &&
                     token == rhs_.token &&
-                    goto_state == rhs_.goto_state;
+                    transition == rhs_.transition;
             }
         };
 
@@ -221,7 +225,11 @@ public:
         }
     };
 
+#if defined _MSC_VER && _MSC_VER <= 1200
+    friend iterator;
+#else
     friend class iterator;
+#endif
 
     basic_state_machine ()
     {
@@ -357,7 +365,7 @@ private:
             {
                 const std::size_t col_ = lu_->at (alpha_index_);
 
-                if (col_ != static_cast<std::size_t>(dead_state_index))
+                if (col_ != dead_state_index)
                 {
                     chars_[col_ - dfa_offset] += static_cast<CharT>
                         (alpha_index_);

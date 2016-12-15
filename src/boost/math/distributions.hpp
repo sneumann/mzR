@@ -12,7 +12,6 @@
 #ifndef BOOST_MATH_DISTRIBUTIONS_HPP
 #define BOOST_MATH_DISTRIBUTIONS_HPP
 
-#include <boost/math/distributions/arcsine.hpp>
 #include <boost/math/distributions/bernoulli.hpp>
 #include <boost/math/distributions/beta.hpp>
 #include <boost/math/distributions/binomial.hpp>
@@ -24,7 +23,6 @@
 #include <boost/math/distributions/fisher_f.hpp>
 #include <boost/math/distributions/gamma.hpp>
 #include <boost/math/distributions/geometric.hpp>
-#include <boost/math/distributions/hyperexponential.hpp>
 #include <boost/math/distributions/hypergeometric.hpp>
 #include <boost/math/distributions/inverse_chi_squared.hpp>
 #include <boost/math/distributions/inverse_gamma.hpp>

@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_ACCUMULATE)
 #define FUSION_INCLUDE_ACCUMULATE
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/algorithm/iteration/accumulate.hpp>
 
 #endif

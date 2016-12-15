@@ -8,7 +8,6 @@
 #if !defined(FUSION_GREATER_05052005_1142)
 #define FUSION_GREATER_05052005_1142
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/fusion/iterator/deref.hpp>
 #include <boost/fusion/iterator/next.hpp>
@@ -24,7 +23,6 @@ namespace boost { namespace fusion { namespace detail
         typedef typename result_of::end<Seq2>::type end2_type;
 
         template <typename I1, typename I2>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static bool
         call(I1 const&, I2 const&, mpl::true_)
         {
@@ -32,7 +30,6 @@ namespace boost { namespace fusion { namespace detail
         }
 
         template <typename I1, typename I2>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static bool
         call(I1 const& a, I2 const& b, mpl::false_)
         {
@@ -42,7 +39,6 @@ namespace boost { namespace fusion { namespace detail
         }
 
         template <typename I1, typename I2>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static bool
         call(I1 const& a, I2 const& b)
         {

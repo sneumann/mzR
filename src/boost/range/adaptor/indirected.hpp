@@ -12,7 +12,6 @@
 #define BOOST_RANGE_ADAPTOR_INDIRECTED_HPP
 
 #include <boost/range/iterator_range.hpp>
-#include <boost/range/concepts.hpp>
 #include <boost/iterator/indirect_iterator.hpp>
 
 namespace boost
@@ -43,24 +42,18 @@ namespace boost
 
         struct indirect_forwarder {};
 
-        template< class SinglePassRange >
-        inline indirected_range<SinglePassRange>
-        operator|( SinglePassRange& r, indirect_forwarder )
+        template< class InputRng >
+        inline indirected_range<InputRng>
+        operator|( InputRng& r, indirect_forwarder )
         {
-            BOOST_RANGE_CONCEPT_ASSERT((
-                SinglePassRangeConcept<SinglePassRange>));
-
-            return indirected_range<SinglePassRange>( r );
+            return indirected_range<InputRng>( r );
         }
 
-        template< class SinglePassRange >
-        inline indirected_range<const SinglePassRange>
-        operator|( const SinglePassRange& r, indirect_forwarder )
+        template< class InputRng >
+        inline indirected_range<const InputRng>
+        operator|( const InputRng& r, indirect_forwarder )
         {
-            BOOST_RANGE_CONCEPT_ASSERT((
-                SinglePassRangeConcept<const SinglePassRange>));
-
-            return indirected_range<const SinglePassRange>( r );
+            return indirected_range<const InputRng>( r );
         }
 
     } // 'range_detail'
@@ -75,23 +68,18 @@ namespace boost
                                             range_detail::indirect_forwarder();
         }
 
-        template<class SinglePassRange>
-        inline indirected_range<SinglePassRange>
-        indirect(SinglePassRange& rng)
+        template<class InputRange>
+        inline indirected_range<InputRange>
+        indirect(InputRange& rng)
         {
-            BOOST_RANGE_CONCEPT_ASSERT((
-                SinglePassRangeConcept<SinglePassRange>));
-            return indirected_range<SinglePassRange>(rng);
+            return indirected_range<InputRange>(rng);
         }
 
-        template<class SinglePassRange>
-        inline indirected_range<const SinglePassRange>
-        indirect(const SinglePassRange& rng)
+        template<class InputRange>
+        inline indirected_range<const InputRange>
+        indirect(const InputRange& rng)
         {
-            BOOST_RANGE_CONCEPT_ASSERT((
-                SinglePassRangeConcept<const SinglePassRange>));
-
-            return indirected_range<const SinglePassRange>(rng);
+            return indirected_range<const InputRange>(rng);
         }
     } // 'adaptors'
 

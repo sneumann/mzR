@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <cstring>
 
-#include <boost/config.hpp>
+#include <boost/config.hpp> // for BOOST_DEDUCED_TYPENAME
 #if defined(BOOST_NO_STDC_NAMESPACE)
 namespace std{ 
     using ::memcpy; 
@@ -29,11 +29,11 @@ namespace archive {
 // implementation of text_text_archive
 
 template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_text_iarchive<Archive>::load_override(class_name_type & t){
+BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
+basic_text_iarchive<Archive>::load_override(class_name_type & t, int){
     std::string cn;
     cn.reserve(BOOST_SERIALIZATION_MAX_KEY_SIZE);
-    load_override(cn);
+    load_override(cn, 0);
     if(cn.size() > (BOOST_SERIALIZATION_MAX_KEY_SIZE - 1))
         boost::serialization::throw_exception(
             archive_exception(archive_exception::invalid_class_name)
@@ -44,7 +44,7 @@ basic_text_iarchive<Archive>::load_override(class_name_type & t){
 }
 
 template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
 basic_text_iarchive<Archive>::init(void){
     // read signature in an archive version independent manner
     std::string file_signature;
@@ -62,7 +62,10 @@ basic_text_iarchive<Archive>::init(void){
     #if BOOST_WORKAROUND(__MWERKS__, BOOST_TESTED_AT(0x3205))
     this->set_library_version(input_library_version);
     #else
-    detail::basic_iarchive::set_library_version(input_library_version);
+    #if ! BOOST_WORKAROUND(BOOST_MSVC, <= 1200)
+    detail::
+    #endif
+    basic_iarchive::set_library_version(input_library_version);
     #endif
 
     // extra little .t is to get around borland quirk

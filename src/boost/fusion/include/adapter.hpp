@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_ADAPTER)
 #define FUSION_INCLUDE_ADAPTER
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/functional/adapter.hpp>
 
 #endif

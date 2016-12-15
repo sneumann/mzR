@@ -35,7 +35,7 @@
 #include "MascotReader.hpp"
 #endif
 //#include "References.hpp"
-#include "pwiz/data/msdata/Version.hpp"
+#include "pwiz/data/identdata/Version.hpp"
 
 
 using namespace pwiz::util;
@@ -50,7 +50,7 @@ namespace {
 
 AnalysisSoftwarePtr getPwizSoftware(IdentData& mzid)
 {
-    string version = pwiz::msdata::Version::str();
+    string version = pwiz::identdata::Version::str();
 
     AnalysisSoftwarePtr result;
 

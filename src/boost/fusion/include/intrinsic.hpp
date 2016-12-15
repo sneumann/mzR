@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_INTRINSIC)
 #define FUSION_INCLUDE_INTRINSIC
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/sequence/intrinsic.hpp>
 
 #endif

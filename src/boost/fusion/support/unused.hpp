@@ -7,7 +7,6 @@
 #if !defined(BOOST_FUSION_SUPPORT_UNUSED_20070305_1038)
 #define BOOST_FUSION_SUPPORT_UNUSED_20070305_1038
 
-#include <boost/fusion/support/config.hpp>
 #include <iosfwd>
 
 #include <boost/config.hpp>
@@ -22,67 +21,58 @@ namespace boost { namespace fusion
 {
     struct unused_type
     {
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-        unused_type() BOOST_NOEXCEPT
+        unused_type()
         {
         }
 
         template <typename T>
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-        unused_type(T const&) BOOST_NOEXCEPT
+        unused_type(T const&)
         {
         }
 
         template <typename T>
-        BOOST_FUSION_CONSTEXPR_THIS BOOST_FUSION_GPU_ENABLED
         unused_type const&
-        operator=(T const&) const BOOST_NOEXCEPT
+        operator=(T const&) const
         {
             return *this;
         }
 
         template <typename T>
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         unused_type&
-        operator=(T const&) BOOST_NOEXCEPT
+        operator=(T const&)
         {
             return *this;
         }
 
-        BOOST_FUSION_CONSTEXPR_THIS BOOST_FUSION_GPU_ENABLED
         unused_type const&
-        operator=(unused_type const&) const BOOST_NOEXCEPT
+        operator=(unused_type const&) const
         {
             return *this;
         }
 
-        BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         unused_type&
-        operator=(unused_type const&) BOOST_NOEXCEPT
+        operator=(unused_type const&)
         {
             return *this;
         }
     };
 
-    BOOST_CONSTEXPR_OR_CONST unused_type unused = unused_type();
+    unused_type const unused = unused_type();
 
     namespace detail
     {
         struct unused_only
         {
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            unused_only(unused_type const&) BOOST_NOEXCEPT {}
+            unused_only(unused_type const&) {}
         };
     }
 
-    BOOST_CONSTEXPR
-    inline std::ostream& operator<<(std::ostream& out, detail::unused_only const&) BOOST_NOEXCEPT
+    inline std::ostream& operator<<(std::ostream& out, detail::unused_only const&)
     {
         return out;
     }
 
-    BOOST_CONSTEXPR
-    inline std::istream& operator>>(std::istream& in, unused_type&) BOOST_NOEXCEPT
+    inline std::istream& operator>>(std::istream& in, unused_type&)
     {
         return in;
     }

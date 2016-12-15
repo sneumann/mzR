@@ -8,7 +8,6 @@
 #if !defined(FUSION_DISTANCE_IMPL_14122005_2104)
 #define FUSION_DISTANCE_IMPL_14122005_2104
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/iterator/distance.hpp>
 
 namespace boost { namespace fusion {
@@ -33,7 +32,6 @@ namespace boost { namespace fusion {
                 typedef typename Last::first_type last_type;
                 typedef typename result_of::distance<last_type, first_type>::type type;
 
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type
                 call(First const& first, Last const& last)
                 {

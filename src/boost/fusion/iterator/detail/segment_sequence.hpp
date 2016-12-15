@@ -7,7 +7,6 @@
 #if !defined(BOOST_FUSION_SEGMENTED_SEQUENCE_HPP_INCLUDED)
 #define BOOST_FUSION_SEGMENTED_SEQUENCE_HPP_INCLUDED
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/fusion/support/tag_of.hpp>
@@ -30,7 +29,7 @@ namespace boost { namespace fusion { namespace detail
         typedef Sequence sequence_type;
         sequence_type sequence;
 
-        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED explicit segment_sequence(Sequence const & seq)
+        explicit segment_sequence(Sequence const & seq)
             : sequence(seq)
         {}
     };
@@ -61,7 +60,6 @@ namespace extension
         {
             typedef typename Sequence::sequence_type type;
 
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static type call(Sequence & seq)
             {
                 return seq.sequence;

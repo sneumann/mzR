@@ -38,82 +38,81 @@ namespace boost { namespace spirit { namespace char_encoding
             return (0 == (ch & ~0xff) || ~0 == (ch | 0xff)) ? true : false;
         }
 
-        static bool
+        static int
         isalnum(int ch)
         {
-            return std::isalnum(ch) ? true : false;
+            return std::isalnum(ch);
         }
 
-        static bool
+        static int
         isalpha(int ch)
         {
-            return std::isalpha(ch) ? true : false;
+            return std::isalpha(ch);
         }
 
-        static bool
+        static int
         isdigit(int ch)
         {
-            return std::isdigit(ch) ? true : false;
+            return std::isdigit(ch);
         }
 
-        static bool
+        static int
         isxdigit(int ch)
         {
-            return std::isxdigit(ch) ? true : false;
+            return std::isxdigit(ch);
         }
 
-        static bool
+        static int
         iscntrl(int ch)
         {
-            return std::iscntrl(ch) ? true : false;
+            return std::iscntrl(ch);
         }
 
-        static bool
+        static int
         isgraph(int ch)
         {
-            return std::isgraph(ch) ? true : false;
+            return std::isgraph(ch);
         }
 
-        static bool
+        static int
         islower(int ch)
         {
-            return std::islower(ch) ? true : false;
+            return std::islower(ch);
         }
 
-        static bool
+        static int
         isprint(int ch)
         {
-            return std::isprint(ch) ? true : false;
+            return std::isprint(ch);
         }
 
-        static bool
+        static int
         ispunct(int ch)
         {
-            return std::ispunct(ch) ? true : false;
+            return std::ispunct(ch);
         }
 
-        static bool
+        static int
         isspace(int ch)
         {
-            return std::isspace(ch) ? true : false;
+            return std::isspace(ch);
         }
 
-        static bool
+        static int
         isblank BOOST_PREVENT_MACRO_SUBSTITUTION (int ch)
         {
             return (ch == ' ' || ch == '\t');
         }
 
-        static bool
+        static int
         isupper(int ch)
         {
-            return std::isupper(ch) ? true : false;
+            return std::isupper(ch);
         }
 
     ///////////////////////////////////////////////////////////////////////////////
     //  Simple character conversions
     ///////////////////////////////////////////////////////////////////////////////
-
         static int
         tolower(int ch)
         {

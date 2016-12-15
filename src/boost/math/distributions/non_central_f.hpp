@@ -133,10 +133,9 @@ namespace boost
                &r,
                Policy()))
                return r;
-         RealType guess = m > 2 ? RealType(m * (n + l) / (n * (m - 2))) : RealType(1);
          return detail::generic_find_mode(
             dist,
-            guess,
+            m * (n + l) / (n * (m - 2)),
             function);
       }
 
