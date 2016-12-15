@@ -1,3 +1,6 @@
+CHANGES IN VERSION 2.9.2
+------------------------
+
 CHANGES IN VERSION 2.9.1
 ------------------------
  o Delete RAMPAdapter pointer in pwiz backend (by jotsetung)
