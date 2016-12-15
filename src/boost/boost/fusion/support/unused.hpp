@@ -64,7 +64,8 @@ namespace boost { namespace fusion
         }
     };
 
-    BOOST_CONSTEXPR unused_type const unused = unused_type();
+    // STN: hack following https://svn.boost.org/trac/boost/ticket/11517 and https://github.com/boostorg/fusion/pull/96
+    BOOST_CONSTEXPR_OR_CONST unused_type const unused = unused_type();
 
     namespace detail
     {
