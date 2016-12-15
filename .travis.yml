@@ -1,4 +1,7 @@
 language: r
 r: bioc-devel
 sudo: true
-apt_packages: libnetcdf-dev
+apt_packages: 
+  - libnetcdf-dev
+  - netcdf-bin
+
