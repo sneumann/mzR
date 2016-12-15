@@ -1,5 +1,6 @@
 \name{peaks}
 \alias{peaks}
+\alias{spectra}
 \alias{header}
 \alias{peaksCount}
 \alias{get3Dmap}
@@ -13,7 +14,9 @@
 
  peaksCount(object, scans, ...)
 
- peaks(object, ...)
+ peaks(object, ...) 
+
+ spectra(object, ...) ## same as peaks
 
  get3Dmap(object, scans, lowMz, highMz, resMz, ...)
 }
@@ -21,7 +24,7 @@
 \arguments{
   \item{object}{An instantiated \code{mzR} object.}
   \item{scans}{A \code{numeric} specifying which scans to
-    return. Optional for the \code{header}, \code{peaks} and
+    return. Optional for the \code{header}, \code{peaks}, \code{scans} and
     \code{peaksCount} methods. If ommited, the requested data for all
     peaks is returned. } 
   \item{lowMz, highMz}{\code{Numeric}s defining the m/z range to be returned.}
@@ -31,25 +34,27 @@
 }
 
 \description{
-  Access the MS raw data. The \code{peaks} and \code{peaksCount}
-  functions return the (m/z,intensity) pairs and the number peaks in the
-  spectrum/spectra. \code{peaks} returns a single matrix if \code{scans}
-  is a \code{numeric} of length 1 and a list of matrices if several scans are
-  asked for or no \code{scans} argument is provided (i.e all spectra in
-  the oject are retured). \code{peaksCount} will return a numeric of
-  length \code{n}. 
+
+  Access the MS raw data. The \code{peaks}, \code{spectra} (can be used
+  interchangeably) and \code{peaksCount} functions return the (m/z,
+  intensity) pairs and the number peaks in the
+  spectrum/spectra. \code{peaks} and \code{spectra} return a single matrix
+  if \code{scans} is a \code{numeric} of length 1 and a list of matrices
+  if several scans are asked for or no \code{scans} argument is provided
+  (i.e all spectra in the oject are retured). \code{peaksCount} will
+  return a numeric of length \code{n}.
   
   The \code{\link{header}} function returns a list containing
- \code{seqNum}, \code{acquisitionNum} , \code{msLevel},
- \code{peaksCount}, \code{totIonCurrent}, \code{retentionTime},
- \code{basePeakMZ}, \code{basePeakIntensity}, \code{collisionEnergy},
- \code{ionisationEnergy}, \code{lowM}, \code{highMZ},
- \code{precursorScanNum}, \code{precursorMZ}, \code{precursorCharge},
- \code{precursorIntensity}, \code{mergedScan},
- \code{mergedResultScanNum}, \code{mergedResultStartScanNum} and 
- \code{mergedResultEndScanNum}, when available in the original file. If
- multiple scans are queried, a \code{data.frame} is returned with the
- scans reported along the rows.
+  \code{seqNum}, \code{acquisitionNum} , \code{msLevel},
+  \code{peaksCount}, \code{totIonCurrent}, \code{retentionTime},
+  \code{basePeakMZ}, \code{basePeakIntensity}, \code{collisionEnergy},
+  \code{ionisationEnergy}, \code{lowM}, \code{highMZ},
+  \code{precursorScanNum}, \code{precursorMZ}, \code{precursorCharge},
+  \code{precursorIntensity}, \code{mergedScan},
+  \code{mergedResultScanNum}, \code{mergedResultStartScanNum} and
+  \code{mergedResultEndScanNum}, when available in the original file. If
+  multiple scans are queried, a \code{data.frame} is returned with the
+  scans reported along the rows.
 
  The \code{get3Dmap} function performs a simple resampling between
  \code{lowMz} and \code{highMz} with \code{reMz} resolution. A matrix of
@@ -65,7 +70,6 @@
 \author{
   Steffen Neumann and Laurent Gatto
 }
-
 
 \examples{
  library(msdata)
