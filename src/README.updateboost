@@ -12,9 +12,13 @@ and untar into mzR/src/boost. Compile locally with R CMD INSTALL mzR
 to make sure that everything works. To detect the minimal set of files, 
 use
 
-	strace -e open -f R CMD INSTALL .. 2>&1 | grep '"./boost/[^=]* = [0-9]' | cut -d \" -f 2  2>&1 | sort | uniq >/tmp/boost-includes.log
+	strace -e open -f R CMD INSTALL .. 2>&1 | grep 'boost/[^=]* = [0-9]' | grep -v boost_aux | cut -d \" -f 2  2>&1 | sort | uniq >/tmp/boost-includes.log
 
 This command logs all access to files under mzR/src/boost.
+Then the files can be extracted from the full boost tree:
+
+	tar cf - $(sed -e 's/\.o/.cpp/g' /tmp/boost-includes.log) | tar -C newboost -xvf -
+
 
 
 
