@@ -1,5 +1,5 @@
 //
-// $Id: MSDataFile.cpp 4009 2012-10-17 18:40:44Z kaipot $
+// $Id: MSDataFile.cpp 9987 2016-08-25 16:58:08Z chambm $
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -265,7 +265,8 @@ PWIZ_API_DECL void calculateSourceFileSHA1(SourceFile& sourceFile)
 
     try
     {
-        if (!bfs::exists(p))
+        bfs::file_status status = bfs::status(p);
+        if (!bfs::exists(status) || bfs::is_directory(status))
             // TODO: log warning about source file not available
             return;
     }

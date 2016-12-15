@@ -2,7 +2,7 @@
 #define BOOST_SERIALIZATION_ACCESS_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -17,6 +17,8 @@
 //  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <boost/config.hpp>
+
+#include <boost/serialization/pfto.hpp>
 
 namespace boost {
 
@@ -64,19 +66,19 @@ public:
     friend inline void serialize(
         Archive & ar, 
         T & t, 
-        const unsigned int file_version
+        const BOOST_PFTO unsigned int file_version
     );
     template<class Archive, class T>
     friend inline void save_construct_data(
         Archive & ar, 
         const T * t, 
-        const unsigned int file_version
+        const BOOST_PFTO unsigned int file_version
     );
     template<class Archive, class T>
     friend inline void load_construct_data(
         Archive & ar, 
         T * t, 
-        const unsigned int file_version
+        const BOOST_PFTO unsigned int file_version
     );
 #endif
 

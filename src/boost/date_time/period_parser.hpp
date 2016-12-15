@@ -7,7 +7,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date$
+ * $Date: 2008-11-13 20:10:23 +0000 (Thu, 13 Nov 2008) $
  */
 
 #include <boost/throw_exception.hpp>

@@ -8,7 +8,6 @@
 #if !defined(FUSION_DISTANCE_IMPL_20060124_2033)
 #define FUSION_DISTANCE_IMPL_20060124_2033
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/assert.hpp>
@@ -70,7 +69,6 @@ namespace boost { namespace fusion {
             struct apply
                 : detail::zip_view_iterator_distance<It1, It2>::type
             {
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static typename detail::zip_view_iterator_distance<It1, It2>::type
                 call(It1 const& /*it1*/, It2 const& /*it2*/)
                 {

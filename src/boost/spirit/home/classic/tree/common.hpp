@@ -520,6 +520,9 @@ namespace impl {
     // as Koenig lookup rules will find only the classname::swap
     // member function not the global declaration, so use cp_swap
     // as a forwarding function (JM):
+#if __GNUC__ == 2
+    using ::std::swap;
+#endif
     template <typename T>
     inline void cp_swap(T& t1, T& t2)
     {

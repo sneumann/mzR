@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_HAS_KEY)
 #define FUSION_INCLUDE_HAS_KEY
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/sequence/intrinsic/has_key.hpp>
 
 #endif

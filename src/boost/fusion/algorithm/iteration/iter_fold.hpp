@@ -9,7 +9,6 @@
 #ifndef BOOST_FUSION_ALGORITHM_ITERATION_ITER_FOLD_HPP
 #define BOOST_FUSION_ALGORITHM_ITERATION_ITER_FOLD_HPP
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/algorithm/iteration/iter_fold_fwd.hpp>
 #include <boost/config.hpp>
 #include <boost/fusion/sequence/intrinsic/begin.hpp>
@@ -17,7 +16,6 @@
 #include <boost/fusion/sequence/intrinsic/empty.hpp>
 #include <boost/fusion/sequence/intrinsic/size.hpp>
 #include <boost/fusion/support/is_segmented.hpp>
-#include <boost/fusion/support/detail/result_of.hpp>
 #include <boost/fusion/iterator/equal_to.hpp>
 #include <boost/fusion/iterator/deref.hpp>
 #include <boost/fusion/iterator/value_of.hpp>
@@ -26,6 +24,7 @@
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/bool.hpp>
+#include <boost/utility/result_of.hpp>
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/add_reference.hpp>
 

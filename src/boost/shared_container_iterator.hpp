@@ -13,7 +13,6 @@
 #include <utility>
 
 namespace boost {
-namespace iterators {
 
 template <typename Container>
 class shared_container_iterator : public iterator_adaptor<
@@ -38,7 +37,7 @@ public:
 };
 
 template <typename Container>
-inline shared_container_iterator<Container>
+shared_container_iterator<Container>
 make_shared_container_iterator(typename Container::iterator iter,
                                boost::shared_ptr<Container> const& container) {
   typedef shared_container_iterator<Container> iterator;
@@ -48,7 +47,7 @@ make_shared_container_iterator(typename Container::iterator iter,
 
 
 template <typename Container>
-inline std::pair<
+std::pair<
   shared_container_iterator<Container>,
   shared_container_iterator<Container> >
 make_shared_container_range(boost::shared_ptr<Container> const& container) {
@@ -58,12 +57,6 @@ make_shared_container_range(boost::shared_ptr<Container> const& container) {
       make_shared_container_iterator(container->end(),container));
 }
 
-} // namespace iterators
-
-using iterators::shared_container_iterator;
-using iterators::make_shared_container_iterator;
-using iterators::make_shared_container_range;
 
 } // namespace boost
-
 #endif  // SHARED_CONTAINER_ITERATOR_RG08102002_HPP

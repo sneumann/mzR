@@ -18,7 +18,7 @@
 #include <boost/detail/interlocked.hpp>
 #include <boost/thread/win32/thread_primitives.hpp>
 #include <boost/thread/win32/interlocked_read.hpp>
-#include <boost/core/no_exceptions_support.hpp>
+#include <boost/detail/no_exceptions_support.hpp>
 #include <boost/thread/detail/move.hpp>
 #include <boost/thread/detail/invoke.hpp>
 
@@ -152,11 +152,14 @@ namespace boost
             {
                 name_once_mutex(mutex_name,flag_address);
             }
-            
-            return ::boost::detail::win32::create_event(
-                mutex_name, 
-                ::boost::detail::win32::manual_reset_event,
-                ::boost::detail::win32::event_initially_reset);
+#ifdef BOOST_NO_ANSI_APIS
+            return ::boost::detail::win32::CreateEventW(
+#else
+            return ::boost::detail::win32::CreateEventA(
+#endif
+                0,::boost::detail::win32::manual_reset_event,
+                ::boost::detail::win32::event_initially_reset,
+                mutex_name);
         }
 
         struct once_context {
@@ -224,7 +227,7 @@ namespace boost
         }
     }
 
-#if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
+#ifndef BOOST_NO_CXX11_VARIADIC_TEMPLATES
 //#if defined(BOOST_THREAD_RVALUE_REFERENCES_DONT_MATCH_FUNTION_PTR)
     inline void call_once(once_flag& flag, void (*f)())
     {
@@ -264,8 +267,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite, 0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
 //#endif
@@ -308,8 +311,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
     template<typename Function, class A, class ...ArgTypes>
@@ -355,8 +358,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
 #else
@@ -400,8 +403,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
     template<typename Function, typename T1>
@@ -443,8 +446,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
     template<typename Function, typename T1, typename T2>
@@ -486,8 +489,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
     template<typename Function, typename T1, typename T2, typename T3>
@@ -529,8 +532,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
 #elif defined BOOST_NO_CXX11_RVALUE_REFERENCES
@@ -574,8 +577,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
     template<typename Function, typename T1>
@@ -617,8 +620,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
     template<typename Function, typename T1, typename T2>
@@ -660,8 +663,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
     template<typename Function, typename T1, typename T2, typename T3>
@@ -703,8 +706,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
 #endif
@@ -748,8 +751,8 @@ namespace boost
                         continue;
                     }
                 }
-                BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                                 ctx.event_handle,::boost::detail::win32::infinite,0));
+                BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                                 ctx.event_handle,::boost::detail::win32::infinite));
             }
         }
         template<typename T1>
@@ -793,8 +796,8 @@ namespace boost
                         continue;
                     }
                 }
-                BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                                 ctx.event_handle,::boost::detail::win32::infinite,0));
+                BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                                 ctx.event_handle,::boost::detail::win32::infinite));
             }
         }
         template<typename Function, typename T1, typename T2>
@@ -839,8 +842,8 @@ namespace boost
                         continue;
                     }
                 }
-                BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                                 ctx.event_handle,::boost::detail::win32::infinite,0));
+                BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                                 ctx.event_handle,::boost::detail::win32::infinite));
             }
         }
         template<typename Function, typename T1, typename T2, typename T3>
@@ -886,8 +889,8 @@ namespace boost
                         continue;
                     }
                 }
-                BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                                 ctx.event_handle,::boost::detail::win32::infinite,0));
+                BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                                 ctx.event_handle,::boost::detail::win32::infinite));
             }
         }
 #endif
@@ -930,8 +933,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
 
@@ -977,8 +980,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
     template<typename Function, typename T1, typename T2>
@@ -1024,8 +1027,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
     template<typename Function, typename T1, typename T2, typename T3>
@@ -1073,8 +1076,8 @@ namespace boost
                     continue;
                 }
             }
-            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObjectEx(
-                             ctx.event_handle,::boost::detail::win32::infinite,0));
+            BOOST_VERIFY(!::boost::detail::win32::WaitForSingleObject(
+                             ctx.event_handle,::boost::detail::win32::infinite));
         }
     }
 

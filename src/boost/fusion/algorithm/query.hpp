@@ -7,7 +7,6 @@
 #if !defined(FUSION_ALGORITHM_QUERY_10022005_0549)
 #define FUSION_ALGORITHM_QUERY_10022005_0549
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/algorithm/query/all.hpp>
 #include <boost/fusion/algorithm/query/any.hpp>
 #include <boost/fusion/algorithm/query/count.hpp>

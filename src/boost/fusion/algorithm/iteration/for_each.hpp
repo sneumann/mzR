@@ -8,7 +8,6 @@
 #if !defined(BOOST_FUSION_FOR_EACH_20070527_0943)
 #define BOOST_FUSION_FOR_EACH_20070527_0943
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/algorithm/iteration/detail/for_each.hpp>
 #include <boost/fusion/algorithm/iteration/detail/segmented_for_each.hpp>
 #include <boost/fusion/support/is_segmented.hpp>
@@ -27,8 +26,8 @@ namespace boost { namespace fusion
     }
 
     template <typename Sequence, typename F>
-    BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-    inline typename
+    inline
+    typename
         enable_if<
             traits::is_sequence<Sequence>
           , void
@@ -39,8 +38,8 @@ namespace boost { namespace fusion
     }
 
     template <typename Sequence, typename F>
-    BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-    inline typename
+    inline
+    typename
         enable_if<
             traits::is_sequence<Sequence>
           , void

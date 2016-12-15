@@ -1,7 +1,6 @@
 //  system.hpp  --------------------------------------------------------------//
 
 //  Copyright 2010 Vicente J. Botet Escriba
-//  Copyright (c) Microsoft Corporation 2014
 
 //  Distributed under the Boost Software License, Version 1.0.
 //  See http://www.boost.org/LICENSE_1_0.txt
@@ -21,11 +20,7 @@ namespace detail {
 namespace winapi {
 #if defined( BOOST_USE_WINDOWS_H )
     typedef ::SYSTEM_INFO SYSTEM_INFO_;
-# if BOOST_USE_WINAPI_VERSION < BOOST_WINAPI_VERSION_WINXP
-extern "C" __declspec(dllimport) void __stdcall GetSystemInfo (struct system_info *);
-# else
-extern "C" __declspec(dllimport) void __stdcall GetNativeSystemInfo (struct system_info *);
-# endif
+    extern "C" __declspec(dllimport) void __stdcall GetSystemInfo (struct system_info *);
 #else
 extern "C" {
     typedef struct _SYSTEM_INFO {
@@ -47,13 +42,8 @@ extern "C" {
       WORD_      wProcessorRevision;
     } SYSTEM_INFO_;
 
-# if BOOST_USE_WINAPI_VERSION < BOOST_WINAPI_VERSION_WINXP
     __declspec(dllimport) void __stdcall 
         GetSystemInfo (struct system_info *);
-# else
-    __declspec(dllimport) void __stdcall 
-        GetNativeSystemInfo (struct system_info *);
-# endif
 }    
 #endif
 }

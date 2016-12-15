@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2013. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -16,16 +16,7 @@
 #ifndef BOOST_CONTAINER_DETAIL_VERSION_TYPE_HPP
 #define BOOST_CONTAINER_DETAIL_VERSION_TYPE_HPP
 
-#ifndef BOOST_CONFIG_HPP
-#  include <boost/config.hpp>
-#endif
-
-#if defined(BOOST_HAS_PRAGMA_ONCE)
-#  pragma once
-#endif
-
-#include <boost/container/detail/config_begin.hpp>
-#include <boost/container/detail/workaround.hpp>
+#include "config_begin.hpp"
 
 #include <boost/container/detail/mpl.hpp>
 #include <boost/container/detail/type_traits.hpp>
@@ -33,6 +24,8 @@
 namespace boost{
 namespace container {
 namespace container_detail {
+
+//using namespace boost;
 
 template <class T, unsigned V>
 struct version_type
@@ -87,24 +80,13 @@ struct version<T, true>
 template <class T>
 struct version
    : public container_detail::integral_constant<unsigned, impl::version<T>::value>
-{};
-
-template<class T, unsigned N>
-struct is_version
 {
-   static const bool value =
-      is_same< typename version<T>::type, integral_constant<unsigned, N> >::value;
 };
 
 }  //namespace container_detail {
-
-typedef container_detail::integral_constant<unsigned, 0> version_0;
-typedef container_detail::integral_constant<unsigned, 1> version_1;
-typedef container_detail::integral_constant<unsigned, 2> version_2;
-
 }  //namespace container {
 }  //namespace boost{
 
-#include <boost/container/detail/config_end.hpp>
+#include "config_end.hpp"
 
 #endif   //#define BOOST_CONTAINER_DETAIL_VERSION_TYPE_HPP

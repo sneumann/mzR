@@ -103,7 +103,6 @@ T bessel_i1(T x)
     BOOST_MATH_STD_USING
     using namespace boost::math::tools;
 
-    BOOST_ASSERT(x >= 0); // negative x is handled before we get here
     w = abs(x);
     if (x == 0)
     {
@@ -124,6 +123,10 @@ T bessel_i1(T x)
         value = factor * r;
     }
 
+    if (x < 0)
+    {
+        value *= -value;                 // odd function
+    }
     return value;
 }
 

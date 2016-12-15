@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_FRONT)
 #define FUSION_INCLUDE_FRONT
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/sequence/intrinsic/front.hpp>
 
 #endif

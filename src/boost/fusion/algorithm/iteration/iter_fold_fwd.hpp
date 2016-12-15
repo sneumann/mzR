@@ -17,8 +17,7 @@ namespace boost { namespace fusion
     }
 
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-    inline typename result_of::iter_fold<
+    typename result_of::iter_fold<
         Seq
       , State const
       , F
@@ -26,8 +25,7 @@ namespace boost { namespace fusion
     iter_fold(Seq& seq, State const& state, F f);
 
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-    inline typename result_of::iter_fold<
+    typename result_of::iter_fold<
         Seq const
       , State const
       , F
@@ -35,8 +33,7 @@ namespace boost { namespace fusion
     iter_fold(Seq const& seq, State const& state, F f);
 
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-    inline typename result_of::iter_fold<
+    typename result_of::iter_fold<
         Seq
       , State const
       , F
@@ -44,8 +41,7 @@ namespace boost { namespace fusion
     iter_fold(Seq& seq, State& state, F f);
 
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-    inline typename result_of::iter_fold<
+    typename result_of::iter_fold<
         Seq const
       , State const
       , F

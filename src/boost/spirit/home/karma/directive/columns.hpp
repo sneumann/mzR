@@ -25,7 +25,6 @@
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/fusion/include/at.hpp>
 #include <boost/fusion/include/vector.hpp>
-#include <boost/integer_traits.hpp>
 
 namespace boost { namespace spirit
 {

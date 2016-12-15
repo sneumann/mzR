@@ -6,9 +6,8 @@
  An algebra for thrusts device_vectors.
  [end_description]
 
- Copyright 2010-2013 Mario Mulansky
- Copyright 2010-2011 Karsten Ahnert
- Copyright 2013 Kyle Lutz
+ Copyright 2009-2011 Karsten Ahnert
+ Copyright 2009-2011 Mario Mulansky
 
  Distributed under the Boost Software License, Version 1.0.
  (See accompanying file LICENSE_1_0.txt or
@@ -30,25 +29,6 @@ namespace boost {
 namespace numeric {
 namespace odeint {
 
-namespace detail {
-
-    // to use in thrust::reduce
-    template< class Value >
-    struct maximum
-    {
-        template< class Fac1 , class Fac2 >
-        __host__ __device__
-        Value operator()( const Fac1 t1 , const Fac2 t2 ) const
-        {
-            return ( abs( t1 ) < abs( t2 ) ) ? t2 : t1 ;
-        }
-
-        typedef Value result_type;
-    };
-
-}
-
-
 
 
 /** ToDO extend until for_each14 for rk78 */
@@ -64,7 +44,7 @@ struct thrust_algebra
     template< class StateType , class Operation >
     static void for_each1( StateType &s , Operation op )
     {
-        thrust::for_each( boost::begin(s) , boost::end(s) , op );
+        thrust::for_each( boost::begin(s) , boost::begin(s) , op );
     }
 
     template< class StateType1 , class StateType2 , class Operation >
@@ -196,14 +176,15 @@ struct thrust_algebra
                 op);
     }
 
-    template< class S >
-    static typename S::value_type norm_inf( const S &s )
+
+    template< class Value , class S , class Red >
+    Value reduce( const S &s , Red red , Value init)
     {
-        typedef typename S::value_type value_type;
-        return thrust::reduce( boost::begin( s ) , boost::end( s ) ,
-                               static_cast<value_type>(0) ,
-                               detail::maximum<value_type>() );
+        return thrust::reduce( boost::begin( s ) , boost::end( s ) , init , red );
     }
+
+
+
 
 };
 

@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_IO)
 #define FUSION_INCLUDE_IO
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/sequence/io.hpp>
 
 #endif

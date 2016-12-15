@@ -1,4 +1,4 @@
-/* Copyright 2003-2015 Joaquin M Lopez Munoz.
+/* Copyright 2003-2008 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -9,7 +9,7 @@
 #ifndef BOOST_MULTI_INDEX_DETAIL_SEQ_INDEX_OPS_HPP
 #define BOOST_MULTI_INDEX_DETAIL_SEQ_INDEX_OPS_HPP
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER)&&(_MSC_VER>=1200)
 #pragma once
 #endif
 
@@ -79,7 +79,8 @@ template<typename Node,typename Compare>
 void sequenced_index_collate(
   BOOST_DEDUCED_TYPENAME Node::impl_type* x,
   BOOST_DEDUCED_TYPENAME Node::impl_type* y,
-  Compare comp)
+  Compare comp
+  BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Node))
 {
   typedef typename Node::impl_type    impl_type;
   typedef typename Node::impl_pointer impl_pointer;
@@ -135,7 +136,7 @@ void sequenced_index_sort(Node* header,Compare comp)
   >::type                               carry_spc_type;
   carry_spc_type                        carry_spc;
   impl_type&                            carry=
-    *reinterpret_cast<impl_type*>(&carry_spc);
+    *static_cast<impl_type*>(static_cast<void*>(&carry_spc));
   typedef typename aligned_storage<
     sizeof(
       impl_type
@@ -147,7 +148,7 @@ void sequenced_index_sort(Node* header,Compare comp)
   >::type                               counter_spc_type;
   counter_spc_type                      counter_spc;
   impl_type*                            counter=
-    reinterpret_cast<impl_type*>(&counter_spc);
+    static_cast<impl_type*>(static_cast<void*>(&counter_spc));
   std::size_t                           fill=0;
 
   carry.prior()=carry.next()=static_cast<impl_pointer>(&carry);

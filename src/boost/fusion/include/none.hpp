@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_NONE)
 #define FUSION_INCLUDE_NONE
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/algorithm/query/none.hpp>
 
 #endif

@@ -7,7 +7,6 @@
 #if !defined(FUSION_SEQUENCE_CLASS_10022005_0614)
 #define FUSION_SEQUENCE_CLASS_10022005_0614
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/container/vector.hpp>
 #include <boost/fusion/container/list.hpp>
 #include <boost/fusion/container/map.hpp>

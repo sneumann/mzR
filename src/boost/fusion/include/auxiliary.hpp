@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_AUXILIARY)
 #define FUSION_INCLUDE_AUXILIARY
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/algorithm/auxiliary.hpp>
 
 #endif

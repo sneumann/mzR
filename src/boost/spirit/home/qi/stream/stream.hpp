@@ -70,12 +70,8 @@ namespace boost { namespace spirit { namespace qi
 
             // advance the iterator if everything is ok
             if (in) {
-                if (!in.eof()) {
-                    std::streamsize pos = in.tellg();
-                    std::advance(first, pos);
-                } else {
-                    first = last;
-                }
+                std::streamsize pos = in.tellg();
+                std::advance(first, pos);
                 return true;
             }
 

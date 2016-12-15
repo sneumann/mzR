@@ -36,18 +36,13 @@
 
 #define  BOOST_CHRONO_INTERNAL_TIMEGM \
      ( defined BOOST_WINDOWS && ! defined(__CYGWIN__) )  \
-  || (defined(sun) || defined(__sun)) \
-  || (defined __IBMCPP__) \
-  || defined __ANDROID__ \
-  || defined __QNXNTO__ \
-  || (defined(_AIX) && defined __GNUC__)
+  || ( (defined(sun) || defined(__sun)) && defined __GNUC__) \
+  || (defined __IBMCPP__)
 
 #define  BOOST_CHRONO_INTERNAL_GMTIME \
      (defined BOOST_WINDOWS && ! defined(__CYGWIN__)) \
   || ( (defined(sun) || defined(__sun)) && defined __GNUC__) \
-  || (defined __IBMCPP__) \
-  || defined __ANDROID__ \
-  || (defined(_AIX) && defined __GNUC__)
+  || (defined __IBMCPP__)
 
 #define  BOOST_CHRONO_USES_INTERNAL_TIME_GET
 
@@ -527,9 +522,7 @@ namespace boost
     {
 
       //! the type of the state to restore
-      //typedef std::basic_ostream<CharT, Traits> state_type;
-      typedef std::ios_base state_type;
-
+      typedef std::basic_ostream<CharT, Traits> state_type;
       //! the type of aspect to save
       typedef std::basic_string<CharT, Traits> aspect_type;
 
@@ -539,7 +532,7 @@ namespace boost
        * Store a reference to the i/o stream and the value of the associated @c time format .
        */
       explicit time_fmt_io_saver(state_type &s) :
-        s_save_(s), a_save_(get_time_fmt<CharT>(s_save_))
+        s_save_(s), a_save_(get_time_fmt(s_save_))
       {
       }
 
@@ -549,9 +542,8 @@ namespace boost
        * Stores a reference to the i/o stream and the value @c new_value to restore given as parameter.
        */
       time_fmt_io_saver(state_type &s, aspect_type new_value) :
-        s_save_(s), a_save_(get_time_fmt<CharT>(s_save_))
+        s_save_(s), a_save_(new_value)
       {
-        set_time_fmt(s_save_, new_value);
       }
 
       /**
@@ -569,7 +561,7 @@ namespace boost
        */
       void restore()
       {
-        set_time_fmt(s_save_, a_save_);
+        set_time_fmt(a_save_, a_save_);
       }
     private:
       state_type& s_save_;
@@ -605,9 +597,8 @@ namespace boost
        * Stores a reference to the i/o stream and the value @c new_value to restore given as parameter.
        */
       timezone_io_saver(state_type &s, aspect_type new_value) :
-        s_save_(s), a_save_(get_timezone(s_save_))
+        s_save_(s), a_save_(new_value)
       {
-        set_timezone(s_save_, new_value);
       }
 
       /**
@@ -746,8 +737,6 @@ namespace boost
     namespace detail
     {
 
-//#if BOOST_CHRONO_INTERNAL_TIMEGM
-
     inline int32_t is_leap(int32_t year)
     {
       if(year % 400 == 0)
@@ -804,7 +793,6 @@ namespace boost
 
       return result;
     }
-//#endif
 
     /**
     * from_ymd could be made more efficient by using a table

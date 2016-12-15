@@ -7,7 +7,6 @@
 #if !defined(FUSION_END_IMPL_07162005_0128)
 #define FUSION_END_IMPL_07162005_0128
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/iterator/equal_to.hpp>
 #include <boost/mpl/if.hpp>
 
@@ -28,7 +27,6 @@ namespace boost { namespace fusion
             {
                 typedef typename Sequence::concat_last_type type;
 
-                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type
                 call(Sequence& s)
                 {

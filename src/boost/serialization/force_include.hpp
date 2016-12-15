@@ -2,7 +2,7 @@
 #define BOOST_SERIALIZATION_FORCE_INCLUDE_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -31,7 +31,11 @@
 // release mode.
 
 #if defined(BOOST_HAS_DECLSPEC) && !defined(__COMO__)
-#   define BOOST_DLLEXPORT __declspec(dllexport)
+#   if defined(__BORLANDC__)
+#       define BOOST_DLLEXPORT __export
+#   else
+#       define BOOST_DLLEXPORT __declspec(dllexport)
+#   endif
 #elif ! defined(_WIN32) && ! defined(_WIN64)
 #   if defined(__MWERKS__)
 #       define BOOST_DLLEXPORT __declspec(dllexport)

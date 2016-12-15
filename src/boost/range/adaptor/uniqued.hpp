@@ -12,7 +12,6 @@
 #define BOOST_RANGE_ADAPTOR_UNIQUED_IMPL_HPP
 
 #include <boost/range/adaptor/adjacent_filtered.hpp>
-#include <boost/range/concepts.hpp>
 
 namespace boost
 {
@@ -48,7 +47,6 @@ namespace boost
         operator|( ForwardRng& r,
                    unique_forwarder )
         {
-            BOOST_RANGE_CONCEPT_ASSERT((ForwardRangeConcept<ForwardRng>));
             return uniqued_range<ForwardRng>(r);
         }
 
@@ -57,7 +55,6 @@ namespace boost
         operator|( const ForwardRng& r,
                    unique_forwarder )
         {
-            BOOST_RANGE_CONCEPT_ASSERT((ForwardRangeConcept<const ForwardRng>));
             return uniqued_range<const ForwardRng>(r);
         }
 
@@ -77,7 +74,6 @@ namespace boost
         inline uniqued_range<ForwardRange>
         unique(ForwardRange& rng)
         {
-            BOOST_RANGE_CONCEPT_ASSERT((ForwardRangeConcept<ForwardRange>));
             return uniqued_range<ForwardRange>(rng);
         }
 
@@ -85,9 +81,6 @@ namespace boost
         inline uniqued_range<const ForwardRange>
         unique(const ForwardRange& rng)
         {
-            BOOST_RANGE_CONCEPT_ASSERT((
-                ForwardRangeConcept<const ForwardRange>));
-
             return uniqued_range<const ForwardRange>(rng);
         }
     } // 'adaptors'

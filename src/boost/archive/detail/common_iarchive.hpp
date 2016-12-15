@@ -2,7 +2,7 @@
 #define BOOST_ARCHIVE_DETAIL_COMMON_IARCHIVE_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -62,7 +62,7 @@ private:
 protected:
     // default processing - invoke serialization library
     template<class T>
-    void load_override(T & t){
+    void load_override(T & t, BOOST_PFTO int){
         archive::load(* this->This(), t);
     }
     // default implementations of functions which emit start/end tags for

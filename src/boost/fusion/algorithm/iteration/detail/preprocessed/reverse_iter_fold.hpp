@@ -13,7 +13,7 @@ namespace boost { namespace fusion
     {
         template<typename State, typename It, typename F>
         struct reverse_iter_fold_lvalue_state
-          : fusion::detail::result_of_with_decltype<
+          : boost::result_of<
                 F(
                 typename add_reference<typename add_const<State>::type>::type,
                 It&)
@@ -22,11 +22,34 @@ namespace boost { namespace fusion
         template<typename Result,int N>
         struct unrolled_reverse_iter_fold
         {
-            template<typename State3, typename It3, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
+            template<typename State, typename It0, typename F>
             static Result
-            call_3(State3 const& state3,It3 const& it3,F& f)
+            call(State const& state,It0 const& it0,F f)
             {
+                typedef typename
+                    result_of::prior<
+                        It0 const
+                    >::type
+                It1;
+                It1 it1 = fusion::prior(it0);
+                typedef typename
+                    result_of::prior<
+                        It1
+                    >::type
+                It2;
+                It2 it2 = fusion::prior(it1);
+                typedef typename
+                    result_of::prior<
+                        It2
+                    >::type
+                It3;
+                It3 it3 = fusion::prior(it2);
+                typedef typename reverse_iter_fold_lvalue_state<State,It0,F>::type State1;
+                State1 const state1=f(state,it0);
+                typedef typename reverse_iter_fold_lvalue_state<State1,It1,F>::type State2;
+                State2 const state2=f(state1,it1);
+                typedef typename reverse_iter_fold_lvalue_state<State2,It2,F>::type State3;
+                State3 const state3=f(state2,it2);
                 return unrolled_reverse_iter_fold<
                     Result
                   , N-4
@@ -35,94 +58,51 @@ namespace boost { namespace fusion
                     fusion::prior(it3),
                     f);
             }
-            template<typename State2, typename It2, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call_2(State2 const& state2,It2 const& it2,F& f)
-            {
-                return call_3(
-                    f(state2,it2),
-                    fusion::prior(it2),
-                    f);
-            }
-            template<typename State1, typename It1, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call_1(State1 const& state1,It1 const& it1,F& f)
-            {
-                return call_2(
-                    f(state1,it1),
-                    fusion::prior(it1),
-                    f);
-            }
-            template<typename State, typename It0, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call(State const& state,It0 const& it0,F f)
-            {
-                return call_1(
-                    f(state,it0),
-                    fusion::prior(it0),
-                    f);
-            }
         };
         template<typename Result>
         struct unrolled_reverse_iter_fold<Result,3>
         {
-            template<typename State2, typename It2, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call_2(State2 const& state2,It2 const& it2,F& f)
-            {
-                return f(state2,it2);
-            }
-            template<typename State1, typename It1, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call_1(State1 const& state1,It1 const& it1,F& f)
-            {
-                return call_2(
-                    f(state1,it1),
-                    fusion::prior(it1),
-                    f);
-            }
             template<typename State, typename It0, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static Result
             call(State const& state,It0 const& it0,F f)
             {
-                return call_1(
-                    f(state,it0),
-                    fusion::prior(it0),
-                    f);
+                typedef typename
+                    result_of::prior<
+                        It0 const
+                    >::type
+                It1;
+                It1 it1 = fusion::prior(it0);
+                typedef typename
+                    result_of::prior<
+                        It1
+                    >::type
+                It2;
+                It2 it2 = fusion::prior(it1);
+                typedef typename reverse_iter_fold_lvalue_state<State,It0,F>::type State1;
+                State1 const state1=f(state,it0);
+                typedef typename reverse_iter_fold_lvalue_state<State1,It1,F>::type State2;
+                State2 const state2=f(state1,it1);
+                return f(state2,it2);
             }
         };
         template<typename Result>
         struct unrolled_reverse_iter_fold<Result,2>
         {
-            template<typename State1, typename It1, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            static Result
-            call_1(State1 const& state1,It1 const& it1,F& f)
-            {
-                return f(state1,it1);
-            }
             template<typename State, typename It0, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static Result
             call(State const& state,It0 const& it0,F f)
             {
-                return call_1(
-                    f(state,it0),
-                    fusion::prior(it0),
-                    f);
+                typedef typename reverse_iter_fold_lvalue_state<State,It0,F>::type State1;
+                State1 const state1=f(state,it0);
+                return f(
+                    state1,
+                    fusion::prior(it0));
             }
         };
         template<typename Result>
         struct unrolled_reverse_iter_fold<Result,1>
         {
             template<typename State, typename It0, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static Result
             call(State const& state,It0 const& it0,F f)
             {
@@ -134,9 +114,8 @@ namespace boost { namespace fusion
         struct unrolled_reverse_iter_fold<Result,0>
         {
             template<typename State, typename It0, typename F>
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static Result
-            call(State const& state,It0 const&, F)
+            call(State const& state,It0 const& it0, F)
             {
                 return static_cast<Result>(state);
             }
@@ -272,7 +251,7 @@ namespace boost { namespace fusion
         {
             typedef typename
                 result_of_unrolled_reverse_iter_fold<
-                    typename fusion::detail::result_of_with_decltype<
+                    typename boost::result_of<
                         F(
                             StateRef,
                             It0 const&
@@ -297,7 +276,6 @@ namespace boost { namespace fusion
                   , SeqSize
                 >::type
             type;
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static type
             call(StateRef state, Seq& seq, F f)
             {
@@ -317,7 +295,6 @@ namespace boost { namespace fusion
         struct reverse_iter_fold_impl<0,StateRef,Seq,F>
         {
             typedef StateRef type;
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             static StateRef
             call(StateRef state, Seq&, F)
             {
@@ -349,7 +326,6 @@ namespace boost { namespace fusion
         {};
     }
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::reverse_iter_fold<
         Seq
       , State const
@@ -363,7 +339,6 @@ namespace boost { namespace fusion
             f);
     }
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::reverse_iter_fold<
         Seq const
       , State const
@@ -377,7 +352,6 @@ namespace boost { namespace fusion
             f);
     }
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::reverse_iter_fold<
         Seq
       , State const
@@ -391,7 +365,6 @@ namespace boost { namespace fusion
             f);
     }
     template<typename Seq, typename State, typename F>
-    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::reverse_iter_fold<
         Seq const
       , State const

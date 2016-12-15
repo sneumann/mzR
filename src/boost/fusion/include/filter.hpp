@@ -7,7 +7,6 @@
 #if !defined(FUSION_INCLUDE_FILTER)
 #define FUSION_INCLUDE_FILTER
 
-#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/algorithm/transformation/filter.hpp>
 
 #endif

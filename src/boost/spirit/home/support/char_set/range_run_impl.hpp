@@ -13,6 +13,7 @@
 
 #include <boost/spirit/home/support/char_set/range_functions.hpp>
 #include <boost/assert.hpp>
+#include <boost/integer_traits.hpp>
 #include <algorithm>
 
 namespace boost { namespace spirit { namespace support { namespace detail
@@ -24,6 +25,9 @@ namespace boost { namespace spirit { namespace support { namespace detail
         // if *iter intersects with, or is adjacent to, 'range'...
         if (can_merge(*iter, range))
         {
+            typedef typename Range::value_type value_type;
+            typedef integer_traits<value_type> integer_traits;
+
             // merge range and *iter
             merge(*iter, range);
 

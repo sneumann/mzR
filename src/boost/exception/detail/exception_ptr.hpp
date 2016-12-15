@@ -21,9 +21,9 @@
 #include <boost/exception/diagnostic_information.hpp>
 #include <boost/exception/detail/type_info.hpp>
 #include <boost/exception/detail/clone_current_exception.hpp>
-#ifndef BOOST_NO_RTTI
-#include <boost/core/demangle.hpp>
-#endif
+//#ifndef BOOST_NO_RTTI
+//#include <boost/units/detail/utility.hpp>
+//#endif
 #include <boost/shared_ptr.hpp>
 #include <stdexcept>
 #include <new>
@@ -34,7 +34,7 @@ namespace
 boost
     {
     class exception_ptr;
-    BOOST_NORETURN void rethrow_exception( exception_ptr const & );
+    BOOST_ATTRIBUTE_NORETURN void rethrow_exception( exception_ptr const & );
     exception_ptr current_exception();
 
     class
@@ -92,7 +92,7 @@ boost
     std::string
     to_string( original_exception_type const & x )
         {
-        return core::demangle(x.value()->name());
+        return /*units::detail::demangle*/(x.value()->name());
         }
 #endif
 
@@ -454,7 +454,7 @@ boost
         return ret;
         }
 
-    BOOST_NORETURN
+    BOOST_ATTRIBUTE_NORETURN
     inline
     void
     rethrow_exception( exception_ptr const & p )
