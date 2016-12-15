@@ -1,5 +1,5 @@
 language: r
-r: bioc-devel
+r: bioc-release
 sudo: true
 r_packages:
   - knitr
