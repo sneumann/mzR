@@ -9,3 +9,29 @@ The devel branch is tested on multiple architectures by the BioC build farm:
 
 http://bioconductor.org/checkResults/devel/bioc-LATEST/mzR/
 
+# Supported compilers
+
+We are not shipping the full set of boost headers due to 
+size restrictions. This *might* cause compilation failure 
+due to missing files. We have tested several OS and compiler 
+build environments successfully, please report any compilation failures
+at https://github.com/sneumann/mzR/issues
+and we'll add the missing files. 
+
+mzR-2.9.1 with boost-1.59.0 has been tested on the following compilers:
+
+On the BioC build farm (http://bioconductor.org/checkResults/devel/bioc-LATEST/mzR/)
+* malbec2 (Ubuntu 16.04.1, gcc-5.4.0)
+* tokay2 (Windows Server 2012 R2, MinGW-W64-4.9.3)
+* Failling oaxaca (Apple clang 3.5svn / 600.0.57)
+
+Also on:
+* Debian stretch/sid (gcc-5.4.0)
+* Ubuntu 16.04 (clang 3.8.0)
+* Ubuntu 16.04 (gcc-5.4.0)
+* Ubuntu 14.04 (gcc-4.8.2)
+* Ubuntu 12.04 (gcc-4.6.3)
+
+
+
+
