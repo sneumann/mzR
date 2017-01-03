@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.9.3
+------------------------
+ o
+ 
 CHANGES IN VERSION 2.9.2
 ------------------------
  o cleanup CFLAGS and LIBS for libnetcdf
