@@ -111,6 +111,7 @@ ARCH_OBJS=./boost/libs/thread/src/pthread/once.o \
 endif
 
 NC_CFLAGS=`nc-config --cflags || /bin/true`
+NC_LIBS=`nc-config --libs || echo " -lnetcdf "`
 
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
 
@@ -124,21 +125,13 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) $(ARCH_OBJS) rampR.o R_init_mzR.o
 ##  http://www.gamedev.net/topic/555511-is-there-a-way-to-only-disable-boost-debug-checks/
 ##
 
+PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost/ -I. -D_LARGEFILE_SOURCE -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -DWITHOUT_MZ5  
 PWIZ_LDFLAGS=-lpthread 
 
-## Unix:
-
-#PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -DWITHOUT_MZ5  $(DEPFLAGS)
-
-
-PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost/ -I. -DHAVE_PWIZ_MZML_LIB -D_NODEBUG -DWITHOUT_MZ5  
-
-
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_CPPFLAGS=-D_LARGEFILE_SOURCE $(PWIZ_CPPFLAGS) $(NC_CFLAGS)  $(ARCH_CPPFLAGS)
+PKG_CPPFLAGS=$(PWIZ_CPPFLAGS) $(NC_CFLAGS)  $(ARCH_CPPFLAGS)
 
-#PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()" ` $(PWIZ_LDFLAGS) `nc-config --libs || echo "-lnetcdf"` 
-PKG_LIBS=-lnetcdf $(ARCH_LIBS)
+PKG_LIBS=$(NC_LIBS)  $(ARCH_LIBS) 
 
 all: clean $(SHLIB)
 
