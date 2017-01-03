@@ -1,6 +1,8 @@
 CHANGES IN VERSION 2.9.2
 ------------------------
-
+ o cleanup CFLAGS and LIBS for libnetcdf
+ o add file missing for oaxaca (Apple clang 3.5svn / 600.0.57)
+ 
 CHANGES IN VERSION 2.9.1
 ------------------------
  o Delete RAMPAdapter pointer in pwiz backend (by jotsetung)
