@@ -21,5 +21,6 @@ RCPP_MODULE(Pwiz)
     .method( "getAllScanHeaderInfo", &RcppPwiz::getAllScanHeaderInfo, "Reads the header info for all mass spectra." )
     .method( "get3DMap", &RcppPwiz::get3DMap, "Reads all scans and returns them as a matrix." )
     .method( "getLastScan", &RcppPwiz::getLastScan, "Returns the last scan (not necessarily the number of scans because of missing scans)." )
+    .method( "getLastChrom", &RcppPwiz::getLastChrom, "Returns the index of the last chromatogram." )
     ;
 }

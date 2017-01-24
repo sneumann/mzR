@@ -1,6 +1,7 @@
 CHANGES IN VERSION 2.9.4
 ------------------------
- o
+ o New chromatogram accessors (for pwiz backend only) - see issue #73
+   <2017-01-23 Mon>
  
 CHANGES IN VERSION 2.9.3
 ------------------------

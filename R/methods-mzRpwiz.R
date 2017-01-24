@@ -1,58 +1,58 @@
 setMethod("get3Dmap",
-          signature="mzRpwiz",
-          function(object,scans,lowMz,highMz,resMz)
-          return(object@backend$get3DMap(scans,lowMz,highMz,resMz)))
+          signaure = "mzRpwiz",
+          function(object, scans, lowMz, highMz, resMz)
+          return(object@backend$get3DMap(scans, lowMz, highMz, resMz)))
 
 ##setMethod("writeMSfile",
-##          signature="mzRpwiz",
+##          signaure = "mzRpwiz",
 ##          function(object, filename, outformat)
 ##          object@backend$writeMSfile(filename, outformat))
 
 setMethod("length",
-          signature=c("mzRpwiz"),
+          signature = "mzRpwiz",
           function(x) return(x@backend$getLastScan()))
 
 setMethod("instrumentInfo",
-          signature="mzRpwiz",
+          signaure = "mzRpwiz",
           function(object)
           return(object@backend$getInstrumentInfo()))
 
-setMethod("chromatogramsInfo",
-          signature="mzRpwiz",
-          function(object)
-          return(object@backend$getChromatogramsInfo()))
+setMethod("chromatogramsInfo", "mzRpwiz",
+          function(object) {
+              .Defunct("chromatogram")
+          })
 
 
 setMethod("manufacturer",
-          signature="mzRpwiz",
+          signaure = "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$manufacturer)
           })
 
 setMethod("model",
-          signature="mzRpwiz",
+          signaure = "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$model)
           })
 
 setMethod("ionisation",
-          signature="mzRpwiz",
+          signaure = "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$ionisation)
           })
 
 setMethod("analyzer",
-          signature="mzRpwiz",
+          signaure = "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$analyzer)
           })
 
 setMethod("detector",
-          signature="mzRpwiz",
+          signaure = "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$detector)
@@ -68,7 +68,9 @@ setMethod("header",
             if (length(scans) == 1) {
               return(object@backend$getScanHeaderInfo(scans))
             } else {
-              return(data.frame(t(sapply(scans,function(x) unlist(object@backend$getScanHeaderInfo(x))))))
+                return(data.frame(t(sapply(scans,
+                                           function(x)
+                                               unlist(object@backend$getScanHeaderInfo(x))))))
             }
           })
 
@@ -83,7 +85,9 @@ setMethod("peaksCount",
             if (length(scans) == 1) {
               return(object@backend$getPeakList(scans)$peaksCount)
             } else {
-              return(sapply(scans,function(x) object@backend$getPeakList(x)$peaksCount))
+                return(sapply(scans,
+                              function(x)
+                                  object@backend$getPeakList(x)$peaksCount))
             }
           })
 
@@ -91,7 +95,7 @@ setMethod("peaksCount",
           signature = c("mzRpwiz", "missing"),
           function(object) {
             n <- length(object)
-            return(peaksCount(object,1:n))
+            return(peaksCount(object, 1:n))
           })
 
 setMethod("runInfo",
@@ -109,21 +113,21 @@ setMethod("runInfo",
           })
 
 setMethod("softwareInfo",
-          signature="mzRpwiz",
+          signaure = "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$software)
           })
 
 setMethod("sampleInfo",
-          signature="mzRpwiz",
+          signaure = "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$sample)
           })
 
 setMethod("sourceInfo",
-          signature="mzRpwiz",
+          signaure = "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$source)
@@ -131,13 +135,10 @@ setMethod("sourceInfo",
 
 setMethod("close",
           signature = "mzRpwiz",
-          function(con,...) {
+          function(con, ...) {
               con@backend$close()
               invisible(TRUE)
           })
-
-
-
 
 setMethod("show", "mzRpwiz",
           function(object) {
@@ -153,3 +154,45 @@ pwiz.version <- function() {
 
 setMethod("isolationWindow", "mzRpwiz",
           function(object, ...) .isolationWindow(fileName(object), ...))
+
+## Chromatograms
+
+nChrom <- function(object) {
+          stopifnot(inherits(object, "mzRpwiz"))
+          object@backend$getLastChrom()
+}
+
+setMethod("tic", "mzRpwiz",
+          function(object, ...) {
+              if (nChrom(object) < 1)
+                  stop("Not chromatogram data available.")
+              object@backend$getChromatogramsInfo(0L)
+          })
+
+setMethod("chromatograms", "mzRpwiz",
+          function(object, ...) chromatogram(object, ...))
+
+
+setMethod("chromatogram", "mzRpwiz",
+          function(object, chrom) {
+              ## To avoid confusion, the first chromatogram (at index
+              ## 0) is indexed at position 1 in R and the last one (at
+              ## index nChrom(object) - 1) is indexed at position
+              ## nChrom(object).
+              n <- nChrom(object)
+              if (missing(chrom)) chrom <- 1:n
+              stopifnot(is.numeric(chrom))
+              chrom <- as.integer(chrom)
+              if (min(chrom) < 1 | max(chrom) > n)
+                  stop("Index out of bound [", 1, ":", n, "].")
+              ## Update index to match original indices at the C-level
+              chrom <- chrom - 1L
+              if (length(chrom) == 1) {
+                  ans <- object@backend$getChromatogramsInfo(chrom)
+              } else {
+                  ans <- lapply(chrom,
+                                function(x)
+                                    object@backend$getChromatogramsInfo(x))
+              }
+              return(ans)
+          })
