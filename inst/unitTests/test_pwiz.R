@@ -3,19 +3,19 @@ test_mzXML <- function() {
     mzxml <- openMSfile(file, backend="pwiz")
     checkTrue(class(mzxml)=="mzRpwiz")
 
-    ## Temporarily disabled in 1.99.5 because of SEGV on Windows
-    ##
-    ## show(mzxml)
-    ## length(mzxml)
-    ## runInfo(mzxml)
-    ## instrumentInfo(mzxml)
-    ## peaks(mzxml)
-    ## peaks(mzxml,1)
-    ## peaks(mzxml,2:3)
-    ## peaksCount(mzxml)
-    ## header(mzxml)
-    ## header(mzxml,1)
-    ## header(mzxml,2:3)
-    ## fileName(mzxml)
+    Temporarily disabled in 1.99.5 because of SEGV on Windows
+    
+    show(mzxml)
+    length(mzxml)
+    runInfo(mzxml)
+    instrumentInfo(mzxml)
+    peaks(mzxml)
+    peaks(mzxml,1)
+    peaks(mzxml, 2:3)
+    peaksCount(mzxml)
+    header(mzxml)
+    header(mzxml,1)
+    header(mzxml, 2:3)
+    fileName(mzxml)
     close(mzxml) 
 }
