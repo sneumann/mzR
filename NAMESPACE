@@ -8,7 +8,10 @@ importFrom(Biobase, validMsg)
 ##importFrom(Rcpp, "loadRcppModules")
 import(Rcpp)
 
-export(openMSfile, openIDfile, pwiz.version)
+export(openMSfile,
+       openIDfile,
+       pwiz.version,
+       nChrom)
 
 exportMethods(close,
               isInitialized,
@@ -38,7 +41,10 @@ exportMethods(close,
               enzymes,
               tolerance,
               score,
-              para)
+              para,
+              tic,
+              chromatogram,
+              chromatograms)
 
 exportClasses("mzR",
               "mzRramp",

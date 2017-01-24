@@ -75,18 +75,23 @@ void RcppPwiz::writeMSfile(const string& file, const string& format)
 }
 */
 
-string RcppPwiz::getFilename (  )
-{
-
+string RcppPwiz::getFilename() {
     return filename;
 }
 
-int RcppPwiz::getLastScan() const
-{
-    if (msd != NULL)
-    {
-        SpectrumListPtr slp = msd->run.spectrumListPtr;
-        return slp->size();
+int RcppPwiz::getLastScan() const {
+    if (msd != NULL) {
+      SpectrumListPtr slp = msd->run.spectrumListPtr;
+      return slp->size();
+    }
+    Rprintf("Warning: pwiz not yet initialized.\n ");
+    return -1;
+}
+
+int RcppPwiz::getLastChrom() const {
+    if (msd != NULL) {
+      ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+      return clp->size();
     }
     Rprintf("Warning: pwiz not yet initialized.\n ");
     return -1;
@@ -381,42 +386,37 @@ Rcpp::List RcppPwiz::getPeakList ( int whichScan )
     return Rcpp::List::create( );
 }
 
-Rcpp::DataFrame RcppPwiz::getChromatogramsInfo()
+Rcpp::DataFrame RcppPwiz::getChromatogramsInfo( int whichChrom )
 {
-    if (msd != NULL)
-    {
-        ChromatogramListPtr clp = msd->run.chromatogramListPtr;
-        if(clp.get() == 0)
-        {
-            Rcpp::Rcerr << "The direct support for chromatogram info is only available in mzML format." << std::endl;
-            return Rcpp::DataFrame::create();
-        }
-        else if(clp->size() == 0)
-        {
-            Rcpp::Rcerr << "No available chromatogram info." << std::endl;
-            return Rcpp::DataFrame::create();
-        }
-        else
-        {
-            std::vector<double> time;
-            std::vector<double> intensity;
-            ChromatogramPtr c = clp->chromatogram(0, true);
-            vector<TimeIntensityPair> pairs;
-            c->getTimeIntensityPairs (pairs);
+    if (msd != NULL) {
+      ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+      if (clp.get() == 0) {
+	Rcpp::Rcerr << "The direct support for chromatogram info is only available in mzML format." << std::endl;
+	return Rcpp::DataFrame::create();
+      } else if (clp->size() == 0) {
+	Rcpp::Rcerr << "No available chromatogram info." << std::endl;
+	return Rcpp::DataFrame::create();
+      } else if ( (whichChrom < 0) || (whichChrom > clp->size()) ) {
+	Rprintf("Index whichChrom out of bounds [0 ... %d].\n", (clp->size())-1);
+	return Rcpp::DataFrame::create( );
+      } else {
+	std::vector<double> time;
+	std::vector<double> intensity;
+	ChromatogramPtr c = clp->chromatogram(whichChrom, true);
+	vector<TimeIntensityPair> pairs;
+	c->getTimeIntensityPairs (pairs);
 
-            for(int i =0; i < pairs.size(); i++)
-            {
-                TimeIntensityPair p = pairs.at(i);
-                time.push_back(p.time);
-                intensity.push_back(p.intensity);
-            }
+	for (int i = 0; i < pairs.size(); i++) {
+	  TimeIntensityPair p = pairs.at(i);
+	  time.push_back(p.time);
+	  intensity.push_back(p.intensity);
+	}
 
-            chromatogramsInfo = Rcpp::DataFrame::create(
-                                    Rcpp::_["time"]	= time,
-                                    Rcpp::_[c->id]	= intensity);
+	chromatogramsInfo = Rcpp::DataFrame::create(Rcpp::_["time"] = time,
+						    Rcpp::_[c->id]  = intensity);
 
-        }
-        return(chromatogramsInfo);
+      }
+      return(chromatogramsInfo);
     }
     Rprintf("Warning: pwiz not yet initialized.\n ");
     return Rcpp::DataFrame::create( );

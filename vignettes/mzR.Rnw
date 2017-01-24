@@ -83,6 +83,14 @@ Access to the spectral data is done via the \Rfunction{peaks}
 function. The return value is a list of two-column mass-to-charge and
 intensity matrices or a single matrix if one spectrum is queried.
 
+\subsection{Chromatogram access}
+
+Access to the chromatogram(s) is done using the
+\Rfunction{chromatogram} (or \Rfunction{chromatograms}) function, that
+return one (or a list of) data.frames. See \texttt{?chromatogram} for
+details. This functionality is only available with the \texttt{pwiz}
+backend.
+
 \subsection{Identification result access}
 
 The main access to identification result is done via \Rfunction{psms},

@@ -22,14 +22,6 @@
 \alias{detector,mzRpwiz-method}
 \alias{detector,mzRnetCDF-method}
 \alias{fileName,mzR-method}
-\alias{get3Dmap,mzRramp-method}
-\alias{get3Dmap,mzRpwiz-method}
-\alias{header,mzRramp,missing-method}
-\alias{header,mzRramp,numeric-method}
-\alias{header,mzRpwiz,missing-method}
-\alias{header,mzRpwiz,numeric-method}
-\alias{header,mzRnetCDF,missing-method}
-\alias{header,mzRnetCDF,numeric-method}
 \alias{initializeRamp,mzRramp-method}
 \alias{instrumentInfo,mzRramp-method}
 \alias{instrumentInfo,mzRpwiz-method}
@@ -50,16 +42,7 @@
 \alias{model,mzRramp-method}
 \alias{model,mzRpwiz-method}
 \alias{model,mzRnetCDF-method}
-\alias{peaksCount,mzRramp,missing-method}
-\alias{peaksCount,mzRramp,numeric-method}
-\alias{peaksCount,mzRpwiz,missing-method}
-\alias{peaksCount,mzRpwiz,numeric-method}
-\alias{peaks,mzRramp-method}
-\alias{spectra,mzRramp-method}
-\alias{peaks,mzRpwiz-method}
-\alias{spectra,mzRpwiz-method}
-\alias{peaks,mzRnetCDF-method}
-\alias{spectra,mzRnetCDF-method}
+
 \alias{runInfo,mzRramp-method}
 \alias{runInfo,mzRpwiz-method}
 \alias{runInfo,mzRnetCDF-method}
@@ -87,11 +70,12 @@
   directly.
 
   The sub-classes implement specific APIs to access the underlying data
-  and metadata in the files. Currently, \code{mzRramp} and \code{mzRpwiz}
-  are available implementations. \code{mzRramp} uses the ISB 'RAMP' random access C/C++
-  API, and \code{mzRpwiz} uses Proteowizard to access the relevant
-  information in \code{mzData}, \code{mzXML}
-  and \code{mzML} files. You can also open \code{mz5} file by using \code{mzRpwiz}.
+  and metadata in the files. Currently, \code{mzRramp} and
+  \code{mzRpwiz} are available implementations. \code{mzRramp} uses the
+  ISB 'RAMP' random access C/C++ API, and \code{mzRpwiz} uses
+  Proteowizard to access the relevant information in \code{mzData},
+  \code{mzXML} and \code{mzML} files. You can also open \code{mz5} file
+  by using \code{mzRpwiz}.
 
   Additional sub-classes using the proteowizard API and netCDF are
   planned.
@@ -123,22 +107,22 @@
 }
 
 \section{Methods}{
+
+  For methods to access raw data (spectra and chromatograms), see
+  \code{\link{peaks}}.
+  
+  
   Methods currently implemented for \code{mzR}
-  \describe{
-    \item{fileName}{\code{signature(object = "mzR")}: ... }
-  }
+
+  \describe{ \item{fileName}{\code{signature(object = "mzR")}: ... } }
   
   Methods currently implemented for \code{mzRramp}
+  
   \describe{
     \item{analyzer}{\code{signature(object = "mzRramp")}: ... }
     \item{close}{\code{signature(con = "mzRramp")}: ... }
     \item{detector}{\code{signature(object = "mzRramp")}: ... }
     \item{fileName}{\code{signature(object = "mzRramp")}: ... }
-    \item{get3Dmap}{\code{signature(object = "mzRramp")}: ... }
-    \item{header}{\code{signature(object = "mzRramp", scans = "missing")}: ... }
-    \item{header}{\code{signature(object = "mzRramp", scans = "numeric")}: ... }
-    \item{header}{\code{signature(object = "mzRnetCDF", scans = "missing")}: ... }
-    \item{header}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
     \item{initializeRamp}{\code{signature(object = "mzRramp")}: ... }
     \item{instrumentInfo}{\code{signature(object = "mzRramp")}: ... }
     \item{ionisation}{\code{signature(object = "mzRramp")}: ... }
@@ -146,16 +130,6 @@
     \item{length}{\code{signature(x = "mzRramp")}: ... }
     \item{manufacturer}{\code{signature(object = "mzRramp")}: ... }
     \item{model}{\code{signature(object = "mzRramp")}: ... }
-    \item{peaksCount}{\code{signature(object = "mzRramp", scans = "missing")}: ... }
-    \item{peaksCount}{\code{signature(object = "mzRramp", scans = "numeric")}: ... }
-    \item{peaks}{\code{signature(object = "mzRramp", scans = "missing")}: ... }
-    \item{peaks}{\code{signature(object = "mzRramp", scans = "numeric")}: ... }
-    \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "missing")}: ... }
-    \item{peaks}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
-    \item{spectra}{\code{signature(object = "mzRramp", scans = "missing")}: ... }
-    \item{spectra}{\code{signature(object = "mzRramp", scans = "numeric")}: ... }
-    \item{spectra}{\code{signature(object = "mzRnetCDF", scans = "missing")}: ... }
-    \item{spectra}{\code{signature(object = "mzRnetCDF", scans = "numeric")}: ... }
     \item{runInfo}{\code{signature(object = "mzRramp")}: ... }
 
   }
@@ -171,6 +145,7 @@
     \item{runInfo}{\code{signature(object = "mzRpwiz")}: ... }
     \item{chromatogramsInfo}{\code{signature(object = "mzRpwiz")}: ... }
   }
+  
   Methods currently implemented for \code{mzRident}
   \describe{
     \item{mzidInfo}{\code{signature(object = "mzRident")}: ... }

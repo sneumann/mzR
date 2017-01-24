@@ -62,13 +62,15 @@ public:
 
     int getLastScan() const;
 
+    int getLastChrom() const;
+
     Rcpp::List getInstrumentInfo();
 
     Rcpp::List getRunInfo();
 
     Rcpp::List getScanHeaderInfo(int whichScan);
 
-    Rcpp::DataFrame getChromatogramsInfo();
+    Rcpp::DataFrame getChromatogramsInfo(int whichChrom);
 
     Rcpp::DataFrame getAllScanHeaderInfo();
 
