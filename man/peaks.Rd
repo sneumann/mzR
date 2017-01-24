@@ -30,7 +30,6 @@
 \alias{chromatograms,mzRramp-method}
 \alias{tic,mzRramp-method}
 \alias{nChrom}
-}
 
 
 \title{
