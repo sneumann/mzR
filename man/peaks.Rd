@@ -26,10 +26,13 @@
 \alias{get3Dmap,mzRramp-method}
 \alias{get3Dmap,mzRpwiz-method}
 
-\alias{chromatogram,mzRramp-method}
-\alias{chromatograms,mzRramp-method}
-\alias{tic,mzRramp-method}
+\alias{chromatogram,mzRpwiz-method}
+\alias{chromatograms,mzRpwiz-method}
+\alias{tic,mzRpwiz-method}
 \alias{nChrom}
+\alias{chromatogram}
+\alias{chromatograms}
+\alias{tic}
 
 
 \title{
@@ -48,11 +51,11 @@
 
  get3Dmap(object, scans, lowMz, highMz, resMz, ...)
 
- chromatogram(object, chrom) 
+ chromatogram(object, ...) 
 
- chromatograms(object, chrom) ## same as chromatogram
+ chromatograms(object, ...) ## same as chromatogram
 
- tic(object)
+ tic(object, ...)
 
  nChrom(object)
 
@@ -66,9 +69,6 @@
     return. Optional for the \code{header}, \code{peaks}, \code{scans}
     and \code{peaksCount} methods. If ommited, the requested data for
     all peaks is returned. }
-
-  \item{chrom}{A \code{numeric} specifying which chromatogram to return.
-    If ommited, all chromatograms are returned. }
 
   \item{lowMz, highMz}{\code{Numeric}s defining the m/z range to be
     returned.}
