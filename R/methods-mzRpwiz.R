@@ -1,19 +1,15 @@
-setMethod("get3Dmap",
-          signaure = "mzRpwiz",
+setMethod("get3Dmap", "mzRpwiz",
           function(object, scans, lowMz, highMz, resMz)
           return(object@backend$get3DMap(scans, lowMz, highMz, resMz)))
 
-##setMethod("writeMSfile",
-##          signaure = "mzRpwiz",
+##setMethod("writeMSfile", "mzRpwiz",
 ##          function(object, filename, outformat)
 ##          object@backend$writeMSfile(filename, outformat))
 
-setMethod("length",
-          signature = "mzRpwiz",
+setMethod("length", "mzRpwiz",
           function(x) return(x@backend$getLastScan()))
 
-setMethod("instrumentInfo",
-          signaure = "mzRpwiz",
+setMethod("instrumentInfo", "mzRpwiz",
           function(object)
           return(object@backend$getInstrumentInfo()))
 
@@ -23,47 +19,40 @@ setMethod("chromatogramsInfo", "mzRpwiz",
           })
 
 
-setMethod("manufacturer",
-          signaure = "mzRpwiz",
+setMethod("manufacturer", "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$manufacturer)
           })
 
-setMethod("model",
-          signaure = "mzRpwiz",
+setMethod("model", "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$model)
           })
 
-setMethod("ionisation",
-          signaure = "mzRpwiz",
+setMethod("ionisation", "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$ionisation)
           })
 
-setMethod("analyzer",
-          signaure = "mzRpwiz",
+setMethod("analyzer", "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$analyzer)
           })
 
-setMethod("detector",
-          signaure = "mzRpwiz",
+setMethod("detector", "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$detector)
           })
 
-setMethod("header",
-          signature = c("mzRpwiz", "missing"),
+setMethod("header", c("mzRpwiz", "missing"),
           function(object) return(object@backend$getAllScanHeaderInfo()))
 
-setMethod("header",
-          signature = c("mzRpwiz", "numeric"),
+setMethod("header", c("mzRpwiz", "numeric"),
           function(object, scans) {
             if (length(scans) == 1) {
               return(object@backend$getScanHeaderInfo(scans))
@@ -79,8 +68,7 @@ setMethod("peaks", "mzRpwiz",
 setMethod("spectra", "mzRpwiz",
           function(object, scans) .peaks(object, scans))
 
-setMethod("peaksCount",
-          signature = c("mzRpwiz", "numeric"),
+setMethod("peaksCount", c("mzRpwiz", "numeric"),
           function(object, scans) {
             if (length(scans) == 1) {
               return(object@backend$getPeakList(scans)$peaksCount)
@@ -91,15 +79,13 @@ setMethod("peaksCount",
             }
           })
 
-setMethod("peaksCount",
-          signature = c("mzRpwiz", "missing"),
+setMethod("peaksCount", c("mzRpwiz", "missing"),
           function(object) {
             n <- length(object)
             return(peaksCount(object, 1:n))
           })
 
-setMethod("runInfo",
-          signature = "mzRpwiz",
+setMethod("runInfo", "mzRpwiz",
           function(object) {
             hd <- header(object)
             ll <- list()
@@ -112,29 +98,25 @@ setMethod("runInfo",
             return(ll)
           })
 
-setMethod("softwareInfo",
-          signaure = "mzRpwiz",
+setMethod("softwareInfo", "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$software)
           })
 
-setMethod("sampleInfo",
-          signaure = "mzRpwiz",
+setMethod("sampleInfo", "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$sample)
           })
 
-setMethod("sourceInfo",
-          signaure = "mzRpwiz",
+setMethod("sourceInfo", "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
             return(info$source)
           })
 
-setMethod("close",
-          signature = "mzRpwiz",
+setMethod("close", "mzRpwiz",
           function(con, ...) {
               con@backend$close()
               invisible(TRUE)
