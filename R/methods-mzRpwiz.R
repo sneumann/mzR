@@ -170,7 +170,7 @@ setMethod("tic", "mzRpwiz",
           })
 
 setMethod("chromatograms", "mzRpwiz",
-          function(object, ...) chromatogram(object, ...))
+          function(object, chrom) chromatogram(object, chrom))
 
 
 setMethod("chromatogram", "mzRpwiz",
@@ -180,14 +180,18 @@ setMethod("chromatogram", "mzRpwiz",
               ## index nChrom(object) - 1) is indexed at position
               ## nChrom(object).
               n <- nChrom(object)
-              if (missing(chrom)) chrom <- 1:n
+              all <- FALSE
+              if (missing(chrom)) {
+                  chrom <- 1:n
+                  all <- TRUE
+              }
               stopifnot(is.numeric(chrom))
               chrom <- as.integer(chrom)
               if (min(chrom) < 1 | max(chrom) > n)
                   stop("Index out of bound [", 1, ":", n, "].")
               ## Update index to match original indices at the C-level
               chrom <- chrom - 1L
-              if (length(chrom) == 1) {
+              if (length(chrom) == 1 & !all) {
                   ans <- object@backend$getChromatogramsInfo(chrom)
               } else {
                   ans <- lapply(chrom,
