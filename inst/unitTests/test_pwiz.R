@@ -3,8 +3,6 @@ test_mzXML <- function() {
     mzxml <- openMSfile(file, backend="pwiz")
     checkTrue(class(mzxml)=="mzRpwiz")
 
-    Temporarily disabled in 1.99.5 because of SEGV on Windows
-    
     show(mzxml)
     length(mzxml)
     runInfo(mzxml)
