@@ -1,6 +1,7 @@
 CHANGES IN VERSION 2.9.5
 ------------------------
-
+ o Add missing boost/config/platform/macos.hpp <2017-01-25 Wed>
+ 
 CHANGES IN VERSION 2.9.4
 ------------------------
  o New chromatogram accessors (for pwiz backend only) - see issue #73
