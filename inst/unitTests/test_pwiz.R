@@ -17,3 +17,30 @@ test_mzXML <- function() {
     fileName(mzxml)
     close(mzxml) 
 }
+
+test_mzML <- function() {
+    file <- system.file("microtofq", "MM14.mzML", package = "msdata")
+    mzml <- openMSfile(file, backend="pwiz")
+    checkTrue(class(mzml)=="mzRpwiz")
+    show(mzml)
+    length(mzml)
+    runInfo(mzml)
+    instrumentInfo(mzml)
+    peaks(mzml)
+    peaks(mzml,1)
+    peaks(mzml,2:3)
+    peaksCount(mzml)
+    header(mzml)
+    header(mzml,1)
+    header(mzml,2:3)
+
+    checkTrue(ncol(header(mzml))>4)
+    checkTrue(length(header(mzml,1))>4)
+    checkTrue(ncol(header(mzml,2:3))>4)
+
+    ## Check polarity reporting
+    checkTrue(all(header(mzml)$polarity==1))
+
+    fileName(mzml)
+    close(mzml)
+}
