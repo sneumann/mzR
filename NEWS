@@ -1,7 +1,11 @@
-CHANGES IN VERSION 2.9.6
+CHANGES IN VERSION 2.9.7
 ------------------------
  o Fix compilation on macOS
 
+CHANGES IN VERSION 2.9.6
+------------------------
+ o Compile on macOS, but hdf5 path hard-coded
+ 
 CHANGES IN VERSION 2.9.5
 ------------------------
  o Add missing boost/config/platform/macos.hpp <2017-01-25 Wed>
