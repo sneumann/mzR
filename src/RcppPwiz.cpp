@@ -174,9 +174,13 @@ Rcpp::List RcppPwiz::getScanHeaderInfo ( int whichScan  )
         res[i++] = Rcpp::wrap(header.acquisitionNum);
         names.push_back("msLevel");
         res[i++] = Rcpp::wrap(header.msLevel);
+
         names.push_back("polarity");
-        res[i++] = Rcpp::wrap(header.polarity);
-        names.push_back("peaksCount");
+	SpectrumPtr sp = slp->spectrum(whichScan - 1, true); // Is TRUE neccessary here ? 
+	CVParam param = sp->cvParamChild(MS_scan_polarity);
+	res[i++] = Rcpp::wrap( (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) ) );
+	
+	names.push_back("peaksCount");
         res[i++] = Rcpp::wrap(header.peaksCount);
         names.push_back("totIonCurrent");
         res[i++] = Rcpp::wrap(header.totIonCurrent);
@@ -268,7 +272,11 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( )
                 seqNum[whichScan-1] = scanHeader.seqNum;
                 acquisitionNum[whichScan-1] = scanHeader.acquisitionNum;
                 msLevel[whichScan-1] = scanHeader.msLevel;
-                polarity[whichScan-1] = scanHeader.polarity;
+
+		SpectrumPtr sp = slp->spectrum(whichScan-1, true); // Is TRUE neccessary here ? 
+		CVParam param = sp->cvParamChild(MS_scan_polarity);
+		polarity[whichScan-1] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
+			
                 peaksCount[whichScan-1] = scanHeader.peaksCount;
                 totIonCurrent[whichScan-1] = scanHeader.totIonCurrent;
                 retentionTime[whichScan-1] = scanHeader.retentionTime;
