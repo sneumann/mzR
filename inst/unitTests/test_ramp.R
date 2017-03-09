@@ -37,6 +37,9 @@ test_mzML <- function() {
     checkTrue(length(header(mzml,1))>4)
     checkTrue(ncol(header(mzml,2:3))>4)
 
+    ## Check polarity reporting
+    checkTrue(all(header(mzml)$polarity==1))
+
     fileName(mzml)
     close(mzml)    
 }
@@ -56,6 +59,10 @@ test_mzData <- function() {
     header(mzdata,1)
     header(mzdata,2:3)
     fileName(mzdata)
+
+    ## Check polarity reporting
+    checkTrue(all(header(mzdata)$polarity==1))
+   
     close(mzdata)    
 }
 
