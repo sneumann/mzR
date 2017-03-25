@@ -29,7 +29,7 @@
 #include "pwiz/utility/misc/Filesystem.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "SpectrumWorkerThreads.hpp"
-
+#include <Rcpp.h>
 namespace pwiz {
 namespace msdata {
 namespace IO {
@@ -1491,12 +1491,12 @@ struct HandlerScan : public HandlerParamContainer
                         try
                         {
                             lexical_cast<int>(externalNativeID);
-                            //cerr << "[IO::HandlerScan] Warning - mzML 1.0: <acquisition>::externalNativeID\n";
+                            //Rcpp::Rcerr << "[IO::HandlerScan] Warning - mzML 1.0: <acquisition>::externalNativeID\n";
                             scan->externalSpectrumID = "scan=" + externalNativeID;
                         }
                         catch(exception&)
                         {
-                            //cerr << "[IO::HandlerScan] Warning - mzML 1.0: non-integral <acquisition>::externalNativeID; externalSpectrumID format unknown\n";
+                            //Rcpp::Rcerr << "[IO::HandlerScan] Warning - mzML 1.0: non-integral <acquisition>::externalNativeID; externalSpectrumID format unknown\n";
                             scan->externalSpectrumID = externalNativeID;
                         }
                 }

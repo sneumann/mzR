@@ -137,7 +137,7 @@ void test(const bfs::path& datadir, int msLevel)
         filenames.push_back("10-spec.bms2.gz");
         filenames.push_back("10-spec.cms2");
     } else {
-        cerr << "Invalid MS level." << endl;
+        Rcpp::Rcerr << "Invalid MS level." << endl;
         return;
     }
 

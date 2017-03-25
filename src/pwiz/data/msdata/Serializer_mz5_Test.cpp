@@ -110,10 +110,10 @@ void testThreadSafetyWorker(boost::barrier* testBarrier)
         testWriteRead();
     } catch (exception& e)
     {
-        cerr << "Exception in worker thread: " << e.what() << endl;
+        Rcpp::Rcerr << "Exception in worker thread: " << e.what() << endl;
     } catch (...)
     {
-        cerr << "Unhandled exception in worker thread." << endl;
+        Rcpp::Rcerr << "Unhandled exception in worker thread." << endl;
         exit(1); // fear the unknown!
     }
 }

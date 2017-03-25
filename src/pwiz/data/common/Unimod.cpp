@@ -25,11 +25,13 @@
 #include "Unimod.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/utility/misc/Singleton.hpp"
+#include <Rcpp.h>
 
 
 using namespace pwiz::cv;
 using namespace pwiz::chemistry;
 using namespace boost::logic;
+
 
 
 namespace pwiz {
@@ -225,7 +227,7 @@ struct UnimodData : public boost::singleton<UnimodData>
             catch (exception& e)
             {
                 // TODO: log this error
-                cerr << "[UnimodData::ctor] error parsing term \"" << term.id << "\": " << e.what() << "\n";
+	      Rcpp::Rcerr << "[UnimodData::ctor] error parsing term \"" << term.id << "\": " << e.what() << "\n";
                 //throw runtime_error("[UnimodData::ctor] error parsing mod \"" + title + "\"");
             }
         }
