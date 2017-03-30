@@ -13,7 +13,6 @@ http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/predef/compiler/comeau.h>
 #include <boost/predef/compiler/compaq.h>
 #include <boost/predef/compiler/diab.h>
-#include <boost/predef/compiler/digitalmars.h>
 #include <boost/predef/compiler/dignus.h>
 #include <boost/predef/compiler/edg.h>
 #include <boost/predef/compiler/ekopath.h>
