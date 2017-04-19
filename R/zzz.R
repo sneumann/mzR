@@ -1,4 +1,4 @@
-BUILT_RCPP_VERSION = package_version("0.12.9")
+BUILT_RCPP_VERSION = package_version("0.12.10")
 
 .onLoad <-
     function(libname, pkgname) {
