@@ -103,7 +103,7 @@ ARCH_OBJS=./boost/libs/filesystem/src/path_traits.o \
 ./boost/libs/thread/src/win32/thread.o \
 ./pwiz/data/msdata/ramp/wglob.o \
 ./boost_aux/boost/nowide/iostream.o
-ARCH_CPPFLAGS=-DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
+ARCH_CPPFLAGS=-fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
 ARCH_LIBS=-lws2_32 -lz
 else
 ARCH_OBJS=./boost/libs/thread/src/pthread/once.o \
