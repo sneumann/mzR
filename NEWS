@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.9.12
+-------------------------
+ o Change default I/O backend from Ramp to pwiz.
+
 CHANGES IN VERSION 2.9.11
 -------------------------
  o Restore -fpermissive flag on windows
