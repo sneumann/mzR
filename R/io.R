@@ -51,3 +51,100 @@ openIDfile <- function(filename, verbose = FALSE) {
                backend=identModule,
                fileName=filename))
 }
+
+#' @title Export spectrum data to an MS file
+#'
+#' @description \code{writeSpectrumList} exports the spectrum data provided with
+#'     parameters \code{header} and \code{data} to an MS file.
+#'
+#' @param filename \code{character(1)} with the name of the file that should be
+#'     written.
+#'
+#' @param header \code{data.frame} with the header data for the spectra. Similar
+#'     content as the one returned by the \code{\link{header}} method.
+#'
+#' @param data \code{list} containing for each spectrum one \code{matrix} with
+#'     columns \code{mz} (first column) and \code{intensity} (second column).
+#'     See also \code{\link{peaks}} for the method that reads such data from
+#'     an MS file.
+#'
+#' @param backend \code{character(1)} defining the backend that should be used
+#'     for writing.
+#'
+#' @param outformat \code{character(1)} the format of the output file.
+#'
+#' @param rtime_seconds \code{logical(1)} whether the retention time is provided
+#'     in seconds or minutes.
+#' 
+#' @author Johannes Rainer
+writeSpectrumList <- function(filename, backend = "pwiz",
+                              outformat = c("mzml", "mgf", "mzxml"), header,
+                              data, rtime_seconds = TRUE) {
+    backend <- match.arg(backend)
+    outformat <- match.arg(tolower(outformat))
+    ## Check header for:
+    ## 1) presence of required columns.
+    ## 2) scanNum has to be a numeric from 1:nrow(header)
+    ## Ideally, do some checking here.
+    if (backend == "pwiz") {
+        pwizModule <- new(Pwiz)
+        pwizModule$writeSpectrumList(filename, outformat, header, data,
+                                     rtime_seconds)
+    }
+}
+
+#' @title Write spectra data to a MS file
+#'
+#' @description Copy general information from the originating MS file and
+#'     write this, along with the provided spectra data, to a new file. The
+#'     expected workflow is the following: data is first loaded from an MS file,
+#'     processed in R and then saved again to an MS file.
+#'
+#' @note This function does not allow to write new MS files with new content.
+#'
+#' @param filename \code{character(1)} with the name of the file that should be
+#'     written.
+#'
+#' @param originalFile \code{character(1)} with the name of the original file
+#'     from which the spectrum data was first read.
+#'
+#' @param header \code{data.frame} with the header data for the spectra. Similar
+#'     content as the one returned by the \code{\link{header}} method.
+#'
+#' @param data \code{list} containing for each spectrum one \code{matrix} with
+#'     columns \code{mz} (first column) and \code{intensity} (second column).
+#'     See also \code{\link{peaks}} for the method that reads such data from
+#'     an MS file.
+#'
+#' @param backend \code{character(1)} defining the backend that should be used
+#'     for writing.
+#'
+#' @param outformat \code{character(1)} the format of the output file.
+#'
+#' @param rtime_seconds \code{logical(1)} whether the retention time is provided
+#'     in seconds or minutes.
+#' 
+#' @author Johannes Rainer
+copyWriteMSfile <- function(filename, originalFile, header, data,
+                            backend = "pwiz",
+                            outformat = c("mzml", "mgf", "mzxml"),
+                            rtime_seconds = TRUE) {
+    backend <- match.arg(backend)
+    outformat <- match.arg(tolower(outformat))
+    if (missing(filename))
+        stop("'filename' is a required parameter")
+    if (missing(originalFile))
+        stop("'originalFile' is a required parameter")
+    if (missing(header) | missing(data))
+        stop("'header' and 'data' are required")
+    if (!file.exists(originalFile))
+        stop("Original file ", originalFile, " not found")
+    ## Other checks:
+    ## o ensure that header has all required columns
+    ## o data is in the expected format.
+    if (backend == "pwiz") {
+        pwizModule <- new(Pwiz)
+        pwizModule$copyWriteMSfile(filename, outformat, originalFile,
+                                   header, data, rtime_seconds)
+    }
+}

@@ -2,9 +2,9 @@ setMethod("get3Dmap", "mzRpwiz",
           function(object, scans, lowMz, highMz, resMz)
           return(object@backend$get3DMap(scans, lowMz, highMz, resMz)))
 
-##setMethod("writeMSfile", "mzRpwiz",
-##          function(object, filename, outformat)
-##          object@backend$writeMSfile(filename, outformat))
+setMethod("writeMSfile", "mzRpwiz",
+         function(object, filename, outformat)
+         object@backend$writeMSfile(filename, outformat))
 
 setMethod("length", "mzRpwiz",
           function(x) return(x@backend$getLastScan()))

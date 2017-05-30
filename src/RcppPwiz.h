@@ -10,6 +10,7 @@
 
 #include "pwiz/data/msdata/RAMPAdapter.hpp"
 #include "pwiz/data/msdata/MSDataFile.hpp"
+#include "pwiz/data/msdata/MSData.hpp"
 #include "pwiz/data/msdata/LegacyAdapter.hpp"
 #include "pwiz/data/msdata/Serializer_mzML.hpp"
 #include "pwiz/data/msdata/Serializer_mzXML.hpp"
@@ -48,6 +49,10 @@ private:
     Rcpp::DataFrame allScanHeaderInfo;
     bool isInCacheAllScanHeaderInfo;
     string filename;
+    void addSpectrumList(MSData& msd,
+			 Rcpp::DataFrame& spctr_header,
+			 Rcpp::List& spctr_data,
+			 bool rtime_seconds);
 
 public:
 
@@ -56,8 +61,15 @@ public:
 
     void open(const string& fileNames);
     void close();
-    //void writeMSfile(const string& filenames, const string& format);
-
+    /* void writeMSfile(const string& filenames, const string& format); */
+    void writeSpectrumList(const string& filenames, const string& format,
+			   Rcpp::DataFrame spctr_header, Rcpp::List spctr_data,
+			   bool rtime_seconds);
+    void copyWriteMSfile(const string& filenames, const string& originalFile,
+			 const string& format,
+			 Rcpp::DataFrame spctr_header,
+			 Rcpp::List spctr_data,
+			 bool rtime_seconds);
     string getFilename();
 
     int getLastScan() const;
