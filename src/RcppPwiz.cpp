@@ -228,6 +228,85 @@ Rcpp::List RcppPwiz::getScanHeaderInfo ( int whichScan  )
     }
 }
 
+// Rcpp::List RcppPwiz::getScanHeaderInfo ( int whichScan  )
+// {
+//     if (msd != NULL)
+//     {
+//         SpectrumListPtr slp = msd->run.spectrumListPtr;
+//         if ((whichScan <= 0) || (whichScan > slp->size()))
+//         {
+//             Rprintf("Index out of bounds [1 ... %d].\n", slp->size());
+//             return Rcpp::List::create( );
+//         }
+
+//         RAMPAdapter * adapter = new  RAMPAdapter(filename);
+//         ScanHeaderStruct header;
+//         adapter->getScanHeader(whichScan - 1, header);
+
+//         Rcpp::List res(21);
+//         std::vector<std::string> names;
+//         int i = 0;
+
+//         names.push_back("seqNum");
+//         res[i++] = Rcpp::wrap(header.seqNum);
+//         names.push_back("acquisitionNum");
+//         res[i++] = Rcpp::wrap(header.acquisitionNum);
+//         names.push_back("msLevel");
+//         res[i++] = Rcpp::wrap(header.msLevel);
+
+//         names.push_back("polarity");
+// 	SpectrumPtr sp = slp->spectrum(whichScan - 1, true); // Is TRUE neccessary here ? 
+// 	CVParam param = sp->cvParamChild(MS_scan_polarity);
+// 	res[i++] = Rcpp::wrap( (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) ) );
+	
+// 	names.push_back("peaksCount");
+//         res[i++] = Rcpp::wrap(header.peaksCount);
+//         names.push_back("totIonCurrent");
+//         res[i++] = Rcpp::wrap(header.totIonCurrent);
+//         names.push_back("retentionTime");
+//         res[i++] = Rcpp::wrap(header.retentionTime);
+//         names.push_back("basePeakMZ");
+//         res[i++] = Rcpp::wrap(header.basePeakMZ);
+//         names.push_back("basePeakIntensity");
+//         res[i++] = Rcpp::wrap(header.basePeakIntensity);
+//         names.push_back("collisionEnergy");
+//         res[i++] = Rcpp::wrap(header.collisionEnergy);
+//         names.push_back("ionisationEnergy");
+//         res[i++] = Rcpp::wrap(header.ionisationEnergy);
+//         names.push_back("lowMZ");
+//         res[i++] = Rcpp::wrap(header.lowMZ);
+//         names.push_back("highMZ");
+//         res[i++] = Rcpp::wrap(header.highMZ);
+//         names.push_back("precursorScanNum");
+//         res[i++] = Rcpp::wrap(header.precursorScanNum);
+//         names.push_back("precursorMZ");
+//         res[i++] = Rcpp::wrap(header.precursorMZ);
+//         names.push_back("precursorCharge");
+//         res[i++] = Rcpp::wrap(header.precursorCharge);
+//         names.push_back("precursorIntensity");
+//         res[i++] = Rcpp::wrap(header.precursorIntensity);
+//         names.push_back("mergedScan");
+//         res[i++] = Rcpp::wrap(header.mergedScan);
+//         names.push_back("mergedResultScanNum");
+//         res[i++] = Rcpp::wrap(header.mergedResultScanNum);
+//         names.push_back("mergedResultStartScanNum");
+//         res[i++] = Rcpp::wrap(header.mergedResultStartScanNum);
+//         names.push_back("mergedResultEndScanNum");
+//         res[i++] = Rcpp::wrap(header.mergedResultEndScanNum);
+
+// 	// delete adapter issue #64
+// 	delete adapter;
+// 	adapter = NULL;
+//         res.attr("names") = names;
+//         return res;
+//     }
+//     else
+//     {
+//         Rprintf("Warning: pwiz not yet initialized.\n ");
+//         return Rcpp::List::create( );
+//     }
+// }
+
 Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( )
 {
     if (msd != NULL)
