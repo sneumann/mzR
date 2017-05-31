@@ -1,3 +1,15 @@
+CHANGES IN VERSION 2.11.1
+-------------------------
+ o Change default I/O backend from Ramp to pwiz.
+
+CHANGES IN VERSION 2.11.0
+-------------------------
+ o Bioc devel 3.6
+ 
+CHANGES IN VERSION 2.10.0
+-------------------------
+ o Bioc release 3.5
+
 CHANGES IN VERSION 2.9.11
 -------------------------
  o Restore -fpermissive flag on windows
