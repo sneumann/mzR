@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.11.2
+-------------------------
+ o New getScanHeaderInfo and getAllScanHeaderInfo implementations for the pwiz
+   backend. Fixes issue #106 and issue #216 in MSnbase.
+
 CHANGES IN VERSION 2.11.1
 -------------------------
  o Change default I/O backend from Ramp to pwiz.
