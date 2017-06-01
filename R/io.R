@@ -82,9 +82,12 @@ writeSpectrumList <- function(filename, backend = "pwiz",
                               data, rtime_seconds = TRUE) {
     backend <- match.arg(backend)
     outformat <- match.arg(tolower(outformat))
-    ## Check header for:
-    ## 1) presence of required columns.
-    ## 2) scanNum has to be a numeric from 1:nrow(header)
+    is_ok <- .validHeader(header)
+    if (is(is_ok, "character"))
+        stop("Error checking parameter 'header': ", is_ok)
+    is_ok <- .validSpectrumList(data)
+    if (is(is_ok, "character"))
+        stop("Error checking parameter 'data'. First error was: ", is_ok)
     ## Ideally, do some checking here.
     if (backend == "pwiz") {
         pwizModule <- new(Pwiz)
@@ -127,10 +130,11 @@ writeSpectrumList <- function(filename, backend = "pwiz",
 #' @author Johannes Rainer
 copyWriteMSfile <- function(filename, originalFile, header, data,
                             backend = "pwiz",
-                            outformat = c("mzml", "mgf", "mzxml"),
+                            outformat = "mzml",
                             rtime_seconds = TRUE) {
     backend <- match.arg(backend)
-    outformat <- match.arg(tolower(outformat))
+    supp_formats <- c("mzml", "mgf", "mzxml")
+    outformat <- match.arg(tolower(outformat), supp_formats)
     if (missing(filename))
         stop("'filename' is a required parameter")
     if (missing(originalFile))
@@ -140,11 +144,16 @@ copyWriteMSfile <- function(filename, originalFile, header, data,
     if (!file.exists(originalFile))
         stop("Original file ", originalFile, " not found")
     ## Other checks:
-    ## o ensure that header has all required columns
-    ## o data is in the expected format.
+    is_ok <- .validHeader(header)
+    if (is(is_ok, "character"))
+        stop(is_ok)
+    is_ok <- .validSpectrumList(data)
+    if (is(is_ok, "character"))
+        stop("Error checking parameter 'data'. First error was: ", is_ok)
     if (backend == "pwiz") {
         pwizModule <- new(Pwiz)
         pwizModule$copyWriteMSfile(filename, outformat, originalFile,
                                    header, data, rtime_seconds)
     }
 }
+

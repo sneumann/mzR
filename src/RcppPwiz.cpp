@@ -394,20 +394,22 @@ Rcpp::List RcppPwiz::getPeakList ( int whichScan )
     return Rcpp::List::create( );
 }
 
-// copyWriteMSFile copies (general) content from the originating MS file and
-// replaces the Spectrum list with the new data provided with arguments
-// spctr_header and spctr_data.
-// TODO: add strings that describe what processings have been done in R.
-// We're copying:
-// o fileDescription (adding also the originating MS file)
-// o softwareList (adding also additional info)
-// o instrumentConfigurationList
-// o dataProcessingList (adding also additional info)
-// o run: all "general" info from the run.
-// Potential additional parameters:
-// - centroided: whether spectra data is centroided: NA, TRUE, FALSE.
-// - processings: string/vector with all processing steps.
-// - software(s): name (and version?) of software.
+/**
+ * copyWriteMSFile copies (general) content from the originating MS file and
+ * replaces the Spectrum list with the new data provided with arguments
+ * spctr_header and spctr_data.
+ * TODO: add strings that describe what processings have been done in R.
+ * We're copying:
+ * o fileDescription (adding also the originating MS file)
+ * o softwareList (adding also additional info)
+ * o instrumentConfigurationList
+ * o dataProcessingList (adding also additional info)
+ * o run: all "general" info from the run.
+ * Potential additional parameters:
+ * - centroided: whether spectra data is centroided: NA, TRUE, FALSE.
+ * - processings: string/vector with all processing steps.
+ * - software(s): name (and version?) of software.
+ **/
 void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
 			       const string& originalFile,
 			       Rcpp::DataFrame spctr_header,
@@ -461,52 +463,31 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
   // newmsd.fileDescription.sourceFilePtrs.push_back();
   // o softwareList
   newmsd.softwarePtrs = msd->softwarePtrs;
-  SoftwarePtr softRPack(new Software);
-  softRPack->id = "mzR";
-  // softRPack->version = "";
-  newmsd.softwarePtrs.push_back(softRPack);
   // o instrumentConfigurationList
   vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs;
   newmsd.instrumentConfigurationPtrs = icp;
 
-  // sampleList
+  // o sampleList
   newmsd.samplePtrs = msd->samplePtrs;
 
-  // newmsd.instrumentConfigurationPtrs.push_back(icp);
   // o dataProcessingList
   newmsd.dataProcessingPtrs = msd->dataProcessingPtrs;
-  // Add processing.
-  DataProcessingPtr dpR(new DataProcessing);
-  dpR->id = "R processing";
 
-  ProcessingMethod procR;
-  procR.order = newmsd.dataProcessingPtrs.size() + 1;
-  procR.softwarePtr = softRPack;
-  // TODO what has been done in R...
-  dpR->processingMethods.push_back(procR);
-
-  newmsd.dataProcessingPtrs.push_back(dpR);
-  
-  // From MSnbase::Spectrum        Column in the header
-  // msLevel integer               $msLevel
-  // peaksCount integer
-  // rt numeric
-  // acquisitionNum integer        $acquisitionNum
-  // scanIndex integer             $seqNum
-  // tic numeric                   $totIonCurrent
-  // mz numeric                    peaks()[, 1]
-  // intensity numeric             peaks()[, 2]
-  // fromFile integer
-  // centroided logical
-  // smoothed logical
-  // polarity integer              $polarity: 0 negative, 1 positive, -1 unknown
-  // Spectrum2
-  // merged numeric                $mergedScan
-  // precScanNum integer           $precursorScanNum
-  // precursorMz numeric           $precursorMz
-  // precursorIntensity numeric    $precursorIntensity
-  // precursorCharge integer       $precursorCharge
-  // collisionEnergy numeric       $collisionEnergy
+  // Add mzR processing:
+  Rcpp::StringVector softwares(2);
+  softwares[0] = "mzR";
+  softwares[1] = "x.y.z";
+  //softwares[2] = "AB:1000001";
+  Rcpp::StringVector proc_steps(1);
+  proc_steps[0] = "MS:1000530";
+  if (format == "mzml") {
+    proc_steps.push_back("MS:1000544");
+  }
+  if (format == "mzxml") {
+    proc_steps.push_back("MS:1000545");
+  }
+  Rcpp::List data_proc = Rcpp::List::create(softwares, proc_steps);
+  addDataProcessing(newmsd, data_proc);
   
   // Initialize the run and fill with data from the original file.
   Run &original_run = msd->run;
@@ -519,17 +500,6 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
 
   // Now filling with new data
   addSpectrumList(newmsd, spctr_header, spctr_data, rtime_seconds);
-  
-  // Now save that one.
-  // if(format == "mzml") {
-  //   std::ofstream mzXMLOutFileP(file.c_str());
-  //   Serializer_mzML::Config config;
-  //   config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
-  //   Serializer_mzML mzmlSerializer(config);
-  //   mzmlSerializer.write(mzXMLOutFileP, newmsd);
-  // }
-  // else
-  //   Rcpp::Rcerr << format << " format not supported! Please try mgf, mzML, mzXML or mz5." << std::endl;
   
   if(format == "mgf")
     {
@@ -546,6 +516,8 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
       config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
       Serializer_mzXML serializerMzXML(config);
       serializerMzXML.write(mzXMLOutFileP, newmsd);
+      mzXMLOutFileP.flush();
+      mzXMLOutFileP.close();
     }
   else if(format == "mzml")
     {
@@ -554,6 +526,8 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
       config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
       Serializer_mzML mzmlSerializer(config);
       mzmlSerializer.write(mzXMLOutFileP, newmsd);
+      mzXMLOutFileP.flush();
+      mzXMLOutFileP.close();
     }
   else
     Rcpp::Rcerr << format << " format not supported! Please try mgf, mzML, mzXML or mz5." << std::endl;
@@ -604,53 +578,23 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
   if (is_msn)
     newmsd.fileDescription.fileContent.set(MS_MSn_spectrum);
   // The serializer adds also the original file here AND the newly written file.
-  // TODO: check if we need to add processing steps here too.
-  // newmsd.fileDescription.sourceFilePtrs.push_back();
-  // o softwareList
-  SoftwarePtr softRPack(new Software);
-  softRPack->id = "mzR";
-  // softRPack->version = "";
-  newmsd.softwarePtrs.push_back(softRPack);
-  // Add processing.
-  DataProcessingPtr dpR(new DataProcessing);
-  dpR->id = "R processing";
+  // Add mzR processing:
+  Rcpp::StringVector softwares(2);
+  softwares[0] = "mzR";
+  softwares[1] = "x.y.z";
+  //softwares[2] = "AB:1000001";
+  Rcpp::StringVector proc_steps(1);
+  proc_steps[0] = "MS:1000530";
+  if (format == "mzml") {
+    proc_steps.push_back("MS:1000544");
+  }
+  if (format == "mzxml") {
+    proc_steps.push_back("MS:1000545");
+  }
+  Rcpp::List data_proc = Rcpp::List::create(softwares, proc_steps);
+  addDataProcessing(newmsd, data_proc);
   
-  ProcessingMethod procR;
-  procR.order = newmsd.dataProcessingPtrs.size() + 1;
-  procR.softwarePtr = softRPack;
-  // TODO what has been done in R...
-  dpR->processingMethods.push_back(procR);
-
-  newmsd.dataProcessingPtrs.push_back(dpR);
-  
-  // From MSnbase::Spectrum        Column in the header
-  // msLevel integer               $msLevel
-  // peaksCount integer
-  // rt numeric
-  // acquisitionNum integer        $acquisitionNum
-  // scanIndex integer             $seqNum
-  // tic numeric                   $totIonCurrent
-  // mz numeric                    peaks()[, 1]
-  // intensity numeric             peaks()[, 2]
-  // fromFile integer
-  // centroided logical
-  // smoothed logical
-  // polarity integer              $polarity: 0 negative, 1 positive, -1 unknown
-  // Spectrum2
-  // merged numeric                $mergedScan
-  // precScanNum integer           $precursorScanNum
-  // precursorMz numeric           $precursorMz
-  // precursorIntensity numeric    $precursorIntensity
-  // precursorCharge integer       $precursorCharge
-  // collisionEnergy numeric       $collisionEnergy
-  
-  // Initialize the run and fill with data from the original file.
   newmsd.run.id = "Experiment 1";
-  // newmsd.run.defaultInstrumentConfigurationPtr =
-  //   original_run.defaultInstrumentConfigurationPtr;
-  // newmsd.run.samplePtr = samplePtr;
-  // newmsd.run.startTimeStamp = original_run.startTimeStamp;
-  // newmsd.run.defaultSourceFilePtr = original_run.defaultSourceFilePtr;
 
   // Now filling with new data
   addSpectrumList(newmsd, spctr_header, spctr_data, rtime_seconds);
@@ -670,8 +614,8 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
       config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
       Serializer_mzXML serializerMzXML(config);
       serializerMzXML.write(mzXMLOutFileP, newmsd);
-      mzXMLOutFileP->flush();
-      mzXMLOutFileP->close();
+      mzXMLOutFileP.flush();
+      mzXMLOutFileP.close();
     }
   else if(format == "mzml")
     {
@@ -680,8 +624,8 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
       config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
       Serializer_mzML mzmlSerializer(config);
       mzmlSerializer.write(mzXMLOutFileP, newmsd);
-      mzXMLOutFileP->flush();
-      mzXMLOutFileP->close();
+      mzXMLOutFileP.flush();
+      mzXMLOutFileP.close();
     }
   else
     Rcpp::Rcerr << format << " format not supported! Please try mgf, mzML, mzXML or mz5." << std::endl;
@@ -693,18 +637,43 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
  * with two elements named "software" and "processingMethod".
  * $software is a character of length 2 or 3 (3rd element being an optional MS
  * cv identifying the software): c("software name", "software version", "cv")
- * $processingMethod is an integer of variable length, each element being an
- * MS CV describing the processing step.
+ * $processingMethod is a String of variable length, each element being an
+ * MS CV ID (such as MS:1000530) describing the processing step.
  **/
 void RcppPwiz::addDataProcessing(MSData& msd, Rcpp::List& processing) {
-  Rcpp::StringVector software_desc = as<Rcpp:StringVector>(processing["software"]);
-  
-  if (processing.size() == 2) {
-    // Add also processing methods.
+  Rcpp::StringVector software_desc = Rcpp::as<Rcpp::StringVector>(processing(0));
+  SoftwarePtr new_soft(new Software);
+  new_soft->id = software_desc(0);
+  new_soft->version = software_desc(1);
+  // If there is a third element add that as CV
+  if (software_desc.size() == 3) {
+    CVTermInfo cv_term = cvTermInfo(software_desc(2));
+    new_soft->set(cv_term.cvid);
   }
-   
+  msd.softwarePtrs.push_back(new_soft);
+  // Add also processing methods if provided.
+  if (processing.size() == 2) {
+    Rcpp::StringVector proc_methods = Rcpp::as<Rcpp::StringVector>(processing(1));
+    // Order: get the number of already present dataProcessingPtrs and increment
+    int order = msd.dataProcessingPtrs.size() + 1;
+    DataProcessingPtr data_processing(new DataProcessing);
+    std::ostringstream oss;
+    oss << software_desc[0] << " processing";
+    data_processing->id = oss.str();
+    ProcessingMethod proc_meth;
+    proc_meth.order = order;
+    proc_meth.softwarePtr = new_soft;
+    if (proc_methods.size() > 0) {
+      for (int i = 0; i < proc_methods.size(); i++) {
+	CVTermInfo cv_term = cvTermInfo(proc_methods(i));
+	proc_meth.set(cv_term.cvid);
+      }
+    }
+    data_processing->processingMethods.push_back(proc_meth);
+    msd.dataProcessingPtrs.push_back(data_processing);
+  }
 }
-
+  
 /** Adds information provided in the header and spectra data to the spectrumList
  *  content of the MSData.
  *  TODO: OPEN QUESTION: what to use as spectrum ID? See issue #105

@@ -10,16 +10,16 @@ dontrun_write <- function() {
     ## mzR:::writeMSfile(mzml, filename = "/Users/jo/Desktop/test.mzML",
     ##                   outformat = "mzml")
     ## mzR::close(mzml)
-    file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
+    orig_file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
                         package = "msdata")
-    mzxml <- openMSfile(file, backend = "pwiz")
+    mzxml <- openMSfile(orig_file, backend = "pwiz")
     pks <- peaks(mzxml)
     hdr <- header(mzxml)
     mzR::close(mzxml)
 
     fnew <- paste0(test_folder, "test_copyWrite.mzML")
-    mzR:::copyWriteMSfile(filename = fnew, originalFile = file, header = hdr,
-                          data = pks)
+    mzR:::copyWriteMSfile(filename = fnew, originalFile = orig_file,
+                          header = hdr, data = pks, backend = "pwiz")
     ##mzR:::replaceSpectrumList(mzml, hdr, pks)
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
