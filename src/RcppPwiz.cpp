@@ -670,6 +670,8 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
       config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
       Serializer_mzXML serializerMzXML(config);
       serializerMzXML.write(mzXMLOutFileP, newmsd);
+      mzXMLOutFileP->flush();
+      mzXMLOutFileP->close();
     }
   else if(format == "mzml")
     {
@@ -678,20 +680,41 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
       config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
       Serializer_mzML mzmlSerializer(config);
       mzmlSerializer.write(mzXMLOutFileP, newmsd);
+      mzXMLOutFileP->flush();
+      mzXMLOutFileP->close();
     }
   else
     Rcpp::Rcerr << format << " format not supported! Please try mgf, mzML, mzXML or mz5." << std::endl;
   
 }
 
+/**
+ * Adds one data processing step. Parameter processing is expected to be a list
+ * with two elements named "software" and "processingMethod".
+ * $software is a character of length 2 or 3 (3rd element being an optional MS
+ * cv identifying the software): c("software name", "software version", "cv")
+ * $processingMethod is an integer of variable length, each element being an
+ * MS CV describing the processing step.
+ **/
+void RcppPwiz::addDataProcessing(MSData& msd, Rcpp::List& processing) {
+  Rcpp::StringVector software_desc = as<Rcpp:StringVector>(processing["software"]);
+  
+  if (processing.size() == 2) {
+    // Add also processing methods.
+  }
+   
+}
 
-// Adds information provided in the header and spectra data to the spectrumList
-// content of the MSData.
-// TODO: BIG QUESTION: what to use as spectrum ID? See issue #105
-//       For now: use scan=acquisitionNum[i]. Possible problem: what if the
-//       acquisitionNum has gaps? Are MSn spectra still linked correctly to
-//       their precursor?
-//       Alternative: scan=seqNum[i].
+/** Adds information provided in the header and spectra data to the spectrumList
+ *  content of the MSData.
+ *  TODO: OPEN QUESTION: what to use as spectrum ID? See issue #105
+ *       For now: use scan=acquisitionNum[i]. According to the code of the
+ *       RAMPAdapter.cpp this seems to be correct - the scan number (i.e.
+ *       acquisitionNum) is extracted/guessed from the id of the spectrum.
+ *       Need to test: what if the acquisitionNum has gaps? Are MSn spectra
+ *       still linked correctly to their precursor?
+ *       Alternative: scan=seqNum[i].
+ **/
 void RcppPwiz::addSpectrumList(MSData& msd,
 			       Rcpp::DataFrame& spctr_header,
 			       Rcpp::List& spctr_data,
