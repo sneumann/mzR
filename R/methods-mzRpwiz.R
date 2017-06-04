@@ -58,7 +58,6 @@ setMethod("header", c("mzRpwiz", "numeric"),
                   res <- object@backend$getScanHeaderInfo(scans)
                   ## Convert data.frame to list to be conform with old code
                   return(as.list(res))
-              return(object@backend$getScanHeaderInfo(scans))
               } else {
                   return(object@backend$getScanHeaderInfo(scans))
               }
