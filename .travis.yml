@@ -11,6 +11,7 @@ r_packages:
 apt_packages:
   - texlive-latex-extra
   - texlive-fonts-extra
+  - texlive-latex-recommended
   - libnetcdf-dev
   - netcdf-bin
 
