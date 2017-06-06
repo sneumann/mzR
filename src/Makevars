@@ -133,6 +133,9 @@ PKG_CPPFLAGS=$(PWIZ_CPPFLAGS) $(NC_CFLAGS)  $(ARCH_CPPFLAGS)
 
 PKG_LIBS=$(NC_LIBS)  $(ARCH_LIBS) 
 
+## As of R-4.3 beta -O2 is not default on Linux.
+PKG_CXXFLAGS=-O2 
+
 all: clean $(SHLIB)
 
 clean:
