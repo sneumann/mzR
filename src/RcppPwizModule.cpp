@@ -16,7 +16,7 @@ RCPP_MODULE(Pwiz)
     .method( "copyWriteMSfile", &RcppPwiz::copyWriteMSfile, "Copy general content from the originalting MS file, add the provided spectrum list and write the data to a new mzML file." )
     .method( "getFilename", &RcppPwiz::getFilename, "Returns the mass spec filename.")
     .method( "getInstrumentInfo", &RcppPwiz::getInstrumentInfo, "Reads the instrument information from a pwiz object" )
-    .method( "getScanHeaderInfo", &RcppPwiz::getScanHeaderInfo, "Reads the header info for one mass spectrum." )
+    .method( "getScanHeaderInfo", &RcppPwiz::getScanHeaderInfo, "Reads the header info for the specified scan(s). Supports also to extract scan header infos for multiple scans." )
     .method( "getChromatogramsInfo", &RcppPwiz::getChromatogramsInfo, "Reads the chromatogram information.")
     .method( "getPeakList", &RcppPwiz::getPeakList,
              "Performs a non-sequential parsing operation on an indexed mzXML file to obtain the peak list for a numbered scan." )

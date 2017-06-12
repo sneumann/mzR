@@ -54,14 +54,20 @@ setMethod("header", c("mzRpwiz", "missing"),
 
 setMethod("header", c("mzRpwiz", "numeric"),
           function(object, scans) {
-            if (length(scans) == 1) {
-              return(object@backend$getScanHeaderInfo(scans))
-            } else {
-                return(data.frame(t(sapply(scans,
-                                           function(x)
-                                               unlist(object@backend$getScanHeaderInfo(x))))))
-            }
+              if (length(scans) == 1) {
+                  res <- object@backend$getScanHeaderInfo(scans)
+                  ## Convert data.frame to list to be conform with old code
+                  return(as.list(res))
+              } else {
+                  return(object@backend$getScanHeaderInfo(scans))
+              }
           })
+
+headerFor <- function(object, idx) {
+    if (missing(idx))
+        stop("Required parameter 'idx' is missing.")
+    return(object@backend$getScanHeaderInfoFor(as.integer(idx)))
+}
 
 setMethod("peaks", "mzRpwiz",
           function(object, scans) .peaks(object, scans))

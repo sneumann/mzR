@@ -81,7 +81,12 @@ public:
 
     Rcpp::List getRunInfo();
 
-    Rcpp::List getScanHeaderInfo(int whichScan);
+    /**
+     * Reads the scan header for the provided scan(s). Note that this function
+     * no longer returns a List, but a DataFrame, even if length whichScan is 1.
+     * @return The scan header info is returned as a Rcpp::DataFrame
+     **/
+    Rcpp::DataFrame getScanHeaderInfo(Rcpp::IntegerVector whichScan);
 
     Rcpp::DataFrame getChromatogramsInfo(int whichChrom);
 
