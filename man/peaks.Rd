@@ -91,15 +91,17 @@
   
   The \code{\link{header}} function returns a list containing
   \code{seqNum}, \code{acquisitionNum} , \code{msLevel},
-  \code{peaksCount}, \code{totIonCurrent}, \code{retentionTime},
-  \code{basePeakMZ}, \code{basePeakIntensity}, \code{collisionEnergy},
-  \code{ionisationEnergy}, \code{lowM}, \code{highMZ},
-  \code{precursorScanNum}, \code{precursorMZ}, \code{precursorCharge},
-  \code{precursorIntensity}, \code{mergedScan},
-  \code{mergedResultScanNum}, \code{mergedResultStartScanNum} and
-  \code{mergedResultEndScanNum}, when available in the original file. If
-  multiple scans are queried, a \code{data.frame} is returned with the
-  scans reported along the rows.
+  \code{peaksCount}, \code{totIonCurrent}, \code{retentionTime} (in
+  seconds), \code{basePeakMZ}, \code{basePeakIntensity},
+  \code{collisionEnergy}, \code{ionisationEnergy}, \code{lowM},
+  \code{highMZ}, \code{precursorScanNum}, \code{precursorMZ},
+  \code{precursorCharge}, \code{precursorIntensity},
+  \code{mergedScan}, \code{mergedResultScanNum},
+  \code{mergedResultStartScanNum} and \code{mergedResultEndScanNum},
+  \code{injectionTime} (ion injection time, in seconds) when available
+  in the original file. If multiple scans are queried, a
+  \code{data.frame} is returned with the scans reported along the
+  rows.
 
   The \code{get3Dmap} function performs a simple resampling between
   \code{lowMz} and \code{highMz} with \code{reMz} resolution. A matrix

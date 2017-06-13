@@ -186,6 +186,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       Rcpp::IntegerVector mergedResultScanNum(N_scans); /* scan number of the resultant merged scan */
       Rcpp::IntegerVector mergedResultStartScanNum(N_scans); /* smallest scan number of the scanOrigin for merged scan */
       Rcpp::IntegerVector mergedResultEndScanNum(N_scans); /* largest scan number of the scanOrigin for merged scan */
+      Rcpp::NumericVector ionInjectionTime(N_scans); /* The time spent filling an ion trapping device*/
       
       for (int i = 0; i < N_scans; i++)
 	{
@@ -196,9 +197,13 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
 	  msLevel[i] = scanHeader.msLevel;
 	  
 	  SpectrumPtr sp = slp->spectrum(current_scan-1, false); // Is TRUE neccessary here ? 
+	  Scan dummy;
+	  Scan& scan = sp->scanList.scans.empty() ? dummy : sp->scanList.scans[0];
 	  CVParam param = sp->cvParamChild(MS_scan_polarity);
 	  polarity[i] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
-	  
+	  // ionInjectionTime[i] = sp->cvParam(MS_ion_injection_time).valueAs<double>();
+	  ionInjectionTime[i] = scan.cvParam(MS_ion_injection_time).timeInSeconds();
+
 	  peaksCount[i] = scanHeader.peaksCount;
 	  totIonCurrent[i] = scanHeader.totIonCurrent;
 	  retentionTime[i] = scanHeader.retentionTime;
@@ -221,7 +226,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       delete adapter;
       adapter = NULL;
       
-      Rcpp::List header(21);
+      Rcpp::List header(22);
       std::vector<std::string> names;
       int i = 0;
       names.push_back("seqNum");
@@ -266,6 +271,8 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       header[i++] = Rcpp::wrap(mergedResultStartScanNum);
       names.push_back("mergedResultEndScanNum");
       header[i++] = Rcpp::wrap(mergedResultEndScanNum);
+      names.push_back("injectionTime");
+      header[i++] = Rcpp::wrap(ionInjectionTime);
       
       header.attr("names") = names;
       

@@ -124,20 +124,23 @@ test_getScanHeaderInfo <- function() {
     ## Read single scan header.
     scan_3 <- header(mzml, scans = 3)
     scan_3_ramp <- header(ramp, scans = 3)
-    ## Ramp does not read polarity
+    ## Ramp does not read polarity or injectionTime
     scan_3$polarity <- 0
+    scan_3$injectionTime <- 0
     checkEquals(scan_3, scan_3_ramp)
     
     ## Read all scan header
     all_scans <- header(mzml)
     all_scans_ramp <- header(ramp)
     all_scans$polarity <- 0
+    all_scans$injectionTime <- 0
     checkEquals(all_scans, all_scans_ramp)
     
     ## passing the index of all scan headers should return the same
     all_scans_2 <- header(mzml, scans = 1:nrow(all_scans))
     all_scans_ramp_2 <- header(ramp, scans = 1:nrow(all_scans))
     all_scans_2$polarity <- 0
+    all_scans_2$injectionTime <- 0
     checkEquals(all_scans, all_scans_2)
     checkEquals(as.list(all_scans[3, ]), scan_3)
     checkEquals(all_scans_2, all_scans_ramp_2)
@@ -147,6 +150,7 @@ test_getScanHeaderInfo <- function() {
     scan_3_ramp <- header(ramp, scans = c(3, 1, 14))
     ## Ramp does not read polarity
     scan_3$polarity <- 0
+    scan_3$injectionTime <- 0
     checkEquals(scan_3, scan_3_ramp)
 
     close(mzml)
