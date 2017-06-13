@@ -97,7 +97,8 @@
   \code{precursorScanNum}, \code{precursorMZ}, \code{precursorCharge},
   \code{precursorIntensity}, \code{mergedScan},
   \code{mergedResultScanNum}, \code{mergedResultStartScanNum} and
-  \code{mergedResultEndScanNum}, when available in the original file. If
+  \code{mergedResultEndScanNum}, \code{injectionTime} (ion injection
+  time) when available in the original file. If
   multiple scans are queried, a \code{data.frame} is returned with the
   scans reported along the rows.
 

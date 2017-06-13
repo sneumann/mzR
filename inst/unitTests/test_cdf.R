@@ -40,15 +40,15 @@ test_header <- function() {
   cdf <- openMSfile(file, backend="netCDF")        
 
   h <- header(cdf)
-  checkEquals(ncol(h), 19)
+  checkEquals(ncol(h), 20)
   checkEquals(nrow(h), 1278)
 
   h <- header(cdf, 1)
-  checkEquals(ncol(h), 19)
+  checkEquals(ncol(h), 20)
   checkEquals(nrow(h), 1)
 
   h <- header(cdf, 2:3)
-  checkEquals(ncol(h), 19)
+  checkEquals(ncol(h), 20)
   checkEquals(nrow(h), 2)
 
   close(cdf)

@@ -1,6 +1,7 @@
 CHANGES IN VERSION 2.11.3
 -------------------------
- o Nothing yet
+ o Read ion injection time from mzML files and add it to the data.frame returned
+   by the header function.
  
 CHANGES IN VERSION 2.11.2
 -------------------------
