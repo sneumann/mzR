@@ -91,7 +91,8 @@ setMethod("header",
                             mergedScan=rep(-1, length(scans)),
                             mergedResultScanNum=rep(-1, length(scans)),
                             mergedResultStartScanNum=rep(-1, length(scans)),
-                            mergedResultEndScanNum=rep(-1, length(scans)))
+                            mergedResultEndScanNum=rep(-1, length(scans)),
+                            injectionTime = rep(-1, length(scans)))
 
             return(result)
           })
