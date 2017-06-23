@@ -148,7 +148,7 @@
  close(mz)
 
  ## A shortgun LCMSMS experiment 
- f <- proteomics(full.names = TRUE, pattern = "^TMT")
+ f <- proteomics(full.names = TRUE, pattern = "^TMT")[2]
  x <- openMSfile(f, backend = "pwiz")
  x
  nChrom(x)
