@@ -24,17 +24,17 @@ dontrun_copyWriteMSData <- function() {
     checkEquals(hdr_new, hdr)  ## polarity is OK here
 
     ## Save as mzXML
-    fnew <- paste0(test_folder, "test_copyWrite.mzXML")
-    mzR:::copyWriteMSData(filename = fnew, originalFile = orig_file,
-                          header = hdr, data = pks, backend = "pwiz",
-                          outformat = "mzxml")
-    ## Check content is same
-    mzml_new <- openMSfile(fnew, backend = "pwiz")
-    pks_new <- peaks(mzml_new)
-    hdr_new <- header(mzml_new)
-    mzR::close(mzml_new)
-    checkEquals(pks_new, pks)
-    checkEquals(hdr_new, hdr)  ## polarity is OK here
+    ## fnew <- paste0(test_folder, "test_copyWrite.mzXML")
+    ## mzR:::copyWriteMSData(filename = fnew, originalFile = orig_file,
+    ##                       header = hdr, data = pks, backend = "pwiz",
+    ##                       outformat = "mzxml")
+    ## ## Check content is same
+    ## mzml_new <- openMSfile(fnew, backend = "pwiz")
+    ## pks_new <- peaks(mzml_new)
+    ## hdr_new <- header(mzml_new)
+    ## mzR::close(mzml_new)
+    ## checkEquals(pks_new, pks)
+    ## checkEquals(hdr_new, hdr)  ## polarity is OK here
 
     ## Save as mgf
     ## fnew <- paste0(test_folder, "test_copyWrite.mgf")
