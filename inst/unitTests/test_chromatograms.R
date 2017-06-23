@@ -14,7 +14,8 @@ test_chromatograms1 <- function() {
 }
 
 test_chromatograms2 <- function() {
-    f <- proteomics(full.names = TRUE, pattern = "^TMT")
+    f <- proteomics(full.names = TRUE,
+                    pattern = "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz")
     x <- openMSfile(f, backend = "pwiz")
     checkIdentical(nChrom(x), 1L)   
     checkIdentical(tic(x), chromatogram(x, 1L))
