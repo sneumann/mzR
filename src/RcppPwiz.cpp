@@ -366,33 +366,13 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
   MSData newmsd;
   newmsd.cvs = defaultCVList();
 
-  // Break the header down into its elements/columns:
-  // Rcpp::IntegerVector seqNum = spctr_header["seqNum"];
-  // Rcpp::IntegerVector acquisitionNum = spctr_header["acquisitionNum"];
   Rcpp::IntegerVector msLevel = spctr_header["msLevel"];
-  // Rcpp::IntegerVector polarity = spctr_header["polarity"];
-  // Rcpp::IntegerVector peaksCount = spctr_header["peaksCount"];
-  // Rcpp::NumericVector totIonCurrent = spctr_header["totIonCurrent"];
-  // Rcpp::NumericVector retentionTime = spctr_header["retentionTime"];
-  // Rcpp::NumericVector basePeakMZ = spctr_header["basePeakMZ"];
-  // Rcpp::NumericVector basePeakIntensity = spctr_header["basePeakIntensity"];
-  // Rcpp::NumericVector collisionEnergy = spctr_header["collisionEnergy"];
-  // Rcpp::NumericVector ionisationEnergy = spctr_header["ionisationEnergy"];
-  // Rcpp::NumericVector lowMZ = spctr_header["lowMZ"];
-  // Rcpp::NumericVector highMZ = spctr_header["highMZ"];
-  // Rcpp::IntegerVector precursorScanNum = spctr_header["precursorScanNum"];
-  // Rcpp::NumericVector precursorMZ = spctr_header["precursorMZ"];
-  // Rcpp::IntegerVector precursorCharge = spctr_header["precursorCharge"];
-  // Rcpp::NumericVector precursorIntensity = spctr_header["precursorIntensity"];
-  // Rcpp::IntegerVector mergedScan = spctr_header["mergedScan"];
-  // // Skipping mergedResultScanNum, mergedResultStartScanNum and mergedResultEndScanNum
-  // Rcpp::NumericVector ionInjectionTime = spctr_header["injectionTime"];
-
   // Copy data from the original file.
   // o fileDescription with: fileContent, sourceFileList
-  //   TODO: if we did filtering on MS or centroiding we might have to adapt the
-  //   fileContent.
-  newmsd.fileDescription = msd->fileDescription;
+  //   NOTE: don't copy the file description for mzXML export - somehow the
+  //   spectra data will then not be written.
+  if (format != "mzxml")
+    newmsd.fileDescription = msd->fileDescription;
   bool is_ms1 = false;
   bool is_msn = false;
   for (int i = 0; i < msLevel.size(); i++) {
@@ -405,15 +385,13 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
     newmsd.fileDescription.fileContent.set(MS_MS1_spectrum);
   if (is_msn)
     newmsd.fileDescription.fileContent.set(MS_MSn_spectrum);
-  // The serializer adds also the original file here AND the newly written file.
 
   // o paramGroupList
-  newmsd.paramGroupPtrs = msd->paramGroupPtrs;
+  if (format != "mzxml")
+    newmsd.paramGroupPtrs = msd->paramGroupPtrs;
   // o sampleList
   newmsd.samplePtrs = msd->samplePtrs;
   // o instrumentConfigurationList
-  // vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs;
-  // newmsd.instrumentConfigurationPtrs = icp;
   newmsd.instrumentConfigurationPtrs = msd->instrumentConfigurationPtrs;
   // o softwareList
   newmsd.softwarePtrs = msd->softwarePtrs;
@@ -425,26 +403,28 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
       addDataProcessing(newmsd, Rcpp::as<Rcpp::StringVector>(software_processing(sp)));
     }
   }
-
+  
   // o run
   // Initialize the run and fill with data from the original file.
   Run &original_run = msd->run;
   newmsd.run.id = original_run.id;
-  newmsd.run.defaultInstrumentConfigurationPtr =
-    original_run.defaultInstrumentConfigurationPtr;
-  newmsd.run.samplePtr = original_run.samplePtr;
-  newmsd.run.startTimeStamp = original_run.startTimeStamp;
-  newmsd.run.defaultSourceFilePtr = original_run.defaultSourceFilePtr;
+  if (format != "mzxml") {
+    newmsd.run.defaultInstrumentConfigurationPtr =
+      original_run.defaultInstrumentConfigurationPtr;
+    newmsd.run.samplePtr = original_run.samplePtr;
+    newmsd.run.startTimeStamp = original_run.startTimeStamp;
+    newmsd.run.defaultSourceFilePtr = original_run.defaultSourceFilePtr;
+  }
   // Now filling with new data
   addSpectrumList(newmsd, spctr_header, spctr_data, rtime_seconds);
   
-  if(format == "mgf") {
+  if (format == "mgf") {
     std::ofstream* mgfOutFileP = new std::ofstream(file.c_str());
     Serializer_MGF serializerMGF;
     serializerMGF.write(*mgfOutFileP, newmsd);
     mgfOutFileP->flush();
     mgfOutFileP->close();
-  } else if(format == "mzxml") {
+  } else if (format == "mzxml") {
     std::ofstream mzXMLOutFileP(file.c_str());
     Serializer_mzXML::Config config;
     config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
@@ -452,7 +432,7 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
     serializerMzXML.write(mzXMLOutFileP, newmsd);
     mzXMLOutFileP.flush();
     mzXMLOutFileP.close();
-  } else if(format == "mzml") {
+  } else if (format == "mzml") {
     std::ofstream mzXMLOutFileP(file.c_str());
     Serializer_mzML::Config config;
     config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
@@ -477,28 +457,7 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
   MSData newmsd;
   newmsd.cvs = defaultCVList();
 
-  // Break the header down into its elements/columns:
-  // Rcpp::IntegerVector seqNum = spctr_header["seqNum"];
-  // Rcpp::IntegerVector acquisitionNum = spctr_header["acquisitionNum"];
   Rcpp::IntegerVector msLevel = spctr_header["msLevel"];
-  // Rcpp::IntegerVector polarity = spctr_header["polarity"];
-  // Rcpp::IntegerVector peaksCount = spctr_header["peaksCount"];
-  // Rcpp::NumericVector totIonCurrent = spctr_header["totIonCurrent"];
-  // Rcpp::NumericVector retentionTime = spctr_header["retentionTime"];
-  // Rcpp::NumericVector basePeakMZ = spctr_header["basePeakMZ"];
-  // Rcpp::NumericVector basePeakIntensity = spctr_header["basePeakIntensity"];
-  // Rcpp::NumericVector collisionEnergy = spctr_header["collisionEnergy"];
-  // Rcpp::NumericVector ionisationEnergy = spctr_header["ionisationEnergy"];
-  // Rcpp::NumericVector lowMZ = spctr_header["lowMZ"];
-  // Rcpp::NumericVector highMZ = spctr_header["highMZ"];
-  // Rcpp::IntegerVector precursorScanNum = spctr_header["precursorScanNum"];
-  // Rcpp::NumericVector precursorMZ = spctr_header["precursorMZ"];
-  // Rcpp::IntegerVector precursorCharge = spctr_header["precursorCharge"];
-  // Rcpp::NumericVector precursorIntensity = spctr_header["precursorIntensity"];
-  // Rcpp::IntegerVector mergedScan = spctr_header["mergedScan"];
-  // // Skipping mergedResultScanNum, mergedResultStartScanNum and mergedResultEndScanNum
-  // Rcpp::NumericVector ionInjectionTime = spctr_header["injectionTime"];
-
   bool is_ms1 = false;
   bool is_msn = false;
   for (int i = 0; i < msLevel.size(); i++) {
@@ -519,18 +478,18 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
     }
   }
   
-  newmsd.run.id = "Experiment 1";
+  newmsd.run.id = "Experiment_1";
 
   // Now filling with new data
   addSpectrumList(newmsd, spctr_header, spctr_data, rtime_seconds);
 
-  if(format == "mgf") {
+  if (format == "mgf") {
     std::ofstream* mgfOutFileP = new std::ofstream(file.c_str());
     Serializer_MGF serializerMGF;
     serializerMGF.write(*mgfOutFileP, newmsd);
     mgfOutFileP->flush();
     mgfOutFileP->close();
-  } else if(format == "mzxml") {
+  } else if (format == "mzxml") {
     std::ofstream mzXMLOutFileP(file.c_str());
     Serializer_mzXML::Config config;
     config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
@@ -538,7 +497,7 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
     serializerMzXML.write(mzXMLOutFileP, newmsd);
     mzXMLOutFileP.flush();
     mzXMLOutFileP.close();
-  } else if(format == "mzml") {
+  } else if (format == "mzml") {
     std::ofstream mzXMLOutFileP(file.c_str());
     Serializer_mzML::Config config;
     config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;

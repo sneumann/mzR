@@ -11,7 +11,9 @@ import(Rcpp)
 export(openMSfile,
        openIDfile,
        pwiz.version,
-       nChrom)
+       nChrom,
+       writeMSData,
+       copyWriteMSData)
 
 exportMethods(close,
               isInitialized,

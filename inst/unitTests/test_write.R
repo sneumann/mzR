@@ -5,40 +5,48 @@ dontrun_copyWriteMSData <- function() {
     library(mzR)
     library(RUnit)
     test_folder = "/Users/jo/Desktop/"
+
+    ## INPUT: mzXML
     orig_file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
                         package = "msdata")
     mzxml <- openMSfile(orig_file, backend = "pwiz")
     pks <- peaks(mzxml)
     hdr <- header(mzxml)
+    ii <- mzR::instrumentInfo(mzxml)
     mzR::close(mzxml)
 
+    ## OUTPUT: mzML
     fnew <- paste0(test_folder, "test_copyWrite.mzML")
-    mzR:::copyWriteMSData(filename = fnew, originalFile = orig_file,
+    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
                           header = hdr, data = pks, backend = "pwiz")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
     hdr_new <- header(mzml_new)
+    ii_new <- mzR::instrumentInfo(mzml_new)
     mzR::close(mzml_new)
     checkEquals(pks_new, pks)
-    checkEquals(hdr_new, hdr)  ## polarity is OK here
-
-    ## Save as mzXML
-    ## fnew <- paste0(test_folder, "test_copyWrite.mzXML")
-    ## mzR:::copyWriteMSData(filename = fnew, originalFile = orig_file,
-    ##                       header = hdr, data = pks, backend = "pwiz",
-    ##                       outformat = "mzxml")
-    ## ## Check content is same
-    ## mzml_new <- openMSfile(fnew, backend = "pwiz")
-    ## pks_new <- peaks(mzml_new)
-    ## hdr_new <- header(mzml_new)
-    ## mzR::close(mzml_new)
-    ## checkEquals(pks_new, pks)
-    ## checkEquals(hdr_new, hdr)  ## polarity is OK here
+    checkEquals(hdr_new, hdr)
+    checkEquals(ii, ii_new)
+    
+    ## OUTPUT: mzXML
+    fnew <- paste0(test_folder, "test_copyWrite.mzXML")
+    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
+                          header = hdr, data = pks, backend = "pwiz",
+                          outformat = "mzxml")
+    ## Check content is same
+    mzml_new <- openMSfile(fnew, backend = "pwiz")
+    pks_new <- peaks(mzml_new)
+    hdr_new <- header(mzml_new)
+    ii_new <- mzR::instrumentInfo(mzml_new)
+    mzR::close(mzml_new)
+    checkEquals(pks_new, pks)
+    checkEquals(hdr_new, hdr)
+    checkEquals(ii, ii_new)
 
     ## Save as mgf
     ## fnew <- paste0(test_folder, "test_copyWrite.mgf")
-    ## mzR:::copyWriteMSData(filename = fnew, originalFile = orig_file,
+    ## mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
     ##                       header = hdr, data = pks, backend = "pwiz",
     ##                       outformat = "mgf")
     ## ## Check content is same
@@ -55,13 +63,12 @@ dontrun_copyWriteMSData <- function() {
     fnew <- paste0(test_folder, "test_copyWrite.mzML")
     ## index is not OK after subsetting
     checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         originalFile = orig_file,
+                                         original_file = orig_file,
                                          header = hdr_sub, data = pks_sub,
                                          backend = "pwiz"))
     hdr_sub$seqNum <- seq_len(nrow(hdr_sub))
-    mzR:::copyWriteMSData(filename = fnew, originalFile = orig_file,
+    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
                           header = hdr_sub, data = pks_sub, backend = "pwiz")
-
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -78,43 +85,46 @@ dontrun_copyWriteMSData <- function() {
     ## wrong spectra.
     ## wrong data processing.
     checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         originalFile = orig_file,
+                                         original_file = orig_file,
                                          header = pks, data = hdr,
                                          backend = "pwiz"))
     checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         originalFile = orig_file,
+                                         original_file = orig_file,
                                          header = hdr, data = hdr,
                                          backend = "pwiz"))
     checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         originalFile = orig_file,
+                                         original_file = orig_file,
                                          header = hdr, data = pks,
                                          backend = "Ramp"))
     checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         originalFile = "somefile",
+                                         original_file = "somefile",
                                          header = hdr, data = pks,
                                          backend = "pwiz"))
     checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         originalFile = orig_file,
+                                         original_file = orig_file,
                                          header = hdr, data = pks,
                                          backend = "pwiz",
                                          software_processing = c("other")))
     
-    ## mzML input file.
+    ## INPUT: mzML
     orig_file <- system.file("proteomics",
                              "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz",
                              package = "msdata")
-    mzxml <- openMSfile(orig_file, backend = "pwiz")
-    pks <- peaks(mzxml)
-    hdr <- header(mzxml)
-    mzR::close(mzxml)
+    fl <- openMSfile(orig_file, backend = "pwiz")
+    pks <- peaks(fl)
+    hdr <- header(fl)
+    ii <- mzR::instrumentInfo(fl)
+    mzR::close(fl)
 
+    ## OUTPUT: mzML
     fnew <- paste0(test_folder, "test_copyWrite.mzML")
-    mzR:::copyWriteMSData(filename = fnew, originalFile = orig_file,
+    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
                           header = hdr, data = pks, backend = "pwiz")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
     hdr_new <- header(mzml_new)
+    ii_new <- mzR::instrumentInfo(mzml_new)
     mzR::close(mzml_new)
     checkEquals(pks_new, pks)
     ## acquisitionNum and precursorScanNum will be different, replace with
@@ -124,6 +134,66 @@ dontrun_copyWriteMSData <- function() {
     hdr_new$acquisitionNum <- as.integer(factor(hdr_new$acquisitionNum))
     hdr_new$precursorScanNum <- as.integer(factor(hdr_new$precursorScanNum))
     checkEquals(hdr_new, hdr)  ## polarity is OK here
+    checkEquals(ii, ii_new)
+    
+    ## OUTPUT: mzXML
+    fnew <- paste0(test_folder, "test_copyWrite.mzXML")
+    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
+                          header = hdr, data = pks, backend = "pwiz",
+                          outformat = "mzxml")
+    ## Check content is same
+    mzml_new <- openMSfile(fnew, backend = "pwiz")
+    pks_new <- peaks(mzml_new)
+    hdr_new <- header(mzml_new)
+    ii_new <- mzR::instrumentInfo(mzml_new)
+    mzR::close(mzml_new)
+    checkEquals(pks_new, pks)
+    ## acquisitionNum and precursorScanNum will be different, replace with
+    ## factors - order and all has to be the same though.
+    hdr$acquisitionNum <- as.integer(factor(hdr$acquisitionNum))
+    hdr$precursorScanNum <- as.integer(factor(hdr$precursorScanNum))
+    hdr_new$acquisitionNum <- as.integer(factor(hdr_new$acquisitionNum))
+    hdr_new$precursorScanNum <- as.integer(factor(hdr_new$precursorScanNum))
+    rt_col <- which(colnames(hdr) == "retentionTime")
+    checkEquals(hdr[, rt_col], hdr_new[, rt_col], tolerance = 0.01)
+    hdr$injectionTime <- 0  ## injectionTime export not supported.
+    checkEquals(hdr[ , -rt_col], hdr_new[ , -rt_col])
+    ## checkEquals(ii, ii_new)
+
+    ## Other mzML:
+    test_file <- system.file("microtofq", "MM14.mzML", package = "msdata")
+    in_file <- openMSfile(test_file, backend = "pwiz")
+    hdr <- header(in_file)
+    pks <- peaks(in_file)
+    ii <- mzR::instrumentInfo(in_file)
+    mzR::close(in_file)
+    
+    ## mzML
+    out_file <- paste0(test_folder, "test_copyWrite.mzML")
+    mzR:::copyWriteMSData(filename = out_file, original_file = test_file,
+                          header = hdr, data = pks,
+                          software_processing = c("MSnbase", "2.3.8"))
+    in_file <- openMSfile(out_file, backend = "pwiz")
+    hdr_2 <- header(in_file)
+    pks_2 <- peaks(in_file)
+    ii_2 <- mzR::instrumentInfo(in_file)
+    mzR::close(in_file)
+    checkEquals(hdr, hdr_2)
+    checkEquals(pks, pks_2)
+    checkEquals(ii, ii_2)
+    
+    ## mzXML output:
+    out_file <- paste0(test_folder, "test_copyWrite.mzXML")
+    mzR:::copyWriteMSData(filename = out_file, original_file = test_file,
+                          header = hdr, data = pks, outformat = "mzXML",
+                          software_processing = c("MSnbase", "2.3.8"))
+    in_file <- openMSfile(out_file, backend = "pwiz")
+    hdr_2 <- header(in_file)
+    pks_2 <- peaks(in_file)
+    mzR::close(in_file)
+    checkEquals(hdr, hdr_2)
+    checkEquals(pks, pks_2)
+    checkEquals(ii, ii_2)
 }
 
 dontrun_test_writeMSData <- function() {
@@ -131,6 +201,7 @@ dontrun_test_writeMSData <- function() {
     library(mzR)
     library(RUnit)
     test_folder = "/Users/jo/Desktop/"
+    ## Input: mzXML
     test_file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
                              package = "msdata")
     in_file <- openMSfile(test_file, backend = "pwiz")
@@ -138,7 +209,7 @@ dontrun_test_writeMSData <- function() {
     pks <- peaks(in_file)
     mzR::close(in_file)
 
-    ## Test writing the data.
+    ## mzML
     out_file <- paste0(test_folder, "test_write.mzML")
     mzR:::writeMSData(filename = out_file, header = hdr, data = pks)
     in_file <- openMSfile(out_file, backend = "pwiz")
@@ -161,13 +232,113 @@ dontrun_test_writeMSData <- function() {
     checkEquals(pks, pks_2)
     
     ## mzXML output:
-    ## out_file <- paste0(test_folder, "test_write.mzXML")
+    out_file <- paste0(test_folder, "test_write.mzXML")
+    mzR:::writeMSData(filename = out_file, header = hdr, data = pks,
+                      outformat = "mzXML")
+    in_file <- openMSfile(out_file, backend = "pwiz")
+    hdr_2 <- header(in_file)
+    pks_2 <- peaks(in_file)
+    mzR::close(in_file)
+    checkEquals(hdr, hdr_2)
+    checkEquals(pks, pks_2)
+
+    ## mgf output:
+    ## out_file <- paste0(test_folder, "test_write.mgf")
     ## mzR:::writeMSData(filename = out_file, header = hdr, data = pks,
-    ##                   outformat = "mzXML")
+    ##                   outformat = "mgf")
     ## in_file <- openMSfile(out_file, backend = "pwiz")
     ## hdr_2 <- header(in_file)
     ## pks_2 <- peaks(in_file)
     ## mzR::close(in_file)
     ## checkEquals(hdr, hdr_2)
     ## checkEquals(pks, pks_2)
+
+    ## Input: mzML
+    test_file <- system.file("proteomics",
+                             "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz",
+                             package = "msdata")
+    in_file <- openMSfile(test_file, backend = "pwiz")
+    hdr <- header(in_file)
+    pks <- peaks(in_file)
+    mzR::close(in_file)
+    
+    ## mzML
+    out_file <- paste0(test_folder, "test_write.mzML")
+    mzR:::writeMSData(filename = out_file, header = hdr, data = pks)
+    in_file <- openMSfile(out_file, backend = "pwiz")
+    hdr_2 <- header(in_file)
+    pks_2 <- peaks(in_file)
+    mzR::close(in_file)
+    checkEquals(hdr, hdr_2)
+    checkEquals(pks, pks_2)
+
+    ## mzXML output:
+    out_file <- paste0(test_folder, "test_write.mzXML")
+    mzR:::writeMSData(filename = out_file, header = hdr, data = pks,
+                      outformat = "mzXML")
+    in_file <- openMSfile(out_file, backend = "pwiz")
+    hdr_2 <- header(in_file)
+    pks_2 <- peaks(in_file)
+    mzR::close(in_file)
+    rt_col <- which(colnames(hdr) == "retentionTime")
+    checkEquals(hdr[, rt_col], hdr_2[, rt_col], tolerance = 0.01)
+    hdr$injectionTime <- 0  ## injectionTime export not supported.
+    checkEquals(hdr[ , -rt_col], hdr_2[ , -rt_col])
+    checkEquals(pks, pks_2)
+
+    ## Other mzML:
+    test_file <- system.file("microtofq", "MM14.mzML", package = "msdata")
+    in_file <- openMSfile(test_file, backend = "pwiz")
+    hdr <- header(in_file)
+    pks <- peaks(in_file)
+    mzR::close(in_file)
+    
+    ## mzML
+    out_file <- paste0(test_folder, "test_write.mzML")
+    mzR:::writeMSData(filename = out_file, header = hdr, data = pks)
+    in_file <- openMSfile(out_file, backend = "pwiz")
+    hdr_2 <- header(in_file)
+    pks_2 <- peaks(in_file)
+    mzR::close(in_file)
+    checkEquals(hdr, hdr_2)
+    checkEquals(pks, pks_2)
+
+    ## mzXML output:
+    out_file <- paste0(test_folder, "test_write.mzXML")
+    mzR:::writeMSData(filename = out_file, header = hdr, data = pks,
+                      outformat = "mzXML")
+    in_file <- openMSfile(out_file, backend = "pwiz")
+    hdr_2 <- header(in_file)
+    pks_2 <- peaks(in_file)
+    mzR::close(in_file)
+    checkEquals(hdr, hdr_2)
+    checkEquals(pks, pks_2)
+
+    ## mzData:
+    test_file <- system.file("iontrap", "extracted.mzData", package = "msdata")
+    in_file <- openMSfile(test_file, backend = "Ramp")
+    hdr <- header(in_file)
+    pks <- peaks(in_file)
+    mzR::close(in_file)
+
+    ## mzML
+    out_file <- paste0(test_folder, "test_write.mzML")
+    mzR:::writeMSData(filename = out_file, header = hdr, data = pks)
+    in_file <- openMSfile(out_file, backend = "pwiz")
+    hdr_2 <- header(in_file)
+    pks_2 <- peaks(in_file)
+    mzR::close(in_file)
+    checkEquals(hdr, hdr_2)
+    checkEquals(pks, pks_2)
+
+    ## mzXML output:
+    out_file <- paste0(test_folder, "test_write.mzXML")
+    mzR:::writeMSData(filename = out_file, header = hdr, data = pks,
+                      outformat = "mzXML")
+    in_file <- openMSfile(out_file, backend = "pwiz")
+    hdr_2 <- header(in_file)
+    pks_2 <- peaks(in_file)
+    mzR::close(in_file)
+    checkEquals(hdr, hdr_2)
+    checkEquals(pks, pks_2)
 }

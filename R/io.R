@@ -73,7 +73,7 @@ openIDfile <- function(filename, verbose = FALSE) {
 #'     for writing. Currently only \code{"pwiz"} backend is supported.
 #'
 #' @param outformat \code{character(1)} the format of the output file. One of
-#'     \code{"mzml"}, \code{"mzxml"} and \code{"mgf"}.
+#'     \code{"mzml"} or \code{"mzxml"}..
 #'
 #' @param rtime_seconds \code{logical(1)} whether the retention time is provided
 #'     in seconds or minutes (defaults to \code{TRUE}).
@@ -89,13 +89,40 @@ openIDfile <- function(filename, verbose = FALSE) {
 #'     performed with the software.
 #' 
 #' @author Johannes Rainer
+#'
+#' @seealso \code{\link{copyWriteMSData}} for a function to copy general
+#'     information from a MS data file and writing eventually modified MS data
+#'     from that originating file.
+#' 
+#' @examples
+#'
+#' ## Open a MS file and read the spectrum and header information
+#' library(msdata)
+#' fl <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
+#'     package = "msdata")
+#' ms_fl <- openMSfile(fl, backend = "pwiz")
+#'
+#' ## Get the spectra
+#' pks <- spectra(ms_fl)
+#' ## Get the header
+#' hdr <- header(ms_fl)
+#'
+#' ## Modify the spectrum data adding 100 to each intensity.
+#' pks <- lapply(pks, function(z) {
+#'     z[, 2] <- z[, 2] + 100
+#'     z
+#' })
+#'
+#' ## Write the data to a mzML file.
+#' out_file <- tempfile()
+#' writeMSData(filename = out_file, header = hdr, data = pks)
 writeMSData <- function(filename, header, data, backend = "pwiz",
                         outformat = c("mzml"),
                         rtime_seconds = TRUE,
                         software_processing) {
     backend <- match.arg(backend)
     ## supp_formats <- c("mzml", "mgf", "mzxml")
-    supp_formats <- "mzml"
+    supp_formats <- c("mzml", "mzxml")
     outformat <- match.arg(tolower(outformat), supp_formats)
     if (missing(filename))
         stop("'filename' is a required parameter")
@@ -118,6 +145,8 @@ writeMSData <- function(filename, header, data, backend = "pwiz",
         mzR <- c(mzR, "MS:1000545")
     software_processing <- c(software_processing, list(mzR))
     if (backend == "pwiz") {
+        if (outformat == "mzxml" & any(header$injectionTime > 0))
+            warning("mzXML export does not support writing ion injection time")
         pwizModule <- new(Pwiz)
         pwizModule$writeSpectrumList(filename, outformat,
                                      header, data, rtime_seconds,
@@ -136,35 +165,64 @@ writeMSData <- function(filename, header, data, backend = "pwiz",
 #'     (eventually) manipulated spectra and header data with arguments
 #'     \code{header} and \code{data}.
 #'
+#' @note \code{copyWriteMSData} supports at present copying data from
+#'     \code{mzXML} and \code{mzML} and exporting to \code{mzML}. Export to
+#'     \code{mzXML} can fail for some input files.
+#'
 #' @note This function does not allow to write new MS files with new content.
 #'     Use the \code{\link{writeMSData}} function for that.
 #'
 #' @inheritParams writeMSData
 #' 
-#' @param originalFile \code{character(1)} with the name of the original file
+#' @param original_file \code{character(1)} with the name of the original file
 #'     from which the spectrum data was first read.
 #'
 #' @seealso \code{\link{writeMSData}} for a function to save MS data to a new
 #'     mzML or mzXML file.
 #' 
 #' @author Johannes Rainer
-copyWriteMSData <- function(filename, originalFile, header, data,
+#'
+#' @examples
+#' 
+#' ## Open a MS file and read the spectrum and header information
+#' library(msdata)
+#' fl <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
+#'     package = "msdata")
+#' ms_fl <- openMSfile(fl, backend = "pwiz")
+#'
+#' ## Get the spectra
+#' pks <- spectra(ms_fl)
+#' ## Get the header
+#' hdr <- header(ms_fl)
+#'
+#' ## Modify the spectrum data adding 100 to each intensity.
+#' pks <- lapply(pks, function(z) {
+#'     z[, 2] <- z[, 2] + 100
+#'     z
+#' })
+#'
+#' ## Copy metadata and additional information from the originating file
+#' ## and save it, along with the modified data, to a new mzML file.
+#' out_file <- tempfile()
+#' copyWriteMSData(filename = out_file, original_file = fl,
+#'     header = hdr, data = pks)
+copyWriteMSData <- function(filename, original_file, header, data,
                             backend = "pwiz",
                             outformat = "mzml",
                             rtime_seconds = TRUE,
                             software_processing) {
     backend <- match.arg(backend)
     ## supp_formats <- c("mzml", "mgf", "mzxml")
-    supp_formats <- "mzml"
+    supp_formats <- c("mzml", "mzxml")
     outformat <- match.arg(tolower(outformat), supp_formats)
     if (missing(filename))
         stop("'filename' is a required parameter")
-    if (missing(originalFile))
-        stop("'originalFile' is a required parameter")
+    if (missing(original_file))
+        stop("'original_file' is a required parameter")
     if (missing(header) | missing(data))
         stop("'header' and 'data' are required")
-    if (!file.exists(originalFile))
-        stop("Original file ", originalFile, " not found")
+    if (!file.exists(original_file))
+        stop("Original file ", original_file, " not found")
     ## Other checks:
     header <- .validateHeader(header)
     if (is(header, "character"))
@@ -182,8 +240,12 @@ copyWriteMSData <- function(filename, originalFile, header, data,
         mzR <- c(mzR, "MS:1000545")
     software_processing <- c(software_processing, list(mzR))
     if (backend == "pwiz") {
+        if (outformat == "mzxml" & any(header$injectionTime > 0)) {
+            warning("mzXML export does not support writing ion injection time")
+            header$injectionTime = 0
+        }
         pwizModule <- new(Pwiz)
-        pwizModule$copyWriteMSfile(filename, outformat, originalFile,
+        pwizModule$copyWriteMSfile(filename, outformat, original_file,
                                    header, data, rtime_seconds,
                                    software_processing)
     }
