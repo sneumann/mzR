@@ -118,7 +118,8 @@ test_getScanHeaderInfo <- function() {
     close(ramp)
 
     ## Again for an MSn mzml file.
-    file <- msdata::proteomics(full.names = TRUE, pattern = "TMT_Erwinia")
+    file <- msdata::proteomics(full.names = TRUE,
+                               pattern = "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz")
     mzml <- openMSfile(file, backend = "pwiz")
     ramp <- openMSfile(file, backend = "Ramp")
     ## Read single scan header.

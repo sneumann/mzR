@@ -148,7 +148,8 @@
  close(mz)
 
  ## A shortgun LCMSMS experiment 
- f <- proteomics(full.names = TRUE, pattern = "^TMT")[2]
+ f <- proteomics(full.names = TRUE,
+                 pattern = "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz")
  x <- openMSfile(f, backend = "pwiz")
  x
  nChrom(x)
