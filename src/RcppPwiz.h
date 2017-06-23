@@ -53,7 +53,7 @@ private:
 			 Rcpp::DataFrame& spctr_header,
 			 Rcpp::List& spctr_data,
 			 bool rtime_seconds);
-    void addDataProcessing(MSData& msd, Rcpp::List& processing);
+    void addDataProcessing(MSData& msd, Rcpp::StringVector soft_proc);
 
 public:
 
@@ -65,12 +65,14 @@ public:
     /* void writeMSfile(const string& filenames, const string& format); */
     void writeSpectrumList(const string& file, const string& format,
 			   Rcpp::DataFrame spctr_header, Rcpp::List spctr_data,
-			   bool rtime_seconds);
+			   bool rtime_seconds,
+			   Rcpp::List software_processing);
     void copyWriteMSfile(const string& file, const string& format,
 			 const string& originalFile,
 			 Rcpp::DataFrame spctr_header,
 			 Rcpp::List spctr_data,
-			 bool rtime_seconds);
+			 bool rtime_seconds,
+			 Rcpp::List software_processing);
     string getFilename();
 
     int getLastScan() const;
