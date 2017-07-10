@@ -1,4 +1,4 @@
-test_validHeader <- function() {
+test_validateHeader <- function() {
     library(msdata)
     library(mzR)
     library(RUnit)
@@ -7,16 +7,16 @@ test_validHeader <- function() {
     mzxml <- openMSfile(orig_file, backend = "pwiz")
     hdr <- header(mzxml)
     mzR::close(mzxml)
-    checkTrue(mzR:::.validHeader(hdr))
+    checkTrue(is(mzR:::.validateHeader(hdr), "data.frame"))
 
     ## Check errors.
-    res <- mzR:::.validHeader(hdr[, 1:5])
+    res <- mzR:::.validateHeader(hdr[, 1:5])
     checkTrue(is.character(res))
     hdr2 <- hdr
     hdr2[, 3] <- as.character(hdr2[, 3])
-    res <- mzR:::.validHeader(hdr2)
+    res <- mzR:::.validateHeader(hdr2)
     checkTrue(is.character(res))
-    res <- mzR:::.validHeader(4)
+    res <- mzR:::.validateHeader(4)
     checkTrue(is.character(res))
 }
 
