@@ -1,10 +1,10 @@
 ## Testing to write stuff.
 
-dontrun_copyWriteMSData <- function() {
+test_copyWriteMSData <- function() {
     library(msdata)
     library(mzR)
     library(RUnit)
-    test_folder = "/Users/jo/Desktop/"
+    test_folder = tempdir()
 
     ## INPUT: mzXML
     orig_file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
@@ -196,11 +196,11 @@ dontrun_copyWriteMSData <- function() {
     checkEquals(ii, ii_2)
 }
 
-dontrun_test_writeMSData <- function() {
+test_writeMSData <- function() {
     library(msdata)
     library(mzR)
     library(RUnit)
-    test_folder = "/Users/jo/Desktop/"
+    test_folder = tempdir()
     ## Input: mzXML
     test_file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
                              package = "msdata")
