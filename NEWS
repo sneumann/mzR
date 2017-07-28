@@ -1,6 +1,7 @@
-CHANGES IN VERSION 2.11.4
+CHANGES IN VERSION 2.11.5
 -------------------------
- o Nothing yet
+ o writeMSData and copyWriteMSData functions enabling to export MS data to
+   mzML or mzXML files.
  
 CHANGES IN VERSION 2.11.4
 -------------------------

@@ -131,6 +131,9 @@
 \seealso{
   \code{\link{instrumentInfo}} for metadata access and the
   \code{"\linkS4class{mzR}"} class.
+
+  \code{\link{writeMSData}} and \code{\link{copyWriteMSData}} for
+  functions to write MS data in \emph{mzML} or \code{mzXML} format.
 }
 
 \author{
