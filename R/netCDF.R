@@ -205,7 +205,8 @@ netCDFRunInfo <- function(ncid) {
                 highMz = max (ncraw$mz),
                 dStartTime = min (ncraw$rt),
                 dEndTime = max (ncraw$rt),
-                msLevels = NA))
+                msLevels = NA,
+                startTimeStamp = NA))
 }
 
 
