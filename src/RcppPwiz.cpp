@@ -104,23 +104,39 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
         if (!isInCacheInstrumentInfo)
         {
 
-            vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs; // NULL for mzData
-
+            vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs; // NULL for mzData	    
             if (icp.size() != 0)
             {
-
                 CVTranslator cvTranslator;
                 LegacyAdapter_Instrument adapter(*icp[0], cvTranslator);
                 vector<SoftwarePtr> sp = msd->softwarePtrs;
                 std::vector<SamplePtr> sample = msd->samplePtrs;
                 std::vector<ScanSettingsPtr> scansetting = msd->scanSettingsPtrs;
+		std::string ionisation = "";
+		std::string analyzer = "";
+		std::string detector = "";
+		// Fix issue #113
+		// if (icp[0]->componentList.size() > 0)
+		// That does still not mean we have a ionisation available.
+		// Could be that either analyzer or detector or ionisation is
+		// defined.
+		// Have to use try-catch
+		try {
+		  ionisation = std::string(adapter.ionisation());		  
+		} catch(...) {}
+		try {
+		  analyzer = std::string(adapter.analyzer());		  
+		} catch(...) {}
+		try {
+		  detector = std::string(adapter.detector());		  
+		} catch(...) {}
                 instrumentInfo = Rcpp::List::create(
                                      Rcpp::_["manufacturer"]  = std::string(adapter.manufacturer()),
                                      Rcpp::_["model"]         = std::string(adapter.model()),
-                                     Rcpp::_["ionisation"]    = std::string(adapter.ionisation()),
-                                     Rcpp::_["analyzer"]      = std::string(adapter.analyzer()),
-                                     Rcpp::_["detector"]      = std::string(adapter.detector()),
-                                     Rcpp::_["software"]      = sp[0]->id + " " + sp[0]->version,
+                                     Rcpp::_["ionisation"]    = ionisation,
+                                     Rcpp::_["analyzer"]      = analyzer,
+                                     Rcpp::_["detector"]      = detector,
+                                     Rcpp::_["software"]      = (sp.size()>0?sp[0]->id + " " + sp[0]->version:""),
                                      Rcpp::_["sample"]		  = (sample.size()>0?sample[0]->name+sample[0]->id:""),
                                      Rcpp::_["source"]        = (scansetting.size()>0?scansetting[0]->sourceFilePtrs[0]->location:"")
                                  ) ;
