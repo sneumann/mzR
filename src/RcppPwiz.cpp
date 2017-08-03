@@ -780,8 +780,10 @@ Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double wh
     return Rcpp::NumericMatrix(0,0);
 }
 
-// How could we provide writing data? Have a look at src/pwiz/examples.cpp for
-// details on how to generate data. But how could we provide/pass that from
-// another package?
-// Option a: read the original file, read it's content and write that to another
-// file overwriting selected spectra.
+string RcppPwiz::getRunStartTimeStamp() {
+  if (msd != NULL) {
+    return msd->run.startTimeStamp;
+  }
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return "";
+}

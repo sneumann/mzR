@@ -98,6 +98,7 @@ public:
 
     Rcpp::NumericMatrix get3DMap(std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz);
 
+    string getRunStartTimeStamp();
 };
 
 #endif
