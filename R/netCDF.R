@@ -191,9 +191,11 @@ netCDFRawData <- function(ncid) {
     if (!is.null(attr(pointValues, "errortext")))
         stop("Couldn't read mass/intensity values")
 
+    startTimeStamp <- netCDFAttText(ncid, "netcdf_file_date_time_stamp")
     return(list(rt = rt, tic = tic, scanindex = scanindex, 
                 mz = pointValues$massValues,
-                intensity = pointValues$intensityValues))
+                intensity = pointValues$intensityValues,
+                startTimeStamp = startTimeStamp))
 }
 
 netCDFRunInfo <- function(ncid) {
@@ -206,7 +208,7 @@ netCDFRunInfo <- function(ncid) {
                 dStartTime = min (ncraw$rt),
                 dEndTime = max (ncraw$rt),
                 msLevels = NA,
-                startTimeStamp = NA))
+                startTimeStamp = ncraw$startTimeStamp))
 }
 
 

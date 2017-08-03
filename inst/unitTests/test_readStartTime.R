@@ -39,7 +39,7 @@ test_runStartTimeStamp_cdf <- function() {
     fh <- mzR::openMSfile(f, backend = "netCDF")
     run_info <- runInfo(fh)
     checkTrue(any(names(run_info) == "startTimeStamp"))
-    checkTrue(is.na(run_info$startTimeStamp))
+    checkTrue(is.character(run_info$startTimeStamp))
     mzR::close(fh)
 }
 

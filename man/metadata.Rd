@@ -57,8 +57,8 @@ para(object)
   including \code{scanCount}, \code{lowMZ}, \code{highMZ},
   \code{dStartTime}, \code{dEndTime} and \code{startTimeStamp}. Note
   that \code{startTimeStamp} can only be extracted from \emph{mzML}
-  files using the \emph{pwiz} backend. A \code{NA} is reported if its
-  value is not available.
+  files using the \emph{pwiz} backend or from \emph{CDF} files. A
+  \code{NA} is reported if its value is not available.
   The \code{instrumentInfo} method returns a named \code{list} including
   instrument manufacturer, model, ionisation technique, analyzer and
   detector. \code{mzRpwiz} will give more additional information including
@@ -84,12 +84,19 @@ para(object)
 
 \examples{
  library(msdata)
- filepath <- system.file("microtofq", package = "msdata")
- file <- list.files(filepath, pattern="MM14.mzML",
-                     full.names=TRUE, recursive = TRUE)
+
+ file <- system.file("microtofq/MM8.mzML", package = "msdata")
  mz <- openMSfile(file)
  fileName(mz)
  instrumentInfo(mz)
+ runInfo(mz)
+ close(mz)
+
+ file <- system.file("cdf/ko15.CDF", package = "msdata")
+ mz <- openMSfile(file, backend = "netCDF")
+ fileName(mz)
+ instrumentInfo(mz)
+ runInfo(mz)
  close(mz)
  
  file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
