@@ -101,6 +101,10 @@ setMethod("runInfo", "mzRpwiz",
             ll$'dStartTime' <- min(hd$retentionTime)
             ll$'dEndTime' <- max(hd$retentionTime)
             ll$'msLevels' <- unique(hd$msLevel)
+            time_stamp <- object@backend$getRunStartTimeStamp()
+            if (time_stamp == "")
+                time_stamp <- NA
+            ll$'startTimeStamp' <- time_stamp
             return(ll)
           })
 

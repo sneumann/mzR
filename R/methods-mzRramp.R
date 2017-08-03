@@ -74,6 +74,7 @@ setMethod("runInfo",
               ll$'dStartTime' <- min(hd$retentionTime)
               ll$'dEndTime' <- max(hd$retentionTime)
               ll$'msLevels' <- unique(hd$msLevel)
+              ll$'startTimeStamp' <- NA
               return(ll)
           })
 
