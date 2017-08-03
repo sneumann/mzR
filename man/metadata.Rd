@@ -55,7 +55,10 @@ para(object)
   Accessors to the analytical setup metadata of a run.
   \code{runInfo} will show a summary of the experiment as a named list,
   including \code{scanCount}, \code{lowMZ}, \code{highMZ},
-  \code{dStartTime} and \code{dEndTime}.
+  \code{dStartTime}, \code{dEndTime} and \code{startTimeStamp}. Note
+  that \code{startTimeStamp} can only be extracted from \emph{mzML}
+  files using the \emph{pwiz} backend. A \code{NA} is reported if its
+  value is not available.
   The \code{instrumentInfo} method returns a named \code{list} including
   instrument manufacturer, model, ionisation technique, analyzer and
   detector. \code{mzRpwiz} will give more additional information including
