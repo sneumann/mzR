@@ -107,8 +107,6 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
             vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs; // NULL for mzData	    
             if (icp.size() != 0)
             {
-	      Rprintf("icp size not 0\n");
-
                 CVTranslator cvTranslator;
                 LegacyAdapter_Instrument adapter(*icp[0], cvTranslator);
                 vector<SoftwarePtr> sp = msd->softwarePtrs;
