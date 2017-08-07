@@ -1,6 +1,8 @@
 CHANGES IN VERSION 2.11.7
 -------------------------
  o Nothing yet.
+ o Import fix by Brian Pratt (pwiz r11174) for mzML without <componentList>
+   Another way to fix #113 
  
 CHANGES IN VERSION 2.11.6
 -------------------------
