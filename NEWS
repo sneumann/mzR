@@ -1,6 +1,6 @@
 CHANGES IN VERSION 2.11.7
 -------------------------
- o Nothing yet.
+ o Removing mz5 support from manual page, as currently unsupported.
  
 CHANGES IN VERSION 2.11.6
 -------------------------
