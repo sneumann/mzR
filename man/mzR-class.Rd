@@ -74,8 +74,7 @@
   \code{mzRpwiz} are available implementations. \code{mzRramp} uses the
   ISB 'RAMP' random access C/C++ API, and \code{mzRpwiz} uses
   Proteowizard to access the relevant information in \code{mzData},
-  \code{mzXML} and \code{mzML} files. You can also open \code{mz5} file
-  by using \code{mzRpwiz}.
+  \code{mzXML} and \code{mzML} files. 
 
   Additional sub-classes using the proteowizard API and netCDF are
   planned.
