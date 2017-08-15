@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.11.7
+-------------------------
+ o Removing mz5 support from manual page, as currently unsupported.
+ 
 CHANGES IN VERSION 2.11.6
 -------------------------
  o runInfo returns the run start time stamp from files providing this
