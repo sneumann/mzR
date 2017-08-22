@@ -1,6 +1,7 @@
 language: r
 r: bioc-devel
 sudo: required
+dist: precise
 r_packages:
   - knitr
   - XML
