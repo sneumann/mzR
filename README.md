@@ -32,6 +32,6 @@ Also on:
 * Ubuntu 14.04 (gcc-4.8.2)
 * Ubuntu 12.04 (gcc-4.6.3)
 
+# Contributions
 
-
-
+Please read the [contributions guide and code of conduct](./CONTRIBUTIONS.md).
