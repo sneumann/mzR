@@ -1,28 +1,35 @@
 # Contributing to `mzR`
 
 We welcome contributions from everybody, including bug fixes, new
-features, improvements on the documentation, and general
-suggestions. 
+features, improvements on the documentation, and general suggestions.
 
-Here are some pieces of advice and
+Here are some pieces of advice and suggestions:
 
-* Make the updates a small and contained as possible, possibly under
-  different Github commits, to facilitate the code review. Don't
-  hesitate to use the Github code review.
+* We recommend to discuss changes and contributions in a Github issue,
+ in particular when these are substantial.
 
-* Follow the coding style used in the package.
+* Check in the
+ current [Github issues](https://github.com/sneumann/mzR/issues) to
+ see if a similar issue is already discussed, and join efforts.
 
-* Check in the current [Github
-  issues](https://github.com/sneumann/mzR/issues) to see if your
-  contribution or a similar issue is not already discussed.
+* Make the updates as small and contained as possible, possibly under
+ different Github commits, to facilitate the code review. Don't
+ hesitate to use the Github code review.
 
-* Assure that `mzR` builds and check on Linux, Windows and OSX. Don't
-  hesitate to get in touch if you don't have access on all platforms.
+* Follow the coding style used in the package. See also the
+  Bioconductor coding
+  style
+  [here](https://bioconductor.org/developers/how-to/coding-style/).
 
-* If relevant, also update the documentation (man pages and/or
+* Ideally, add a unit test that checks the new code, examples are in
+  `mzR/inst/unitTests`.
+
+* Please avoid platform specific code to assure that `mzR` builds and
+  checks Linux, Windows and OSX. Pull requests will also be checked by
+  https://travis-ci.org/sneumann/mzR/
+
+* Make sure to also update the documentation (man pages and/or
   vignette) to make sure users are aware of the changes.
-
-* Ideally, add a unit test that checks the new code.
 
 * If your change is visible to users (new features, bug fix, updated
   documentation, ...) update the `NEWS` file.
