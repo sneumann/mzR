@@ -8,7 +8,12 @@ test_validateHeader <- function() {
     hdr <- header(mzxml)
     mzR::close(mzxml)
     checkTrue(is(mzR:::.validateHeader(hdr), "data.frame"))
-
+    hdr_2 <- mzR:::.validateHeader(hdr)
+    checkTrue(is.character(hdr_2$spectrumId))
+    hdr_2 <- mzR:::.validateHeader(hdr[, colnames(hdr) != "spectrumId"])
+    checkTrue(is.character(hdr_2$spectrumId))
+    checkEquals(hdr_2$spectrumId, paste0("scan=", hdr_2$acquisitionNum))
+    
     ## Check errors.
     res <- mzR:::.validateHeader(hdr[, 1:5])
     checkTrue(is.character(res))
