@@ -1,8 +1,14 @@
+CHANGES IN VERSION 2.11.8
+-------------------------
+ o Add contributions guide with code of conduct.
+ o Update installation instructions for Mac.
+ 
 CHANGES IN VERSION 2.11.7
 -------------------------
  o Nothing yet.
  o Import fix by Brian Pratt (pwiz r11174) for mzML without <componentList>
    Another way to fix #113 
+ o Removing mz5 support from manual page, as currently unsupported.
  
 CHANGES IN VERSION 2.11.6
 -------------------------
