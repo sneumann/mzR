@@ -9,7 +9,19 @@ The devel branch is tested on multiple architectures by the BioC build farm:
 
 http://bioconductor.org/checkResults/devel/bioc-LATEST/mzR/
 
-# Supported compilers
+# Installation
+
+## Installation on macOS
+
+If you install from source, you first need to install 
+the netCDF headers and libraries: `brew install netcdf`, 
+and then instal mzR the BioC way via:
+```
+source("https://bioconductor.org/biocLite.R")
+biocLite("mzR", suppressUpdates = TRUE)
+```
+
+## Installation on Linux
 
 We are not shipping the full set of boost headers due to 
 size restrictions. This *might* cause compilation failure 
@@ -32,6 +44,6 @@ Also on:
 * Ubuntu 14.04 (gcc-4.8.2)
 * Ubuntu 12.04 (gcc-4.6.3)
 
+# Contributions
 
-
-
+Please read the [contributions guide and code of conduct](./CONTRIBUTIONS.md).

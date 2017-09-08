@@ -1,0 +1,203 @@
+---
+title: "A parser for raw and identification mass-spectrometry data"
+author: 
+- name: Bernd Fischer
+- name: Steffen Neumann
+- name: Laurent Gatto
+- name: Qiang Kou
+package: mzR
+output:
+  BiocStyle::html_document:
+    toc_float: true
+bibliography: mzR.bib 	
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Accessin raw mass spectrometry and identification data}
+  %\VignetteKeywords{mzXML, mzData, netCDF, mzML, mzIdentML, mass spectrometry, proteomics, metabolomics}
+  %\VignetteEncoding{UTF-8}
+  %\VignettePackage{mzR}
+---
+
+# Introduction
+
+The `r Biocpkg("mzR")` package aims at providing a common, low-level
+interface to several mass spectrometry data formats, namely `mzData`
+[@Orchard2007], `mzXML` [@Pedrioli2004], `mzML` [@Martens2010] for raw
+data, and `mzIdentML` [@Jones2012], somewhat similar to the
+Bioconductor package affyio for affymetrix raw data. No processing is
+done in `r Biocpkg("mzR")`, which is left to packages such as `r
+Biocpkg("xcms")` [@Smith:2006, Tautenhahn:2008] or 
+`r Biocpkg("MSnbase")` [@Gatto:2012]. These packages also provide more
+convenient, high-level interfaces to raw and identification. data
+
+Most importantly, access to the data should be fast and memory
+efficient. This is made possible by allowing on-disk random file
+access, i.e. retrieving specific data of interest without having to
+sequentially browser the full content nor loading the entire data into
+memory.
+
+The actual work of reading and parsing the data files is handled by
+the included C/C++ libraries or *backends*. The `mzRramp` RAMP parser,
+written at the Institute for Systems Biology (ISB) is a fast and
+lightweight parser in pure C. Later, it gained support for the
+`mzData` format. The C++ reference implementation for the `mzML` is
+the proteowizard library [@Kessner08] (pwiz in short), which in turn
+makes use of the boost C++ (<http://www.boost.org/>) library. RAMP is
+able to access `mzML` files by calling pwiz methods. More recently,
+the proteowizard (http://proteowizard.sourceforge.net/)
+[@Chambers2012] has been fully integrated using the `mzRpwiz` backend
+for raw data, and is not the default option. The `mzRnetCDF` backend
+provides support to `CDF`-based formats. Finally, the `mzRident`
+backend is available to access identification data (`mzIdentML`)
+through pwiz.
+
+The `r Biocpkg("mzR")` package is in essence a collection of wrappers
+to the C++ code, and benefits from the C++ interface provided through
+the Rcpp package [@Rcpp11].
+
+
+# Mass spectrometry raw data
+
+All the mass spectrometry file formats are organized similarly, where
+a set of metadata nodes about the run is followed by a list of spectra
+with the actual masses and intensities. In addition, each of these
+spectra has its own set of metadata, such as the retention time and
+acquisition parameters.
+
+## Spectral data access
+
+Access to the spectral data is done via the `peaks` function. The
+return value is a list of two-column mass-to-charge and intensity
+matrices or a single matrix if one spectrum is queried.
+
+## Chromatogram access
+
+Access to the chromatogram(s) is done using the `chromatogram` (or
+`chromatograms`) function, that return one (or a list of)
+data.frames. See `?chromatogram` for details. This functionality is
+only available with the `pwiz` backend.
+
+## Identification result access
+
+The main access to identification result is done via `psms`, `score`
+and `modifications`.  `psms` and `score` will return the detailed
+information on each psm and scores.  `modifications` will return the
+details on each modification found in peptide.
+
+## Metadata access
+
+**Run metadata** is available via several functions such as
+`instrumentInfo()` or `runInfo()`. The individual fields can be
+accessed via e.g. `detector()` etc.
+
+**Spectrum metadata** is available via `header()`, which will return a
+list (for single scans) or a dataframe with information such as the
+`basePeakMZ`, `peaksCount`, ... or, for higher-order MS the `msLevel`
+and precursor information.
+
+**Identification metadata**is available via `mzidInfo()`, which will
+return a list with information such as the `software`,
+`ModificationSearched`, `enzymes`, `SpectraSource` and other
+information for this identification result.
+
+The availability of this metadata can not always be guaranteed, and
+depends on the MS software which converted the data.
+
+# Example
+
+## `mzXML`/`mzML`/`mzData` files
+
+A short example sequence to read data from a mass spectrometer. 
+First open the file.
+
+```{r openraw}
+library(mzR)
+library(msdata)
+
+mzxml <- system.file("threonine/threonine_i2_e35_pH_tree.mzXML", 
+                     package = "msdata")
+aa <- openMSfile(mzxml) 
+``` 
+
+We can obtain different kind of header information.
+
+```{r get header information}
+runInfo(aa)
+instrumentInfo(aa)
+header(aa,1)
+``` 
+
+Read a single spectrum from the file.
+
+```{r plotspectrum}
+pl <- peaks(aa,10)
+peaksCount(aa,10)
+head(pl)
+plot(pl[,1], pl[,2], type="h", lwd=1)
+``` 
+
+One should always close the file when not needed any more. This will
+release the memory of cached content.
+
+```{r close the file}
+close(aa)
+``` 
+
+## `mzIdentML` files
+
+You can use `openIDfile` to read a `mzIdentML` file (version 1.1),
+which use the pwiz backend.
+
+```{r openid}
+library(mzR)
+library(msdata)
+
+file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
+x <- openIDfile(file)
+``` 
+
+`mzidInfo` function will return general information about this
+identification result.
+
+```{r metadata}
+mzidInfo(x)
+``` 
+
+`psms` will return the detailed information on each
+peptide-spectrum-match, include `spectrumID`, `chargeState`,
+`sequence`. `modNum` and others.
+
+```{r psms0}
+p <- psms(x)
+colnames(p)
+```
+
+The modifications information can be accessed using `modifications`,
+which will return the `spectrumID`, `sequence`, `name`, `mass` and
+`location`.
+
+```{r psms1}
+m <- modifications(x)
+head(m)
+```
+
+Since different software will use different scoring function, we
+provide a `score` to extract the scores for each psm. It will return a
+data.frame with different columns depending on software generating
+this file.
+
+```{r psms2}
+scr <- score(x)
+colnames(scr)
+```
+
+# Future plans
+
+Other file formats provided by HUPO, such as `mzQuantML` for
+quantitative data [@Walzer:2013] are also possible in the future.
+
+# Session information {#sec:sessionInfo} 
+
+```{r label=sessioninfo, results='asis', echo=FALSE}
+toLatex(sessionInfo())
+``` 

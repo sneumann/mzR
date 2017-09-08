@@ -203,6 +203,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       Rcpp::IntegerVector mergedResultStartScanNum(N_scans); /* smallest scan number of the scanOrigin for merged scan */
       Rcpp::IntegerVector mergedResultEndScanNum(N_scans); /* largest scan number of the scanOrigin for merged scan */
       Rcpp::NumericVector ionInjectionTime(N_scans); /* The time spent filling an ion trapping device*/
+      Rcpp::StringVector spectrumId(N_scans);
       
       for (int i = 0; i < N_scans; i++)
 	{
@@ -237,12 +238,13 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
 	  mergedResultScanNum[i] = scanHeader.mergedResultScanNum;
 	  mergedResultStartScanNum[i] = scanHeader.mergedResultStartScanNum;
 	  mergedResultEndScanNum[i] = scanHeader.mergedResultEndScanNum;
+	  spectrumId[i] = sp->id;
 	}
       // delete adapter issue #64
       delete adapter;
       adapter = NULL;
-      
-      Rcpp::List header(22);
+
+      Rcpp::List header(23);
       std::vector<std::string> names;
       int i = 0;
       names.push_back("seqNum");
@@ -289,10 +291,12 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       header[i++] = Rcpp::wrap(mergedResultEndScanNum);
       names.push_back("injectionTime");
       header[i++] = Rcpp::wrap(ionInjectionTime);
+      names.push_back("spectrumId");
+      header[i++] = Rcpp::wrap(spectrumId);
       
       header.attr("names") = names;
       
-      return(header);
+      return header;
     }
     Rprintf("Warning: pwiz not yet initialized.\n ");
     return Rcpp::DataFrame::create( );
@@ -310,7 +314,7 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( )
             allScanHeaderInfo = getScanHeaderInfo(Rcpp::seq(1, N));
             isInCacheAllScanHeaderInfo = TRUE;	    
         }
-        return(allScanHeaderInfo);
+        return allScanHeaderInfo ;
     }
     Rprintf("Warning: pwiz not yet initialized.\n ");
     return Rcpp::DataFrame::create( );
@@ -578,6 +582,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
 			       Rcpp::DataFrame& spctr_header,
 			       Rcpp::List& spctr_data,
 			       bool rtime_seconds) {
+  int precursor_idx;
   // Break the header down into its elements/columns:
   Rcpp::IntegerVector seqNum = spctr_header["seqNum"];
   Rcpp::IntegerVector acquisitionNum = spctr_header["acquisitionNum"];
@@ -599,6 +604,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   Rcpp::IntegerVector mergedScan = spctr_header["mergedScan"];
   // Skipping mergedResultScanNum, mergedResultStartScanNum and mergedResultEndScanNum
   Rcpp::NumericVector ionInjectionTime = spctr_header["injectionTime"];
+  Rcpp::StringVector spectrumId = spctr_header["spectrumId"];
   
   // From MSnbase::Spectrum        Column in the header
   // msLevel integer               $msLevel
@@ -645,9 +651,10 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     spct.set(MS_total_ion_current, totIonCurrent[i]);
     // TODO:
     // [X] seqNum: number observed in file.
-    spct.index = seqNum[i] - 1;
+    spct.index = seqNum[i] - 1;	// Or just i?
     // [X] acquisitionNum: number as reported (there might be gaps).
-    spct.id = "scan=" + boost::lexical_cast<std::string>(acquisitionNum[i]);
+    // spct.id = "scan=" + boost::lexical_cast<std::string>(acquisitionNum[i]);
+    spct.id = spectrumId[i];	// Use the provided ID instead
     // [ ] peaksCount: no need to set this?
     // [X] retentionTime
     spct.scanList.scans.push_back(Scan());
@@ -666,9 +673,21 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     if (precursorScanNum[i] > 0 | precursorMZ[i] > 0) {
       spct.precursors.resize(1);
       Precursor& prec = spct.precursors.front();
-      // assume we're linked to acquisitionNum (issue #105)
-      prec.spectrumID =
-	"scan=" + boost::lexical_cast<std::string>(precursorScanNum[i]);
+      // Get the spectrumId of the precursor. Assuming that precursorScanNum is
+      // linked to the acquisitionNum of the precursor.
+      // This is assumed, since both the acquisitionNum and the precursorNum
+      // are extracted from the respective spectrum's ID.
+      precursor_idx = precursorScanNum[i] - 1;
+      for (int j = 0; j < spctr_data.size(); j++) {
+	if (precursorScanNum[i] == acquisitionNum[j]) {
+	  precursor_idx = j;
+	  break;
+	}
+      }
+      prec.spectrumID = spectrumId[precursor_idx];
+      // // assume we're linked to acquisitionNum (issue #105)
+      // prec.spectrumID =
+      // 	"scan=" + boost::lexical_cast<std::string>(precursorScanNum[i]);
       if (collisionEnergy[i] > 0) {
 	prec.activation.set(MS_collision_induced_dissociation);
 	prec.activation.set(MS_collision_energy, collisionEnergy[i],

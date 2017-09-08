@@ -9,9 +9,6 @@ r_packages:
   - foreach
   - iterators
 apt_packages:
-  - texlive-latex-extra
-  - texlive-fonts-extra
-  - texlive-latex-recommended
   - libnetcdf-dev
   - netcdf-bin
 

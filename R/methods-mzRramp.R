@@ -42,16 +42,24 @@ setMethod("peaksCount",
 
 setMethod("header",
           signature=c("mzRramp","missing"),
-          function(object) return(object@backend$getAllScanHeaderInfo()))
+          function(object) {
+              res <- object@backend$getAllScanHeaderInfo()
+              res$spectrumId <- paste0("scan=", res$acquisitionNum)
+              res
+})
+
 
 setMethod("header",
           signature=c("mzRramp","numeric"),
           function(object, scans) {
               if (length(scans)==1) {
-                  return(object@backend$getScanHeaderInfo(scans))
+                  res <- object@backend$getScanHeaderInfo(scans)
               } else {
-                  return(data.frame(t(sapply(scans,function(x) unlist(object@backend$getScanHeaderInfo(x))))))
+                  res <- data.frame(t(sapply(scans, function(x)
+                      unlist(object@backend$getScanHeaderInfo(x)))))
               }
+              res$spectrumId <- paste0("scan=", res$acquisitionNum)
+              res
           })
 
 setMethod("close", 

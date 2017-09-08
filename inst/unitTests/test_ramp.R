@@ -29,7 +29,9 @@ test_mzML <- function() {
     peaks(mzml,1)
     peaks(mzml,2:3)
     peaksCount(mzml)
-    header(mzml)
+    hdr <- header(mzml)
+    checkTrue(any(colnames(hdr) == "spectrumId"))
+    checkEquals(hdr$spectrumId, paste0("scan=", hdr$acquisitionNum))
     header(mzml,1)
     header(mzml,2:3)
 
@@ -41,7 +43,7 @@ test_mzML <- function() {
 #    checkTrue(all(header(mzml)$polarity==1))
 
     fileName(mzml)
-    close(mzml)    
+    close(mzml)
 }
 
 test_mzData <- function() {
@@ -56,6 +58,9 @@ test_mzData <- function() {
     peaks(mzdata,1)
     peaks(mzdata,2:3)
     peaksCount(mzdata)
+    hdr <- header(mzdata)
+    checkTrue(any(colnames(hdr) == "spectrumId"))
+    checkEquals(hdr$spectrumId, paste0("scan=", hdr$acquisitionNum))
     header(mzdata,1)
     header(mzdata,2:3)
     fileName(mzdata)
@@ -78,6 +83,9 @@ test_mzData.gz <- function() {
     peaks(mzdata,1)
     peaks(mzdata,2:3)
     peaksCount(mzdata)
+    hdr <- header(mzdata)
+    checkTrue(any(colnames(hdr) == "spectrumId"))
+    checkEquals(hdr$spectrumId, paste0("scan=", hdr$acquisitionNum))
     header(mzdata,1)
     header(mzdata,2:3)
     fileName(mzdata)
