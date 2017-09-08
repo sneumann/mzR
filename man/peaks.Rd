@@ -90,14 +90,15 @@
   will return a numeric of length \code{n}.
   
   The \code{\link{header}} function returns a list containing
-  \code{seqNum}, \code{acquisitionNum} , \code{msLevel},
+  \code{seqNum}, \code{acquisitionNum}, \code{msLevel},
   \code{peaksCount}, \code{totIonCurrent}, \code{retentionTime} (in
   seconds), \code{basePeakMZ}, \code{basePeakIntensity},
   \code{collisionEnergy}, \code{ionisationEnergy}, \code{lowM},
   \code{highMZ}, \code{precursorScanNum}, \code{precursorMZ},
   \code{precursorCharge}, \code{precursorIntensity},
   \code{mergedScan}, \code{mergedResultScanNum},
-  \code{mergedResultStartScanNum} and \code{mergedResultEndScanNum},
+  \code{mergedResultStartScanNum}, \code{mergedResultEndScanNum},
+  \code{spectrumId} and
   \code{injectionTime} (ion injection time, in seconds) when available
   in the original file. If multiple scans are queried, a
   \code{data.frame} is returned with the scans reported along the
@@ -126,6 +127,16 @@
   Note that access to chromatograms is only supported in the \code{pwiz}
   backend.
   
+}
+
+\note{
+  Spectrum identifiers are only specified in \emph{mzML} files, thus,
+  for all other file types the column \code{"spectrumId"} of the result
+  \code{data.frame} returned by \code{header} contains \code{"scan="}
+  followed by the acquisition number of the spectrum. Also, only the
+  \code{pwiz} backend supports extraction of the spectras' IDs from
+  \emph{mzML} files. Thus, only \emph{mzML} files read with
+  \code{backend = "pwiz"} provide the spectrum IDs defined in the file.
 }
 
 \seealso{

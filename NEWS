@@ -2,6 +2,8 @@ CHANGES IN VERSION 2.11.8
 -------------------------
  o Add contributions guide with code of conduct.
  o Update installation instructions for Mac.
+ o Report the spectrum ID in the header data.frame (column spectrumId).
+ o Fix in copyWriteMSData and writeMSData ensuring that MSn data is correctly
  o Import pwiz r11174 fix for mzML without <componentList> (see #113).
  
 CHANGES IN VERSION 2.11.7
