@@ -50,17 +50,21 @@ setMethod("detector", "mzRpwiz",
           })
 
 setMethod("header", c("mzRpwiz", "missing"),
-          function(object) return(object@backend$getAllScanHeaderInfo()))
+          function(object) {
+              res <- object@backend$getAllScanHeaderInfo()
+              res$spectrumId <- as.character(res$spectrumId)
+              res
+          })
 
 setMethod("header", c("mzRpwiz", "numeric"),
           function(object, scans) {
+              res <- object@backend$getScanHeaderInfo(scans)
+              res$spectrumId <- as.character(res$spectrumId)
               if (length(scans) == 1) {
-                  res <- object@backend$getScanHeaderInfo(scans)
                   ## Convert data.frame to list to be conform with old code
-                  return(as.list(res))
-              } else {
-                  return(object@backend$getScanHeaderInfo(scans))
+                  res <- as.list(res)
               }
+              res
           })
 
 headerFor <- function(object, idx) {

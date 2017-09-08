@@ -42,6 +42,12 @@
     if (!(all(names(req_cols) %in% colnames(x))))
         return(paste0("'x' is missing one or more required columns: ",
                       paste(names(req_cols), collapse = ", ")))
+    ## Add spectrumId if not already provided (issue #124)
+    if (!any(colnames(x) == "spectrumId"))
+        x$spectrumId <- paste0("scan=", x$acquisitionNum)
+    x$spectrumId <- as.character(x$spectrumId)
+    ## Hack in the spectrumId column.
+    req_cols <- c(req_cols, spectrumId = "character")
     ## Subset and order the columns
     x <- x[, names(req_cols)]
     cn_x <- colnames(x)
