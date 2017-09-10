@@ -129,6 +129,19 @@
   
 }
 
+\details{
+  The column \code{acquisitionNum} in the \code{data.frame} returned by
+  the \code{header} method contains the index during the scan in which
+  the signal from the spectrum was measured. The \code{pwiz} backend
+  extracts this number from the spectrum's ID provided in the mzML
+  file. In contrast, column \code{seqNum} contains the index of each
+  spectrum within the file and is thus consecutively numbered. Spectra
+  from files with multiple MS levels are linked to each other \emp{via}
+  their \code{acquisitionNum}: column \code{precursorScanNum} of an e.g. MS
+  level 2 spectrum contains the \code{acquisitionNum} of the related MS
+  level 1 spectrum.
+}
+
 \note{
   Spectrum identifiers are only specified in \emph{mzML} files, thus,
   for all other file types the column \code{"spectrumId"} of the result
