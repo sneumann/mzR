@@ -136,7 +136,7 @@
   extracts this number from the spectrum's ID provided in the mzML
   file. In contrast, column \code{seqNum} contains the index of each
   spectrum within the file and is thus consecutively numbered. Spectra
-  from files with multiple MS levels are linked to each other \emp{via}
+  from files with multiple MS levels are linked to each other \emph{via}
   their \code{acquisitionNum}: column \code{precursorScanNum} of an e.g. MS
   level 2 spectrum contains the \code{acquisitionNum} of the related MS
   level 1 spectrum.
