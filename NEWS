@@ -4,10 +4,13 @@ CHANGES IN VERSION 2.11.8
  o Update installation instructions for Mac.
  o Report the spectrum ID in the header data.frame (column spectrumId).
  o Fix in copyWriteMSData and writeMSData ensuring that MSn data is correctly
-   saved.
-
+ o Import pwiz r11174 fix for mzML without <componentList> (see #113).
+ 
 CHANGES IN VERSION 2.11.7
 -------------------------
+ o Nothing yet.
+ o Import fix by Brian Pratt (pwiz r11174) for mzML without <componentList>
+   Another way to fix #113 
  o Removing mz5 support from manual page, as currently unsupported.
  
 CHANGES IN VERSION 2.11.6
