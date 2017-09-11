@@ -149,7 +149,10 @@
   followed by the acquisition number of the spectrum. Also, only the
   \code{pwiz} backend supports extraction of the spectras' IDs from
   \emph{mzML} files. Thus, only \emph{mzML} files read with
-  \code{backend = "pwiz"} provide the spectrum IDs defined in the file.
+  \code{backend = "pwiz"} provide the spectrum IDs defined in the file. 
+  The content of the spectrum identifier depends on the vendor and the 
+  instrument acquisition settings and is reported here as a character, 
+  in its raw form, without further parsing.
 }
 
 \seealso{
