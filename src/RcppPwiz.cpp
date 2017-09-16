@@ -671,33 +671,35 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     }
     // MSn - precursor:
     if (precursorScanNum[i] > 0 | precursorMZ[i] > 0) {
-      spct.precursors.resize(1);
-      Precursor& prec = spct.precursors.front();
       // Get the spectrumId of the precursor. Assuming that precursorScanNum is
       // linked to the acquisitionNum of the precursor.
-      // This is assumed, since both the acquisitionNum and the precursorNum
-      // are extracted from the respective spectrum's ID.
-      precursor_idx = precursorScanNum[i] - 1;
+      // This seems to be correct, since both the acquisitionNum and the
+      // precursorNum are extracted from the respective spectrum's ID.
+      // Also, if we DON'T find the precursorScanNum among the acquisitionNum
+      // we skip adding the precursor data. Might be that the MS data has been
+      // filtered and the precursor scan is not provided.
+      precursor_idx = -1;
       for (int j = 0; j < spctr_data.size(); j++) {
 	if (precursorScanNum[i] == acquisitionNum[j]) {
 	  precursor_idx = j;
 	  break;
 	}
       }
-      prec.spectrumID = spectrumId[precursor_idx];
-      // // assume we're linked to acquisitionNum (issue #105)
-      // prec.spectrumID =
-      // 	"scan=" + boost::lexical_cast<std::string>(precursorScanNum[i]);
-      if (collisionEnergy[i] > 0) {
-	prec.activation.set(MS_collision_induced_dissociation);
-	prec.activation.set(MS_collision_energy, collisionEnergy[i],
-			    UO_electronvolt);
+      if (precursor_idx >= 0) {
+	spct.precursors.resize(1);
+	Precursor& prec = spct.precursors.front();
+	prec.spectrumID = spectrumId[precursor_idx];
+	if (collisionEnergy[i] > 0) {
+	  prec.activation.set(MS_collision_induced_dissociation);
+	  prec.activation.set(MS_collision_energy, collisionEnergy[i],
+			      UO_electronvolt);
+	}
+	prec.selectedIons.resize(1);
+	prec.selectedIons[0].set(MS_selected_ion_m_z, precursorMZ[i], MS_m_z);
+	prec.selectedIons[0].set(MS_peak_intensity, precursorIntensity[i],
+				 MS_number_of_detector_counts);
+	prec.selectedIons[0].set(MS_charge_state, precursorCharge[i]);
       }
-      prec.selectedIons.resize(1);
-      prec.selectedIons[0].set(MS_selected_ion_m_z, precursorMZ[i], MS_m_z);
-      prec.selectedIons[0].set(MS_peak_intensity, precursorIntensity[i],
-			       MS_number_of_detector_counts);
-      prec.selectedIons[0].set(MS_charge_state, precursorCharge[i]);
     }
     // [X] collisionEnergy
     // [ ] ionisationEnergy
