@@ -1,5 +1,9 @@
 CHANGES IN VERSION 2.11.10
 --------------------------
+ o Nothing yet
+ 
+CHANGES IN VERSION 2.11.10
+--------------------------
  o Fix problem that can cause a SEGFAULT in writeMSData/copyWriteMSData when MS
    data with spectra linking to missing precursor scans is saved (issue #129).
 
