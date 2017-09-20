@@ -7,12 +7,20 @@
 }
 
 \usage{
-  copyWriteMSData(filename, original_file, header, data, backend =
+  copyWriteMSData(object, file, original_file, header, backend =
     "pwiz", outformat = "mzml", rtime_seconds = TRUE, software_processing)
 }
 
 \arguments{
-  \item{filename}{
+  
+  \item{object}{
+    \code{list} containing for each spectrum one \code{matrix} with
+    columns \code{mz} (first column) and \code{intensity} (second
+    column). See also \code{\link{peaks}} for the method that reads such
+    data from an MS file.
+  }
+
+  \item{file}{
     \code{character(1)} defining the name of the file.
   }
 
@@ -26,14 +34,7 @@
     the format as the \code{data.frame} returned by the
     \code{\link{header}} method.
   }
-  
-  \item{data}{
-    \code{list} containing for each spectrum one \code{matrix} with
-    columns \code{mz} (first column) and \code{intensity} (second
-    column). See also \code{\link{peaks}} for the method that reads such
-    data from an MS file.
-  }
-  
+    
   \item{backend}{
     \code{character(1)} defining the backend that should be used for
     writing. Currently only \code{"pwiz"} backend is supported.
@@ -113,6 +114,6 @@ pks <- lapply(pks, function(z) {
 ## Copy metadata and additional information from the originating file
 ## and save it, along with the modified data, to a new mzML file.
 out_file <- tempfile()
-copyWriteMSData(filename = out_file, original_file = fl,
-    header = hdr, data = pks)
+copyWriteMSData(pks, file = out_file, original_file = fl,
+    header = hdr)
 }

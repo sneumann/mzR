@@ -1,27 +1,30 @@
 \name{writeMSData}
 \alias{writeMSData}
+\alias{writeMSData,list,character-method}
 
 \title{
   Write MS spectrum data to an MS file
 }
 \usage{
-writeMSData(filename, header, data, backend = "pwiz", outformat =
-   "mzml", rtime_seconds = TRUE, software_processing)
+
+\S4method{writeMSData}{list,character}(object, file, header,
+    backend = "pwiz", outformat = "mzml", rtime_seconds = TRUE,
+    software_processing)
 }
 \arguments{
-  \item{filename}{
+  \item{object}{
+    \code{list} containing for each spectrum one \code{matrix} with
+    columns \code{mz} (first column) and \code{intensity} (second
+    column). See also \code{\link{peaks}} for the method that reads such
+    data from an MS file.
+  }
+  \item{file}{
     \code{character(1)} defining the name of the file.
   }
   \item{header}{
     \code{data.frame} with the header data for the spectra. Has to be in
     the format as the \code{data.frame} returned by the
     \code{\link{header}} method.
-  }
-  \item{data}{
-    \code{list} containing for each spectrum one \code{matrix} with
-    columns \code{mz} (first column) and \code{intensity} (second
-    column). See also \code{\link{peaks}} for the method that reads such
-    data from an MS file.
   }
   \item{backend}{
     \code{character(1)} defining the backend that should be used for
@@ -84,5 +87,5 @@ pks <- lapply(pks, function(z) {
 
 ## Write the data to a mzML file.
 out_file <- tempfile()
-writeMSData(filename = out_file, header = hdr, data = pks)
+writeMSData(object = pks, file = out_file, header = hdr)
 }

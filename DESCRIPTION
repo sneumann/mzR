@@ -18,7 +18,7 @@ Description: mzR provides a unified API to the common file formats and
 License: Artistic-2.0
 LazyLoad: yes
 Depends: Rcpp (>= 0.10.1), methods, utils
-Imports: Biobase, BiocGenerics (>= 0.13.6), ProtGenerics
+Imports: Biobase, BiocGenerics (>= 0.13.6), ProtGenerics (>= 1.9.1)
 Suggests: msdata (>= 0.15.1), RUnit, mzID, BiocStyle (>= 2.5.19), knitr, XML
 VignetteBuilder: knitr
 LinkingTo: Rcpp, zlibbioc

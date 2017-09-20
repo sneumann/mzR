@@ -13,7 +13,6 @@ export(openMSfile,
        openIDfile,
        pwiz.version,
        nChrom,
-       writeMSData,
        copyWriteMSData)
 
 exportMethods(close,
@@ -47,7 +46,8 @@ exportMethods(close,
               para,
               tic,
               chromatogram,
-              chromatograms)
+              chromatograms,
+              writeMSData)
 
 exportClasses("mzR",
               "mzRramp",
