@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.11.12
+--------------------------
+ o Nothing yet
+ 
 CHANGES IN VERSION 2.11.11
 --------------------------
  o Fix problem in writeMSData: ensure precursor data is saved even if precursor
