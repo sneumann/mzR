@@ -52,45 +52,43 @@ openIDfile <- function(filename, verbose = FALSE) {
                fileName=filename))
 }
 
-writeMSData <- function(filename, header, data, backend = "pwiz",
-                        outformat = "mzml",
-                        rtime_seconds = TRUE,
-                        software_processing) {
-    backend <- match.arg(backend)
-    ## supp_formats <- c("mzml", "mgf", "mzxml")
-    supp_formats <- c("mzml", "mzxml")
-    outformat <- match.arg(tolower(outformat), supp_formats)
-    if (missing(filename))
-        stop("'filename' is a required parameter")
-    if (missing(header) | missing(data))
-        stop("'header' and 'data' are required")
-    ## Other checks:
-    header <- .validateHeader(header)
-    if (is(header, "character"))
-        stop("Error checking parameter 'header': ", header)
-    is_ok <- .validSpectrumList(data)
-    if (is(is_ok, "character"))
-        stop("Error checking parameter 'data'. First error was: ", is_ok)
-    ## Check software_processing:
-    software_processing <- .check_software_processing(software_processing)
-    ## Add mzR processing:
-    mzR <- c("mzR", paste(packageVersion("mzR"), collapse = "."), "MS:-1")
-    if (outformat == "mzml")
-        mzR <- c(mzR, "MS:1000544")
-    if (outformat == "mzxml")
-        mzR <- c(mzR, "MS:1000545")
-    software_processing <- c(software_processing, list(mzR))
-    if (backend == "pwiz") {
-        if (outformat == "mzxml" & any(header$injectionTime > 0))
-            warning("mzXML export does not support writing ion injection time")
-        pwizModule <- new(Pwiz)
-        pwizModule$writeSpectrumList(filename, outformat,
-                                     header, data, rtime_seconds,
-                                     software_processing)
-    }
-}
+setMethod("writeMSData", signature(object = "list", file = "character"),
+          function(object, file, header, backend = "pwiz",
+                   outformat = "mzml", rtime_seconds = TRUE,
+                   software_processing) {
+              backend <- match.arg(backend)
+              ## supp_formats <- c("mzml", "mgf", "mzxml")
+              supp_formats <- c("mzml", "mzxml")
+              outformat <- match.arg(tolower(outformat), supp_formats)
+              if (missing(header))
+                  stop("'header' is required")
+              ## Other checks:
+              header <- .validateHeader(header)
+              if (is(header, "character"))
+                  stop("Error checking parameter 'header': ", header)
+              is_ok <- .validSpectrumList(object)
+              if (is(is_ok, "character"))
+                  stop("Error checking parameter 'object'. First error was: ", is_ok)
+              ## Check software_processing:
+              software_processing <- .check_software_processing(software_processing)
+              ## Add mzR processing:
+              mzR <- c("mzR", paste(packageVersion("mzR"), collapse = "."), "MS:-1")
+              if (outformat == "mzml")
+                  mzR <- c(mzR, "MS:1000544")
+              if (outformat == "mzxml")
+                  mzR <- c(mzR, "MS:1000545")
+              software_processing <- c(software_processing, list(mzR))
+              if (backend == "pwiz") {
+                  if (outformat == "mzxml" & any(header$injectionTime > 0))
+                      warning("mzXML export does not support writing ion injection time")
+                  pwizModule <- new(Pwiz)
+                  pwizModule$writeSpectrumList(file, outformat,
+                                               header, object, rtime_seconds,
+                                               software_processing)
+              }
+          })
 
-copyWriteMSData <- function(filename, original_file, header, data,
+copyWriteMSData <- function(object, file, original_file, header,
                             backend = "pwiz",
                             outformat = "mzml",
                             rtime_seconds = TRUE,
@@ -99,21 +97,21 @@ copyWriteMSData <- function(filename, original_file, header, data,
     ## supp_formats <- c("mzml", "mgf", "mzxml")
     supp_formats <- c("mzml", "mzxml")
     outformat <- match.arg(tolower(outformat), supp_formats)
-    if (missing(filename))
-        stop("'filename' is a required parameter")
+    if (missing(file))
+        stop("'file' is a required parameter")
     if (missing(original_file))
         stop("'original_file' is a required parameter")
-    if (missing(header) | missing(data))
-        stop("'header' and 'data' are required")
+    if (missing(header) | missing(object))
+        stop("'header' and 'object' are required")
     if (!file.exists(original_file))
         stop("Original file ", original_file, " not found")
     ## Other checks:
     header <- .validateHeader(header)
     if (is(header, "character"))
         stop("Error checking parameter 'header': ", header)
-    is_ok <- .validSpectrumList(data)
+    is_ok <- .validSpectrumList(object)
     if (is(is_ok, "character"))
-        stop("Error checking parameter 'data'. First error was: ", is_ok)
+        stop("Error checking parameter 'object'. First error was: ", is_ok)
     ## Check software_processing:
     software_processing <- .check_software_processing(software_processing)
     ## Add mzR processing:
@@ -129,8 +127,8 @@ copyWriteMSData <- function(filename, original_file, header, data,
             header$injectionTime = 0
         }
         pwizModule <- new(Pwiz)
-        pwizModule$copyWriteMSfile(filename, outformat, original_file,
-                                   header, data, rtime_seconds,
+        pwizModule$copyWriteMSfile(file, outformat, original_file,
+                                   header, object, rtime_seconds,
                                    software_processing)
     }
 }

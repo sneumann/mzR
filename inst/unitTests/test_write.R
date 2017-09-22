@@ -8,7 +8,7 @@ test_copyWriteMSData <- function() {
 
     ## INPUT: mzXML
     orig_file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
-                        package = "msdata")
+                             package = "msdata")
     mzxml <- openMSfile(orig_file, backend = "pwiz")
     pks <- peaks(mzxml)
     hdr <- header(mzxml)
@@ -17,8 +17,8 @@ test_copyWriteMSData <- function() {
 
     ## OUTPUT: mzML
     fnew <- paste0(test_folder, "test_copyWrite.mzML")
-    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
-                          header = hdr, data = pks, backend = "pwiz")
+    mzR::copyWriteMSData(file = fnew, original_file = orig_file,
+                         header = hdr, object = pks, backend = "pwiz")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -31,9 +31,9 @@ test_copyWriteMSData <- function() {
     
     ## OUTPUT: mzXML
     fnew <- paste0(test_folder, "test_copyWrite.mzXML")
-    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
-                          header = hdr, data = pks, backend = "pwiz",
-                          outformat = "mzxml")
+    mzR::copyWriteMSData(file = fnew, original_file = orig_file,
+                         header = hdr, object = pks, backend = "pwiz",
+                         outformat = "mzxml")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -64,15 +64,15 @@ test_copyWriteMSData <- function() {
     pks_sub <- pks[c(1, 3, 5)]
     fnew <- paste0(test_folder, "test_copyWrite.mzML")
     ## index is not OK after subsetting
-    checkException(mzR:::copyWriteMSData(filename = fnew,
+    checkException(mzR:::copyWriteMSData(file = fnew,
                                          original_file = orig_file,
-                                         header = hdr_sub, data = pks_sub,
+                                         header = hdr_sub, object = pks_sub,
                                          backend = "pwiz"))
     hdr_sub$seqNum <- seq_len(nrow(hdr_sub))
     ## mzML
-    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
-                          header = hdr_sub, data = pks_sub, backend = "pwiz",
-                          outformat = "mzml")
+    mzR::copyWriteMSData(file = fnew, original_file = orig_file,
+                         header = hdr_sub, object = pks_sub, backend = "pwiz",
+                         outformat = "mzml")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -83,9 +83,9 @@ test_copyWriteMSData <- function() {
     checkEquals(pks_new, pks_sub)
     checkEquals(hdr_new, hdr_sub)
     ## mzXML
-    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
-                          header = hdr_sub, data = pks_sub, backend = "pwiz",
-                          outformat = "mzxml")
+    mzR::copyWriteMSData(file = fnew, original_file = orig_file,
+                         header = hdr_sub, object = pks_sub, backend = "pwiz",
+                         outformat = "mzxml")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -108,27 +108,27 @@ test_copyWriteMSData <- function() {
     ## wrong header.
     ## wrong spectra.
     ## wrong data processing.
-    checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         original_file = orig_file,
-                                         header = pks, data = hdr,
-                                         backend = "pwiz"))
-    checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         original_file = orig_file,
-                                         header = hdr, data = hdr,
-                                         backend = "pwiz"))
-    checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         original_file = orig_file,
-                                         header = hdr, data = pks,
-                                         backend = "Ramp"))
-    checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         original_file = "somefile",
-                                         header = hdr, data = pks,
-                                         backend = "pwiz"))
-    checkException(mzR:::copyWriteMSData(filename = fnew,
-                                         original_file = orig_file,
-                                         header = hdr, data = pks,
-                                         backend = "pwiz",
-                                         software_processing = c("other")))
+    checkException(mzR::copyWriteMSData(file = fnew,
+                                        original_file = orig_file,
+                                        header = pks, object = hdr,
+                                        backend = "pwiz"))
+    checkException(mzR::copyWriteMSData(file = fnew,
+                                        original_file = orig_file,
+                                        header = hdr, object = hdr,
+                                        backend = "pwiz"))
+    checkException(mzR::copyWriteMSData(file = fnew,
+                                        original_file = orig_file,
+                                        header = hdr, object = pks,
+                                        backend = "Ramp"))
+    checkException(mzR::copyWriteMSData(file = fnew,
+                                        original_file = "somefile",
+                                        header = hdr, object = pks,
+                                        backend = "pwiz"))
+    checkException(mzR::copyWriteMSData(file = fnew,
+                                        original_file = orig_file,
+                                        header = hdr, object = pks,
+                                        backend = "pwiz",
+                                        software_processing = c("other")))
     
     ## INPUT: mzML
     orig_file <- system.file("proteomics",
@@ -142,8 +142,8 @@ test_copyWriteMSData <- function() {
 
     ## OUTPUT: mzML
     fnew <- paste0(test_folder, "test_copyWrite.mzML")
-    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
-                          header = hdr, data = pks, backend = "pwiz")
+    mzR::copyWriteMSData(file = fnew, original_file = orig_file,
+                         header = hdr, object = pks, backend = "pwiz")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -156,9 +156,9 @@ test_copyWriteMSData <- function() {
     
     ## OUTPUT: mzXML
     fnew <- paste0(test_folder, "test_copyWrite.mzXML")
-    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
-                          header = hdr, data = pks, backend = "pwiz",
-                          outformat = "mzxml")
+    mzR::copyWriteMSData(file = fnew, original_file = orig_file,
+                         header = hdr, object = pks, backend = "pwiz",
+                         outformat = "mzxml")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -194,9 +194,9 @@ test_copyWriteMSData <- function() {
     pks_sub <- pks[idx]
     hdr_sub$seqNum <- 1:nrow(hdr_sub)
     fnew <- paste0(test_folder, "test_copyWrite.mzML")
-    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
-                          header = hdr_sub, data = pks_sub, backend = "pwiz",
-                          outformat = "mzml")
+    mzR::copyWriteMSData(file = fnew, original_file = orig_file,
+                         header = hdr_sub, object = pks_sub, backend = "pwiz",
+                         outformat = "mzml")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -211,9 +211,9 @@ test_copyWriteMSData <- function() {
 
     ## Subset with mzXML
     fnew <- paste0(test_folder, "test_copyWrite.mzXML")
-    mzR:::copyWriteMSData(filename = fnew, original_file = orig_file,
-                          header = hdr_sub, data = pks_sub, backend = "pwiz",
-                          outformat = "mzxml")
+    mzR::copyWriteMSData(file = fnew, original_file = orig_file,
+                         header = hdr_sub, object = pks_sub, backend = "pwiz",
+                         outformat = "mzxml")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -244,9 +244,9 @@ test_copyWriteMSData <- function() {
     
     ## mzML
     out_file <- paste0(test_folder, "test_copyWrite.mzML")
-    mzR:::copyWriteMSData(filename = out_file, original_file = test_file,
-                          header = hdr, data = pks,
-                          software_processing = c("MSnbase", "2.3.8"))
+    mzR::copyWriteMSData(file = out_file, original_file = test_file,
+                         header = hdr, object = pks,
+                         software_processing = c("MSnbase", "2.3.8"))
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
@@ -258,9 +258,9 @@ test_copyWriteMSData <- function() {
     
     ## mzXML output:
     out_file <- paste0(test_folder, "test_copyWrite.mzXML")
-    mzR:::copyWriteMSData(filename = out_file, original_file = test_file,
-                          header = hdr, data = pks, outformat = "mzXML",
-                          software_processing = c("MSnbase", "2.3.8"))
+    mzR::copyWriteMSData(file = out_file, original_file = test_file,
+                         header = hdr, object = pks, outformat = "mzXML",
+                         software_processing = c("MSnbase", "2.3.8"))
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
@@ -287,7 +287,7 @@ test_writeMSData <- function() {
 
     ## mzML
     out_file <- paste0(test_folder, "test_write.mzML")
-    mzR:::writeMSData(filename = out_file, header = hdr, data = pks)
+    writeMSData(file = out_file, header = hdr, object = pks)
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
@@ -299,7 +299,7 @@ test_writeMSData <- function() {
     hdr_sub <- hdr[c(1, 3, 5), ]
     hdr_sub$seqNum <- 1:nrow(hdr_sub)
     pks_sub <- pks[c(1, 3, 5)]
-    mzR:::writeMSData(out_file, header = hdr_sub, data = pks_sub)
+    writeMSData(pks_sub, out_file, header = hdr_sub)
     in_file <- openMSfile(out_file)
     hdr_sub_2 <- header(in_file)
     pks_sub_2 <- peaks(in_file)
@@ -319,8 +319,8 @@ test_writeMSData <- function() {
     
     ## mzXML output:
     out_file <- paste0(test_folder, "test_write.mzXML")
-    mzR:::writeMSData(filename = out_file, header = hdr, data = pks,
-                      outformat = "mzXML")
+    writeMSData(file = out_file, header = hdr, object = pks,
+                outformat = "mzXML")
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
@@ -331,8 +331,8 @@ test_writeMSData <- function() {
     hdr_sub <- hdr[c(1, 3, 5), ]
     hdr_sub$seqNum <- 1:nrow(hdr_sub)
     pks_sub <- pks[c(1, 3, 5)]
-    mzR:::writeMSData(out_file, header = hdr_sub, data = pks_sub,
-                      outformat = "mzXML")
+    writeMSData(file = out_file, header = hdr_sub, object = pks_sub,
+                outformat = "mzXML")
     in_file <- openMSfile(out_file)
     hdr_sub_2 <- header(in_file)
     pks_sub_2 <- peaks(in_file)
@@ -373,7 +373,7 @@ test_writeMSData <- function() {
     
     ## mzML
     out_file <- paste0(test_folder, "test_write.mzML")
-    mzR:::writeMSData(filename = out_file, header = hdr, data = pks)
+    writeMSData(pks, file = out_file, header = hdr)
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
@@ -390,8 +390,8 @@ test_writeMSData <- function() {
 
     ## mzXML output:
     out_file <- paste0(test_folder, "test_write.mzXML")
-    mzR:::writeMSData(filename = out_file, header = hdr, data = pks,
-                      outformat = "mzXML")
+    writeMSData(file = out_file, header = hdr, object = pks,
+                outformat = "mzXML")
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
@@ -424,9 +424,9 @@ test_writeMSData <- function() {
     hdr_sub$seqNum <- 1:nrow(hdr_sub)
     pks_sub <- pks[idx]
     fnew <- paste0(test_folder, "test_copyWrite.mzML")
-    mzR:::writeMSData(filename = fnew,
-                      header = hdr_sub, data = pks_sub, backend = "pwiz",
-                      outformat = "mzml")
+    writeMSData(file = fnew,
+                header = hdr_sub, object = pks_sub, backend = "pwiz",
+                outformat = "mzml")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -450,8 +450,8 @@ test_writeMSData <- function() {
     hdr_sub$seqNum <- 1:nrow(hdr_sub)
     pks_sub <- pks[idx]
     fnew <- paste0(test_folder, "test_copyWrite.mzXML")
-    mzR:::writeMSData(filename = fnew, header = hdr_sub, data = pks_sub,
-                      backend = "pwiz", outformat = "mzxml")
+    writeMSData(file = fnew, header = hdr_sub, object = pks_sub,
+                backend = "pwiz", outformat = "mzxml")
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -482,7 +482,7 @@ test_writeMSData <- function() {
     
     ## mzML
     out_file <- paste0(test_folder, "test_write.mzML")
-    mzR:::writeMSData(filename = out_file, header = hdr, data = pks)
+    writeMSData(file = out_file, header = hdr, object = pks)
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
@@ -492,8 +492,8 @@ test_writeMSData <- function() {
 
     ## mzXML output:
     out_file <- paste0(test_folder, "test_write.mzXML")
-    mzR:::writeMSData(filename = out_file, header = hdr, data = pks,
-                      outformat = "mzXML")
+    writeMSData(file = out_file, header = hdr, object = pks,
+                outformat = "mzXML")
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
@@ -511,7 +511,7 @@ test_writeMSData <- function() {
 
     ## mzML
     out_file <- paste0(test_folder, "test_write.mzML")
-    mzR:::writeMSData(filename = out_file, header = hdr, data = pks)
+    writeMSData(file = out_file, header = hdr, object = pks)
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
@@ -521,8 +521,8 @@ test_writeMSData <- function() {
 
     ## mzXML output:
     out_file <- paste0(test_folder, "test_write.mzXML")
-    mzR:::writeMSData(filename = out_file, header = hdr, data = pks,
-                      outformat = "mzXML")
+    writeMSData(file = out_file, header = hdr, object = pks,
+                outformat = "mzXML")
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
