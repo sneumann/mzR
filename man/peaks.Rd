@@ -45,9 +45,9 @@
 
  peaksCount(object, scans, ...)
 
- peaks(object, scans, ...) 
+ peaks(object, ...) 
 
- spectra(object, scans,...) ## same as peaks
+ spectra(object, ...) ## Same as peaks
 
  get3Dmap(object, scans, lowMz, highMz, resMz, ...)
 
