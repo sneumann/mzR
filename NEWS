@@ -1,6 +1,36 @@
+CHANGES IN VERSION 2.11.12
+--------------------------
+ o Nothing yet
+ 
+CHANGES IN VERSION 2.11.11
+--------------------------
+ o Fix problem in writeMSData: ensure precursor data is saved even if precursor
+   scan is not available (see MSnbase issue #245).
+ 
+CHANGES IN VERSION 2.11.10
+--------------------------
+ o Fix problem that can cause a SEGFAULT in writeMSData/copyWriteMSData when MS
+   data with spectra linking to missing precursor scans is saved (issue #129).
+
+CHANGES IN VERSION 2.11.9
+-------------------------
+ o Update peaks man page with details about spectrumId, acquisitionNum
+   and seqNum
+
+CHANGES IN VERSION 2.11.8
+-------------------------
+ o Add contributions guide with code of conduct.
+ o Update installation instructions for Mac.
+ o Report the spectrum ID in the header data.frame (column spectrumId).
+ o Fix in copyWriteMSData and writeMSData ensuring that MSn data is correctly
+ o Import pwiz r11174 fix for mzML without <componentList> (see #113).
+ 
 CHANGES IN VERSION 2.11.7
 -------------------------
  o Nothing yet.
+ o Import fix by Brian Pratt (pwiz r11174) for mzML without <componentList>
+   Another way to fix #113 
+ o Removing mz5 support from manual page, as currently unsupported.
  
 CHANGES IN VERSION 2.11.6
 -------------------------

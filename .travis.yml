@@ -1,6 +1,7 @@
 language: r
 r: bioc-devel
 sudo: required
+
 r_packages:
   - knitr
   - XML
@@ -8,10 +9,8 @@ r_packages:
   - doParallel
   - foreach
   - iterators
+
 apt_packages:
-  - texlive-latex-extra
-  - texlive-fonts-extra
-  - texlive-latex-recommended
   - libnetcdf-dev
   - netcdf-bin
 
@@ -19,5 +18,10 @@ apt_packages:
 # Thanks to jimhester pointing this out!
 before_install:
   - if [[ "$TRAVIS_R_VERSION_STRING" = 'bioc-devel' ]]; then mkdir ~/.R && echo 'CXX1X=g++ -std=c++0x -g -O2 -fPIC' > ~/.R/Makevars; fi
+
+script: 
+  - | 
+    travis_wait 20 R CMD build .
+    R CMD check --no-build-vignettes --no-vignettes mzR*tar.gz
 
 
