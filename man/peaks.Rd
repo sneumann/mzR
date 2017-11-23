@@ -45,9 +45,13 @@
 
  peaksCount(object, scans, ...)
 
- peaks(object, ...) 
+ \S4method{peaks}{mzRpwiz}(object, scans)
+ \S4method{peaks}{mzRramp}(object, scans)
+ \S4method{peaks}{mzRnetCDF}(object, scans)
 
- spectra(object, ...) ## Same as peaks
+ \S4method{spectra}{mzRpwiz}(object, scans)   ## same as peaks
+ \S4method{spectra}{mzRramp}(object, scans)
+ \S4method{spectra}{mzRnetCDF}(object, scans)
 
  get3Dmap(object, scans, lowMz, highMz, resMz, ...)
 
@@ -66,7 +70,7 @@
   \item{object}{An instantiated \code{mzR} object.}
   
   \item{scans}{A \code{numeric} specifying which scans to
-    return. Optional for the \code{header}, \code{peaks}, \code{scans}
+    return. Optional for the \code{header}, \code{peaks}, \code{spectra}
     and \code{peaksCount} methods. If ommited, the requested data for
     all peaks is returned. }
 
@@ -177,7 +181,7 @@
  colnames(header(mz))
  close(mz)
 
- ## A shortgun LCMSMS experiment 
+ ## A shotgun LCMSMS experiment
  f <- proteomics(full.names = TRUE,
                  pattern = "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz")
  x <- openMSfile(f, backend = "pwiz")
@@ -187,7 +191,10 @@
  head(chromatogram(x, 1L)) ## same as tic(x)
  str(chromatogram(x)) ## as a list
 
- ## An MRM experiment 
+ peaks(x) ## extract all peak information
+ peaks(x, scan=4) ## extract just peaks from the 4th scan
+
+ ## An MRM experiment
  f <- proteomics(full.names = TRUE, pattern = "MRM")
  x <- openMSfile(f, backend = "pwiz")
  x
