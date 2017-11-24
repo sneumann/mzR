@@ -81,6 +81,8 @@ setMethod("writeMSData", signature(object = "list", file = "character"),
               if (backend == "pwiz") {
                   if (outformat == "mzxml" & any(header$injectionTime > 0))
                       warning("mzXML export does not support writing ion injection time")
+                  if (outformat == "mzxml" & any(!is.na(header$filterString)))
+                      warning("mzXML export does not support writing filter string")
                   pwizModule <- new(Pwiz)
                   pwizModule$writeSpectrumList(file, outformat,
                                                header, object, rtime_seconds,
@@ -125,6 +127,10 @@ copyWriteMSData <- function(object, file, original_file, header,
         if (outformat == "mzxml" & any(header$injectionTime > 0)) {
             warning("mzXML export does not support writing ion injection time")
             header$injectionTime = 0
+        }
+        if (outformat == "mzxml" & any(!is.na(header$filterString))) {
+            warning("mzXML export does not support writing filter string")
+            header$filterString <- NA_character_
         }
         pwizModule <- new(Pwiz)
         pwizModule$copyWriteMSfile(file, outformat, original_file,
