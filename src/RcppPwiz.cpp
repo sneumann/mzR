@@ -731,6 +731,9 @@ void RcppPwiz::addSpectrumList(MSData& msd,
       spct_ints->data[j] = ints_vals[j];
     spct.binaryDataArrayPtrs.push_back(spct_ints);
     spct.defaultArrayLength = spct_mz->data.size();
+
+    if (!Rcpp::StringVector::is_na(filterString[i]))
+      spct.set(MS_filter_string, filterString[i]);
   }
 }
 
