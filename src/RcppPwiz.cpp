@@ -674,6 +674,10 @@ void RcppPwiz::addSpectrumList(MSData& msd,
       if (ionInjectionTime[i] > 0)
 	spct_scan.set(MS_ion_injection_time, ionInjectionTime[i], UO_minute);
     }
+
+    if (!Rcpp::StringVector::is_na(filterString[i]))
+      spct_scan.set(MS_filter_string, filterString[i]);
+
     // MSn - precursor:
     if (precursorScanNum[i] > 0 | precursorMZ[i] > 0) {
       // Fill precursor data. This preserves the precursor data even if the
@@ -731,9 +735,6 @@ void RcppPwiz::addSpectrumList(MSData& msd,
       spct_ints->data[j] = ints_vals[j];
     spct.binaryDataArrayPtrs.push_back(spct_ints);
     spct.defaultArrayLength = spct_mz->data.size();
-
-    if (!Rcpp::StringVector::is_na(filterString[i]))
-      spct.set(MS_filter_string, filterString[i]);
   }
 }
 
