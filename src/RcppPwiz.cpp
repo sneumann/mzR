@@ -221,7 +221,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
 	  polarity[i] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
 	  // ionInjectionTime[i] = sp->cvParam(MS_ion_injection_time).valueAs<double>();
 	  ionInjectionTime[i] = scan.cvParam(MS_ion_injection_time).timeInSeconds();
-	  filterString[i] = scan.cvParam(MS_filter_string).value;
+	  filterString[i] = scan.cvParam(MS_filter_string).value.empty() ? NA_STRING : Rcpp::String(scan.cvParam(MS_filter_string).value);
 
 	  peaksCount[i] = scanHeader.peaksCount;
 	  totIonCurrent[i] = scanHeader.totIonCurrent;
