@@ -191,8 +191,8 @@
  head(chromatogram(x, 1L)) ## same as tic(x)
  str(chromatogram(x)) ## as a list
 
- peaks(x) ## extract all peak information
- peaks(x, scan=4) ## extract just peaks from the 4th scan
+ p <- peaks(x) ## extract all peak information
+ head(peaks(x, scan=4)) ## extract just peaks from the 4th scan
 
  ## An MRM experiment
  f <- proteomics(full.names = TRUE, pattern = "MRM")

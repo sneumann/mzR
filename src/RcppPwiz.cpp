@@ -203,6 +203,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       Rcpp::IntegerVector mergedResultStartScanNum(N_scans); /* smallest scan number of the scanOrigin for merged scan */
       Rcpp::IntegerVector mergedResultEndScanNum(N_scans); /* largest scan number of the scanOrigin for merged scan */
       Rcpp::NumericVector ionInjectionTime(N_scans); /* The time spent filling an ion trapping device*/
+      Rcpp::StringVector filterString(N_scans);
       Rcpp::StringVector spectrumId(N_scans);
       
       for (int i = 0; i < N_scans; i++)
@@ -220,6 +221,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
 	  polarity[i] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
 	  // ionInjectionTime[i] = sp->cvParam(MS_ion_injection_time).valueAs<double>();
 	  ionInjectionTime[i] = scan.cvParam(MS_ion_injection_time).timeInSeconds();
+	  filterString[i] = scan.cvParam(MS_filter_string).value.empty() ? NA_STRING : Rcpp::String(scan.cvParam(MS_filter_string).value);
 
 	  peaksCount[i] = scanHeader.peaksCount;
 	  totIonCurrent[i] = scanHeader.totIonCurrent;
@@ -244,7 +246,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       delete adapter;
       adapter = NULL;
 
-      Rcpp::List header(23);
+      Rcpp::List header(24);
       std::vector<std::string> names;
       int i = 0;
       names.push_back("seqNum");
@@ -291,6 +293,8 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       header[i++] = Rcpp::wrap(mergedResultEndScanNum);
       names.push_back("injectionTime");
       header[i++] = Rcpp::wrap(ionInjectionTime);
+      names.push_back("filterString");
+      header[i++] = Rcpp::wrap(filterString);
       names.push_back("spectrumId");
       header[i++] = Rcpp::wrap(spectrumId);
       
@@ -604,6 +608,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   Rcpp::IntegerVector mergedScan = spctr_header["mergedScan"];
   // Skipping mergedResultScanNum, mergedResultStartScanNum and mergedResultEndScanNum
   Rcpp::NumericVector ionInjectionTime = spctr_header["injectionTime"];
+  Rcpp::StringVector filterString = spctr_header["filterString"];
   Rcpp::StringVector spectrumId = spctr_header["spectrumId"];
   
   // From MSnbase::Spectrum        Column in the header
@@ -669,6 +674,10 @@ void RcppPwiz::addSpectrumList(MSData& msd,
       if (ionInjectionTime[i] > 0)
 	spct_scan.set(MS_ion_injection_time, ionInjectionTime[i], UO_minute);
     }
+
+    if (!Rcpp::StringVector::is_na(filterString[i]))
+      spct_scan.set(MS_filter_string, filterString[i]);
+
     // MSn - precursor:
     if (precursorScanNum[i] > 0 | precursorMZ[i] > 0) {
       // Fill precursor data. This preserves the precursor data even if the

@@ -176,7 +176,7 @@ test_copyWriteMSData <- function() {
     rt_col <- colnames(hdr_mod) == "retentionTime"
     checkEquals(hdr_mod[, rt_col], hdr_new[, rt_col], tolerance = 0.01)
     cn <- colnames(hdr)[!(colnames(hdr) %in% c("injectionTime", "retentionTime",
-                                               "spectrumId"))]
+                                               "filterString", "spectrumId"))]
     checkEquals(hdr_mod[, cn], hdr_new[, cn])
     ## checkEquals(ii, ii_new)
 
@@ -231,6 +231,7 @@ test_copyWriteMSData <- function() {
     checkEquals(hdr_sub[, rt_col], hdr_new[, rt_col], tolerance = 0.01)
     cn <- colnames(hdr_sub)[!(colnames(hdr_sub) %in% c("injectionTime",
                                                        "retentionTime",
+                                                       "filterString",
                                                        "spectrumId"))]
     checkEquals(hdr_sub[, cn], hdr_new[, cn])    
     
@@ -406,6 +407,7 @@ test_writeMSData <- function() {
     hdr_2$precursorScanNum <- as.integer(factor(hdr_2$precursorScanNum))
     cn <- colnames(hdr_mod)[!(colnames(hdr_mod) %in% c("retentionTime",
                                                        "injectionTime",
+                                                       "filterString",
                                                        "spectrumId"))]
     checkEquals(hdr_mod[, cn], hdr_2[, cn])
     
@@ -470,6 +472,7 @@ test_writeMSData <- function() {
     checkEquals(hdr_sub[, rt_col], hdr_new[, rt_col], tolerance = 0.01)
     cn <- colnames(hdr_sub)[!(colnames(hdr_sub) %in% c("injectionTime",
                                                        "retentionTime",
+                                                       "filterString",
                                                        "spectrumId"))]
     checkEquals(hdr_sub[, cn], hdr_new[, cn])
     
