@@ -9,7 +9,7 @@
   Create and check mzR objects from netCDF, mzXML, mzData or mzML files.
 }
 \usage{
- openMSfile(filename, backend=c("pwiz", "Ramp", "netCDF"), verbose = FALSE)
+ openMSfile(filename, backend = NULL, verbose = FALSE)
 
  initializeRamp(object)
 
@@ -20,10 +20,17 @@
  openIDfile(filename, verbose = FALSE)
 }
 \arguments{
-  \item{filename}{ Path name of the netCDF, mzData, mzXML or mzML file to
-    read/write. }
-  \item{backend}{ A \code{character} specifiying with backend API to
-    use. Currently 'Ramp', 'netCDF'  and 'pwiz' (default) are available.}
+  \item{filename}{
+    Path name of the netCDF, mzData, mzXML or mzML file to
+    read/write.
+  }
+  \item{backend}{
+    A \code{character(1)} specifiying which backend API to
+    use. Currently 'Ramp', 'netCDF'  and 'pwiz' are supported. If
+    \code{backend = NULL} (the default), the function tries to determine
+    the backend to be used based on either the file extension of the
+    file content.
+  }
   \item{object}{ An instantiated mzR object. }
   \item{verbose}{ Enable verbose output. }
   \item{...}{ Additional arguments, currently ignored. }

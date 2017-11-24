@@ -1,8 +1,10 @@
-CHANGES IN VERSION 2.11.12
+CHANGES IN VERSION 2.13.1
 --------------------------
  o Read filter string from mzML files and add it to the data.frame returned by
    the header function (see MSnbase issue #278).
-
+ o openMsFile automatically determine the backend to use based on file extension
+   and content.
+ 
 CHANGES IN VERSION 2.11.11
 --------------------------
  o Fix problem in writeMSData: ensure precursor data is saved even if precursor
