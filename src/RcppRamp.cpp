@@ -148,7 +148,7 @@ Rcpp::List RcppRamp::getScanHeaderInfo ( int whichScan  )
         delete info;
 
         std::vector<std::string> names;
-        Rcpp::List header(22);
+        Rcpp::List header(23);
         int i = 0;
 
         names.push_back("seqNum");
@@ -195,6 +195,8 @@ Rcpp::List RcppRamp::getScanHeaderInfo ( int whichScan  )
         header[i++] = Rcpp::wrap(data.mergedResultEndScanNum);
         names.push_back("injectionTime");
         header[i++] = 0;
+        names.push_back("filterString");
+        header[i++] = NA_STRING;
 
         header.attr("names") = names;
 
@@ -262,7 +264,7 @@ Rcpp::DataFrame RcppRamp::getAllScanHeaderInfo ( )
                 mergedResultEndScanNum[whichScan-1] = scanHeader.mergedResultEndScanNum;
             }
 
-            Rcpp::List header(22);
+            Rcpp::List header(23);
             std::vector<std::string> names;
             int i = 0;
 
@@ -310,9 +312,11 @@ Rcpp::DataFrame RcppRamp::getAllScanHeaderInfo ( )
             header[i++] =Rcpp::wrap(mergedResultEndScanNum);
             names.push_back("injectionTime");
             header[i++] = 0;
-            
+            names.push_back("filterString");
+            header[i++] = NA_STRING;
+
 			header.attr("names") = names;
-			
+
             allScanHeaderInfo = header;
             isInCacheAllScanHeaderInfo = TRUE;
         }
