@@ -44,6 +44,7 @@ setMethod("header",
           signature=c("mzRramp","missing"),
           function(object) {
               res <- object@backend$getAllScanHeaderInfo()
+              res$filterString <- NA_character_
               res$spectrumId <- paste0("scan=", res$acquisitionNum)
               res
 })
@@ -58,6 +59,7 @@ setMethod("header",
                   res <- data.frame(t(sapply(scans, function(x)
                       unlist(object@backend$getScanHeaderInfo(x)))))
               }
+              res$filterString <- NA_character_
               res$spectrumId <- paste0("scan=", res$acquisitionNum)
               res
           })
