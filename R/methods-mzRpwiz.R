@@ -52,6 +52,7 @@ setMethod("detector", "mzRpwiz",
 setMethod("header", c("mzRpwiz", "missing"),
           function(object) {
               res <- object@backend$getAllScanHeaderInfo()
+              res$filterString <- as.character(res$filterString)
               res$spectrumId <- as.character(res$spectrumId)
               res
           })
@@ -59,6 +60,7 @@ setMethod("header", c("mzRpwiz", "missing"),
 setMethod("header", c("mzRpwiz", "numeric"),
           function(object, scans) {
               res <- object@backend$getScanHeaderInfo(scans)
+              res$filterString <- as.character(res$filterString)
               res$spectrumId <- as.character(res$spectrumId)
               if (length(scans) == 1) {
                   ## Convert data.frame to list to be conform with old code
