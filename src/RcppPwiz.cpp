@@ -774,6 +774,111 @@ Rcpp::DataFrame RcppPwiz::getChromatogramsInfo( int whichChrom )
     return Rcpp::DataFrame::create( );
 }
 
+// get the header info for chromatograms.
+Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichChrom)
+{
+  if (msd != NULL) {
+    CVID nativeIdFormat_ = id::getDefaultNativeIDFormat(*msd); // Ask CHRIS if I'm correctly dereferencing this...
+    ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+    if (clp.get() == 0) {
+      Rcpp::Rcerr << "The direct support for chromatogram info is only available in mzML format." << std::endl;
+      return Rcpp::DataFrame::create();
+    } else if (clp->size() == 0) {
+      Rcpp::Rcerr << "No available chromatogram info." << std::endl;
+      return Rcpp::DataFrame::create();
+    }
+
+    int N = clp->size();  
+    int N_chrom = whichChrom.size();
+
+    Rcpp::StringVector chromatogramId(N_chrom); // the ID from the chrom
+    Rcpp::IntegerVector chromatogramIndex(N_chrom);  // In contrast to the acquisitionNum we report here the index (1 based) of the chromatogram within the file.
+    Rcpp::IntegerVector polarity(N_chrom);
+    // MS:1000827: isolation window target m/z
+    // MS:1000828: isolation window lower offset
+    // MS:1000829: isolation window upper offset
+    Rcpp::NumericVector precursorIsolationWindowTargetMZ(N_chrom);
+    Rcpp::NumericVector precursorIsolationWindowLowerOffset(N_chrom);
+    Rcpp::NumericVector precursorIsolationWindowUpperOffset(N_chrom);
+    Rcpp::NumericVector precursorCollisionEnergy(N_chrom);
+    Rcpp::NumericVector productIsolationWindowTargetMZ(N_chrom);
+    Rcpp::NumericVector productIsolationWindowLowerOffset(N_chrom);
+    Rcpp::NumericVector productIsolationWindowUpperOffset(N_chrom);
+        
+    for (int i = 0; i < N_chrom; i++) {
+      int current_chrom = whichChrom[i];
+      if (current_chrom < 0 || current_chrom > N) {
+	Rcpp::Rcerr << "Provided index out of bounds" << std::endl;
+	return Rcpp::DataFrame::create();
+      }
+      ChromatogramPtr ch = clp->chromatogram(current_chrom - 1, false);
+      chromatogramId[i] = ch->id;
+      chromatogramIndex[i] = current_chrom;
+      CVParam param = ch->cvParamChild(MS_scan_polarity);
+      polarity[i] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
+      if (!ch->precursor.empty()) {
+	precursorIsolationWindowTargetMZ[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_target_m_z).value.empty() ? NA_REAL : ch->precursor.isolationWindow.cvParam(MS_isolation_window_target_m_z).valueAs<double>();
+	precursorIsolationWindowLowerOffset[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_lower_offset).value.empty() ? 0 : ch->precursor.isolationWindow.cvParam(MS_isolation_window_lower_offset).valueAs<double>();
+	precursorIsolationWindowUpperOffset[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_upper_offset).value.empty() ? 0 : ch->precursor.isolationWindow.cvParam(MS_isolation_window_upper_offset).valueAs<double>();
+	precursorCollisionEnergy[i] = ch->precursor.activation.cvParam(MS_collision_energy).value.empty() ? NA_REAL : ch->precursor.activation.cvParam(MS_collision_energy).valueAs<double>(); 
+      } else {
+	precursorIsolationWindowTargetMZ[i] = NA_REAL;
+	precursorIsolationWindowLowerOffset[i] = NA_REAL;
+	precursorIsolationWindowUpperOffset[i] = NA_REAL;
+	precursorCollisionEnergy[i] = NA_REAL;
+      }
+      if (!ch->product.empty()) {
+	productIsolationWindowTargetMZ[i] = ch->product.isolationWindow.cvParam(MS_isolation_window_target_m_z).value.empty() ? NA_REAL : ch->product.isolationWindow.cvParam(MS_isolation_window_target_m_z).valueAs<double>();
+	productIsolationWindowLowerOffset[i] = ch->product.isolationWindow.cvParam(MS_isolation_window_lower_offset).value.empty() ? 0 : ch->product.isolationWindow.cvParam(MS_isolation_window_lower_offset).valueAs<double>();
+	productIsolationWindowUpperOffset[i] = ch->product.isolationWindow.cvParam(MS_isolation_window_upper_offset).value.empty() ? 0 : ch->product.isolationWindow.cvParam(MS_isolation_window_upper_offset).valueAs<double>();
+      } else {
+	productIsolationWindowTargetMZ[i] = NA_REAL;
+	productIsolationWindowLowerOffset[i] = NA_REAL;
+	productIsolationWindowUpperOffset[i] = NA_REAL;
+      }
+    }
+    Rcpp::List chromHeader(10);
+    std::vector<std::string> names;
+    int i = 0;
+    names.push_back("chromatogramId");
+    chromHeader[i++] = Rcpp::wrap(chromatogramId);
+    names.push_back("chromatogramIndex");
+    chromHeader[i++] = Rcpp::wrap(chromatogramIndex);
+    names.push_back("polarity");
+    chromHeader[i++] = Rcpp::wrap(polarity);
+    names.push_back("precursorIsolationWindowTargetMZ");
+    chromHeader[i++] = Rcpp::wrap(precursorIsolationWindowTargetMZ);
+    names.push_back("precursorIsolationWindowLowerOffset");
+    chromHeader[i++] = Rcpp::wrap(precursorIsolationWindowLowerOffset);
+    names.push_back("precursorIsolationWindowUpperOffset");
+    chromHeader[i++] = Rcpp::wrap(precursorIsolationWindowUpperOffset);
+    names.push_back("precursorCollisionEnergy");
+    chromHeader[i++] = Rcpp::wrap(precursorCollisionEnergy);
+    names.push_back("productIsolationWindowTargetMZ");
+    chromHeader[i++] = Rcpp::wrap(productIsolationWindowTargetMZ);
+    names.push_back("productIsolationWindowLowerOffset");
+    chromHeader[i++] = Rcpp::wrap(productIsolationWindowLowerOffset);
+    names.push_back("productIsolationWindowUpperOffset");
+    chromHeader[i++] = Rcpp::wrap(productIsolationWindowUpperOffset);
+    
+    chromHeader.attr("names") = names;
+    return chromHeader;
+  }
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return Rcpp::DataFrame::create( );
+}
+
+Rcpp::DataFrame RcppPwiz::getAllChromatogramHeaderInfo ( ) {
+  if (msd != NULL) {
+    ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+    int N = clp->size();
+    
+    return getChromatogramHeaderInfo(Rcpp::seq(1, N));
+  }
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return Rcpp::DataFrame::create( );
+}
+
 Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz )
 {
     if (msd != NULL)

@@ -27,10 +27,12 @@
 \alias{get3Dmap,mzRpwiz-method}
 
 \alias{chromatogram,mzRpwiz-method}
+\alias{chromatogramHeader,mzRpwiz-method}
 \alias{chromatograms,mzRpwiz-method}
 \alias{tic,mzRpwiz-method}
 \alias{nChrom}
 \alias{chromatogram}
+\alias{chromatogramHeader}
 \alias{chromatograms}
 \alias{tic}
 
@@ -59,6 +61,8 @@
 
  chromatograms(object, ...) ## same as chromatogram
 
+ \S4method{chromatogramHeader}{mzRpwiz}(object, chrom)
+
  tic(object, ...)
 
  nChrom(object)
@@ -78,6 +82,12 @@
     returned.}
   
   \item{resMz}{a \code{numeric} defining the m/z resolution.}
+
+  \item{chrom}{
+    For \code{chromatogramHeader}: \code{numeric} specifying the index
+    of the chromatograms to be extracted from the file. If omitted, data
+    for all chromatograms is returned. 
+  }
   
   \item{...}{Other arguments. A \code{scan} parameter can be passed to
     \code{peaks}.}  }
@@ -128,6 +138,23 @@
   The \code{nChrom} function returns the number of chromatograms,
   including the total ion chromatogram.
 
+  The \code{chromatogramHeader} returns (similar to the \code{header}
+  function for spectra) a \code{data.frame} with metadata information
+  for the individual chromatograms. The \code{data.frame} has the
+  columns: \code{"chromatogramId"} (the ID of the chromatogram as
+  specified in the file), \code{"chromatogramIndex"} (the index of the
+  chromatogram within the file), \code{"polarity"} (the polarity for the
+  chromatogram, 0 for negative, +1 for positive and -1 for not set),
+  \code{"precursorIsolationWindowTargetMZ"} (the isolation window m/z of
+  the precursor), \code{"precursorIsolationWindowLowerOffset"},
+  \code{"precursorIsolationWindowUpperOffset"} (lower and upper offset
+  for the isolation window m/z), \code{"precursorCollisionEnergy"}
+  (collision energy),
+  \code{"productIsolationWindowTargetMZ"},
+  \code{"productIsolationWindowLowerOffset"} and
+  \code{"productIsolationWindowUpperOffset"} (definition of the m/z
+  isolation window for the product).
+  
   Note that access to chromatograms is only supported in the \code{pwiz}
   backend.
   
@@ -202,4 +229,8 @@
  head(tic(x))
  head(chromatogram(x, 1L)) ## same as tic(x)
  str(chromatogram(x, 10:12))  
+
+ ## get the header information for the chromatograms
+ ch <- chromatogramHeader(x)
+ head(ch)
 }

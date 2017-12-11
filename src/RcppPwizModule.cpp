@@ -25,5 +25,7 @@ RCPP_MODULE(Pwiz)
     .method( "get3DMap", &RcppPwiz::get3DMap, "Reads all scans and returns them as a matrix." )
     .method( "getLastScan", &RcppPwiz::getLastScan, "Returns the last scan (not necessarily the number of scans because of missing scans)." )
     .method( "getLastChrom", &RcppPwiz::getLastChrom, "Returns the index of the last chromatogram." )
+    .method("getChromatogramHeaderInfo", &RcppPwiz::getChromatogramHeaderInfo, "Returns a data.frame with the chromatogram header information")
+    .method("getAllChromatogramHeaderInfo", &RcppPwiz::getAllChromatogramHeaderInfo, "Returns a data.frame with the header for all chromatograms")
     ;
 }
