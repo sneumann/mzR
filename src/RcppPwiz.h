@@ -90,9 +90,13 @@ public:
      **/
     Rcpp::DataFrame getScanHeaderInfo(Rcpp::IntegerVector whichScan);
 
+    Rcpp::DataFrame getChromatogramHeaderInfo(Rcpp::IntegerVector whichScan);
+
     Rcpp::DataFrame getChromatogramsInfo(int whichChrom);
 
     Rcpp::DataFrame getAllScanHeaderInfo();
+
+    Rcpp::DataFrame getAllChromatogramHeaderInfo();
 
     Rcpp::List getPeakList(int whichScan);
 

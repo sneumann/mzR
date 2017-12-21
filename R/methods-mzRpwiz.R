@@ -198,3 +198,19 @@ setMethod("chromatogram", "mzRpwiz",
               }
               return(ans)
           })
+
+setMethod("chromatogramHeader", "mzRpwiz",
+          function(object, chrom) {
+              if (missing(chrom)) {
+                  res <- object@backend$getAllChromatogramHeaderInfo()
+              } else {
+                  stopifnot(is.numeric(chrom))
+                  n <- nChrom(object)
+                  if (min(chrom) < 1 || max(chrom) > n)
+                      stop("Index out of bound [", 1, ":", n, "]")
+                  chrom <- chrom -1L
+                  res <- object@backend$getChromatogramHeaderInfo(chrom)
+              }
+              res$chromatogramId <- as.character(res$chromatogramId)
+              res
+          })

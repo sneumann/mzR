@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.13.2
+--------------------------
+ o Add chromatogramHeader method to read header information for chromatograms
+   from an mzML file.
+
 CHANGES IN VERSION 2.13.1
 --------------------------
  o Read filter string from mzML files and add it to the data.frame returned by

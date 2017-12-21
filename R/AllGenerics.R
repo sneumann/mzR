@@ -13,6 +13,8 @@ setGeneric("writeMSfile", function(object, filename, outformat) standardGeneric(
 ##            function(object, filename, outformat, header, data)
 ##                standardGeneric("writeSpectrumList"))
 setGeneric("chromatogramsInfo", function(object) standardGeneric("chromatogramsInfo"))
+setGeneric("chromatogramHeader", function(object, chrom)
+    standardGeneric("chromatogramHeader"))
 setGeneric("creationDate", function(object) standardGeneric("creationDate"))
 setGeneric("manufacturer", function(object) standardGeneric("manufacturer"))
 setGeneric("model", function(object) standardGeneric("model"))
