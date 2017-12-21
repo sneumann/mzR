@@ -3,6 +3,7 @@ r: bioc-devel
 sudo: required
 
 r_packages:
+  - devtools
   - knitr
   - XML
   - plyr
