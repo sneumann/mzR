@@ -21,6 +21,9 @@ addons:
 # Thanks to jimhester pointing this out!
 before_install:
   - if [[ "$TRAVIS_R_VERSION_STRING" = 'bioc-devel' ]]; then mkdir ~/.R && echo 'CXX1X=g++ -std=c++0x -g -O2 -fPIC' > ~/.R/Makevars; fi
+  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+  - chmod 755 ./travis-tool.sh
+  - ./travis-tool.sh bootstrap
 
 ## Work around timeout, following 
 ## https://github.com/craigcitro/r-travis/wiki
