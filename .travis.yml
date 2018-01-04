@@ -21,3 +21,9 @@ addons:
 # Thanks to jimhester pointing this out!
 before_install:
   - if [[ "$TRAVIS_R_VERSION_STRING" = 'bioc-devel' ]]; then mkdir ~/.R && echo 'CXX1X=g++ -std=c++0x -g -O2 -fPIC' > ~/.R/Makevars; fi
+
+## Work around timeout, following 
+## https://github.com/craigcitro/r-travis/wiki
+
+script:
+  - travis_wait ./travis-tool.sh run_tests
