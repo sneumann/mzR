@@ -27,7 +27,7 @@
 #include "../../common/cv.hpp"
 #include "../../common/ParamTypes.hpp"
 #include "../MSData.hpp"
-#include "c++/H5Cpp.h"
+#include "H5Cpp.h"
 #include <string>
 #include <vector>
 
