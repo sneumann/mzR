@@ -20,14 +20,14 @@ vignette: >
 
 # Introduction
 
-The `r Biocpkg("mzR")` package aims at providing a common, low-level
+The `r BiocStyle::Biocpkg("mzR")` package aims at providing a common, low-level
 interface to several mass spectrometry data formats, namely `mzData`
 [@Orchard2007], `mzXML` [@Pedrioli2004], `mzML` [@Martens2010] for raw
 data, and `mzIdentML` [@Jones2012], somewhat similar to the
 Bioconductor package affyio for affymetrix raw data. No processing is
-done in `r Biocpkg("mzR")`, which is left to packages such as `r
-Biocpkg("xcms")` [@Smith:2006, Tautenhahn:2008] or 
-`r Biocpkg("MSnbase")` [@Gatto:2012]. These packages also provide more
+done in `r BiocStyle::Biocpkg("mzR")`, which is left to packages such as `r
+BiocStyle::Biocpkg("xcms")` [@Smith:2006, Tautenhahn:2008] or 
+`r BiocStyle::Biocpkg("MSnbase")` [@Gatto:2012]. These packages also provide more
 convenient, high-level interfaces to raw and identification. data
 
 Most importantly, access to the data should be fast and memory
@@ -51,7 +51,7 @@ provides support to `CDF`-based formats. Finally, the `mzRident`
 backend is available to access identification data (`mzIdentML`)
 through pwiz.
 
-The `r Biocpkg("mzR")` package is in essence a collection of wrappers
+The `r BiocStyle::Biocpkg("mzR")` package is in essence a collection of wrappers
 to the C++ code, and benefits from the C++ interface provided through
 the Rcpp package [@Rcpp11].
 
