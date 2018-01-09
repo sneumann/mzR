@@ -114,9 +114,11 @@ ARCH_OBJS=./boost/libs/filesystem/src/path_traits.o \
 ./boost_aux/boost/nowide/iostream.o
 ARCH_CPPFLAGS=-fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
 ARCH_LIBS=-lws2_32 -lz
+RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)  
 else
 ARCH_OBJS=./boost/libs/thread/src/pthread/once.o \
 ./boost/libs/thread/src/pthread/thread.o
+RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave`
 endif
 
 NC_CFLAGS=`nc-config --cflags || /bin/true`
@@ -135,12 +137,12 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) $(ARCH_OBJS) rampR.o R_init_mzR.o
 ##
 
 PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost/ -I. -D_LARGEFILE_SOURCE -DHAVE_PWIZ_MZML_LIB -D_NODEBUG
-PWIZ_LDFLAGS=-lhdf5_cpp -lpthread
+PWIZ_LDFLAGS=-lpthread
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_CPPFLAGS=$(PWIZ_CPPFLAGS) $(NC_CFLAGS)  $(ARCH_CPPFLAGS)
 
-PKG_LIBS=$(PWIZ_LDFLAGS) $(NC_LIBS)  $(ARCH_LIBS)
+PKG_LIBS=$(PWIZ_LDFLAGS) $(RHDF5_LIBS) $(NC_LIBS)  $(ARCH_LIBS)
 
 all: clean $(SHLIB)
 
