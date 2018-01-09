@@ -1,6 +1,6 @@
 CHANGES IN VERSION 2.13.3
 -------------------------
- o Nothing yet
+ o Use Rhdf5lib 1.1.4 with c++ headers in /include
  
 CHANGES IN VERSION 2.13.2
 --------------------------
