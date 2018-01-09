@@ -1,7 +1,6 @@
 CHANGES IN VERSION 2.13.3
 -------------------------
- o Link against Rhdf5lib, allows to read mz5 also on Windows
- o fix Vignette on Windows
+ o Nothing yet
  
 CHANGES IN VERSION 2.13.2
 --------------------------
