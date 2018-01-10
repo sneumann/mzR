@@ -1,6 +1,8 @@
 CHANGES IN VERSION 2.13.3
 -------------------------
+ o Link against Rhdf5lib, allows to read mz5 also on Windows
  o Use Rhdf5lib 1.1.4 with c++ headers in /include
+ o fix BiocStyle related issue in Vignette on Windows
  
 CHANGES IN VERSION 2.13.2
 --------------------------
