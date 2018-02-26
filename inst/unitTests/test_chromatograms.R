@@ -48,7 +48,7 @@ test_chromatogramHeader <- function() {
 
     ## Should return only the TIC.
     f <- proteomics(full.names = TRUE, pattern = "MS3")
-    x <- openMSfile(f)
+    x <- openMSfile(f[1])
     ch <- chromatogramHeader(x)
     checkEquals(nrow(ch), 1)
     checkEquals(ch$chromatogramId, "TIC")
