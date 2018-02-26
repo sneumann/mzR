@@ -156,9 +156,11 @@ test_copyWriteMSData <- function() {
     
     ## OUTPUT: mzXML
     fnew <- paste0(test_folder, "test_copyWrite.mzXML")
-    mzR::copyWriteMSData(file = fnew, original_file = orig_file,
-                         header = hdr, object = pks, backend = "pwiz",
-                         outformat = "mzxml")
+    suppressWarnings(
+        mzR::copyWriteMSData(file = fnew, original_file = orig_file,
+                             header = hdr, object = pks, backend = "pwiz",
+                             outformat = "mzxml")
+    )
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)
@@ -211,9 +213,11 @@ test_copyWriteMSData <- function() {
 
     ## Subset with mzXML
     fnew <- paste0(test_folder, "test_copyWrite.mzXML")
-    mzR::copyWriteMSData(file = fnew, original_file = orig_file,
-                         header = hdr_sub, object = pks_sub, backend = "pwiz",
-                         outformat = "mzxml")
+    suppressWarnings(
+        mzR::copyWriteMSData(file = fnew, original_file = orig_file,
+                             header = hdr_sub, object = pks_sub, backend = "pwiz",
+                             outformat = "mzxml")
+    )
     ## Check content is same
     mzml_new <- openMSfile(fnew, backend = "pwiz")
     pks_new <- peaks(mzml_new)

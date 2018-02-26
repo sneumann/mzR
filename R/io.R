@@ -1,8 +1,12 @@
 openMSfile <- function(filename,
                        backend = NULL,
                        verbose = FALSE) {
+    if (missing(filename))
+        stop("'filename' is missing")
+    if (length(filename) != 1)
+        stop("'filename' has to be of length 1")
     if (!file.exists(filename))
-        stop("File ",filename," not found.\n")
+        stop("File ", filename, " not found")
     filename <- path.expand(filename)
     if (is.null(backend))
         backend <- .mzRBackend(filename)
@@ -64,9 +68,8 @@ openMSfile <- function(filename,
         return("Ramp")
     } else if (grepl("\\.cdf($|\\.)|\\.nc($|\\.)", x, ignore.case = TRUE)) {
         return("netCDF")
-    } else {
-        return(.mzRBackendFromContent(x))
-    }
+    } else
+        suppressWarnings(.mzRBackendFromContent(x))
 }
 
 #' Determine the backend from the (first few lines of the) file content.
@@ -81,14 +84,14 @@ openMSfile <- function(filename,
         first_lines <- readLines(x, n = 4)
     )
 
-    if (rawToChar(readBin(x, raw(), n = 10)[2:4]) == "HDF") {
-        return("pwiz")
-    } else if (substr(readBin(x, character(), n = 1), 1, 3) == "CDF") {
-        return("netCDF")
-    } else if (any(grepl("<mz[X]?ML", first_lines))) {
+    if (any(grepl("<mz[X]?ML", first_lines))) {
         return("pwiz")
     } else if (any(grepl("<mzData", first_lines))) {
         return("Ramp")
+    } else if (rawToChar(readBin(x, raw(), n = 10)[2:4]) == "HDF") {
+        return("pwiz")
+    } else if (substr(readBin(x, character(), n = 1), 1, 3) == "CDF") {
+        return("netCDF")
     } else
         stop("Could not determine file type for ", x)        
 }

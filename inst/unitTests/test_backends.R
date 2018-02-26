@@ -11,7 +11,7 @@ test_backends <- function() {
 }
 
 test_mz5 <- function() {
-    f <- system.file("microtofq", "MM14.mz5", package = "msdata")
+    f <- system.file("microtofq/MM14.mz5", package = "msdata")
     m <- openMSfile(f)
     checkTrue(validObject(m))
     checkEquals(nrow(header(m)), 112)
