@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.13.4
+-------------------------
+ o Fix error (see issue #145)
+
 CHANGES IN VERSION 2.13.3
 -------------------------
  o Link against Rhdf5lib, allows to read mz5 also on Windows
