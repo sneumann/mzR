@@ -34,8 +34,11 @@ openMSfile <- function(filename,
             stop("Unable to open netCDF file.")
         }
     } else if (backend == "pwiz") {
-        pwizModule <- new( Pwiz ) 
-        pwizModule$open(filename)
+        pwizModule <- new(Pwiz)
+        tryCatch(pwizModule$open(filename), error = function(e) {
+            stop("Can not open file ", filename, "! Original error was: ", e,
+                 call. = FALSE)
+        })
         return(new("mzRpwiz",
                    backend=pwizModule,
                    fileName=filename))        
