@@ -1,6 +1,7 @@
 CHANGES IN VERSION 2.13.5
 -------------------------
  o Fix https://github.com/sneumann/xcms/issues/261
+ o Fix endian.hpp for new c++ versions (see PR #149)
 
 CHANGES IN VERSION 2.13.4
 -------------------------
