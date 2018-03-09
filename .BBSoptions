@@ -1,0 +1,3 @@
+INSTALLprepend: MAKE="make -j4"
+BUILDprepend: MAKE="make -j4"
+BUILDBINprepend: MAKE="make -j4"
