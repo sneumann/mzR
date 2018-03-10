@@ -1,0 +1,21 @@
+# editor backup files
+*~
+\#*\#
+
+# compiled code
+*.o
+*.so
+*.dll
+*.a
+
+src/symbols.rds
+
+# SVN stuff
+.svn
+
+# RUnit generated stuff
+inst/unitTests/report*
+
+# configure generated stuff:
+R/zzz.R
+
