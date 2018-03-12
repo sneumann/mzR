@@ -1,6 +1,6 @@
-INSTALLprepend: MAKE="make -j4"
-INSTALLprepend.win: set MAKE=make -j8 &&
-BUILDprepend: MAKE="make -j4"
-BUILDprepend.win: set MAKE=make -j8 &&
-BUILDBINprepend: MAKE="make -j4"
-BUILDBINprepend.win: set MAKE=make -j8 &&
+#INSTALLprepend: MAKE="make -j4"
+#INSTALLprepend.win: set MAKE=make -j8 &&
+#BUILDprepend: MAKE="make -j4"
+#BUILDprepend.win: set MAKE=make -j8 &&
+#BUILDBINprepend: MAKE="make -j4"
+#BUILDBINprepend.win: set MAKE=make -j8 &&
