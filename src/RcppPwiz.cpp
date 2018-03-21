@@ -634,6 +634,8 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   
   // Now filling with new data
   shared_ptr<SpectrumListSimple> spectrumList(new SpectrumListSimple);
+  // Add the default Processing pointer (fix issue #151
+  spectrumList->dp = msd.dataProcessingPtrs[(msd.dataProcessingPtrs.size() - 1)];
   msd.run.spectrumListPtr = spectrumList;
   // TODO add also eventual processings.
   for (int i = 0; i < spctr_data.size(); i++) {
