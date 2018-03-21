@@ -99,12 +99,12 @@
             if (!is.character(z))
                 stop("Each element in 'software_processing' has to be of type ",
                      "character")
-            if (length(z) == 2)
-                z <- c(z, "MS:-1")
+            ## issue #151: CV param ?? is not valid.
+            ## if (length(z) == 2)
+            ##     z <- c(z, "MS:-1")
             if (length(z) < 2)
                 stop("Each element in 'software_processing' has to be of ",
                      "length >= 2")
-            ## Eventually check that all elements > 2 start with MS.
             z
         }
         x <- lapply(x, check_element)

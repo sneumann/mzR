@@ -50,6 +50,6 @@ test_check_software_processing <- function() {
     checkException(mzR:::.check_software_processing("a"))
     res <- mzR:::.check_software_processing(c("mzR", "1.0.0"))
     checkEquals(class(res), "list")
-    checkEquals(res, list(c("mzR", "1.0.0", "MS:-1")))
+    checkEquals(res, list(c("mzR", "1.0.0")))
     checkException(mzR:::.check_software_processing(c(3, 5)))
 }
