@@ -122,7 +122,7 @@ RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vani
 endif
 
 NC_CFLAGS=`nc-config --cflags || /bin/true`
-NC_LIBS=-L/opt/lib/hdf5-18/lib/ `nc-config --libs || echo " -lnetcdf "`
+NC_LIBS=`nc-config --libs || echo " -lnetcdf "`
 
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o rnetCDF.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
 
