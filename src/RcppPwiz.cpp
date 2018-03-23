@@ -543,7 +543,8 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
  * o soft_proc: is supposed to be a character vector of length >= 2:
  *   soft_proc[0]: The software name (required).
  *   soft_proc[1]: The software version (required).
- *   soft_proc[2]: The CV ID of the software. Use "-1" if not known.
+ *   soft_proc[2]: The CV ID of the software. Use "MS:-1" if not known, in 
+ *                 which case we are NOT writing the corresponding CV element.
  *   soft_proc[3-length]: CV IDs of the processing steps (optional). 
  */
 void RcppPwiz::addDataProcessing(MSData& msd, Rcpp::StringVector soft_proc) {
@@ -552,8 +553,10 @@ void RcppPwiz::addDataProcessing(MSData& msd, Rcpp::StringVector soft_proc) {
   new_soft->version = soft_proc(1);
   int soft_proc_size = soft_proc.size();
   if (soft_proc_size > 2) {
-    CVTermInfo cv_term = cvTermInfo(soft_proc(2));
-    new_soft->set(cv_term.cvid);
+    if (soft_proc(2) != "MS:-1") {
+      CVTermInfo cv_term = cvTermInfo(soft_proc(2));
+      new_soft->set(cv_term.cvid);
+    }
   }
   // Order: get the number of already present dataProcessingPtrs and
   // increment

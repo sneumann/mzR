@@ -40,9 +40,9 @@ test_mzML <- function() {
     checkTrue(any(colnames(hdr) == "spectrumId"))
     checkTrue(all(hdr$centroided))
     checkEquals(hdr$spectrumId, paste0("spectrum=", hdr$acquisitionNum))
-    hdr <- header(mzxml,1)
+    hdr <- header(mzml,1)
     checkTrue(is.list(hdr))
-    hdr <- header(mzxml, 2:3)
+    hdr <- header(mzml, 2:3)
     checkTrue(is.data.frame(hdr))
     checkTrue(nrow(hdr) == 2)
 

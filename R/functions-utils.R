@@ -103,9 +103,9 @@
             ## issue #151: CV param ?? is not valid.
             ## if (length(z) == 2)
             ##     z <- c(z, "MS:-1")
-            if (length(z) < 2)
+            if (length(z) < 3)
                 stop("Each element in 'software_processing' has to be of ",
-                     "length >= 2")
+                     "length >= 3")
             z
         }
         x <- lapply(x, check_element)

@@ -250,7 +250,7 @@ test_copyWriteMSData <- function() {
     out_file <- paste0(test_folder, "test_copyWrite.mzML")
     mzR::copyWriteMSData(file = out_file, original_file = test_file,
                          header = hdr, object = pks,
-                         software_processing = c("MSnbase", "2.3.8"))
+                         software_processing = c("MSnbase", "2.3.8", "MS:-1"))
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
@@ -264,7 +264,7 @@ test_copyWriteMSData <- function() {
     out_file <- paste0(test_folder, "test_copyWrite.mzXML")
     mzR::copyWriteMSData(file = out_file, original_file = test_file,
                          header = hdr, object = pks, outformat = "mzXML",
-                         software_processing = c("MSnbase", "2.3.8"))
+                         software_processing = c("MSnbase", "2.3.8", "MS:-1"))
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
