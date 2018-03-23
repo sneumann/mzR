@@ -133,7 +133,7 @@ setMethod("writeMSData", signature(object = "list", file = "character"),
               ## Check software_processing:
               software_processing <- .check_software_processing(software_processing)
               ## Add mzR processing:
-              mzR <- c("mzR", paste(packageVersion("mzR"), collapse = "."))
+              mzR <- c("mzR", paste(packageVersion("mzR"), collapse = "."), "MS:-1")
               if (outformat == "mzml")
                   mzR <- c(mzR, "MS:1000544")
               if (outformat == "mzxml")

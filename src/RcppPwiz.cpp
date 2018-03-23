@@ -2,12 +2,12 @@
 
 RcppPwiz::RcppPwiz()
 {
-    msd = NULL;
-    instrumentInfo = Rcpp::List::create();
-    chromatogramsInfo = Rcpp::DataFrame::create();
-    isInCacheInstrumentInfo = FALSE;
-    allScanHeaderInfo = Rcpp::List::create();
-    isInCacheAllScanHeaderInfo = FALSE;
+  msd = NULL;
+  instrumentInfo = Rcpp::List::create();
+  chromatogramsInfo = Rcpp::DataFrame::create();
+  isInCacheInstrumentInfo = FALSE;
+  allScanHeaderInfo = Rcpp::List::create();
+  isInCacheAllScanHeaderInfo = FALSE;
 }
 /* Destructor*/
 RcppPwiz::~RcppPwiz()
@@ -18,8 +18,8 @@ RcppPwiz::~RcppPwiz()
 void RcppPwiz::open(const string& fileName)
 {
 
-    filename = fileName;
-    msd = new MSDataFile(fileName);
+  filename = fileName;
+  msd = new MSDataFile(fileName);
 
 }
 
@@ -76,98 +76,98 @@ void RcppPwiz::close()
 
 
 string RcppPwiz::getFilename() {
-    return filename;
+  return filename;
 }
 
 int RcppPwiz::getLastScan() const {
-    if (msd != NULL) {
-      SpectrumListPtr slp = msd->run.spectrumListPtr;
-      return slp->size();
-    }
-    Rprintf("Warning: pwiz not yet initialized.\n ");
-    return -1;
+  if (msd != NULL) {
+    SpectrumListPtr slp = msd->run.spectrumListPtr;
+    return slp->size();
+  }
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return -1;
 }
 
 int RcppPwiz::getLastChrom() const {
-    if (msd != NULL) {
-      ChromatogramListPtr clp = msd->run.chromatogramListPtr;
-      return clp->size();
-    }
-    Rprintf("Warning: pwiz not yet initialized.\n ");
-    return -1;
+  if (msd != NULL) {
+    ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+    return clp->size();
+  }
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return -1;
 }
 
 Rcpp::List RcppPwiz::getInstrumentInfo ( )
 {
-    if (msd != NULL)
+  if (msd != NULL)
     {
-        if (!isInCacheInstrumentInfo)
+      if (!isInCacheInstrumentInfo)
         {
 
-            vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs; // NULL for mzData	    
-            if (icp.size() != 0)
+	  vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs; // NULL for mzData	    
+	  if (icp.size() != 0)
             {
-                CVTranslator cvTranslator;
-                LegacyAdapter_Instrument adapter(*icp[0], cvTranslator);
-                vector<SoftwarePtr> sp = msd->softwarePtrs;
-                std::vector<SamplePtr> sample = msd->samplePtrs;
-                std::vector<ScanSettingsPtr> scansetting = msd->scanSettingsPtrs;
-		std::string ionisation = "";
-		std::string analyzer = "";
-		std::string detector = "";
-		// Fix issue #113
-		// if (icp[0]->componentList.size() > 0)
-		// That does still not mean we have a ionisation available.
-		// Could be that either analyzer or detector or ionisation is
-		// defined.
-		// Have to use try-catch
-		try {
-		  ionisation = std::string(adapter.ionisation());		  
-		} catch(...) {}
-		try {
-		  analyzer = std::string(adapter.analyzer());		  
-		} catch(...) {}
-		try {
-		  detector = std::string(adapter.detector());		  
-		} catch(...) {}
-                instrumentInfo = Rcpp::List::create(
-                                     Rcpp::_["manufacturer"]  = std::string(adapter.manufacturer()),
-                                     Rcpp::_["model"]         = std::string(adapter.model()),
-                                     Rcpp::_["ionisation"]    = ionisation,
-                                     Rcpp::_["analyzer"]      = analyzer,
-                                     Rcpp::_["detector"]      = detector,
-                                     Rcpp::_["software"]      = (sp.size()>0?sp[0]->id + " " + sp[0]->version:""),
-                                     Rcpp::_["sample"]		  = (sample.size()>0?sample[0]->name+sample[0]->id:""),
-                                     Rcpp::_["source"]        = (scansetting.size()>0?scansetting[0]->sourceFilePtrs[0]->location:"")
-                                 ) ;
+	      CVTranslator cvTranslator;
+	      LegacyAdapter_Instrument adapter(*icp[0], cvTranslator);
+	      vector<SoftwarePtr> sp = msd->softwarePtrs;
+	      std::vector<SamplePtr> sample = msd->samplePtrs;
+	      std::vector<ScanSettingsPtr> scansetting = msd->scanSettingsPtrs;
+	      std::string ionisation = "";
+	      std::string analyzer = "";
+	      std::string detector = "";
+	      // Fix issue #113
+	      // if (icp[0]->componentList.size() > 0)
+	      // That does still not mean we have a ionisation available.
+	      // Could be that either analyzer or detector or ionisation is
+	      // defined.
+	      // Have to use try-catch
+	      try {
+		ionisation = std::string(adapter.ionisation());		  
+	      } catch(...) {}
+	      try {
+		analyzer = std::string(adapter.analyzer());		  
+	      } catch(...) {}
+	      try {
+		detector = std::string(adapter.detector());		  
+	      } catch(...) {}
+	      instrumentInfo = Rcpp::List::create(
+						  Rcpp::_["manufacturer"]  = std::string(adapter.manufacturer()),
+						  Rcpp::_["model"]         = std::string(adapter.model()),
+						  Rcpp::_["ionisation"]    = ionisation,
+						  Rcpp::_["analyzer"]      = analyzer,
+						  Rcpp::_["detector"]      = detector,
+						  Rcpp::_["software"]      = (sp.size()>0?sp[0]->id + " " + sp[0]->version:""),
+						  Rcpp::_["sample"]		  = (sample.size()>0?sample[0]->name+sample[0]->id:""),
+						  Rcpp::_["source"]        = (scansetting.size()>0?scansetting[0]->sourceFilePtrs[0]->location:"")
+						  ) ;
 
             }
-            else
+	  else
             {
-                instrumentInfo = Rcpp::List::create(
-                                     Rcpp::_["manufacturer"]  = "",
-                                     Rcpp::_["model"]         = "",
-                                     Rcpp::_["ionisation"]    = "",
-                                     Rcpp::_["analyzer"]      = "",
-                                     Rcpp::_["detector"]      = "",
-                                     Rcpp::_["software"]      = "",
-                                     Rcpp::_["sample"]		  = "",
-                                     Rcpp::_["source"]		  = ""
-                                 ) ;
+	      instrumentInfo = Rcpp::List::create(
+						  Rcpp::_["manufacturer"]  = "",
+						  Rcpp::_["model"]         = "",
+						  Rcpp::_["ionisation"]    = "",
+						  Rcpp::_["analyzer"]      = "",
+						  Rcpp::_["detector"]      = "",
+						  Rcpp::_["software"]      = "",
+						  Rcpp::_["sample"]		  = "",
+						  Rcpp::_["source"]		  = ""
+						  ) ;
             }
 
-            isInCacheInstrumentInfo = TRUE;
+	  isInCacheInstrumentInfo = TRUE;
         }
-        return(instrumentInfo);
+      return(instrumentInfo);
     }
-    Rprintf("Warning: pwiz not yet initialized.\n ");
-    return instrumentInfo;
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return instrumentInfo;
 }
 
 
 Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
 {
-    if (msd != NULL)
+  if (msd != NULL)
     {
       SpectrumListPtr slp = msd->run.spectrumListPtr;
       int N = slp->size();
@@ -220,8 +220,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
 	  Scan& scan = sp->scanList.scans.empty() ? dummy : sp->scanList.scans[0];
 	  CVParam param = sp->cvParamChild(MS_scan_polarity);
 	  polarity[i] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
-	  // ionInjectionTime[i] = sp->cvParam(MS_ion_injection_time).valueAs<double>();
-	  ionInjectionTime[i] = scan.cvParam(MS_ion_injection_time).timeInSeconds();
+	  ionInjectionTime[i] = scan.cvParam(MS_ion_injection_time).valueAs<double>();
 	  filterString[i] = scan.cvParam(MS_filter_string).value.empty() ? NA_STRING : Rcpp::String(scan.cvParam(MS_filter_string).value);
 
 	  peaksCount[i] = scanHeader.peaksCount;
@@ -307,64 +306,64 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       
       return header;
     }
-    Rprintf("Warning: pwiz not yet initialized.\n ");
-    return Rcpp::DataFrame::create( );
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return Rcpp::DataFrame::create( );
 }
 
 Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( )
 {
-    if (msd != NULL)
+  if (msd != NULL)
     {
-        if (!isInCacheAllScanHeaderInfo)
+      if (!isInCacheAllScanHeaderInfo)
         {
-            SpectrumListPtr slp = msd->run.spectrumListPtr;
-            int N = slp->size();
+	  SpectrumListPtr slp = msd->run.spectrumListPtr;
+	  int N = slp->size();
 
-            allScanHeaderInfo = getScanHeaderInfo(Rcpp::seq(1, N));
-            isInCacheAllScanHeaderInfo = TRUE;	    
+	  allScanHeaderInfo = getScanHeaderInfo(Rcpp::seq(1, N));
+	  isInCacheAllScanHeaderInfo = TRUE;	    
         }
-        return allScanHeaderInfo ;
+      return allScanHeaderInfo ;
     }
-    Rprintf("Warning: pwiz not yet initialized.\n ");
-    return Rcpp::DataFrame::create( );
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return Rcpp::DataFrame::create( );
 }
 
 Rcpp::List RcppPwiz::getPeakList ( int whichScan )
 {
-    if (msd != NULL)
+  if (msd != NULL)
     {
-        SpectrumListPtr slp = msd->run.spectrumListPtr;
+      SpectrumListPtr slp = msd->run.spectrumListPtr;
 
-        if ((whichScan <= 0) || (whichScan > slp->size()))
+      if ((whichScan <= 0) || (whichScan > slp->size()))
         {
-            Rprintf("Index whichScan out of bounds [1 ... %d].\n", slp->size());
-            return Rcpp::List::create( );
+	  Rprintf("Index whichScan out of bounds [1 ... %d].\n", slp->size());
+	  return Rcpp::List::create( );
         }
 
-        SpectrumPtr s = slp->spectrum(whichScan - 1, true);
-        vector<MZIntensityPair> pairs;
-        s->getMZIntensityPairs(pairs);
+      SpectrumPtr s = slp->spectrum(whichScan - 1, true);
+      vector<MZIntensityPair> pairs;
+      s->getMZIntensityPairs(pairs);
 
-        Rcpp::NumericMatrix peaks(pairs.size(), 2);
+      Rcpp::NumericMatrix peaks(pairs.size(), 2);
 
-        if(pairs.size()!=0)
+      if(pairs.size()!=0)
         {
-            for (int i = 0; i < pairs.size(); i++)
+	  for (int i = 0; i < pairs.size(); i++)
             {
-                MZIntensityPair p = pairs.at(i);
-                peaks(i,0) = p.mz;
-                peaks(i,1) = p.intensity;
+	      MZIntensityPair p = pairs.at(i);
+	      peaks(i,0) = p.mz;
+	      peaks(i,1) = p.intensity;
             }
 
         }
 
-        return Rcpp::List::create(
-                   Rcpp::_["peaksCount"]  = pairs.size(),
-                   Rcpp::_["peaks"]  = peaks
-               ) ;
+      return Rcpp::List::create(
+				Rcpp::_["peaksCount"]  = pairs.size(),
+				Rcpp::_["peaks"]  = peaks
+				) ;
     }
-    Rprintf("Warning: pwiz not yet initialized.\n ");
-    return Rcpp::List::create( );
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return Rcpp::List::create( );
 }
 
 /**
@@ -651,6 +650,11 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     spectrumList->spectra.push_back(SpectrumPtr(new Spectrum));
     Spectrum& spct = *spectrumList->spectra[i];
     spct.set(MS_ms_level, msLevel[i]);
+    // centroided
+    if (centroided[i] != NA_LOGICAL && centroided[i] == TRUE)
+      spct.set(MS_centroid_spectrum);
+    if (centroided[i] != NA_LOGICAL && centroided[i] == FALSE)
+      spct.set(MS_profile_spectrum);
     // [X] polarity
     if (polarity[i] == 0)
       spct.set(MS_negative_scan);
@@ -660,16 +664,12 @@ void RcppPwiz::addSpectrumList(MSData& msd,
       spct.set(MS_MS1_spectrum);
     else
       spct.set(MS_MSn_spectrum);
-    spct.set(MS_lowest_observed_m_z, lowMZ[i]);
-    spct.set(MS_highest_observed_m_z, highMZ[i]);
-    spct.set(MS_base_peak_m_z, basePeakMZ[i]);
-    spct.set(MS_base_peak_intensity, basePeakIntensity[i]);
+    spct.set(MS_lowest_observed_m_z, lowMZ[i], MS_m_z);
+    spct.set(MS_highest_observed_m_z, highMZ[i], MS_m_z);
+    spct.set(MS_base_peak_m_z, basePeakMZ[i], MS_m_z);
+    spct.set(MS_base_peak_intensity, basePeakIntensity[i],
+	     MS_number_of_detector_counts);
     spct.set(MS_total_ion_current, totIonCurrent[i]);
-    // centroided
-    if (centroided[i] != NA_LOGICAL && centroided[i] == TRUE)
-      spct.set(MS_centroid_spectrum);
-    if (centroided[i] != NA_LOGICAL && centroided[i] == FALSE)
-      spct.set(MS_profile_spectrum);
     // TODO:
     // [X] seqNum: number observed in file.
     spct.index = seqNum[i] - 1;	// Or just i?
@@ -681,15 +681,12 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     spct.scanList.scans.push_back(Scan());
     spct.scanList.set(MS_no_combination);
     Scan &spct_scan = spct.scanList.scans.back();
-    if (rtime_seconds) {
+    if (rtime_seconds)
       spct_scan.set(MS_scan_start_time, retentionTime[i], UO_second);
-      if (ionInjectionTime[i] > 0)
-	spct_scan.set(MS_ion_injection_time, ionInjectionTime[i], UO_second);
-    } else {
+    else
       spct_scan.set(MS_scan_start_time, retentionTime[i], UO_minute);
-      if (ionInjectionTime[i] > 0)
-	spct_scan.set(MS_ion_injection_time, ionInjectionTime[i], UO_minute);
-    }
+    if (ionInjectionTime[i] > 0)
+      spct_scan.set(MS_ion_injection_time, ionInjectionTime[i], UO_millisecond);
 
     if (!Rcpp::StringVector::is_na(filterString[i]))
       spct_scan.set(MS_filter_string, filterString[i]);
@@ -756,38 +753,38 @@ void RcppPwiz::addSpectrumList(MSData& msd,
 
 Rcpp::DataFrame RcppPwiz::getChromatogramsInfo( int whichChrom )
 {
-    if (msd != NULL) {
-      ChromatogramListPtr clp = msd->run.chromatogramListPtr;
-      if (clp.get() == 0) {
-	Rcpp::Rcerr << "The direct support for chromatogram info is only available in mzML format." << std::endl;
-	return Rcpp::DataFrame::create();
-      } else if (clp->size() == 0) {
-	Rcpp::Rcerr << "No available chromatogram info." << std::endl;
-	return Rcpp::DataFrame::create();
-      } else if ( (whichChrom < 0) || (whichChrom > clp->size()) ) {
-	Rprintf("Index whichChrom out of bounds [0 ... %d].\n", (clp->size())-1);
-	return Rcpp::DataFrame::create( );
-      } else {
-	std::vector<double> time;
-	std::vector<double> intensity;
-	ChromatogramPtr c = clp->chromatogram(whichChrom, true);
-	vector<TimeIntensityPair> pairs;
-	c->getTimeIntensityPairs (pairs);
+  if (msd != NULL) {
+    ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+    if (clp.get() == 0) {
+      Rcpp::Rcerr << "The direct support for chromatogram info is only available in mzML format." << std::endl;
+      return Rcpp::DataFrame::create();
+    } else if (clp->size() == 0) {
+      Rcpp::Rcerr << "No available chromatogram info." << std::endl;
+      return Rcpp::DataFrame::create();
+    } else if ( (whichChrom < 0) || (whichChrom > clp->size()) ) {
+      Rprintf("Index whichChrom out of bounds [0 ... %d].\n", (clp->size())-1);
+      return Rcpp::DataFrame::create( );
+    } else {
+      std::vector<double> time;
+      std::vector<double> intensity;
+      ChromatogramPtr c = clp->chromatogram(whichChrom, true);
+      vector<TimeIntensityPair> pairs;
+      c->getTimeIntensityPairs (pairs);
 
-	for (int i = 0; i < pairs.size(); i++) {
-	  TimeIntensityPair p = pairs.at(i);
-	  time.push_back(p.time);
-	  intensity.push_back(p.intensity);
-	}
-
-	chromatogramsInfo = Rcpp::DataFrame::create(Rcpp::_["time"] = time,
-						    Rcpp::_[c->id]  = intensity);
-
+      for (int i = 0; i < pairs.size(); i++) {
+	TimeIntensityPair p = pairs.at(i);
+	time.push_back(p.time);
+	intensity.push_back(p.intensity);
       }
-      return(chromatogramsInfo);
+
+      chromatogramsInfo = Rcpp::DataFrame::create(Rcpp::_["time"] = time,
+						  Rcpp::_[c->id]  = intensity);
+
     }
-    Rprintf("Warning: pwiz not yet initialized.\n ");
-    return Rcpp::DataFrame::create( );
+    return(chromatogramsInfo);
+  }
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return Rcpp::DataFrame::create( );
 }
 
 // get the header info for chromatograms.
@@ -897,53 +894,53 @@ Rcpp::DataFrame RcppPwiz::getAllChromatogramHeaderInfo ( ) {
 
 Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz )
 {
-    if (msd != NULL)
+  if (msd != NULL)
     {
 
-        SpectrumListPtr slp = msd->run.spectrumListPtr;
-        double f = 1 / resMz;
-        int low = round(whichMzLow * f);
-        int high = round(whichMzHigh * f);
-        int dmz = high - low + 1;
-        int drt = scanNumbers.size();
+      SpectrumListPtr slp = msd->run.spectrumListPtr;
+      double f = 1 / resMz;
+      int low = round(whichMzLow * f);
+      int high = round(whichMzHigh * f);
+      int dmz = high - low + 1;
+      int drt = scanNumbers.size();
 
-        Rcpp::NumericMatrix map3d(drt, dmz);
+      Rcpp::NumericMatrix map3d(drt, dmz);
 
-        for (int i = 0; i < drt; i++)
+      for (int i = 0; i < drt; i++)
         {
-            for (int j = 0; j < dmz; j++)
+	  for (int j = 0; j < dmz; j++)
             {
-                map3d(i,j) = 0.0;
+	      map3d(i,j) = 0.0;
             }
         }
 
-        int j=0;
-        Rprintf("%d\n",1);
-        for (int i = 0; i < scanNumbers.size(); i++)
+      int j=0;
+      Rprintf("%d\n",1);
+      for (int i = 0; i < scanNumbers.size(); i++)
         {
-            SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, true);
-            vector<MZIntensityPair> pairs;
-            s->getMZIntensityPairs(pairs);
+	  SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, true);
+	  vector<MZIntensityPair> pairs;
+	  s->getMZIntensityPairs(pairs);
 
-            for (int k=0; k < pairs.size(); k++)
+	  for (int k=0; k < pairs.size(); k++)
             {
-                MZIntensityPair p = pairs.at(k);
-                j = round(p.mz * f) - low;
-                if ((j >= 0) & (j < dmz))
+	      MZIntensityPair p = pairs.at(k);
+	      j = round(p.mz * f) - low;
+	      if ((j >= 0) & (j < dmz))
                 {
-                    if (p.intensity > map3d(i,j))
+		  if (p.intensity > map3d(i,j))
                     {
-                        map3d(i,j) = p.intensity;
+		      map3d(i,j) = p.intensity;
                     }
                 }
             }
 
         }
-        return(map3d);
+      return(map3d);
     }
 
-    Rprintf("Warning: pwiz not yet initialized.\n ");
-    return Rcpp::NumericMatrix(0,0);
+  Rprintf("Warning: pwiz not yet initialized.\n ");
+  return Rcpp::NumericMatrix(0,0);
 }
 
 string RcppPwiz::getRunStartTimeStamp() {
