@@ -205,6 +205,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       Rcpp::NumericVector ionInjectionTime(N_scans); /* The time spent filling an ion trapping device*/
       Rcpp::StringVector filterString(N_scans);
       Rcpp::StringVector spectrumId(N_scans);
+      Rcpp::LogicalVector centroided(N_scans);
       
       for (int i = 0; i < N_scans; i++)
 	{
@@ -241,12 +242,14 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
 	  mergedResultStartScanNum[i] = scanHeader.mergedResultStartScanNum;
 	  mergedResultEndScanNum[i] = scanHeader.mergedResultEndScanNum;
 	  spectrumId[i] = sp->id;
+	  CVParam prm = sp->cvParamChild(MS_spectrum_representation);
+	  centroided[i] = (prm.cvid==MS_centroid_spectrum ? TRUE : (prm.cvid==MS_profile_spectrum ? FALSE : NA_LOGICAL));
 	}
       // delete adapter issue #64
       delete adapter;
       adapter = NULL;
 
-      Rcpp::List header(24);
+      Rcpp::List header(25);
       std::vector<std::string> names;
       int i = 0;
       names.push_back("seqNum");
@@ -297,6 +300,8 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       header[i++] = Rcpp::wrap(filterString);
       names.push_back("spectrumId");
       header[i++] = Rcpp::wrap(spectrumId);
+      names.push_back("centroided");
+      header[i++] = Rcpp::wrap(centroided);
       
       header.attr("names") = names;
       
@@ -610,6 +615,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   Rcpp::NumericVector ionInjectionTime = spctr_header["injectionTime"];
   Rcpp::StringVector filterString = spctr_header["filterString"];
   Rcpp::StringVector spectrumId = spctr_header["spectrumId"];
+  Rcpp::LogicalVector centroided = spctr_header["centroided"];
   
   // From MSnbase::Spectrum        Column in the header
   // msLevel integer               $msLevel
@@ -656,6 +662,11 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     spct.set(MS_base_peak_m_z, basePeakMZ[i]);
     spct.set(MS_base_peak_intensity, basePeakIntensity[i]);
     spct.set(MS_total_ion_current, totIonCurrent[i]);
+    // centroided
+    if (centroided[i] != NA_LOGICAL && centroided[i] == TRUE)
+      spct.set(MS_centroid_spectrum);
+    if (centroided[i] != NA_LOGICAL && centroided[i] == FALSE)
+      spct.set(MS_profile_spectrum);
     // TODO:
     // [X] seqNum: number observed in file.
     spct.index = seqNum[i] - 1;	// Or just i?

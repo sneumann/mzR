@@ -14,6 +14,9 @@ test_mzXML <- function() {
     header(mzxml,1)
     header(mzxml,2:3)
     fileName(mzxml)
+    hdr <- header(mzxml)
+    checkTrue(any(colnames(hdr) == "centroided"))
+    checkTrue(all(is.na(hdr$centroided)))
     close(mzxml)
 }
 

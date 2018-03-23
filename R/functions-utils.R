@@ -36,7 +36,8 @@
                   mergedResultStartScanNum = "numeric",
                   mergedResultEndScanNum = "numeric",
                   injectionTime = "numeric",
-                  filterString = "character"
+                  filterString = "character",
+                  centroided = "logical"
                   )
     if (!is.data.frame(x))
         return("'x' is supposed to be a data.frame")
