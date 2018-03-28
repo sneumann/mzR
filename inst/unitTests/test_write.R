@@ -6,6 +6,14 @@ test_copyWriteMSData <- function() {
     ## INPUT: mzXML
     orig_file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
                              package = "msdata")
+
+    mzML_xsd <- XML::xmlTreeParse(system.file("extdata", "mzML1.1.0.xsd",
+                                              package = "mzR"),
+                                  isSchema = TRUE, useInternal = TRUE)
+    mzML_xsd_idx <- XML::xmlTreeParse(system.file("extdata", "mzML1.1.2_idx.xsd",
+                                                  package = "mzR"),
+                                      isSchema = TRUE, useInternal = TRUE)
+
     mzxml <- openMSfile(orig_file, backend = "pwiz")
     pks <- peaks(mzxml)
     hdr <- header(mzxml)
@@ -276,6 +284,17 @@ test_copyWriteMSData <- function() {
 }
 
 test_writeMSData <- function() {    
+    mzML_xsd <- XML::xmlTreeParse(system.file("extdata", "mzML1.1.0.xsd",
+                                              package = "mzR"),
+                                  isSchema = TRUE, useInternal = TRUE)
+    mzML_xsd_idx <- XML::xmlTreeParse(system.file("extdata", "mzML1.1.2_idx.xsd",
+                                                  package = "mzR"),
+                                      isSchema = TRUE, useInternal = TRUE)
+    mzXML_xsd_idx <- XML::xmlTreeParse(system.file("extdata",
+                                                   "mzXML_idx_3.2.xsd.xml",
+                                                   package = "mzR"),
+                                       isSchema = TRUE, useInternal = TRUE)
+
     test_folder = tempdir()
     ## Input: mzXML
     test_file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
@@ -286,7 +305,7 @@ test_writeMSData <- function() {
     mzR::close(in_file)
 
     ## mzML
-    out_file <- paste0(test_folder, "test_write.mzML")
+    out_file <- paste0(test_folder, "/test_write.mzML")
     writeMSData(file = out_file, header = hdr, object = pks)
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
@@ -295,7 +314,11 @@ test_writeMSData <- function() {
     checkEquals(pks, pks_2)
     checkEquals(peaks(in_file, 13), pks[[13]])
     mzR::close(in_file)
-
+    ## validate mzML:
+    doc <- XML::xmlInternalTreeParse(out_file)
+    res <- XML::xmlSchemaValidate(mzML_xsd_idx, doc)
+    checkEquals(res$status, 0)
+    
     ## Test subsetting.
     hdr_sub <- hdr[c(1, 3, 5), ]
     hdr_sub$seqNum <- 1:nrow(hdr_sub)
@@ -318,9 +341,13 @@ test_writeMSData <- function() {
     hdr_sub_2$spectrumId <- as.integer(factor(hdr_sub_2$spectrumId))
     rownames(hdr_sub) <- NULL
     checkEquals(hdr_sub, hdr_sub_2)
+    ## validate mzML:
+    doc <- XML::xmlInternalTreeParse(out_file)
+    res <- XML::xmlSchemaValidate(mzML_xsd_idx, doc)
+    checkEquals(res$status, 0)
     
     ## mzXML output:
-    out_file <- paste0(test_folder, "test_write.mzXML")
+    out_file <- paste0(test_folder, "/test_write.mzXML")
     writeMSData(file = out_file, header = hdr, object = pks,
                 outformat = "mzXML")
     in_file <- openMSfile(out_file, backend = "pwiz")
@@ -351,7 +378,6 @@ test_writeMSData <- function() {
     hdr_sub_2$spectrumId <- as.integer(factor(hdr_sub_2$spectrumId))
     rownames(hdr_sub) <- NULL
     checkEquals(hdr_sub, hdr_sub_2)
-
     
     ## mgf output:
     ## out_file <- paste0(test_folder, "test_write.mgf")
@@ -374,7 +400,7 @@ test_writeMSData <- function() {
     mzR::close(in_file)
     
     ## mzML
-    out_file <- paste0(test_folder, "test_write.mzML")
+    out_file <- paste0(test_folder, "/test_write.mzML")
     writeMSData(pks, file = out_file, header = hdr)
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
@@ -389,9 +415,13 @@ test_writeMSData <- function() {
     hdr_2$acquisitionNum <- as.integer(factor(hdr_2$acquisitionNum))
     hdr_2$precursorScanNum <- as.integer(factor(hdr_2$precursorScanNum))
     checkEquals(hdr_mod, hdr_2)
+    ## validate mzML:
+    doc <- XML::xmlInternalTreeParse(out_file)
+    res <- XML::xmlSchemaValidate(mzML_xsd_idx, doc)
+    checkEquals(res$status, 0)
 
     ## mzXML output:
-    out_file <- paste0(test_folder, "test_write.mzXML")
+    out_file <- paste0(test_folder, "/test_write.mzXML")
     suppressWarnings(
         writeMSData(file = out_file, header = hdr, object = pks,
                     outformat = "mzXML")
@@ -489,7 +519,7 @@ test_writeMSData <- function() {
     mzR::close(in_file)
     
     ## mzML
-    out_file <- paste0(test_folder, "test_write.mzML")
+    out_file <- paste0(test_folder, "/test_write.mzML")
     writeMSData(file = out_file, header = hdr, object = pks)
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
@@ -497,6 +527,10 @@ test_writeMSData <- function() {
     mzR::close(in_file)
     checkEquals(hdr, hdr_2)
     checkEquals(pks, pks_2)
+    ## validate mzML:
+    doc <- XML::xmlInternalTreeParse(out_file)
+    res <- XML::xmlSchemaValidate(mzML_xsd_idx, doc)
+    checkEquals(res$status, 0)
 
     ## mzXML output:
     out_file <- paste0(test_folder, "test_write.mzXML")
@@ -518,7 +552,7 @@ test_writeMSData <- function() {
     mzR::close(in_file)
 
     ## mzML
-    out_file <- paste0(test_folder, "test_write.mzML")
+    out_file <- paste0(test_folder, "/test_write.mzML")
     writeMSData(file = out_file, header = hdr, object = pks)
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
@@ -526,6 +560,10 @@ test_writeMSData <- function() {
     mzR::close(in_file)
     checkEquals(hdr, hdr_2)
     checkEquals(pks, pks_2)
+    ## validate mzML:
+    doc <- XML::xmlInternalTreeParse(out_file)
+    res <- XML::xmlSchemaValidate(mzML_xsd_idx, doc)
+    checkEquals(res$status, 0)
 
     ## mzXML output:
     out_file <- paste0(test_folder, "test_write.mzXML")
