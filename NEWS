@@ -1,6 +1,7 @@
 CHANGES IN VERSION 2.13.6
 -------------------------
- o Nothing yet
+ o Add MS CV Term IDs for mzR, MSnbase and CAMERA (issue #151)
+ o Validate exported mzML files using xsd
 
 CHANGES IN VERSION 2.13.5
 -------------------------
