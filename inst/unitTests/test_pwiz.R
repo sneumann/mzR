@@ -7,16 +7,21 @@ test_mzXML <- function() {
     length(mzxml)
     runInfo(mzxml)
     instrumentInfo(mzxml)
-    peaks(mzxml)
-    peaks(mzxml,1)
-    peaks(mzxml, 2:3)
+    checkTrue(is.list(peaks(mzxml)))
+    checkTrue(is.matrix(peaks(mzxml,1)))
+    pks <- peaks(mzxml, 2:3)
+    checkTrue(length(pks) == 2)
     peaksCount(mzxml)
     hdr <- header(mzxml)
     checkTrue(any(colnames(hdr) == "spectrumId"))
-    header(mzxml,1)
-    header(mzxml, 2:3)
+    checkTrue(all(hdr$centroided))
+    hdr <- header(mzxml,1)
+    checkTrue(is.list(hdr))
+    hdr <- header(mzxml, 2:3)
+    checkTrue(is.data.frame(hdr))
+    checkTrue(nrow(hdr) == 2)
     fileName(mzxml)
-    close(mzxml) 
+    close(mzxml)    
 }
 
 test_mzML <- function() {
@@ -33,9 +38,13 @@ test_mzML <- function() {
     peaksCount(mzml)
     hdr <- header(mzml)
     checkTrue(any(colnames(hdr) == "spectrumId"))
+    checkTrue(all(hdr$centroided))
     checkEquals(hdr$spectrumId, paste0("spectrum=", hdr$acquisitionNum))
-    header(mzml,1)
-    header(mzml,2:3)
+    hdr <- header(mzml,1)
+    checkTrue(is.list(hdr))
+    hdr <- header(mzml, 2:3)
+    checkTrue(is.data.frame(hdr))
+    checkTrue(nrow(hdr) == 2)
 
     checkTrue(ncol(header(mzml))>4)
     checkTrue(length(header(mzml,1))>4)
@@ -45,6 +54,15 @@ test_mzML <- function() {
     checkTrue(all(header(mzml)$polarity==1))
 
     fileName(mzml)
+    close(mzml)
+
+    file <- system.file("proteomics", "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz",
+                        package = "msdata")
+    mzml <- openMSfile(file, backend="pwiz")
+    checkTrue(class(mzml)=="mzRpwiz")
+    hdr <- header(mzml)
+    checkTrue(hdr$centroided[2])
+    checkTrue(!hdr$centroided[1])
     close(mzml)
 }
 
@@ -62,18 +80,21 @@ test_getScanHeaderInfo <- function() {
     scan_3_ramp <- header(ramp, scans = 3)
     ## Ramp does not read polarity
     scan_3$polarity <- 0
+    scan_3$centroided <- NA
     checkEquals(scan_3[cn], scan_3_ramp[cn])
     
     ## Read all scan header
     all_scans <- header(mzml)
     all_scans_ramp <- header(ramp)
     all_scans$polarity <- 0
+    all_scans$centroided <- NA
     checkEquals(all_scans[, cn], all_scans_ramp[, cn])
     
     ## passing the index of all scan headers should return the same
     all_scans_2 <- header(mzml, scans = 1:nrow(all_scans))
     all_scans_ramp_2 <- header(ramp, scans = 1:nrow(all_scans))
     all_scans_2$polarity <- 0
+    all_scans_2$centroided <- NA
     checkEquals(all_scans, all_scans_2)
     checkEquals(as.list(all_scans[3, ]), scan_3)
     checkEquals(all_scans_2[, cn], all_scans_ramp_2[, cn])
@@ -83,6 +104,7 @@ test_getScanHeaderInfo <- function() {
     scan_3_ramp <- header(ramp, scans = c(3, 1, 14))
     ## Ramp does not read polarity
     scan_3$polarity <- 0
+    scan_3$centroided <- NA
     checkEquals(scan_3[, cn], scan_3_ramp[, cn])
 
     close(mzml)
@@ -95,11 +117,13 @@ test_getScanHeaderInfo <- function() {
     ramp <- openMSfile(file, backend = "Ramp")
     ## Read single scan header.
     scan_3 <- header(mzml, scans = 3)
+    scan_3$centroided <- NA
     scan_3_ramp <- header(ramp, scans = 3)
     checkEquals(scan_3[cn], scan_3_ramp[cn])
     
     ## Read all scan header
     all_scans <- header(mzml)
+    all_scans$centroided <- NA
     all_scans_ramp <- header(ramp)
     ## Ramp unable to read precursorScanNum from an mzXML file.
     all_scans$precursorScanNum <- 0
@@ -107,6 +131,7 @@ test_getScanHeaderInfo <- function() {
     
     ## passing the index of all scan headers should return the same
     all_scans_2 <- header(mzml, scans = 1:nrow(all_scans))
+    all_scans_2$centroided <- NA
     all_scans_ramp_2 <- header(ramp, scans = 1:nrow(all_scans))
     all_scans_2$precursorScanNum <- 0
     checkEquals(all_scans, all_scans_2)
@@ -117,6 +142,7 @@ test_getScanHeaderInfo <- function() {
     scan_3 <- header(mzml, scans = c(3, 1, 14))
     scan_3_ramp <- header(ramp, scans = c(3, 1, 14))
     scan_3$precursorScanNum <- 0
+    scan_3$centroided <- NA
     checkEquals(scan_3[, cn], scan_3_ramp[, cn])
 
     close(mzml)
@@ -134,6 +160,7 @@ test_getScanHeaderInfo <- function() {
     scan_3$polarity <- 0
     scan_3$injectionTime <- 0
     scan_3$filterString <- NA_character_
+    scan_3$centroided <- NA
     checkEquals(scan_3[cn], scan_3_ramp[cn])
     
     ## Read all scan header
@@ -143,6 +170,7 @@ test_getScanHeaderInfo <- function() {
     all_scans$polarity <- 0
     all_scans$injectionTime <- 0
     all_scans$filterString <- NA_character_
+    all_scans$centroided <- NA
     checkEquals(all_scans[, cn], all_scans_ramp[, cn])
     
     ## passing the index of all scan headers should return the same
@@ -152,6 +180,7 @@ test_getScanHeaderInfo <- function() {
     all_scans_2$polarity <- 0
     all_scans_2$injectionTime <- 0
     all_scans_2$filterString <- NA_character_
+    all_scans_2$centroided <- NA
     checkEquals(all_scans[, cn], all_scans_2[, cn])
     checkEquals(as.list(all_scans[3, cn]), scan_3[cn])
     checkEquals(all_scans_2[, cn], all_scans_ramp_2[, cn])
@@ -163,6 +192,7 @@ test_getScanHeaderInfo <- function() {
     scan_3$polarity <- 0
     scan_3$injectionTime <- 0
     scan_3$filterString <- NA_character_
+    scan_3$centroided <- NA
     checkEquals(scan_3[, cn], scan_3_ramp[, cn])
 
     close(mzml)

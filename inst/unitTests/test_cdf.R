@@ -40,18 +40,20 @@ test_header <- function() {
   cdf <- openMSfile(file, backend="netCDF")        
 
   h <- header(cdf)
-  checkEquals(ncol(h), 21)
+  checkEquals(ncol(h), 22)
   checkEquals(nrow(h), 1278)
-
+  checkTrue(any(colnames(h) == "centroided"))
+  checkTrue(all(is.na(h$centroided)))
+  
   checkTrue(any(colnames(h) == "spectrumId"))
   checkEquals(h$spectrumId, paste0("scan=", h$acquisitionNum))
   
   h <- header(cdf, 1)
-  checkEquals(ncol(h), 21)
+  checkEquals(ncol(h), 22)
   checkEquals(nrow(h), 1)
 
   h <- header(cdf, 2:3)
-  checkEquals(ncol(h), 21)
+  checkEquals(ncol(h), 22)
   checkEquals(nrow(h), 2)
 
   close(cdf)

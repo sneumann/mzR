@@ -94,6 +94,7 @@ setMethod("header",
                             mergedResultEndScanNum=rep(-1, length(scans)),
                             injectionTime = rep(-1, length(scans)),
                             spectrumId = paste0("scan=", scans),
+                            centroided = NA,
                             stringsAsFactors = FALSE)
 
             return(result)

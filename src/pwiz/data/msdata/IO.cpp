@@ -463,15 +463,16 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const FileDescription& fd)
     write(writer, fd.fileContent);
 
     XMLWriter::Attributes attributes;
-    attributes.add("count", fd.sourceFilePtrs.size());
-    writer.startElement("sourceFileList", attributes);
-
-    for (vector<SourceFilePtr>::const_iterator it=fd.sourceFilePtrs.begin(); 
-         it!=fd.sourceFilePtrs.end(); ++it)
-         write(writer, **it);
-
-    writer.endElement();
-
+    if (fd.sourceFilePtrs.size() > 0) {
+      attributes.add("count", fd.sourceFilePtrs.size());
+      writer.startElement("sourceFileList", attributes);
+      
+      for (vector<SourceFilePtr>::const_iterator it=fd.sourceFilePtrs.begin(); 
+	   it!=fd.sourceFilePtrs.end(); ++it)
+	write(writer, **it);
+      
+      writer.endElement();
+    }
     for (vector<Contact>::const_iterator it=fd.contacts.begin(); 
          it!=fd.contacts.end(); ++it)
          write(writer, *it);

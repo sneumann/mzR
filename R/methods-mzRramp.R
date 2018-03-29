@@ -46,6 +46,7 @@ setMethod("header",
               res <- object@backend$getAllScanHeaderInfo()
               res$filterString <- NA_character_
               res$spectrumId <- paste0("scan=", res$acquisitionNum)
+              res$centroided <- NA
               res
 })
 
@@ -61,6 +62,7 @@ setMethod("header",
               }
               res$filterString <- NA_character_
               res$spectrumId <- paste0("scan=", res$acquisitionNum)
+              res$centroided <- NA
               res
           })
 
