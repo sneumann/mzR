@@ -57,9 +57,9 @@
 
  get3Dmap(object, scans, lowMz, highMz, resMz, ...)
 
- chromatogram(object, ...) 
+ \S4method{chromatogram}{mzRpwiz}(object, chrom)
 
- chromatograms(object, ...) ## same as chromatogram
+ \S4method{chromatograms}{mzRpwiz}(object, chrom)  ## same as chromatogram
 
  \S4method{chromatogramHeader}{mzRpwiz}(object, chrom)
 
@@ -84,7 +84,8 @@
   \item{resMz}{a \code{numeric} defining the m/z resolution.}
 
   \item{chrom}{
-    For \code{chromatogramHeader}: \code{numeric} specifying the index
+    For \code{chromatogram}, \code{chromatograms} and
+    \code{chromatogramHeader}: \code{numeric} specifying the index
     of the chromatograms to be extracted from the file. If omitted, data
     for all chromatograms is returned. 
   }
