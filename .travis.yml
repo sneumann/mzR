@@ -22,4 +22,4 @@ addons:
 script: 
   - | 
     R CMD build .
-    travis_wait 40 R CMD check --no-build-vignettes --no-vignettes mzR*tar.gz
+    travis_wait 45 R CMD check --no-build-vignettes --no-vignettes mzR*tar.gz
