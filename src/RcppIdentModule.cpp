@@ -17,5 +17,6 @@ RCPP_MODULE(Ident)
     .method( "getScore", &RcppIdent::getScore, "Scoring information about this mzid files" )
     .method( "getPara", &RcppIdent::getPara, "Parameters used in identification." )
     .method( "getDB", &RcppIdent::getDB, "Database used in identification." )
+    .method( "getSpecParams", &RcppIdent::getSpecParams, "SpectrumIdentificationResult cvParams" )
     ;
 }

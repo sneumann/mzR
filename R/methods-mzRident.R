@@ -6,6 +6,8 @@ setMethod("psms",
           signature=c("mzRident"),
           function(object) {
               psms <- object@backend$getPsmInfo()
+              specpars <- object@backend$getSpecParams()
+              psms <- merge(psms, specpars, by="spectrumID", sort=FALSE)
               psms$acquisitionNum <-
                   as.numeric(sub("^.*=([[:digit:]]+)$", "\\1", psms$spectrumID))
               return(psms)
@@ -14,6 +16,10 @@ setMethod("psms",
 setMethod("score",
           signature=c("mzRident"),
           function(x) return(x@backend$getScore()))
+          
+setMethod("specParams",
+          signature=c("mzRident"),
+          function(object) return(object@backend$getSpecParams()))
           
 setMethod("para",
           signature=c("mzRident"),
