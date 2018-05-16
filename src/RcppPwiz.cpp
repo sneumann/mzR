@@ -885,10 +885,11 @@ Rcpp::DataFrame RcppPwiz::getAllChromatogramHeaderInfo ( ) {
   if (msd != NULL) {
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
     int N = clp->size();
-    
-    return getChromatogramHeaderInfo(Rcpp::seq(1, N));
+    if (N > 0)
+      return getChromatogramHeaderInfo(Rcpp::seq(1, N));
+  } else {
+    Rprintf("Warning: pwiz not yet initialized.\n ");
   }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
   return Rcpp::DataFrame::create( );
 }
 

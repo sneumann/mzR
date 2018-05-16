@@ -58,3 +58,27 @@ test_header <- function() {
 
   close(cdf)
 }
+
+test_chromatogram <- function() {
+    file <- system.file('cdf/ko15.CDF', package = "msdata")
+    x <- openMSfile(file, backend="netCDF")        
+    suppressWarnings(
+        chr <- chromatogram(x)
+    )
+    checkTrue(length(chr) == 0)
+    suppressWarnings(
+        chr <- chromatograms(x)
+    )
+    checkTrue(length(chr) == 0)
+    close(x)
+}
+
+test_chromatogramHeader <- function() {
+    file <- system.file('cdf/ko15.CDF', package = "msdata")
+    x <- openMSfile(file, backend="netCDF")        
+    suppressWarnings(
+        ch <- chromatogramHeader(x)
+    )
+    checkTrue(nrow(ch) == 0)
+    close(x)
+}
