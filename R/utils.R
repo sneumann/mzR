@@ -40,3 +40,11 @@ setMethod("isolationWindow", "character",
     x <- lapply(x, base::unique)
     any(sapply(x, function(xx) nrow(xx) > 1))
 }
+
+
+.hasSpectra <- function(x) {
+    if (is.character(x) & file.exists(x))
+        x <- mzR::openMSfile(x)
+    stopifnot(inherits(x, "mzR"))
+    return(as.logical(length(x)))
+}
