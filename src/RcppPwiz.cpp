@@ -884,11 +884,16 @@ Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichCh
 Rcpp::DataFrame RcppPwiz::getAllChromatogramHeaderInfo ( ) {
   if (msd != NULL) {
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+    if (clp.get() == 0) {
+      Rcpp::Rcerr << "The direct support for chromatogram info is only available in mzML format." << std::endl;
+      return Rcpp::DataFrame::create();
+    }
     int N = clp->size();
-    if (N > 0)
+    if (N > 0) {
       return getChromatogramHeaderInfo(Rcpp::seq(1, N));
-  } else {
-    Rprintf("Warning: pwiz not yet initialized.\n ");
+    } else {
+      Rprintf("Warning: pwiz not yet initialized.\n ");
+    }
   }
   return Rcpp::DataFrame::create( );
 }
