@@ -61,6 +61,7 @@
 \alias{tolerance,mzRident-method}
 \alias{score,mzRident-method}
 \alias{para,mzRident-method}
+\alias{specParams,mzRident-method}
 
 
 \title{Class \code{mzR} and sub-classes}
@@ -157,6 +158,7 @@
     \item{tolerance}{\code{signature(object = "mzRident")}: ... }
     \item{score}{\code{signature(object = "mzRident")}: ... }
     \item{para}{\code{signature(object = "mzRident")}: ... }
+    \item{specParams}{\code{signature(object = "mzRident")}: ... }
   }
 }
 

@@ -19,6 +19,7 @@
 \alias{tolerance}
 \alias{score}
 \alias{para}
+\alias{specParams}
 
 \title{
   Access the metadata from an \code{mzR} object.
@@ -44,6 +45,7 @@ enzymes(object)
 tolerance(object)
 score(x, ...)
 para(object)
+specParams(object)
 }
 \arguments{
   \item{object}{An instantiated \code{mzR} object.}
