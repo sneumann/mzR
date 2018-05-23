@@ -1,6 +1,8 @@
 CHANGES IN VERSION 2.15.1
 -------------------------
- o Fix type (see https://github.com/sneumann/mzR/pull/162)
+ o Fix typo (see https://github.com/sneumann/mzR/pull/162)
+ o New .hasSpectra and .hasChromatograms private function (see
+   https://github.com/lgatto/MSnbase/issues/343)
 
 CHANGES IN VERSION 2.15.0
 -------------------------

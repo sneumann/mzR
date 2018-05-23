@@ -40,3 +40,59 @@ setMethod("isolationWindow", "character",
     x <- lapply(x, base::unique)
     any(sapply(x, function(xx) nrow(xx) > 1))
 }
+
+
+.hasSpectra <- function(x) {
+    close_after <- FALSE
+    if (is.character(x) && file.exists(x)) {
+        x <- mzR::openMSfile(x)
+        ## Ensure we are closing the file later
+        close_after <- TRUE
+    }
+    stopifnot(inherits(x, "mzR"))
+    len <- length(x)
+    if (close_after)
+        close(x)
+    return(as.logical(len))
+}
+
+#' Create return data for MS backends not supporting chromatographic data. This
+#' function is supposed to be called by the chromatogram(s) methods for these
+#' backends
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.empty_chromatogram <- function() {
+    list()
+}
+
+#' Create return data for MS backends not supporting chromatographic data.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.empty_chromatogram_header <- function() {
+    cn <- c("chromatogramId", "chromatogramIndex", "polarity",
+            "precursorIsolationWindowTargetMZ",
+            "precursorIsolationWindowLowerOffset",
+            "precursorIsolationWindowUpperOffset",
+            "precursorCollisionEnergy", "productIsolationWindowTargetMZ",
+            "productIsolationWindowLowerOffset",
+            "productIsolationWindowUpperOffset")
+    data.frame(matrix(nrow = 0, ncol = length(cn),
+                      dimnames = list(character(), cn)))
+}
+
+.hasChromatograms <- function(x) {
+    close_after <- FALSE
+    if (is.character(x) && file.exists(x)) {
+        x <- mzR::openMSfile(x)
+        close_after <- TRUE
+    }
+    stopifnot(inherits(x, "mzR"))
+    hdr <- chromatogramHeader(x)
+    if (close_after)
+        close(x)
+    as.logical(nrow(hdr))
+}

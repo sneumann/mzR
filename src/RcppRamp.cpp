@@ -55,7 +55,7 @@ Rcpp::StringVector RcppRamp::getFilename (  )
     {
         return filename;
     }
-    Rprintf("Warning: Ramp not yet initialized.\n ");
+    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
     return filename;
 }
 
@@ -86,7 +86,7 @@ Rcpp::List RcppRamp::getRunInfo (  )
         }
         return runInfo;
     }
-    Rprintf("Warning: Ramp not yet initialized.\n");
+    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
     return runInfo;
 }
 
@@ -130,7 +130,7 @@ Rcpp::List RcppRamp::getInstrumentInfo ( )
         }
         return(instrumentInfo);
     }
-    Rprintf("Warning: Ramp not yet initialized.\n ");
+    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
     return instrumentInfo;
 }
 
@@ -200,7 +200,7 @@ Rcpp::List RcppRamp::getScanHeaderInfo ( int whichScan  )
 
         return  header;
     }
-    Rprintf("Warning: Ramp not yet initialized.\n ");
+    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
     return Rcpp::List::create( );
 }
 
@@ -322,7 +322,7 @@ Rcpp::DataFrame RcppRamp::getAllScanHeaderInfo ( )
         }
         return(allScanHeaderInfo);
     }
-    Rprintf("Warning: Ramp not yet initialized.\n ");
+    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
     return Rcpp::DataFrame::create( );
 }
 
@@ -361,7 +361,7 @@ Rcpp::List RcppRamp::getPeakList ( int whichScan )
                    Rcpp::_["peaks"]  = peaks
                ) ;
     }
-    Rprintf("Warning: Ramp not yet initialized.\n ");
+    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
     return Rcpp::List::create( );
 }
 
@@ -384,7 +384,7 @@ Rcpp::NumericMatrix RcppRamp::get3DMap ( std::vector<int> scanNumbers, double wh
         }
         // map3d = 0.0;
         int j=0;
-        Rprintf("%d\n",1);
+        //Rprintf("%d\n",1);
         for (int i = 0; i < scanNumbers.size(); i++)
         {
             rampPeakList *pl = ramp->getPeakList( scanNumbers[i] );
@@ -415,7 +415,7 @@ Rcpp::NumericMatrix RcppRamp::get3DMap ( std::vector<int> scanNumbers, double wh
         }
         return(map3d);
     }
-    Rprintf("Warning: Ramp not yet initialized.\n ");
+    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
     return Rcpp::NumericMatrix(0,0);
 }
 
@@ -425,7 +425,7 @@ int RcppRamp::getLastScan() const
     {
         return ramp->getLastScan();
     }
-    Rprintf("Warning: Ramp not yet initialized.\n ");
+    Rf_warningcall(R_NilValue, "Ramp not yet initialized.");
     return -1;
 }
 

@@ -29,6 +29,12 @@
 \alias{chromatogram,mzRpwiz-method}
 \alias{chromatogramHeader,mzRpwiz-method}
 \alias{chromatograms,mzRpwiz-method}
+\alias{chromatogram,mzRramp-method}
+\alias{chromatogramHeader,mzRramp-method}
+\alias{chromatograms,mzRramp-method}
+\alias{chromatogram,mzRnetCDF-method}
+\alias{chromatogramHeader,mzRnetCDF-method}
+\alias{chromatograms,mzRnetCDF-method}
 \alias{tic,mzRpwiz-method}
 \alias{nChrom}
 \alias{chromatogram}

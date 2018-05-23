@@ -169,3 +169,13 @@ setMethod("show",
             invisible(NULL)
           })
 
+setMethod("chromatograms", "mzRnetCDF", function(object, chrom)
+    chromatogram(object, chrom))
+setMethod("chromatogram", "mzRnetCDF", function(object, chrom) {
+    warning("The mzRnetCdf backend does not support chromatographic data")
+    .empty_chromatogram()
+})
+setMethod("chromatogramHeader", "mzRnetCDF", function(object, chrom) {
+    warning("The mzRnetCdf backend does not support chromatographic data")
+    .empty_chromatogram_header()
+})
