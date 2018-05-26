@@ -163,7 +163,7 @@ nChrom <- function(object) {
 setMethod("tic", "mzRpwiz",
           function(object, ...) {
               if (nChrom(object) < 1)
-                  stop("Not chromatogram data available.")
+                  stop("No chromatogram data available.")
               object@backend$getChromatogramsInfo(0L)
           })
 

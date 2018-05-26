@@ -1,3 +1,15 @@
+CHANGES IN VERSION 2.15.1
+-------------------------
+ o Fix typo (see https://github.com/sneumann/mzR/pull/162)
+ o New .hasSpectra and .hasChromatograms private function (see
+   https://github.com/lgatto/MSnbase/issues/343)
+ o Fix bug in score when more cvParams than expected are read - see
+   https://github.com/sneumann/mzR/issues/136 <2018-05-26 Sat>
+
+CHANGES IN VERSION 2.15.0
+-------------------------
+ o New Bioc devel version
+
 CHANGES IN VERSION 2.13.8
 -------------------------
  o Document missing chrom argument for chromatogram(s)
@@ -25,7 +37,7 @@ CHANGES IN VERSION 2.13.3
  o Link against Rhdf5lib, allows to read mz5 also on Windows
  o Use Rhdf5lib 1.1.4 with c++ headers in /include
  o fix BiocStyle related issue in Vignette on Windows
- 
+
 CHANGES IN VERSION 2.13.2
 --------------------------
  o Add chromatogramHeader method to read header information for chromatograms
@@ -37,12 +49,12 @@ CHANGES IN VERSION 2.13.1
    the header function (see MSnbase issue #278).
  o openMsFile automatically determine the backend to use based on file extension
    and content.
- 
+
 CHANGES IN VERSION 2.11.11
 --------------------------
  o Fix problem in writeMSData: ensure precursor data is saved even if precursor
    scan is not available (see MSnbase issue #245).
- 
+
 CHANGES IN VERSION 2.11.10
 --------------------------
  o Fix problem that can cause a SEGFAULT in writeMSData/copyWriteMSData when MS
@@ -60,33 +72,33 @@ CHANGES IN VERSION 2.11.8
  o Report the spectrum ID in the header data.frame (column spectrumId).
  o Fix in copyWriteMSData and writeMSData ensuring that MSn data is correctly
  o Import pwiz r11174 fix for mzML without <componentList> (see #113).
- 
+
 CHANGES IN VERSION 2.11.7
 -------------------------
  o Nothing yet.
  o Import fix by Brian Pratt (pwiz r11174) for mzML without <componentList>
-   Another way to fix #113 
+   Another way to fix #113
  o Removing mz5 support from manual page, as currently unsupported.
- 
+
 CHANGES IN VERSION 2.11.6
 -------------------------
  o runInfo returns the run start time stamp from files providing this
    information (mzML files).
- 
+
 CHANGES IN VERSION 2.11.5
 -------------------------
  o writeMSData and copyWriteMSData functions enabling to export MS data to
    mzML or mzXML files.
- 
+
 CHANGES IN VERSION 2.11.4
 -------------------------
  o Use full TMT file pattern to select a single file
- 
+
 CHANGES IN VERSION 2.11.3
 -------------------------
  o Read ion injection time from mzML files and add it to the data.frame returned
    by the header function.
- 
+
 CHANGES IN VERSION 2.11.2
 -------------------------
  o New getScanHeaderInfo and getAllScanHeaderInfo implementations for the pwiz
@@ -99,7 +111,7 @@ CHANGES IN VERSION 2.11.1
 CHANGES IN VERSION 2.11.0
 -------------------------
  o Bioc devel 3.6
- 
+
 CHANGES IN VERSION 2.10.0
 -------------------------
  o Bioc release 3.5
@@ -110,7 +122,7 @@ CHANGES IN VERSION 2.9.11
 
 CHANGES IN VERSION 2.9.10
 -------------------------
- o Remove register keyword causing WARNING. 
+ o Remove register keyword causing WARNING.
 
 CHANGES IN VERSION 2.9.9
 ------------------------
@@ -127,25 +139,25 @@ CHANGES IN VERSION 2.9.7
 CHANGES IN VERSION 2.9.6
 ------------------------
  o Compile on macOS, but hdf5 path hard-coded
- 
+
 CHANGES IN VERSION 2.9.5
 ------------------------
  o Add missing boost/config/platform/macos.hpp <2017-01-25 Wed>
- 
+
 CHANGES IN VERSION 2.9.4
 ------------------------
  o New chromatogram accessors (for pwiz backend only) - see issue #73
    <2017-01-23 Mon>
- 
+
 CHANGES IN VERSION 2.9.3
 ------------------------
  o bump to new Rcpp 0.12.8 version <2017-01-05 Thu>
- 
+
 CHANGES IN VERSION 2.9.2
 ------------------------
  o cleanup CFLAGS and LIBS for libnetcdf
  o add file missing for oaxaca (Apple clang 3.5svn / 600.0.57)
- 
+
 CHANGES IN VERSION 2.9.1
 ------------------------
  o Delete RAMPAdapter pointer in pwiz backend (by jotsetung)
@@ -157,7 +169,7 @@ CHANGES IN VERSION 2.9.1
 CHANGES IN VERSION 2.9.0
 ------------------------
  o Bioc devel 3.5
- 
+
 CHANGES IN VERSION 2.8.0
 ------------------------
  o Bioc release 3.4
@@ -165,40 +177,40 @@ CHANGES IN VERSION 2.8.0
 CHANGES IN VERSION 2.7.13
 -------------------------
  o Fix waring on OSX (see issue #60)
- 
+
 CHANGES IN VERSION 2.7.12
 -------------------------
  o Fixing last warning on MacOS
- 
+
 CHANGES IN VERSION 2.7.11
 -------------------------
  o Fix failing example and test due to updated msdata::protemics data
- 
+
 CHANGES IN VERSION 2.7.10
 -------------------------
  o compiling and loading on Windows (hopefully)
- 
+
 CHANGES IN VERSION 2.7.9
 ------------------------
- o Updating Makevars.win 
- 
+ o Updating Makevars.win
+
 CHANGES IN VERSION 2.7.8
 ------------------------
  o compile pwiz when installing on Windows <2016-09-26 Mon>
- 
+
 CHANGES IN VERSION 2.7.7
 ------------------------
  o add netcdf static lib; potential incompatibility <2016-09-22 Thu>
- 
+
 CHANGES IN VERSION 2.7.6
 ------------------------
  o new isolationWindow accessor <2016-09-23 Fri>
- 
+
 CHANGES IN VERSION 2.7.5
 ------------------------
  o Apply Martin's free/delete patch - see
    https://github.com/sneumann/mzR/issues/52 <2016-09-22 Thu>
- 
+
 CHANGES IN VERSION 2.7.4
 ------------------------
  o upgrade pwiz

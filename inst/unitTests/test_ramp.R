@@ -102,4 +102,32 @@ test_peaks_spectra <- function() {
     p <- peaks(x, 1:10)
     s <- spectra(x, 1:10)
     checkIdentical(p, s)
+    close(x)
 }
+
+test_chromatogram <- function() {
+    library("msdata")
+    f <- proteomics(full.names = TRUE)
+    x <- openMSfile(f[1], backend = "Ramp")
+    suppressWarnings(
+        chr <- chromatogram(x)
+    )
+    checkTrue(length(chr) == 0)
+    suppressWarnings(
+        chr <- chromatograms(x)
+    )
+    checkTrue(length(chr) == 0)
+    close(x)
+}
+
+test_chromatogramHeader <- function() {
+    library("msdata")
+    f <- proteomics(full.names = TRUE)
+    x <- openMSfile(f[1], backend = "Ramp")
+    suppressWarnings(
+        ch <- chromatogramHeader(x)
+    )
+    checkTrue(nrow(ch) == 0)
+    close(x)
+}
+
