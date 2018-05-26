@@ -84,7 +84,7 @@ int RcppPwiz::getLastScan() const {
     SpectrumListPtr slp = msd->run.spectrumListPtr;
     return slp->size();
   }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return -1;
 }
 
@@ -93,7 +93,7 @@ int RcppPwiz::getLastChrom() const {
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
     return clp->size();
   }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return -1;
 }
 
@@ -160,7 +160,7 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
         }
       return(instrumentInfo);
     }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return instrumentInfo;
 }
 
@@ -306,7 +306,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       
       return header;
     }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return Rcpp::DataFrame::create( );
 }
 
@@ -324,7 +324,7 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( )
         }
       return allScanHeaderInfo ;
     }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return Rcpp::DataFrame::create( );
 }
 
@@ -362,7 +362,7 @@ Rcpp::List RcppPwiz::getPeakList ( int whichScan )
 				Rcpp::_["peaks"]  = peaks
 				) ;
     }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return Rcpp::List::create( );
 }
 
@@ -756,10 +756,10 @@ Rcpp::DataFrame RcppPwiz::getChromatogramsInfo( int whichChrom )
   if (msd != NULL) {
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
     if (clp.get() == 0) {
-      Rcpp::Rcerr << "The direct support for chromatogram info is only available in mzML format." << std::endl;
+      Rf_warningcall(R_NilValue, "The direct support for chromatogram info is only available in mzML format.");
       return Rcpp::DataFrame::create();
     } else if (clp->size() == 0) {
-      Rcpp::Rcerr << "No available chromatogram info." << std::endl;
+      Rf_warningcall(R_NilValue, "No available chromatogram info.");
       return Rcpp::DataFrame::create();
     } else if ( (whichChrom < 0) || (whichChrom > clp->size()) ) {
       Rprintf("Index whichChrom out of bounds [0 ... %d].\n", (clp->size())-1);
@@ -783,7 +783,7 @@ Rcpp::DataFrame RcppPwiz::getChromatogramsInfo( int whichChrom )
     }
     return(chromatogramsInfo);
   }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return Rcpp::DataFrame::create( );
 }
 
@@ -794,10 +794,10 @@ Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichCh
     CVID nativeIdFormat_ = id::getDefaultNativeIDFormat(*msd); // Ask CHRIS if I'm correctly dereferencing this...
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
     if (clp.get() == 0) {
-      Rcpp::Rcerr << "The direct support for chromatogram info is only available in mzML format." << std::endl;
+      Rf_warningcall(R_NilValue, "The direct support for chromatogram info is only available in mzML format.");
       return Rcpp::DataFrame::create();
     } else if (clp->size() == 0) {
-      Rcpp::Rcerr << "No available chromatogram info." << std::endl;
+      Rf_warningcall(R_NilValue, "No available chromatogram info.");
       return Rcpp::DataFrame::create();
     }
 
@@ -821,8 +821,8 @@ Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichCh
     for (int i = 0; i < N_chrom; i++) {
       int current_chrom = whichChrom[i];
       if (current_chrom < 0 || current_chrom > N) {
+	Rf_warningcall(R_NilValue, "Provided index out of bounds.");
 	Rcpp::Rcerr << "Provided index out of bounds" << std::endl;
-	return Rcpp::DataFrame::create();
       }
       ChromatogramPtr ch = clp->chromatogram(current_chrom - 1, false);
       chromatogramId[i] = ch->id;
@@ -877,18 +877,24 @@ Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichCh
     chromHeader.attr("names") = names;
     return chromHeader;
   }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return Rcpp::DataFrame::create( );
 }
 
 Rcpp::DataFrame RcppPwiz::getAllChromatogramHeaderInfo ( ) {
   if (msd != NULL) {
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
+    if (clp.get() == 0) {
+      Rf_warningcall(R_NilValue, "The direct support for chromatogram info is only available in mzML format.");
+      return Rcpp::DataFrame::create();
+    }
     int N = clp->size();
-    
-    return getChromatogramHeaderInfo(Rcpp::seq(1, N));
+    if (N > 0) {
+      return getChromatogramHeaderInfo(Rcpp::seq(1, N));
+    } else {
+      Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
+    }
   }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
   return Rcpp::DataFrame::create( );
 }
 
@@ -915,7 +921,7 @@ Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double wh
         }
 
       int j=0;
-      Rprintf("%d\n",1);
+      //Rprintf("%d\n",1);
       for (int i = 0; i < scanNumbers.size(); i++)
         {
 	  SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, true);
@@ -939,7 +945,7 @@ Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double wh
       return(map3d);
     }
 
-  Rprintf("Warning: pwiz not yet initialized.\n ");
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return Rcpp::NumericMatrix(0,0);
 }
 
@@ -947,6 +953,6 @@ string RcppPwiz::getRunStartTimeStamp() {
   if (msd != NULL) {
     return msd->run.startTimeStamp;
   }
-  Rprintf("Warning: pwiz not yet initialized.\n ");
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return "";
 }
