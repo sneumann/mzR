@@ -325,7 +325,7 @@ Rcpp::DataFrame RcppIdent::getSpecParams(  )
     }
     if(count == 0)
     {
-        Rcpp::Rcout << "No scoring information available" << std::endl;
+        Rcpp::Rcout << "No spectrum cvParams available" << std::endl;
         return Rcpp::DataFrame::create();
     }
     else
