@@ -1,6 +1,8 @@
-CHANGES IN VERSION 2.15.1
+CHANGES IN VERSION 2.15.2
 -------------------------
- o Nothing yet
+ o Add header column ionMobilityDriftTime to report the corresponding CV
+   parameter (issue https://github.com/sneumann/mzR/issues/44).
+ o Ensure ion injection time is always reported in milliseconds.
 
 CHANGES IN VERSION 2.15.1
 -------------------------

@@ -48,8 +48,12 @@
     if (!any(colnames(x) == "spectrumId"))
         x$spectrumId <- paste0("scan=", x$acquisitionNum)
     x$spectrumId <- as.character(x$spectrumId)
+    ## Add ionMobilityDriftTime
+    if (!any(colnames(x) == "ionMobilityDriftTime"))
+        x$ionMobilityDriftTime <- NA_real_
     ## Hack in the spectrumId column.
-    req_cols <- c(req_cols, spectrumId = "character")
+    req_cols <- c(req_cols, spectrumId = "character",
+                  ionMobilityDriftTime = "numeric")    
     ## Subset and order the columns
     x <- x[, names(req_cols)]
     cn_x <- colnames(x)
