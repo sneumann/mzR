@@ -52,6 +52,8 @@ public:
 
     Rcpp::DataFrame getScore();
 
+    Rcpp::DataFrame getSpecParams();
+
     Rcpp::List getPara();
 
     Rcpp::DataFrame getDB();

@@ -308,6 +308,62 @@ Rcpp::DataFrame RcppIdent::getScore(  ) {
   }
 }
 
+Rcpp::DataFrame RcppIdent::getSpecParams(  )
+{
+    vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
+    vector<string> spectrumID;
+    vector<string> names;
+    int count = 0;
+
+    for(size_t i = 0; i < spectrumIdResult[0]->cvParams.size(); i++)
+    {
+        if(!spectrumIdResult[0]->cvParams[i].value.empty())
+        {
+            count++;
+            names.push_back(cvTermInfo(spectrumIdResult[0]->cvParams[i].cvid).name);
+        }
+    }
+    if(count == 0)
+    {
+        Rcpp::Rcout << "No spectrum cvParams available" << std::endl;
+        return Rcpp::DataFrame::create();
+    }
+    else
+    {
+        vector<vector<string> > score(count);
+
+        for (size_t i = 0; i < spectrumIdResult.size(); i++)
+        {
+            spectrumID.push_back(spectrumIdResult[i]->spectrumID);
+            count = 0;
+            for(size_t j = 0; j < spectrumIdResult[i]->cvParams.size(); j++)
+            {
+                if(!spectrumIdResult[i]->cvParams[j].value.empty())
+                {
+                    score[count].push_back(lexical_cast<string>(spectrumIdResult[i]->cvParams[j].value));
+                    count++;
+                }
+            }
+        }
+
+        Rcpp::List res(score.size() + 1);
+        
+        names.insert(names.begin(), "spectrumID");
+        
+        res[0] = Rcpp::wrap(spectrumID);
+        
+        for(size_t i = 0; i < score.size(); i++)
+        {
+            res[i + 1] = Rcpp::wrap(score[i]);
+        }
+        
+        res.attr("names") = names;
+        Rcpp::DataFrame out(res);
+
+        return out;
+    }
+}
+
 Rcpp::List RcppIdent::getPara(  )
 {
 

@@ -1,6 +1,7 @@
 setGeneric("runInfo", function(object) standardGeneric("runInfo"))
 setGeneric("mzidInfo", function(object) standardGeneric("mzidInfo"))
 setGeneric("para", function(object) standardGeneric("para"))
+setGeneric("specParams", function(object) standardGeneric("specParams"))
 setGeneric("substitutions", function(object) standardGeneric("substitutions"))
 setGeneric("enzymes", function(object) standardGeneric("enzymes"))
 setGeneric("tolerance", function(object) standardGeneric("tolerance"))
