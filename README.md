@@ -17,8 +17,9 @@ If you install from source, you first need to install
 the netCDF headers and libraries: `brew install netcdf`, 
 and then instal mzR the BioC way via:
 ```
-source("https://bioconductor.org/biocLite.R")
-biocLite("mzR", suppressUpdates = TRUE)
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("mzR", suppressUpdates = TRUE)
 ```
 
 ## Installation on Linux
