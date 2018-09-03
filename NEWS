@@ -1,13 +1,15 @@
 CHANGES IN VERSION 2.15.3
 -------------------------
-o Adds MS-GF+ information such as Scan Time and a more reliable Scan
-  Number, contributed by FarmGeek4Life (see PR #174).
+ o Adds MS-GF+ information such as Scan Time and a more reliable Scan
+   Number, contributed by FarmGeek4Life (see PR #174).
 
 CHANGES IN VERSION 2.15.2
 -------------------------
  o Add header column ionMobilityDriftTime to report the corresponding CV
    parameter (issue https://github.com/sneumann/mzR/issues/44).
  o Ensure ion injection time is always reported in milliseconds.
+ o Replace BiocInstaller::biocLite with BiocManager::install (by Bioc
+   core)
 
 CHANGES IN VERSION 2.15.1
 -------------------------
