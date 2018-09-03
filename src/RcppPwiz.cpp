@@ -206,6 +206,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       Rcpp::StringVector filterString(N_scans);
       Rcpp::StringVector spectrumId(N_scans);
       Rcpp::LogicalVector centroided(N_scans);
+      Rcpp::NumericVector ionMobilityDriftTime(N_scans);
       
       for (int i = 0; i < N_scans; i++)
 	{
@@ -220,8 +221,10 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
 	  Scan& scan = sp->scanList.scans.empty() ? dummy : sp->scanList.scans[0];
 	  CVParam param = sp->cvParamChild(MS_scan_polarity);
 	  polarity[i] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
-	  ionInjectionTime[i] = scan.cvParam(MS_ion_injection_time).valueAs<double>();
+	  // ionInjectionTime[i] = scan.cvParam(MS_ion_injection_time).valueAs<double>();
+	  ionInjectionTime[i] = (scan.cvParam(MS_ion_injection_time).timeInSeconds() * 1000);
 	  filterString[i] = scan.cvParam(MS_filter_string).value.empty() ? NA_STRING : Rcpp::String(scan.cvParam(MS_filter_string).value);
+	  ionMobilityDriftTime[i] = scan.cvParam(MS_ion_mobility_drift_time).value.empty() ? NA_REAL : (scan.cvParam(MS_ion_mobility_drift_time).timeInSeconds() * 1000);
 
 	  peaksCount[i] = scanHeader.peaksCount;
 	  totIonCurrent[i] = scanHeader.totIonCurrent;
@@ -248,7 +251,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       delete adapter;
       adapter = NULL;
 
-      Rcpp::List header(25);
+      Rcpp::List header(26);
       std::vector<std::string> names;
       int i = 0;
       names.push_back("seqNum");
@@ -301,7 +304,8 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       header[i++] = Rcpp::wrap(spectrumId);
       names.push_back("centroided");
       header[i++] = Rcpp::wrap(centroided);
-      
+      names.push_back("ionMobilityDriftTime");
+      header[i++] = Rcpp::wrap(ionMobilityDriftTime);      
       header.attr("names") = names;
       
       return header;
@@ -618,6 +622,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   Rcpp::StringVector filterString = spctr_header["filterString"];
   Rcpp::StringVector spectrumId = spctr_header["spectrumId"];
   Rcpp::LogicalVector centroided = spctr_header["centroided"];
+  Rcpp::NumericVector ionMobilityDriftTime = spctr_header["ionMobilityDriftTime"];
   
   // From MSnbase::Spectrum        Column in the header
   // msLevel integer               $msLevel
@@ -691,6 +696,10 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     if (!Rcpp::StringVector::is_na(filterString[i]))
       spct_scan.set(MS_filter_string, filterString[i]);
 
+    if (ionMobilityDriftTime[i] != NA_REAL)
+      spct_scan.set(MS_ion_mobility_drift_time, ionMobilityDriftTime[i],
+		    UO_millisecond);
+      
     // MSn - precursor:
     if (precursorScanNum[i] > 0 | precursorMZ[i] > 0) {
       // Fill precursor data. This preserves the precursor data even if the

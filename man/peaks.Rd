@@ -119,10 +119,11 @@
   \code{precursorCharge}, \code{precursorIntensity},
   \code{mergedScan}, \code{mergedResultScanNum},
   \code{mergedResultStartScanNum}, \code{mergedResultEndScanNum},
-  \code{spectrumId}, \code{centroided} (\code{logical} whether the data
-  of the spectrum is in centroid mode or profile mode; only for pwiz
-  backend) and \code{injectionTime} (ion injection time, in milliseconds)
-  when available in the original file. If multiple scans are queried, a
+  \code{filterString}, \code{spectrumId}, \code{centroided}
+  (\code{logical} whether the data of the spectrum is in centroid mode
+  or profile mode; only for pwiz backend), \code{injectionTime} (ion
+  injection time, in milliseconds) and \code{ionMobilityDriftTime} (in
+  milliseconds). If multiple scans are queried, a
   \code{data.frame} is returned with the scans reported along the
   rows.
 

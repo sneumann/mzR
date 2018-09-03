@@ -47,6 +47,7 @@ setMethod("header",
               res$filterString <- NA_character_
               res$spectrumId <- paste0("scan=", res$acquisitionNum)
               res$centroided <- NA
+              res$ionMobilityDriftTime <- NA_real_
               res
 })
 
@@ -63,6 +64,7 @@ setMethod("header",
               res$filterString <- NA_character_
               res$spectrumId <- paste0("scan=", res$acquisitionNum)
               res$centroided <- NA
+              res$ionMobilityDriftTime <- NA_real_
               res
           })
 

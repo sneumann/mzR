@@ -17,6 +17,8 @@ test_mzXML <- function() {
     hdr <- header(mzxml)
     checkTrue(any(colnames(hdr) == "centroided"))
     checkTrue(all(is.na(hdr$centroided)))
+    checkTrue(any(colnames(hdr) == "ionMobilityDriftTime"))
+    checkTrue(all(is.na(hdr$ionMobilityDriftTime)))
     close(mzxml)
 }
 
@@ -37,6 +39,8 @@ test_mzML <- function() {
     checkEquals(hdr$spectrumId, paste0("scan=", hdr$acquisitionNum))
     header(mzml,1)
     header(mzml,2:3)
+    checkTrue(any(colnames(hdr) == "ionMobilityDriftTime"))
+    checkTrue(all(is.na(hdr$ionMobilityDriftTime)))
 
     checkTrue(ncol(header(mzml))>4)
     checkTrue(length(header(mzml,1))>4)
