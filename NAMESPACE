@@ -6,8 +6,8 @@ import(ProtGenerics)
 importClassesFrom(Biobase, "Versioned")
 importFrom(Biobase, validMsg)
 importFrom("utils", "packageVersion")
-##importFrom(Rcpp, "loadRcppModules")
 import(Rcpp)
+import(ncdf4)
 
 export(openMSfile,
        openIDfile,
