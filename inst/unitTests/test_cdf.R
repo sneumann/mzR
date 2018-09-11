@@ -30,6 +30,30 @@ test_peaks <- function() {
   
   p <- peaks(cdf,2:3)
   checkTrue(length(p)==2)
+
+  p <- peaks(cdf,1278)
+  checkTrue(ncol(p)==2)
+  checkTrue(nrow(p)==40)
+
+  ## Can we check that this indeed throws an error:
+  ## Error in seq.default(rawdata$scanindex[scans] + 1, min(rawdata$scanindex[scans +  : 'from' must be a finite number
+  ## p <- peaks(cdf,1279)
+
+
+  ri1 <- list(scanCount = 1278L, lowMz = 200, highMz = 600,
+              dStartTime = 2501.378, dEndTime = 4499.824,
+              msLevels = NA, startTimeStamp = "2004,06,01,10:28:03+0800")
+  ri2 <- runInfo(cdf)
+  checkTrue(all.equal(ri1, ri2))
+  
+  ii1 <- list(model = "                               ",
+              manufacturer = "Agilent Technologies",
+              ionisation = "Electrospray Ionization",
+              detector = "Conversion Dynode Electron Multiplier",
+              analyzer = NA)
+  ii2 <- instrumentInfo(cdf)
+
+  checkTrue(all.equal(ii1, ii2))
   
   close(cdf)
 }
@@ -83,4 +107,16 @@ test_chromatogramHeader <- function() {
     )
     checkTrue(nrow(ch) == 0)
     close(x)
+}
+
+
+if (FALSE) {
+    suite <- RUnit::defineTestSuite(name = paste("mzR", "RUnit Tests"), 
+                                    dirs = "/vol/R/BioC/devel/mzR/inst/unitTests",
+                                    testFileRegexp = "^test_.*\\.R$", rngKind = "default", 
+                                    rngNormalKind = "default")
+
+    result <- RUnit::runTestSuite(suite)
+    RUnit::printTextProtocol(result, showDetails = FALSE)
+
 }
