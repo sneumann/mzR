@@ -2,6 +2,7 @@ CHANGES IN VERSION 2.15.4
 -------------------------
  o Use new dependency ncdf4 for netCDF reading, 
    removes a lot of build hassles with old libnetcdf-dev linking.
+ o specParams returns a numeric scan.number.s. 
 
 CHANGES IN VERSION 2.15.3
 -------------------------
