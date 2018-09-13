@@ -1,73 +1,78 @@
 setMethod("mzidInfo",
-          signature=c("mzRident"),
+          signature = "mzRident",
           function(object) return(object@backend$getIDInfo()))
-          
+
 setMethod("psms",
-          signature=c("mzRident"),
+          signature = "mzRident",
           function(object) {
               psms <- object@backend$getPsmInfo()
-              specpars <- object@backend$getSpecParams()
+              specpars <- specParams(object)
               psms <- merge(psms, specpars, by="spectrumID", sort=FALSE)
               psms$acquisitionNum <-
                   as.numeric(sub("^.*=([[:digit:]]+)$", "\\1", psms$spectrumID))
               return(psms)
           })
-          
+
 setMethod("score",
-          signature=c("mzRident"),
+          signature = "mzRident",
           function(x) return(x@backend$getScore()))
-          
+
 setMethod("specParams",
-          signature=c("mzRident"),
-          function(object) return(object@backend$getSpecParams()))
-          
+          signature = "mzRident",
+          function(object) {
+              pars <- object@backend$getSpecParams()
+              if ("scan.number.s." %in%  names(pars) & !is.numeric(pars[, "scan.number.s."]))
+                  pars[, "scan.number.s."]  <- as.numeric(as.character(pars[, "scan.number.s."]))
+              return(pars)
+          })
+
 setMethod("para",
-          signature=c("mzRident"),
-          function(object) return(object@backend$getPara()))          
-          
+          signature = "mzRident",
+          function(object) return(object@backend$getPara()))
+
 
 setMethod("modifications",
-          signature=c("mzRident"),
+          signature = "mzRident",
           function(object) return(object@backend$getModInfo()))
-          
+
 setMethod("substitutions",
-          signature=c("mzRident"),
+          signature = "mzRident",
           function(object) return(object@backend$getSubInfo()))
-          
+
 setMethod("softwareInfo",
-          signature="mzRident",
+          signature = "mzRident",
           function(object) {
-            info <- mzidInfo(object)           
+            info <- mzidInfo(object)
             return(info$software)
           })
-          
+
 setMethod("database",
-          signature=c("mzRident"),
+          signature = "mzRident",
           function(object) return(object@backend$getDB()))
-        
+
 setMethod("enzymes",
-          signature="mzRident",
+          signature = "mzRident",
           function(object) {
-            info <- mzidInfo(object)           
+            info <- mzidInfo(object)
             return(as.data.frame(info$enzymes))
-          })   
+          })
 
 setMethod("sourceInfo",
-          signature="mzRident",
+          signature = "mzRident",
           function(object) {
-            info <- mzidInfo(object)           
+            info <- mzidInfo(object)
             return(info$SpectraSource)
-          })  
-          
+          })
+
 setMethod("tolerance",
-          signature="mzRident",
+          signature = "mzRident",
           function(object) {
-            info <- mzidInfo(object)   
+            info <- mzidInfo(object)
             ll <- list()
             ll$'FragmentTolerance' <- info$FragmentTolerance
             ll$'ParentTolerance' <- info$ParentTolerance
             return(ll)
-          }) 
+          })
 
 setMethod("length",
           signature = "mzRident",
