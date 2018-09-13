@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.15.4
+-------------------------
+ o Use new dependency ncdf4 for netCDF reading, 
+   removes a lot of build hassles with old libnetcdf-dev linking.
+
 CHANGES IN VERSION 2.15.3
 -------------------------
  o Adds MS-GF+ information such as Scan Time and a more reliable Scan
