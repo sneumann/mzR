@@ -1,25 +1,7 @@
-## setMethod("get3Dmap",
-##           signature="mzRnetCDF",
-##           function(object,scans,lowMz,highMz,resMz) 
-##           return(object@backend$get3DMap(scans,lowMz,highMz,resMz)))
-
-## setMethod("initializeRamp",
-##           signature="mzRnetCDF",
-##           function(object) {
-##             if (!file.exists(fileName(object)))
-##               stop("File ",fileName(object)," not found.\n")
-##             object@backend$open(fileName(object), declaredOnly = TRUE)
-##             if (isInitialized(object)) invisible(TRUE)
-##             else stop("Could not initialize ramp slot.")
-##           })
-
 setMethod("length",
           signature=c("mzRnetCDF"),
           function(x) {
-            scanindex <- netCDFVarInt(x@backend, "scan_index")
-            if (!is.null(attr(scanindex, "errortext")))
-              stop("Couldn't read scan indicies from ", x@backend)
-            return(length(scanindex))
+              return(netCDFVarLen(x@backend, var="scan_number"))
           })
 
 setMethod("peaks", "mzRnetCDF",
@@ -102,11 +84,15 @@ setMethod("header",
 
 setMethod("close", 
           signature="mzRnetCDF",
-          function(con,...) return( netCDFClose(con@backend) ))
+          function(con,...) {
+              if (validObject(con))
+                  netCDFClose(con@backend)
+              con@backend$id <- NULL
+              invisible(TRUE)} )
 
 setMethod("isInitialized", 
           signature="mzRnetCDF",
-          function(object) return(object@backend > 0))
+          function(object) return(class(object@backend) == "ncdf4" && validObject(object)))
 
 setMethod("runInfo",
            signature="mzRnetCDF",
