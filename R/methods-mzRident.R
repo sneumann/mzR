@@ -21,9 +21,8 @@ setMethod("specParams",
           signature = "mzRident",
           function(object) {
               pars <- object@backend$getSpecParams()
-              if ("scan.number.s." %in%  names(pars))
-                  if (!is.numeric(pars[, "scan.number.s."]))
-                      pars[, "scan.number.s."]  <- as.numeric(as.character(pars[, "scan.number.s."]))
+              if ("scan.number.s." %in%  names(pars) && !is.numeric(pars[, "scan.number.s."]))
+                  pars[, "scan.number.s."]  <- as.numeric(as.character(pars[, "scan.number.s."]))
               return(pars)
           })
 
