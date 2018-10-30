@@ -2,7 +2,7 @@ Package: mzR
 Type: Package
 Title: parser for netCDF, mzXML, mzData and mzML and mzIdentML files
        (mass spectrometry data)
-Version: 2.16.0
+Version: 2.17.0
 Author: Bernd Fischer, Steffen Neumann, Laurent Gatto, Qiang Kou, Johannes Rainer
 Maintainer: Steffen Neumann <sneumann@ipb-halle.de>,
 	    Laurent Gatto <lg390@cam.ac.uk>,
