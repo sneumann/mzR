@@ -17,7 +17,7 @@ netCDFOpen <- function(filename) {
 
 netCDFClose <- function(ncid) {
     result <- tryCatch({
-##        closedncid <- nc_close(ncid)        
+        closedncid <- nc_close(ncid)        
         return(TRUE)
     },
     error=function(cond) return(FALSE)
