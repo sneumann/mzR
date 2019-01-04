@@ -2,7 +2,7 @@ Package: mzR
 Type: Package
 Title: parser for netCDF, mzXML, mzData and mzML and mzIdentML files
        (mass spectrometry data)
-Version: 2.16.0
+Version: 2.16.1
 Author: Bernd Fischer, Steffen Neumann, Laurent Gatto, Qiang Kou, Johannes Rainer
 Maintainer: Steffen Neumann <sneumann@ipb-halle.de>,
 	    Laurent Gatto <lg390@cam.ac.uk>,
@@ -25,6 +25,6 @@ RcppModules: Ramp, Pwiz, Ident
 SystemRequirements: C++11, GNU make
 URL: https://github.com/sneumann/mzR/
 BugReports: https://github.com/sneumann/mzR/issues/
-biocViews: Infrastructure, DataImport, Proteomics, Metabolomics,
+biocViews: ImmunoOncology, Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry
 RoxygenNote: 6.0.1
