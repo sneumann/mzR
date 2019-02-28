@@ -1,30 +1,4 @@
 PWIZOBJECTS=\
-./boost/libs/system/src/error_code.o \
-./boost/libs/regex/src/posix_api.o \
-./boost/libs/regex/src/fileiter.o \
-./boost/libs/regex/src/regex_raw_buffer.o \
-./boost/libs/regex/src/cregex.o \
-./boost/libs/regex/src/regex_debug.o \
-./boost/libs/regex/src/instances.o \
-./boost/libs/regex/src/icu.o \
-./boost/libs/regex/src/usinstances.o \
-./boost/libs/regex/src/regex.o \
-./boost/libs/regex/src/wide_posix_api.o \
-./boost/libs/regex/src/regex_traits_defaults.o \
-./boost/libs/regex/src/winstances.o \
-./boost/libs/regex/src/wc_regex_traits.o \
-./boost/libs/regex/src/c_regex_traits.o \
-./boost/libs/regex/src/cpp_regex_traits.o \
-./boost/libs/regex/src/static_mutex.o \
-./boost/libs/regex/src/w32_regex_traits.o \
-./boost/libs/iostreams/src/zlib.o \
-./boost/libs/iostreams/src/file_descriptor.o \
-./boost/libs/filesystem/src/operations.o \
-./boost/libs/filesystem/src/path.o \
-./boost/libs/filesystem/src/utf8_codecvt_facet.o \
-./boost/libs/chrono/src/chrono.o \
-./boost/libs/chrono/src/process_cpu_clocks.o \
-./boost/libs/chrono/src/thread_clock.o \
 ./pwiz/data/msdata/Version.o \
 ./pwiz/data/identdata/Version.o \
 ./pwiz/data/common/MemoryIndex.o \
@@ -102,6 +76,33 @@ PWIZOBJECTS=\
 ./random_access_gzFile.o \
 ./RcppExports.o
 
+# ./boost/libs/system/src/error_code.o \
+# ./boost/libs/regex/src/posix_api.o \
+# ./boost/libs/regex/src/fileiter.o \
+# ./boost/libs/regex/src/regex_raw_buffer.o \
+# ./boost/libs/regex/src/cregex.o \
+# ./boost/libs/regex/src/regex_debug.o \
+# ./boost/libs/regex/src/instances.o \
+# ./boost/libs/regex/src/icu.o \
+# ./boost/libs/regex/src/usinstances.o \
+# ./boost/libs/regex/src/regex.o \
+# ./boost/libs/regex/src/wide_posix_api.o \
+# ./boost/libs/regex/src/regex_traits_defaults.o \
+# ./boost/libs/regex/src/winstances.o \
+# ./boost/libs/regex/src/wc_regex_traits.o \
+# ./boost/libs/regex/src/c_regex_traits.o \
+# ./boost/libs/regex/src/cpp_regex_traits.o \
+# ./boost/libs/regex/src/static_mutex.o \
+# ./boost/libs/regex/src/w32_regex_traits.o \
+# ./boost/libs/iostreams/src/zlib.o \
+# ./boost/libs/iostreams/src/file_descriptor.o \
+# ./boost/libs/filesystem/src/operations.o \
+# ./boost/libs/filesystem/src/path.o \
+# ./boost/libs/filesystem/src/utf8_codecvt_facet.o \
+# ./boost/libs/chrono/src/chrono.o \
+# ./boost/libs/chrono/src/process_cpu_clocks.o \
+# ./boost/libs/chrono/src/thread_clock.o \
+
 
 ifeq ($(OS),Windows_NT)
 ARCH_OBJS=./boost/libs/filesystem/src/path_traits.o \
@@ -123,7 +124,8 @@ endif
 
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
 
-OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) $(ARCH_OBJS) rampR.o 
+#OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) $(ARCH_OBJS) rampR.o
+OBJECTS= $(MZROBJECTS) # $(PWIZOBJECTS) rampR.o 
 
 ## Generate dependency files
 #DEPFLAGS = -MT $@ -MMD -MP 
@@ -133,7 +135,7 @@ OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) $(ARCH_OBJS) rampR.o
 ##  http://www.gamedev.net/topic/555511-is-there-a-way-to-only-disable-boost-debug-checks/
 ##
 
-PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost/ -I. -D_LARGEFILE_SOURCE -DHAVE_PWIZ_MZML_LIB -D_NODEBUG
+PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost/ -I./pwiz/ -I./pwiz/data/msdata/ramp/ -I. -D_LARGEFILE_SOURCE -DHAVE_PWIZ_MZML_LIB -D_NODEBUG
 PWIZ_LDFLAGS=-lpthread
 
 ## Use the R_HOME indirection to support installations of multiple R version

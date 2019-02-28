@@ -41,7 +41,7 @@ and gzipped versions of all of these if you have pwiz
 #undef Free
 #endif
 
-#include "ramp.h"
+#include "oldramp/ramp.h"
 #include <string>
 
 #if defined(__MINGW32__)
