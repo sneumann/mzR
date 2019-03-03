@@ -188,7 +188,7 @@ void RAMPAdapter::Impl::getScanHeader(size_t index, ScanHeaderStruct& result, bo
       }
     }
 
-    result.filterLine = filterLine;
+    //    result.filterLine = std::string(filterLine);
 
 
 
