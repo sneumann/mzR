@@ -708,6 +708,69 @@ static const char *findMzDataTagValue(const char *pStr, const char *tag) {
    return find;
 }
 
+/****************************************************************
+ * Reads polarity of the scan.	       			        *
+ *                                                              *
+ * !! THE STREAM IS NOT RESET AT THE INITIAL POSITION BEFORE	*
+ *    RETURNING !!						*
+ ***************************************************************/
+
+static int rampReadPolarity(RAMPFILE *pFI,const char *pStr)
+{
+    int mode = -1;
+    if(pFI->bIsMzData)
+    {
+        const char *label = findMzDataTagValue(pStr, "Polarity");
+        if(label)
+        {
+            if(strstr(label,"Positive"))
+            {
+                mode=1;
+            }
+            else if(strstr(label,"Negative"))
+            {
+                mode=0;
+            }
+            else
+            {
+                //mode can not be estimate
+                mode=-1;
+            }
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        const char *find = strstr(pStr,"polarity");
+        if(find)
+        {
+            mode=3;
+            find = findquot(find);
+            if(find)
+            {
+                find++;
+                if(strstr(find,"+"))
+                {
+                    mode=1;
+                }
+                else if(strstr(find,"-"))
+                {
+                    mode=0;
+                }
+                else
+                {
+                    //mode can not be estimate
+                    mode=-1;
+                }
+            }
+        }
+    }
+    return mode;
+}
+
 #include <time.h>
 /*
  * Reads a time string, returns time in seconds.
@@ -718,7 +781,7 @@ static double rampReadTime(RAMPFILE *pFI,const char *pStr) {
       const char *tag = findMzDataTagValue(pStr, "TimeInMinutes");
       if (tag) {
          t = 60.0*atof(tag);
-      } else if (NULL!=(tag = findMzDataTagValue(pStr, "TimeInSeconds"))) { // von Steffan Neumann
+      } else if (NULL!=(tag = findMzDataTagValue(pStr, "TimeInSeconds"))) { // von Steffen Neumann
          t = atof(tag);
       }
    } else if (!sscanf(pStr, "PT%lfS", &t)) {  // usually this is elapsed run time
@@ -866,6 +929,8 @@ void readHeader(RAMPFILE *pFI,
                sscanf(pStr, "%d", &(scanHeader->msLevel));
             //} else if ((pStr = matchAttr(attrib, "length",6)))  { get this from array element
             //   sscanf(pStr, "%d", &(scanHeader->peaksCount));
+	    } else if ((pStr = findMzDataTagValue(attrib,"Polarity")))  { 
+               scanHeader->polarity = rampReadPolarity(pFI,stringBuf);
             } else if ((pStr = findMzDataTagValue(attrib,"TimeInMinutes")))  {
                scanHeader->retentionTime = rampReadTime(pFI,stringBuf);
             } else if ((pStr = findMzDataTagValue(attrib,"TimeInSeconds")))  {
@@ -918,6 +983,11 @@ void readHeader(RAMPFILE *pFI,
                scanHeader->precursorMZ = atof(pStr2);
             }
             if (NULL!=(pStr2 = findMzDataTagValue(stringBuf,"mz"))) 
+            {
+               scanHeader->precursorMZ = atof(pStr2);
+            }
+            // "m/z" is used by the Bruker compassXport mzData export
+            if (NULL!=(pStr2 = findMzDataTagValue(stringBuf,"m/z")))
             {
                scanHeader->precursorMZ = atof(pStr2);
             }
@@ -978,6 +1048,8 @@ void readHeader(RAMPFILE *pFI,
                sscanf(pStr, "%lf", &(scanHeader->basePeakIntensity));      
             } else if ((pStr = matchAttr(attrib, "msLevel",7)))  {
                sscanf(pStr, "%d", &(scanHeader->msLevel));
+            } else if ((pStr = matchAttr(attrib, "polarity",8)))   {
+                    scanHeader->polarity = rampReadPolarity(pFI,stringBuf);
             } else if ((pStr = matchAttr(attrib, "peaksCount",10)))  {
                sscanf(pStr, "%d", &(scanHeader->peaksCount));
             } else if ((pStr = matchAttr(attrib, "retentionTime",13)))  {
@@ -1858,7 +1930,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
               {
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "contentType=\"") + 1 , '\"' );
-#if defined(__clang__)
+#if defined(__clang__) || (__cplusplus > 199711L)
                   pEndAttrValue = 0; //change for C++-11
 #else
                   pEndAttrValue = '\0'; //change for C++-11
@@ -1881,7 +1953,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
               {
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "compressionType=\"") + 1 , '\"' );
-#if defined(__clang__)
+#if defined(__clang__) || (__cplusplus > 199711L)
                   pEndAttrValue = 0; //change for C++-11
 #else
                   pEndAttrValue = '\0'; //change for C++-11

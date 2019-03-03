@@ -187,6 +187,7 @@ struct ScanHeaderStruct
    int mergedResultEndScanNum; /* largest scan number of the scanOrigin for merged scan */
    std::string filterLine;
    ramp_fileoffset_t filePosition; /* where in the file is this header? */
+   int  polarity; // 1 - positive, 0 - negative
    bool is_negative;
    bool is_centroided;   
 };
