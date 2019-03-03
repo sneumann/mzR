@@ -12,7 +12,7 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#include "oldramp/ramp.h"
+#include "pwiz/data/msdata/ramp/ramp.h" // stuff we expose to C, structs etc
 
 #define MAX_RAMP_FILES 100
 #define NEW_LIST(n)		Rf_allocVector(VECSXP,n)
