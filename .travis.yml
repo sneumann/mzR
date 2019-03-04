@@ -24,5 +24,5 @@ script:
     travis_wait 40 R CMD build .
     travis_wait 40 R CMD check --no-build-vignettes --no-vignettes mzR*tar.gz
 
-after_failure:
+after_script:
   - cat /home/travis/build/sneumann/mzR/mzR.Rcheck/00install.out
