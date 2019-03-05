@@ -344,7 +344,7 @@ test_writeMSData <- function() {
     ## validate mzML:
     doc <- XML::xmlInternalTreeParse(out_file)
     res <- XML::xmlSchemaValidate(mzML_xsd_idx, doc)
-#    checkEquals(res$status, 0)
+    checkEquals(res$status, 0)
     
     ## mzXML output:
     out_file <- paste0(test_folder, "/test_write.mzXML")
@@ -418,7 +418,7 @@ test_writeMSData <- function() {
     ## validate mzML:
     doc <- XML::xmlInternalTreeParse(out_file)
     res <- XML::xmlSchemaValidate(mzML_xsd_idx, doc)
-#    checkEquals(res$status, 0)
+    checkEquals(res$status, 0)
 
     ## mzXML output:
     out_file <- paste0(test_folder, "/test_write.mzXML")
@@ -530,7 +530,7 @@ test_writeMSData <- function() {
     ## validate mzML:
     doc <- XML::xmlInternalTreeParse(out_file)
     res <- XML::xmlSchemaValidate(mzML_xsd_idx, doc)
-#    checkEquals(res$status, 0)
+    checkEquals(res$status, 0)
 
     ## mzXML output:
     out_file <- paste0(test_folder, "test_write.mzXML")
@@ -563,7 +563,7 @@ test_writeMSData <- function() {
     ## validate mzML:
     doc <- XML::xmlInternalTreeParse(out_file)
     res <- XML::xmlSchemaValidate(mzML_xsd_idx, doc)
-#    checkEquals(res$status, 0)
+    checkEquals(res$status, 0)
 
     ## mzXML output:
     out_file <- paste0(test_folder, "test_write.mzXML")

@@ -459,11 +459,13 @@ PWIZ_API_DECL void read(std::istream& is, Contact& c)
 
 PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const FileDescription& fd)
 {
-    writer.startElement("fileDescription");
-    write(writer, fd.fileContent);
+  writer.startElement("fileDescription");
+  write(writer, fd.fileContent);
 
+  int count = (int) fd.sourceFilePtrs.size();
+  if (count > 0) {
     XMLWriter::Attributes attributes;
-    attributes.add("count", fd.sourceFilePtrs.size());
+    attributes.add("count", count);
     writer.startElement("sourceFileList", attributes);
 
     for (vector<SourceFilePtr>::const_iterator it=fd.sourceFilePtrs.begin(); 
@@ -471,11 +473,12 @@ PWIZ_API_DECL void write(minimxml::XMLWriter& writer, const FileDescription& fd)
          write(writer, **it);
 
     writer.endElement();
+  }
 
-    for (vector<Contact>::const_iterator it=fd.contacts.begin(); 
-         it!=fd.contacts.end(); ++it)
-         write(writer, *it);
-    writer.endElement();
+  for (vector<Contact>::const_iterator it=fd.contacts.begin(); 
+       it!=fd.contacts.end(); ++it)
+    write(writer, *it);
+  writer.endElement();
 }
 
 
