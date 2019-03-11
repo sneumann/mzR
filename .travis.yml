@@ -12,12 +12,11 @@ dist: xenial
 #before_install:
 #  - if [[ "$TRAVIS_R_VERSION_STRING" = 'bioc-devel' ]]; then mkdir ~/.R && echo 'CXX1X=g++ -std=c++0x -g -O2 -fPIC' > ~/.R/Makevars; fi
 
-#addons:
-#  apt:
-#    packages:
-#      - libnetcdf-dev
-#      - netcdf-bin # libnetcdf-dev doesn't contain nc-config in ubuntu 12.04 (in 16.04 it is part of libnetcdf-dev)
-#      - libhdf5-dev
+addons:
+  apt:
+    packages:
+      - libnetcdf-dev
+      - libhdf5-dev
 
 script: 
   - | 
