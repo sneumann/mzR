@@ -114,7 +114,7 @@ ARCH_OBJS=./boost/libs/filesystem/src/path_traits.o \
 ./boost/libs/thread/src/win32/thread.o \
 ./pwiz/data/msdata/ramp/wglob.o \
 ./boost_aux/boost/nowide/iostream.o
-ARCH_CPPFLAGS=-fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
+ARCH_CPPFLAGS=-fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB -std=gnu++14
 ARCH_LIBS=-lws2_32 -lz
 RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)  
 else
