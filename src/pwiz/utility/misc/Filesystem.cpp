@@ -154,6 +154,7 @@ extern "C"
 
     int GetFileHandleTypeNumber(SYSTEM_HANDLE_INFORMATION* handleInfos)
     {
+#ifndef __MINGW32__
         DWORD currentProcessId = GetCurrentProcessId();
         wstring fileType = L"File";
         std::vector<BYTE> typeInfoBytes(sizeof(PUBLIC_OBJECT_TYPE_INFORMATION));
@@ -198,6 +199,9 @@ extern "C"
 
         auto typeMode = std::max_element(handlesPerType.begin(), handlesPerType.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
         return typeMode->first;
+#else
+		return 0;
+#endif
     }
 
     bool GetFileNameFromHandle(HANDLE hFile, wchar_t* filepathBuffer, size_t bufferLength)
@@ -239,6 +243,7 @@ namespace util {
 PWIZ_API_DECL void force_close_handles_to_filepath(const std::string& filepath, bool closeMemoryMappedSections) noexcept(true)
 {
 #ifdef WIN32
+#ifndef __MINGW32__
     bool runningUnderWine = GetLibraryProcAddress("ntdll.dll", "wine_get_version") != NULL;
     if (runningUnderWine)
         return;
@@ -411,6 +416,7 @@ PWIZ_API_DECL void force_close_handles_to_filepath(const std::string& filepath, 
             //    fprintf(stderr, "[force_close_handles_to_filepath()] Closed section handle.\n");
         }
     }
+#endif
 #endif
 }
 
