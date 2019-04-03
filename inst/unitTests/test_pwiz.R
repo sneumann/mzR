@@ -161,6 +161,9 @@ test_getScanHeaderInfo <- function() {
     scan_3$injectionTime <- 0
     scan_3$filterString <- NA_character_
     scan_3$centroided <- NA
+    scan_3$isolationWindowTargetMZ <- NA_real_
+    scan_3$isolationWindowLowerOffset <- NA_real_
+    scan_3$isolationWindowUpperOffset <- NA_real_
     checkEquals(scan_3[cn], scan_3_ramp[cn])
     
     ## Read all scan header
@@ -171,6 +174,9 @@ test_getScanHeaderInfo <- function() {
     all_scans$injectionTime <- 0
     all_scans$filterString <- NA_character_
     all_scans$centroided <- NA
+    all_scans$isolationWindowTargetMZ <- NA_real_
+    all_scans$isolationWindowLowerOffset <- NA_real_
+    all_scans$isolationWindowUpperOffset <- NA_real_
     checkEquals(all_scans[, cn], all_scans_ramp[, cn])
     
     ## passing the index of all scan headers should return the same
@@ -181,6 +187,9 @@ test_getScanHeaderInfo <- function() {
     all_scans_2$injectionTime <- 0
     all_scans_2$filterString <- NA_character_
     all_scans_2$centroided <- NA
+    all_scans_2$isolationWindowTargetMZ <- NA_real_
+    all_scans_2$isolationWindowLowerOffset <- NA_real_
+    all_scans_2$isolationWindowUpperOffset <- NA_real_
     checkEquals(all_scans[, cn], all_scans_2[, cn])
     checkEquals(as.list(all_scans[3, cn]), scan_3[cn])
     checkEquals(all_scans_2[, cn], all_scans_ramp_2[, cn])
@@ -193,6 +202,9 @@ test_getScanHeaderInfo <- function() {
     scan_3$injectionTime <- 0
     scan_3$filterString <- NA_character_
     scan_3$centroided <- NA
+    scan_3$isolationWindowTargetMZ <- NA_real_
+    scan_3$isolationWindowLowerOffset <- NA_real_
+    scan_3$isolationWindowUpperOffset <- NA_real_
     checkEquals(scan_3[, cn], scan_3_ramp[, cn])
 
     close(mzml)

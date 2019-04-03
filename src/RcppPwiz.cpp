@@ -207,6 +207,9 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       Rcpp::StringVector spectrumId(N_scans);
       Rcpp::LogicalVector centroided(N_scans);
       Rcpp::NumericVector ionMobilityDriftTime(N_scans);
+      Rcpp::NumericVector isolationWindowTargetMZ(N_scans);
+      Rcpp::NumericVector isolationWindowLowerOffset(N_scans);
+      Rcpp::NumericVector isolationWindowUpperOffset(N_scans);
       
       for (int i = 0; i < N_scans; i++)
 	{
@@ -225,7 +228,23 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
 	  ionInjectionTime[i] = (scan.cvParam(MS_ion_injection_time).timeInSeconds() * 1000);
 	  filterString[i] = scan.cvParam(MS_filter_string).value.empty() ? NA_STRING : Rcpp::String(scan.cvParam(MS_filter_string).value);
 	  ionMobilityDriftTime[i] = scan.cvParam(MS_ion_mobility_drift_time).value.empty() ? NA_REAL : (scan.cvParam(MS_ion_mobility_drift_time).timeInSeconds() * 1000);
-
+	  
+	  if (!sp->precursors.empty()) {
+	    IsolationWindow iwin = sp->precursors[0].isolationWindow;
+	    if (!iwin.empty()) {
+	      isolationWindowTargetMZ[i] = iwin.cvParam(MS_isolation_window_target_m_z).value.empty() ? NA_REAL : iwin.cvParam(MS_isolation_window_target_m_z).valueAs<double>();
+	      isolationWindowLowerOffset[i] = iwin.cvParam(MS_isolation_window_lower_offset).value.empty() ? NA_REAL : iwin.cvParam(MS_isolation_window_lower_offset).valueAs<double>();
+	      isolationWindowUpperOffset[i] = iwin.cvParam(MS_isolation_window_upper_offset).value.empty() ? NA_REAL : iwin.cvParam(MS_isolation_window_upper_offset).valueAs<double>();
+	    } else {
+	      isolationWindowTargetMZ[i] = NA_REAL;
+	      isolationWindowLowerOffset[i] = NA_REAL;
+	      isolationWindowUpperOffset[i] = NA_REAL;
+	    }
+	  } else {
+	      isolationWindowTargetMZ[i] = NA_REAL;
+	      isolationWindowLowerOffset[i] = NA_REAL;
+	      isolationWindowUpperOffset[i] = NA_REAL;
+	  }
 	  peaksCount[i] = scanHeader.peaksCount;
 	  totIonCurrent[i] = scanHeader.totIonCurrent;
 	  retentionTime[i] = scanHeader.retentionTime;
@@ -251,7 +270,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       delete adapter;
       adapter = NULL;
 
-      Rcpp::List header(26);
+      Rcpp::List header(29);
       std::vector<std::string> names;
       int i = 0;
       names.push_back("seqNum");
@@ -306,6 +325,12 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       header[i++] = Rcpp::wrap(centroided);
       names.push_back("ionMobilityDriftTime");
       header[i++] = Rcpp::wrap(ionMobilityDriftTime);      
+      names.push_back("isolationWindowTargetMZ");
+      header[i++] = Rcpp::wrap(isolationWindowTargetMZ);      
+      names.push_back("isolationWindowLowerOffset");
+      header[i++] = Rcpp::wrap(isolationWindowLowerOffset);      
+      names.push_back("isolationWindowUpperOffset");
+      header[i++] = Rcpp::wrap(isolationWindowUpperOffset);      
       header.attr("names") = names;
       
       return header;
@@ -623,6 +648,9 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   Rcpp::StringVector spectrumId = spctr_header["spectrumId"];
   Rcpp::LogicalVector centroided = spctr_header["centroided"];
   Rcpp::NumericVector ionMobilityDriftTime = spctr_header["ionMobilityDriftTime"];
+  Rcpp::NumericVector isolationWindowTargetMZ = spctr_header["isolationWindowTargetMZ"];
+  Rcpp::NumericVector isolationWindowLowerOffset = spctr_header["isolationWindowLowerOffset"];
+  Rcpp::NumericVector isolationWindowUpperOffset = spctr_header["isolationWindowUpperOffset"];
   
   // From MSnbase::Spectrum        Column in the header
   // msLevel integer               $msLevel
@@ -699,7 +727,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     if (ionMobilityDriftTime[i] != NA_REAL)
       spct_scan.set(MS_ion_mobility_drift_time, ionMobilityDriftTime[i],
 		    UO_millisecond);
-      
+    
     // MSn - precursor:
     if (precursorScanNum[i] > 0 | precursorMZ[i] > 0) {
       // Fill precursor data. This preserves the precursor data even if the
@@ -729,6 +757,12 @@ void RcppPwiz::addSpectrumList(MSData& msd,
       }
       if (precursor_idx >= 0) {
 	prec.spectrumID = spectrumId[precursor_idx];
+      }
+      // isolation window
+      if (isolationWindowTargetMZ[i] != NA_REAL) {
+	prec.isolationWindow.set(MS_isolation_window_target_m_z, isolationWindowTargetMZ[i]);
+	prec.isolationWindow.set(MS_isolation_window_lower_offset, isolationWindowLowerOffset[i]);
+	prec.isolationWindow.set(MS_isolation_window_upper_offset, isolationWindowUpperOffset[i]);
       }
     }
     // [X] collisionEnergy

@@ -122,8 +122,10 @@
   \code{filterString}, \code{spectrumId}, \code{centroided}
   (\code{logical} whether the data of the spectrum is in centroid mode
   or profile mode; only for pwiz backend), \code{injectionTime} (ion
-  injection time, in milliseconds) and \code{ionMobilityDriftTime} (in
-  milliseconds). If multiple scans are queried, a
+  injection time, in milliseconds), \code{ionMobilityDriftTime} (in
+  milliseconds), \code{isolationWindowTargetMZ},
+  \code{isolationWindowLowerOffset} and
+  \code{isolationWindowUpperOffset}. If multiple scans are queried, a
   \code{data.frame} is returned with the scans reported along the
   rows.
 
