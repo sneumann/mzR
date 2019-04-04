@@ -37,10 +37,22 @@
                   mergedResultEndScanNum = "numeric",
                   injectionTime = "numeric",
                   filterString = "character",
-                  centroided = "logical"
+                  centroided = "logical",
+                  ionMobilityDriftTime = "numeric",
+                  isolationWindowTargetMZ = "numeric",
+                  isolationWindowLowerOffset = "numeric",
+                  isolationWindowUpperOffset = "numeric"
                   )
     if (!is.data.frame(x))
         return("'x' is supposed to be a data.frame")
+    if (!any(colnames(x) == "ionMobilityDriftTime"))
+        x$ionMobilityDriftTime <- NA_real_
+    if (!any(colnames(x) == "isolationWindowTargetMZ"))
+        x$isolationWindowTargetMZ <- NA_real_
+    if (!any(colnames(x) == "isolationWindowLowerOffset"))
+        x$isolationWindowLowerOffset <- NA_real_
+    if (!any(colnames(x) == "isolationWindowUpperOffset"))
+        x$isolationWindowUpperOffset <- NA_real_
     if (!(all(names(req_cols) %in% colnames(x))))
         return(paste0("'x' is missing one or more required columns: ",
                       paste(names(req_cols), collapse = ", ")))
@@ -48,12 +60,8 @@
     if (!any(colnames(x) == "spectrumId"))
         x$spectrumId <- paste0("scan=", x$acquisitionNum)
     x$spectrumId <- as.character(x$spectrumId)
-    ## Add ionMobilityDriftTime
-    if (!any(colnames(x) == "ionMobilityDriftTime"))
-        x$ionMobilityDriftTime <- NA_real_
     ## Hack in the spectrumId column.
-    req_cols <- c(req_cols, spectrumId = "character",
-                  ionMobilityDriftTime = "numeric")    
+    req_cols <- c(req_cols, spectrumId = "character")
     ## Subset and order the columns
     x <- x[, names(req_cols)]
     cn_x <- colnames(x)

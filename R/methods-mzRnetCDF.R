@@ -79,6 +79,9 @@ setMethod("header",
                             centroided = NA,
                             ionMobilityDriftTime = empty_val,
                             stringsAsFactors = FALSE)
+            result$isolationWindowTargetMZ <- NA_real_
+            result$isolationWindowLowerOffset <- NA_real_
+            result$isolationWindowUpperOffset <- NA_real_
             return(result)
           })
 

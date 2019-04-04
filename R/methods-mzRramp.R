@@ -48,6 +48,9 @@ setMethod("header",
               res$spectrumId <- paste0("scan=", res$acquisitionNum)
               res$centroided <- NA
               res$ionMobilityDriftTime <- NA_real_
+              res$isolationWindowTargetMZ <- NA_real_
+              res$isolationWindowLowerOffset <- NA_real_
+              res$isolationWindowUpperOffset <- NA_real_
               res
 })
 
@@ -65,6 +68,9 @@ setMethod("header",
               res$spectrumId <- paste0("scan=", res$acquisitionNum)
               res$centroided <- NA
               res$ionMobilityDriftTime <- NA_real_
+              res$isolationWindowTargetMZ <- NA_real_
+              res$isolationWindowLowerOffset <- NA_real_
+              res$isolationWindowUpperOffset <- NA_real_
               res
           })
 
