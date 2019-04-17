@@ -1,6 +1,6 @@
 ---
 title: "A parser for raw and identification mass-spectrometry data"
-author: 
+author:
 - name: Bernd Fischer
 - name: Steffen Neumann
 - name: Laurent Gatto
@@ -9,7 +9,7 @@ package: mzR
 output:
   BiocStyle::html_document:
     toc_float: true
-bibliography: mzR.bib 	
+bibliography: mzR.bib
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Accessin raw mass spectrometry and identification data}
@@ -26,7 +26,7 @@ interface to several mass spectrometry data formats, namely `mzData`
 data, and `mzIdentML` [@Jones2012], somewhat similar to the
 Bioconductor package affyio for affymetrix raw data. No processing is
 done in `r BiocStyle::Biocpkg("mzR")`, which is left to packages such as `r
-BiocStyle::Biocpkg("xcms")` [@Smith:2006, Tautenhahn:2008] or 
+BiocStyle::Biocpkg("xcms")` [@Smith:2006, Tautenhahn:2008] or
 `r BiocStyle::Biocpkg("MSnbase")` [@Gatto:2012]. These packages also provide more
 convenient, high-level interfaces to raw and identification. data
 
@@ -54,6 +54,16 @@ through pwiz.
 The `r BiocStyle::Biocpkg("mzR")` package is in essence a collection of wrappers
 to the C++ code, and benefits from the C++ interface provided through
 the Rcpp package [@Rcpp11].
+
+**IMPORTANT** New developers that need to access and manipulate raw
+mass spectrometry data are advised against using this infrastucture
+directly. They are invited to use the corresponding `MSnExp` (with *on
+disk* mode) from the`r BiocStyle::Biocpkg("MSnbase")` package instead. The
+latter supports reading multiple files at once and offers access to
+the spectra data (m/z and intensity) as well as all the spectra
+metadata using a coherent interface. The MSnbase infrastructure itself
+used the low level classes in mzR, thus offering fast and efficient
+access.
 
 
 # Mass spectrometry raw data
@@ -107,17 +117,17 @@ depends on the MS software which converted the data.
 
 ## `mzXML`/`mzML`/`mzData` files
 
-A short example sequence to read data from a mass spectrometer. 
+A short example sequence to read data from a mass spectrometer.
 First open the file.
 
 ```{r openraw}
 library(mzR)
 library(msdata)
 
-mzxml <- system.file("threonine/threonine_i2_e35_pH_tree.mzXML", 
+mzxml <- system.file("threonine/threonine_i2_e35_pH_tree.mzXML",
                      package = "msdata")
-aa <- openMSfile(mzxml) 
-``` 
+aa <- openMSfile(mzxml)
+```
 
 We can obtain different kind of header information.
 
@@ -125,7 +135,7 @@ We can obtain different kind of header information.
 runInfo(aa)
 instrumentInfo(aa)
 header(aa,1)
-``` 
+```
 
 Read a single spectrum from the file.
 
@@ -134,14 +144,14 @@ pl <- peaks(aa,10)
 peaksCount(aa,10)
 head(pl)
 plot(pl[,1], pl[,2], type="h", lwd=1)
-``` 
+```
 
 One should always close the file when not needed any more. This will
 release the memory of cached content.
 
 ```{r close the file}
 close(aa)
-``` 
+```
 
 ## `mzIdentML` files
 
@@ -154,14 +164,14 @@ library(msdata)
 
 file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
 x <- openIDfile(file)
-``` 
+```
 
 `mzidInfo` function will return general information about this
 identification result.
 
 ```{r metadata}
 mzidInfo(x)
-``` 
+```
 
 `psms` will return the detailed information on each
 peptide-spectrum-match, include `spectrumID`, `chargeState`,
@@ -196,8 +206,8 @@ colnames(scr)
 Other file formats provided by HUPO, such as `mzQuantML` for
 quantitative data [@Walzer:2013] are also possible in the future.
 
-# Session information {#sec:sessionInfo} 
+# Session information {#sec:sessionInfo}
 
 ```{r label=sessioninfo, results='asis', echo=FALSE}
 toLatex(sessionInfo())
-``` 
+```

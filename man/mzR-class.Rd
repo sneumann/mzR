@@ -75,10 +75,19 @@
   \code{mzRpwiz} are available implementations. \code{mzRramp} uses the
   ISB 'RAMP' random access C/C++ API, and \code{mzRpwiz} uses
   Proteowizard to access the relevant information in \code{mzData},
-  \code{mzXML} and \code{mzML} files. 
+  \code{mzXML} and \code{mzML} files. \code{mzRident} is used as an
+  interface to \code{mzIdentML} files.
 
-  Additional sub-classes using the proteowizard API and netCDF are
-  planned.
+  IMPORTANT: New developers that need to access and manipulate raw mass
+  spectrometry data are advised against using this infrastucture
+  directly. They are invited to use the corresponding \code{MSnExp}
+  (with \emph{on disk} mode) from the MSnbase package instead. The
+  latter supports reading multiple files at once and offers access to
+  the spectra data (m/z and intensity) as well as all the spectra
+  metadata using a coherent interface. The MSnbase infrastructure itself
+  used the low level classes in mzR, thus offering fast and efficient
+  access.
+
 }
 
 \section{Objects from the Class}{
@@ -86,10 +95,11 @@
 
   Objects can be created by calls of the form \code{new("mzRramp",
     ...)}, but more often they will be created with
-  \code{\link{openMSfile}}.  
-  
-  After creating a \code{mzR}, you can write it into a file.
-  mzXML, mzML, mgf formats are supported. 
+  \code{\link{openMSfile}}.
+
+  After creating an \code{mzR} object, one can write it into a new file.
+  mzXML, mzML, mgf formats are supported.
+
 }
 
 \section{Slots}{
@@ -102,6 +112,7 @@
       from Biobase.}
   }
 }
+
 \section{Extends}{
   Class \code{"\linkS4class{Versioned}"}, directly.
 }
@@ -110,14 +121,14 @@
 
   For methods to access raw data (spectra and chromatograms), see
   \code{\link{peaks}}.
-  
-  
+
+
   Methods currently implemented for \code{mzR}
 
   \describe{ \item{fileName}{\code{signature(object = "mzR")}: ... } }
-  
+
   Methods currently implemented for \code{mzRramp}
-  
+
   \describe{
     \item{analyzer}{\code{signature(object = "mzRramp")}: ... }
     \item{close}{\code{signature(con = "mzRramp")}: ... }
@@ -145,7 +156,7 @@
     \item{runInfo}{\code{signature(object = "mzRpwiz")}: ... }
     \item{chromatogramsInfo}{\code{signature(object = "mzRpwiz")}: ... }
   }
-  
+
   Methods currently implemented for \code{mzRident}
   \describe{
     \item{mzidInfo}{\code{signature(object = "mzRident")}: ... }
@@ -175,7 +186,7 @@
  library(msdata)
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
-                     full.names=TRUE, recursive = TRUE)
+		     full.names=TRUE, recursive = TRUE)
  mzml <- openMSfile(file)
  close(mzml)
 
