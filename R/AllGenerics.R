@@ -20,7 +20,6 @@ setGeneric("creationDate", function(object) standardGeneric("creationDate"))
 setGeneric("manufacturer", function(object) standardGeneric("manufacturer"))
 setGeneric("model", function(object) standardGeneric("model"))
 setGeneric("ionisation", function(object) standardGeneric("ionisation"))
-setGeneric("analyzer", function(object) standardGeneric("analyzer"))
 setGeneric("detector", function(object) standardGeneric("detector"))
 setGeneric("isInitialized", function(object) standardGeneric("isInitialized"))
 setGeneric("initializeRamp",
@@ -45,3 +44,4 @@ setGeneric("isolationWindow",
 ## setGeneric("peaks", function(object, ...) standardGeneric("peaks"))
 ## setGeneric("database", function(object, ...) standardGeneric("database"))
 ## setGeneric("modifications", function(object, ...) standardGeneric("modifications"))
+## setGeneric("analyzer", function(object) standardGeneric("analyzer"))
