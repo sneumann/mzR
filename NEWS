@@ -1,3 +1,12 @@
+CHANGES IN VERSION 2.19.1
+-------------------------
+ o Remove analyzer generics, now in ProtGenerics <2019-05-13 Mon>
+
+CHANGES IN VERSION 2.17.4
+-------------------------
+ o Update documentation, pointing to MSnbase rather than directly use
+   low-level classes. <2019-04-17 Wed>
+
 CHANGES IN VERSION 2.17.3
 -------------------------
  o Extract isolation window from mzML files (issue #193): data.frame returned
@@ -14,9 +23,9 @@ CHANGES IN VERSION 2.15.5
 
 CHANGES IN VERSION 2.15.4
 -------------------------
- o Use new dependency ncdf4 for netCDF reading, 
+ o Use new dependency ncdf4 for netCDF reading,
    removes a lot of build hassles with old libnetcdf-dev linking.
- o specParams returns a numeric scan.number.s. 
+ o specParams returns a numeric scan.number.s.
 
 CHANGES IN VERSION 2.15.3
 -------------------------
