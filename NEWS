@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.19.4
+-------------------------
+ o Add header columns scanWindowLowerLimit and scanWindowUpperLimit
+
 CHANGES IN VERSION 2.19.3
 -------------------------
  o use ProtGenerics::tolerance generic <2019-08-16 Fri>

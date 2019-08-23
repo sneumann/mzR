@@ -210,6 +210,8 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       Rcpp::NumericVector isolationWindowTargetMZ(N_scans);
       Rcpp::NumericVector isolationWindowLowerOffset(N_scans);
       Rcpp::NumericVector isolationWindowUpperOffset(N_scans);
+      Rcpp::NumericVector scanWindowLowerLimit(N_scans);
+      Rcpp::NumericVector scanWindowUpperLimit(N_scans);
       
       for (int i = 0; i < N_scans; i++)
 	{
@@ -228,6 +230,14 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
 	  ionInjectionTime[i] = (scan.cvParam(MS_ion_injection_time).timeInSeconds() * 1000);
 	  filterString[i] = scan.cvParam(MS_filter_string).value.empty() ? NA_STRING : Rcpp::String(scan.cvParam(MS_filter_string).value);
 	  ionMobilityDriftTime[i] = scan.cvParam(MS_ion_mobility_drift_time).value.empty() ? NA_REAL : (scan.cvParam(MS_ion_mobility_drift_time).timeInSeconds() * 1000);
+
+	  if (!scan.scanWindows.empty()) {
+	    scanWindowLowerLimit[i] = scan.scanWindows[0].cvParam(MS_scan_window_lower_limit).valueAs<double>();
+	    scanWindowUpperLimit[i] = scan.scanWindows[0].cvParam(MS_scan_window_upper_limit).valueAs<double>();
+	  } else {
+	    scanWindowLowerLimit[i] = NA_REAL;
+	    scanWindowUpperLimit[i] = NA_REAL;
+	  }
 	  
 	  if (!sp->precursors.empty()) {
 	    IsolationWindow iwin = sp->precursors[0].isolationWindow;
@@ -270,7 +280,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       delete adapter;
       adapter = NULL;
 
-      Rcpp::List header(29);
+      Rcpp::List header(31);
       std::vector<std::string> names;
       int i = 0;
       names.push_back("seqNum");
@@ -331,6 +341,10 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
       header[i++] = Rcpp::wrap(isolationWindowLowerOffset);      
       names.push_back("isolationWindowUpperOffset");
       header[i++] = Rcpp::wrap(isolationWindowUpperOffset);      
+      names.push_back("scanWindowLowerLimit");
+      header[i++] = Rcpp::wrap(scanWindowLowerLimit);      
+      names.push_back("scanWindowUpperLimit");
+      header[i++] = Rcpp::wrap(scanWindowUpperLimit);      
       header.attr("names") = names;
       
       return header;
@@ -651,6 +665,8 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   Rcpp::NumericVector isolationWindowTargetMZ = spctr_header["isolationWindowTargetMZ"];
   Rcpp::NumericVector isolationWindowLowerOffset = spctr_header["isolationWindowLowerOffset"];
   Rcpp::NumericVector isolationWindowUpperOffset = spctr_header["isolationWindowUpperOffset"];
+  Rcpp::NumericVector scanWindowLowerLimit = spctr_header["scanWindowLowerLimit"];
+  Rcpp::NumericVector scanWindowUpperLimit = spctr_header["scanWindowUpperLimit"];
   
   // From MSnbase::Spectrum        Column in the header
   // msLevel integer               $msLevel
@@ -727,7 +743,11 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     if (ionMobilityDriftTime[i] != NA_REAL)
       spct_scan.set(MS_ion_mobility_drift_time, ionMobilityDriftTime[i],
 		    UO_millisecond);
-    
+
+    // scanWindow
+    if (scanWindowLowerLimit[i] != NA_REAL && scanWindowUpperLimit[i] != NA_REAL) {
+      spct_scan.scanWindows.push_back(ScanWindow(scanWindowLowerLimit[i], scanWindowUpperLimit[i], MS_m_z));
+    }
     // MSn - precursor:
     if (precursorScanNum[i] > 0 | precursorMZ[i] > 0) {
       // Fill precursor data. This preserves the precursor data even if the

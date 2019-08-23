@@ -15,13 +15,17 @@ test_mzXML <- function() {
     hdr <- header(mzxml)
     checkTrue(any(colnames(hdr) == "spectrumId"))
     checkTrue(all(hdr$centroided))
+    checkTrue(any(colnames(hdr) == "scanWindowLowerLimit"))
+    checkTrue(any(colnames(hdr) == "scanWindowUpperLimit"))
+    checkTrue(all(is.na(hdr$scanWindowLowerLimit)))
+    checkTrue(all(is.na(hdr$scanWindowUpperLimit)))
     hdr <- header(mzxml,1)
     checkTrue(is.list(hdr))
     hdr <- header(mzxml, 2:3)
     checkTrue(is.data.frame(hdr))
     checkTrue(nrow(hdr) == 2)
     fileName(mzxml)
-    close(mzxml)    
+    close(mzxml)
 }
 
 test_mzML <- function() {
@@ -40,6 +44,10 @@ test_mzML <- function() {
     checkTrue(any(colnames(hdr) == "spectrumId"))
     checkTrue(all(hdr$centroided))
     checkEquals(hdr$spectrumId, paste0("spectrum=", hdr$acquisitionNum))
+    checkTrue(any(colnames(hdr) == "scanWindowLowerLimit"))
+    checkTrue(any(colnames(hdr) == "scanWindowUpperLimit"))
+    checkTrue(all(!is.na(hdr$scanWindowLowerLimit)))
+    checkTrue(all(!is.na(hdr$scanWindowUpperLimit)))
     hdr <- header(mzml,1)
     checkTrue(is.list(hdr))
     hdr <- header(mzml, 2:3)
@@ -76,7 +84,8 @@ test_getScanHeaderInfo <- function() {
     ## Read single scan header.
     scan_3 <- header(mzml, scans = 3)
     cn <- names(scan_3)
-    cn <- cn[cn != "spectrumId"]
+    cn <- cn[!(cn %in% c("spectrumId", "scanWindowLowerLimit",
+                         "scanWindowUpperLimit"))]
     scan_3_ramp <- header(ramp, scans = 3)
     ## Ramp does not read polarity
     scan_3$polarity <- 0

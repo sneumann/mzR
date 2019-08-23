@@ -41,7 +41,9 @@
                   ionMobilityDriftTime = "numeric",
                   isolationWindowTargetMZ = "numeric",
                   isolationWindowLowerOffset = "numeric",
-                  isolationWindowUpperOffset = "numeric"
+                  isolationWindowUpperOffset = "numeric",
+                  scanWindowLowerLimit = "numeric",
+                  scanWindowUpperLimit = "numeric"
                   )
     if (!is.data.frame(x))
         return("'x' is supposed to be a data.frame")
@@ -53,6 +55,10 @@
         x$isolationWindowLowerOffset <- NA_real_
     if (!any(colnames(x) == "isolationWindowUpperOffset"))
         x$isolationWindowUpperOffset <- NA_real_
+    if (!any(colnames(x) == "scanWindowLowerLimit"))
+        x$scanWindowLowerLimit <- NA_real_
+    if (!any(colnames(x) == "scanWindowUpperLimit"))
+        x$scanWindowUpperLimit <- NA_real_
     if (!(all(names(req_cols) %in% colnames(x))))
         return(paste0("'x' is missing one or more required columns: ",
                       paste(names(req_cols), collapse = ", ")))
