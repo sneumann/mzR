@@ -854,7 +854,7 @@ Rcpp::DataFrame RcppPwiz::getChromatogramsInfo( int whichChrom )
 Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichChrom)
 {
   if (msd != NULL) {
-    CVID nativeIdFormat_ = id::getDefaultNativeIDFormat(*msd); // Ask CHRIS if I'm correctly dereferencing this...
+    CVID nativeIdFormat_ = id::getDefaultNativeIDFormat(*msd);
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
     if (clp.get() == 0) {
       Rf_warningcall(R_NilValue, "The direct support for chromatogram info is only available in mzML format.");
@@ -894,8 +894,8 @@ Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichCh
       polarity[i] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
       if (!ch->precursor.empty()) {
 	precursorIsolationWindowTargetMZ[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_target_m_z).value.empty() ? NA_REAL : ch->precursor.isolationWindow.cvParam(MS_isolation_window_target_m_z).valueAs<double>();
-	precursorIsolationWindowLowerOffset[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_lower_offset).value.empty() ? 0 : ch->precursor.isolationWindow.cvParam(MS_isolation_window_lower_offset).valueAs<double>();
-	precursorIsolationWindowUpperOffset[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_upper_offset).value.empty() ? 0 : ch->precursor.isolationWindow.cvParam(MS_isolation_window_upper_offset).valueAs<double>();
+	precursorIsolationWindowLowerOffset[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_lower_offset).value.empty() ? NA_REAL : ch->precursor.isolationWindow.cvParam(MS_isolation_window_lower_offset).valueAs<double>();
+	precursorIsolationWindowUpperOffset[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_upper_offset).value.empty() ? NA_REAL : ch->precursor.isolationWindow.cvParam(MS_isolation_window_upper_offset).valueAs<double>();
 	precursorCollisionEnergy[i] = ch->precursor.activation.cvParam(MS_collision_energy).value.empty() ? NA_REAL : ch->precursor.activation.cvParam(MS_collision_energy).valueAs<double>(); 
       } else {
 	precursorIsolationWindowTargetMZ[i] = NA_REAL;
@@ -905,8 +905,8 @@ Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichCh
       }
       if (!ch->product.empty()) {
 	productIsolationWindowTargetMZ[i] = ch->product.isolationWindow.cvParam(MS_isolation_window_target_m_z).value.empty() ? NA_REAL : ch->product.isolationWindow.cvParam(MS_isolation_window_target_m_z).valueAs<double>();
-	productIsolationWindowLowerOffset[i] = ch->product.isolationWindow.cvParam(MS_isolation_window_lower_offset).value.empty() ? 0 : ch->product.isolationWindow.cvParam(MS_isolation_window_lower_offset).valueAs<double>();
-	productIsolationWindowUpperOffset[i] = ch->product.isolationWindow.cvParam(MS_isolation_window_upper_offset).value.empty() ? 0 : ch->product.isolationWindow.cvParam(MS_isolation_window_upper_offset).valueAs<double>();
+	productIsolationWindowLowerOffset[i] = ch->product.isolationWindow.cvParam(MS_isolation_window_lower_offset).value.empty() ? NA_REAL : ch->product.isolationWindow.cvParam(MS_isolation_window_lower_offset).valueAs<double>();
+	productIsolationWindowUpperOffset[i] = ch->product.isolationWindow.cvParam(MS_isolation_window_upper_offset).value.empty() ? NA_REAL : ch->product.isolationWindow.cvParam(MS_isolation_window_upper_offset).valueAs<double>();
       } else {
 	productIsolationWindowTargetMZ[i] = NA_REAL;
 	productIsolationWindowLowerOffset[i] = NA_REAL;
