@@ -51,6 +51,8 @@ setMethod("header",
               res$isolationWindowTargetMZ <- NA_real_
               res$isolationWindowLowerOffset <- NA_real_
               res$isolationWindowUpperOffset <- NA_real_
+              res$scanWindowLowerLimit <- NA_real_
+              res$scanWindowUpperLimit <- NA_real_
               res
 })
 
@@ -71,6 +73,8 @@ setMethod("header",
               res$isolationWindowTargetMZ <- NA_real_
               res$isolationWindowLowerOffset <- NA_real_
               res$isolationWindowUpperOffset <- NA_real_
+              res$scanWindowLowerLimit <- NA_real_
+              res$scanWindowUpperLimit <- NA_real_
               res
           })
 

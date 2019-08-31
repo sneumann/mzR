@@ -124,8 +124,9 @@
   or profile mode; only for pwiz backend), \code{injectionTime} (ion
   injection time, in milliseconds), \code{ionMobilityDriftTime} (in
   milliseconds), \code{isolationWindowTargetMZ},
-  \code{isolationWindowLowerOffset} and
-  \code{isolationWindowUpperOffset}. If multiple scans are queried, a
+  \code{isolationWindowLowerOffset},
+  \code{isolationWindowUpperOffset}, \code{scanWindowLowerLimit} and
+  \code{scanWindowUpperLimit}. If multiple scans are queried, a
   \code{data.frame} is returned with the scans reported along the
   rows.
 

@@ -19,6 +19,10 @@ test_mzXML <- function() {
     checkTrue(all(is.na(hdr$centroided)))
     checkTrue(any(colnames(hdr) == "ionMobilityDriftTime"))
     checkTrue(all(is.na(hdr$ionMobilityDriftTime)))
+    checkTrue(any(colnames(hdr) == "scanWindowLowerLimit"))
+    checkTrue(any(colnames(hdr) == "scanWindowUpperLimit"))
+    checkTrue(all(is.na(hdr$scanWindowLowerLimit)))
+    checkTrue(all(is.na(hdr$scanWindowUpperLimit)))
     close(mzxml)
 }
 
@@ -41,6 +45,10 @@ test_mzML <- function() {
     header(mzml,2:3)
     checkTrue(any(colnames(hdr) == "ionMobilityDriftTime"))
     checkTrue(all(is.na(hdr$ionMobilityDriftTime)))
+    checkTrue(any(colnames(hdr) == "scanWindowLowerLimit"))
+    checkTrue(any(colnames(hdr) == "scanWindowUpperLimit"))
+    checkTrue(all(is.na(hdr$scanWindowLowerLimit)))
+    checkTrue(all(is.na(hdr$scanWindowUpperLimit)))
 
     checkTrue(ncol(header(mzml))>4)
     checkTrue(length(header(mzml,1))>4)
