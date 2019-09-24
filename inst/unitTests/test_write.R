@@ -482,7 +482,7 @@ test_writeMSData <- function() {
     ## I don't quite understand that, but the acquisitionNum and the
     ## precursorScanNum are different while the spectrumId is the same.
     ## Still, check that the precursorScanNum is what we expect:
-    checkEquals(hdr_new$precursorScanNum, c(0, 1, 0, 0, 4, 4))
+    checkEquals(hdr_new$precursorScanNum, c(NA, 1, NA, NA, 4, 4))
     hdr_new$acquisitionNum <- as.integer(factor(hdr_new$acquisitionNum))
     hdr_new$precursorScanNum <- as.integer(factor(hdr_new$precursorScanNum))
     hdr_sub$acquisitionNum <- as.integer(factor(hdr_sub$acquisitionNum))
@@ -506,7 +506,7 @@ test_writeMSData <- function() {
     ii_new <- mzR::instrumentInfo(mzml_new)
     mzR::close(mzml_new)
     checkEquals(pks_new, pks_sub)
-    checkEquals(hdr_new$precursorScanNum, c(0, 1, 0, 0, 4, 4))
+    checkEquals(hdr_new$precursorScanNum, c(NA, 1, NA, NA, 4, 4))
     rownames(hdr_sub) <- NULL
     rownames(hdr_new) <- NULL
     hdr_sub$acquisitionNum <- as.integer(factor(hdr_sub$acquisitionNum))
@@ -562,16 +562,25 @@ test_writeMSData <- function() {
     test_file <- system.file("iontrap", "extracted.mzData", package = "msdata")
     in_file <- openMSfile(test_file, backend = "Ramp")
     hdr <- header(in_file)
+    hdr_orig <- hdr
     pks <- peaks(in_file)
     mzR::close(in_file)
 
     ## mzML
     out_file <- paste0(test_folder, "/test_write.mzML")
-    writeMSData(file = out_file, header = hdr, object = pks)
+    writeMSData(file = out_file, header = hdr_orig, object = pks)
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
     pks_2 <- peaks(in_file)
     mzR::close(in_file)
+    hdr <- data.frame(lapply(hdr, function(z) {
+        z[is.na(z)] <- 0
+        z
+    }))
+    hdr_2 <- data.frame(lapply(hdr_2, function(z) {
+        z[is.na(z)] <- 0
+        z
+    }))
     checkEquals(hdr, hdr_2)
     checkEquals(pks, pks_2)
     ## validate mzML:
@@ -581,10 +590,14 @@ test_writeMSData <- function() {
 
     ## mzXML output:
     out_file <- paste0(test_folder, "test_write.mzXML")
-    writeMSData(file = out_file, header = hdr, object = pks,
+    writeMSData(file = out_file, header = hdr_orig, object = pks,
                 outformat = "mzXML")
     in_file <- openMSfile(out_file, backend = "pwiz")
     hdr_2 <- header(in_file)
+    hdr_2 <- data.frame(lapply(hdr_2, function(z) {
+        z[is.na(z)] <- 0
+        z
+    }))
     pks_2 <- peaks(in_file)
     mzR::close(in_file)
     checkEquals(pks, pks_2)

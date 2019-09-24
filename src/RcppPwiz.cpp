@@ -391,7 +391,7 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( ) {
       SpectrumListPtr slp = msd->run.spectrumListPtr;
       int N = slp->size();
       
-      allScanHeaderInfo = getSpectrumHeader(Rcpp::seq(1, N));
+      allScanHeaderInfo = getScanHeaderInfo(Rcpp::seq(1, N));
       isInCacheAllScanHeaderInfo = TRUE;	    
     }
     return allScanHeaderInfo ;
