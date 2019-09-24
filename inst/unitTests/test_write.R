@@ -601,6 +601,6 @@ test_writeMSData <- function() {
     pks_2 <- peaks(in_file)
     mzR::close(in_file)
     checkEquals(pks, pks_2)
-    hdr$centroided <- FALSE
-    checkEquals(hdr, hdr_2)
+    checkEquals(hdr[, colnames(hdr_2) != "centroided"],
+                hdr_2[, colnames(hdr_2) != "centroided"])
 }
