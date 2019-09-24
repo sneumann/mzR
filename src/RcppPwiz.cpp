@@ -164,247 +164,268 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
   return instrumentInfo;
 }
 
+Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
+  if (msd != NULL) {
+    SpectrumListPtr slp = msd->run.spectrumListPtr;
+    int N = slp->size();
+    int N_scans = whichScan.size();
+    CVID nativeIdFormat = id::getDefaultNativeIDFormat(*msd);
+    Rcpp::IntegerVector seqNum(N_scans); // number in sequence observed file (1-based)
+    Rcpp::IntegerVector acquisitionNum(N_scans); // scan number as declared in File (may be gaps)
+    Rcpp::IntegerVector msLevel(N_scans);
+    Rcpp::IntegerVector polarity(N_scans);
+    Rcpp::IntegerVector peaksCount(N_scans);
+    Rcpp::NumericVector totIonCurrent(N_scans);
+    Rcpp::NumericVector retentionTime(N_scans);        /* in seconds */
+    Rcpp::NumericVector basePeakMZ(N_scans);
+    Rcpp::NumericVector basePeakIntensity(N_scans);
+    Rcpp::NumericVector collisionEnergy(N_scans);
+    Rcpp::NumericVector ionisationEnergy(N_scans);
+    Rcpp::NumericVector lowMZ(N_scans);
+    Rcpp::NumericVector highMZ(N_scans);
+    Rcpp::IntegerVector precursorScanNum(N_scans); /* only if MS level > 1 */
+    Rcpp::NumericVector precursorMZ(N_scans);  /* only if MS level > 1 */
+    Rcpp::IntegerVector precursorCharge(N_scans);  /* only if MS level > 1 */
+    Rcpp::NumericVector precursorIntensity(N_scans);  /* only if MS level > 1 */
+    Rcpp::IntegerVector mergedScan(N_scans);  /* only if MS level > 1 */
+    Rcpp::IntegerVector mergedResultScanNum(N_scans); /* scan number of the resultant merged scan */
+    Rcpp::IntegerVector mergedResultStartScanNum(N_scans); /* smallest scan number of the scanOrigin for merged scan */
+    Rcpp::IntegerVector mergedResultEndScanNum(N_scans); /* largest scan number of the scanOrigin for merged scan */
+    Rcpp::NumericVector ionInjectionTime(N_scans); /* The time spent filling an ion trapping device*/
+    Rcpp::StringVector filterString(N_scans);
+    Rcpp::StringVector spectrumId(N_scans);
+    Rcpp::LogicalVector centroided(N_scans);
+    Rcpp::NumericVector ionMobilityDriftTime(N_scans);
+    Rcpp::NumericVector isolationWindowTargetMZ(N_scans);
+    Rcpp::NumericVector isolationWindowLowerOffset(N_scans);
+    Rcpp::NumericVector isolationWindowUpperOffset(N_scans);
+    Rcpp::NumericVector scanWindowLowerLimit(N_scans);
+    Rcpp::NumericVector scanWindowUpperLimit(N_scans);
+    
+    for (int i = 0; i < N_scans; i++) {
+      int current_scan = whichScan[i];
+      SpectrumPtr sp = slp->spectrum(current_scan - 1, false);
+      Scan dummy;
+      Scan& scan = sp->scanList.scans.empty() ? dummy : sp->scanList.scans[0];
+      // seqNum
+      seqNum[i] = current_scan;
+      // acquisitionNum
+      string id = sp->id;
+      string scanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, id);
+      if (scanNumber.empty()) {
+	acquisitionNum[i] = current_scan;
+      } else {
+	acquisitionNum[i] = lexical_cast<int>(scanNumber);
+      }
+      // spectrumId
+      spectrumId[i] = sp->id;
+      // msLevel
+      msLevel[i] = sp->cvParam(MS_ms_level).valueAs<int>();
+      // peaksCount
+      peaksCount[i] = static_cast<int>(sp->defaultArrayLength);
+      // totIonCurrent
+      totIonCurrent[i] = sp->cvParam(MS_total_ion_current).valueAs<double>();
+      // basePeakMZ
+      basePeakMZ[i] = sp->cvParam(MS_base_peak_m_z).valueAs<double>();
+      // basePeakIntensity
+      basePeakIntensity[i] = sp->cvParam(MS_base_peak_intensity).valueAs<double>();
+      // ionisationEnerty
+      ionisationEnergy[i] = sp->cvParam(MS_ionization_energy_OBSOLETE).valueAs<double>();
+      // lowMZ
+      lowMZ[i] = sp->cvParam(MS_lowest_observed_m_z).valueAs<double>();
+      // highMZ
+      highMZ[i] = sp->cvParam(MS_highest_observed_m_z).valueAs<double>();
+      // polarity
+      CVParam param = sp->cvParamChild(MS_scan_polarity);
+      polarity[i] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
+      // centroided
+      param = sp->cvParamChild(MS_spectrum_representation);
+      centroided[i] = (param.cvid==MS_centroid_spectrum ? TRUE : (param.cvid==MS_profile_spectrum ? FALSE : NA_LOGICAL));      
+      // retentionTime
+      retentionTime[i] = scan.cvParam(MS_scan_start_time).timeInSeconds();
+      // ionInjectionTime
+      ionInjectionTime[i] = (scan.cvParam(MS_ion_injection_time).timeInSeconds() * 1000);
+      // filterString
+      filterString[i] = scan.cvParam(MS_filter_string).value.empty() ? NA_STRING : Rcpp::String(scan.cvParam(MS_filter_string).value);
+      // ionMobilityDriftTime
+      ionMobilityDriftTime[i] = scan.cvParam(MS_ion_mobility_drift_time).value.empty() ? NA_REAL : (scan.cvParam(MS_ion_mobility_drift_time).timeInSeconds() * 1000);
+      // scanWindowLowerLimit and scanWindowUpperLimit
+      if (!scan.scanWindows.empty()) {
+	scanWindowLowerLimit[i] = scan.scanWindows[0].cvParam(MS_scan_window_lower_limit).valueAs<double>();
+	scanWindowUpperLimit[i] = scan.scanWindows[0].cvParam(MS_scan_window_upper_limit).valueAs<double>();
+      } else {
+	scanWindowLowerLimit[i] = NA_REAL;
+	scanWindowUpperLimit[i] = NA_REAL;
+      }
+      // mergedScan - also not supported by RAMPAdapter
+      mergedScan[i] = NA_INTEGER;
+      mergedResultScanNum[i] = NA_INTEGER;
+      mergedResultStartScanNum[i] = NA_INTEGER;
+      mergedResultEndScanNum[i] = NA_INTEGER;
+      if (!sp->precursors.empty()) {
+	const Precursor& precursor = sp->precursors[0];
+	// collisionEnergy
+	collisionEnergy[i] = precursor.activation.cvParam(MS_collision_energy).valueAs<double>();
+	// precursorScanNum
+	size_t precursorIndex = slp->find(precursor.spectrumID);
+	if (precursorIndex < slp->size()) {
+	  const SpectrumIdentity& precursorSpectrum = slp->spectrumIdentity(precursorIndex);
+	  string precursorScanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, precursorSpectrum.id);
+	  if (precursorScanNumber.empty()) {
+	    precursorScanNum[i] = precursorIndex + 1;
+	  } else {
+	    precursorScanNum[i] = lexical_cast<int>(precursorScanNumber);
+	  }
+	} else {
+	  precursorScanNum[i] = NA_INTEGER;
+	}
+	// precursorMZ, precursorCharge, precursorIntensity
+	if (!precursor.selectedIons.empty()) {
+	  precursorMZ[i] = precursor.selectedIons[0].cvParam(MS_selected_ion_m_z).value.empty() ? precursor.selectedIons[0].cvParam(MS_m_z).valueAs<double>() : precursor.selectedIons[0].cvParam(MS_selected_ion_m_z).valueAs<double>();
+	  precursorCharge[i] = precursor.selectedIons[0].cvParam(MS_charge_state).valueAs<int>();
+	  precursorIntensity[i] = precursor.selectedIons[0].cvParam(MS_peak_intensity).valueAs<double>();
+	}
+	// isolationWindowTargetMZ, ...
+	IsolationWindow iwin = sp->precursors[0].isolationWindow;
+	if (!iwin.empty()) {
+	  isolationWindowTargetMZ[i] = iwin.cvParam(MS_isolation_window_target_m_z).value.empty() ? NA_REAL : iwin.cvParam(MS_isolation_window_target_m_z).valueAs<double>();
+	  isolationWindowLowerOffset[i] = iwin.cvParam(MS_isolation_window_lower_offset).value.empty() ? NA_REAL : iwin.cvParam(MS_isolation_window_lower_offset).valueAs<double>();
+	  isolationWindowUpperOffset[i] = iwin.cvParam(MS_isolation_window_upper_offset).value.empty() ? NA_REAL : iwin.cvParam(MS_isolation_window_upper_offset).valueAs<double>();
+	} else {
+	  isolationWindowTargetMZ[i] = NA_REAL;
+	  isolationWindowLowerOffset[i] = NA_REAL;
+	  isolationWindowUpperOffset[i] = NA_REAL;
+	}
+      } else {
+	collisionEnergy[i] = NA_REAL;
+	precursorScanNum[i] = NA_INTEGER;
+	precursorMZ[i] = NA_REAL;
+	precursorCharge[i] = NA_INTEGER;
+	precursorIntensity[i] = NA_REAL;
+	mergedScan[i] = NA_INTEGER;
+	mergedResultScanNum[i] = NA_INTEGER;
+	mergedResultStartScanNum[i] = NA_INTEGER;
+	mergedResultEndScanNum[i] = NA_INTEGER;
+	isolationWindowTargetMZ[i] = NA_REAL;
+	isolationWindowLowerOffset[i] = NA_REAL;
+	isolationWindowUpperOffset[i] = NA_REAL;
+      }
+    }
+    
+    Rcpp::List header(31);
+    std::vector<std::string> names;
+    int i = 0;
+    names.push_back("seqNum");
+    header[i++] = Rcpp::wrap(seqNum);
+    names.push_back("acquisitionNum");
+    header[i++] = Rcpp::wrap(acquisitionNum);
+    names.push_back("msLevel");
+    header[i++] = Rcpp::wrap(msLevel);
+    names.push_back("polarity");
+    header[i++] = Rcpp::wrap(polarity);
+    names.push_back("peaksCount");
+    header[i++] = Rcpp::wrap(peaksCount);
+    names.push_back("totIonCurrent");
+    header[i++] = Rcpp::wrap(totIonCurrent);
+    names.push_back("retentionTime");
+    header[i++] = Rcpp::wrap(retentionTime);
+    names.push_back("basePeakMZ");
+    header[i++] = Rcpp::wrap(basePeakMZ);
+    names.push_back("basePeakIntensity");
+    header[i++] = Rcpp::wrap(basePeakIntensity);
+    names.push_back("collisionEnergy");
+    header[i++] = Rcpp::wrap(collisionEnergy);
+    names.push_back("ionisationEnergy");
+    header[i++] = Rcpp::wrap(ionisationEnergy);
+    names.push_back("lowMZ");
+    header[i++] = Rcpp::wrap(lowMZ);
+    names.push_back("highMZ");
+    header[i++] = Rcpp::wrap(highMZ);
+    names.push_back("precursorScanNum");
+    header[i++] = Rcpp::wrap(precursorScanNum);
+    names.push_back("precursorMZ");
+    header[i++] = Rcpp::wrap(precursorMZ);
+    names.push_back("precursorCharge");
+    header[i++] = Rcpp::wrap(precursorCharge);
+    names.push_back("precursorIntensity");
+    header[i++] = Rcpp::wrap(precursorIntensity);
+    names.push_back("mergedScan");
+    header[i++] = Rcpp::wrap(mergedScan);
+    names.push_back("mergedResultScanNum");
+    header[i++] = Rcpp::wrap(mergedResultScanNum);
+    names.push_back("mergedResultStartScanNum");
+    header[i++] = Rcpp::wrap(mergedResultStartScanNum);
+    names.push_back("mergedResultEndScanNum");
+    header[i++] = Rcpp::wrap(mergedResultEndScanNum);
+    names.push_back("injectionTime");
+    header[i++] = Rcpp::wrap(ionInjectionTime);
+    names.push_back("filterString");
+    header[i++] = Rcpp::wrap(filterString);
+    names.push_back("spectrumId");
+    header[i++] = Rcpp::wrap(spectrumId);
+    names.push_back("centroided");
+    header[i++] = Rcpp::wrap(centroided);
+    names.push_back("ionMobilityDriftTime");
+    header[i++] = Rcpp::wrap(ionMobilityDriftTime);      
+    names.push_back("isolationWindowTargetMZ");
+    header[i++] = Rcpp::wrap(isolationWindowTargetMZ);      
+    names.push_back("isolationWindowLowerOffset");
+    header[i++] = Rcpp::wrap(isolationWindowLowerOffset);      
+    names.push_back("isolationWindowUpperOffset");
+    header[i++] = Rcpp::wrap(isolationWindowUpperOffset);      
+    names.push_back("scanWindowLowerLimit");
+    header[i++] = Rcpp::wrap(scanWindowLowerLimit);      
+    names.push_back("scanWindowUpperLimit");
+    header[i++] = Rcpp::wrap(scanWindowUpperLimit);      
+    header.attr("names") = names;
+    
+    return header;
+  }
+  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
+  return Rcpp::DataFrame::create( );
+}
 
-Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan)
-{
-  if (msd != NULL)
-    {
+Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( ) {
+  if (msd != NULL) {
+    if (!isInCacheAllScanHeaderInfo) {
       SpectrumListPtr slp = msd->run.spectrumListPtr;
       int N = slp->size();
       
-      int N_scans = whichScan.size();
-      
-      ScanHeaderStruct scanHeader;
-      RAMPAdapter * adapter = new  RAMPAdapter(filename);
-      Rcpp::IntegerVector seqNum(N_scans); // number in sequence observed file (1-based)
-      Rcpp::IntegerVector acquisitionNum(N_scans); // scan number as declared in File (may be gaps)
-      Rcpp::IntegerVector msLevel(N_scans);
-      Rcpp::IntegerVector polarity(N_scans);
-      Rcpp::IntegerVector peaksCount(N_scans);
-      Rcpp::NumericVector totIonCurrent(N_scans);
-      Rcpp::NumericVector retentionTime(N_scans);        /* in seconds */
-      Rcpp::NumericVector basePeakMZ(N_scans);
-      Rcpp::NumericVector basePeakIntensity(N_scans);
-      Rcpp::NumericVector collisionEnergy(N_scans);
-      Rcpp::NumericVector ionisationEnergy(N_scans);
-      Rcpp::NumericVector lowMZ(N_scans);
-      Rcpp::NumericVector highMZ(N_scans);
-      Rcpp::IntegerVector precursorScanNum(N_scans); /* only if MS level > 1 */
-      Rcpp::NumericVector precursorMZ(N_scans);  /* only if MS level > 1 */
-      Rcpp::IntegerVector precursorCharge(N_scans);  /* only if MS level > 1 */
-      Rcpp::NumericVector precursorIntensity(N_scans);  /* only if MS level > 1 */
-      //char scanType[SCANTYPE_LENGTH];
-      //char activationMethod[SCANTYPE_LENGTH];
-      //char possibleCharges[SCANTYPE_LENGTH];
-      //int numPossibleCharges;
-      //bool possibleChargesArray[CHARGEARRAY_LENGTH]; /* NOTE: does NOT include "precursorCharge" information; only from "possibleCharges" */
-      Rcpp::IntegerVector mergedScan(N_scans);  /* only if MS level > 1 */
-      Rcpp::IntegerVector mergedResultScanNum(N_scans); /* scan number of the resultant merged scan */
-      Rcpp::IntegerVector mergedResultStartScanNum(N_scans); /* smallest scan number of the scanOrigin for merged scan */
-      Rcpp::IntegerVector mergedResultEndScanNum(N_scans); /* largest scan number of the scanOrigin for merged scan */
-      Rcpp::NumericVector ionInjectionTime(N_scans); /* The time spent filling an ion trapping device*/
-      Rcpp::StringVector filterString(N_scans);
-      Rcpp::StringVector spectrumId(N_scans);
-      Rcpp::LogicalVector centroided(N_scans);
-      Rcpp::NumericVector ionMobilityDriftTime(N_scans);
-      Rcpp::NumericVector isolationWindowTargetMZ(N_scans);
-      Rcpp::NumericVector isolationWindowLowerOffset(N_scans);
-      Rcpp::NumericVector isolationWindowUpperOffset(N_scans);
-      Rcpp::NumericVector scanWindowLowerLimit(N_scans);
-      Rcpp::NumericVector scanWindowUpperLimit(N_scans);
-      
-      for (int i = 0; i < N_scans; i++)
-	{
-	  int current_scan = whichScan[i];
-	  adapter->getScanHeader(current_scan - 1, scanHeader, false);
-	  seqNum[i] = scanHeader.seqNum;
-	  acquisitionNum[i] = scanHeader.acquisitionNum;
-	  msLevel[i] = scanHeader.msLevel;
-	  
-	  SpectrumPtr sp = slp->spectrum(current_scan-1, false); // Is TRUE neccessary here ? 
-	  Scan dummy;
-	  Scan& scan = sp->scanList.scans.empty() ? dummy : sp->scanList.scans[0];
-	  CVParam param = sp->cvParamChild(MS_scan_polarity);
-	  polarity[i] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
-	  // ionInjectionTime[i] = scan.cvParam(MS_ion_injection_time).valueAs<double>();
-	  ionInjectionTime[i] = (scan.cvParam(MS_ion_injection_time).timeInSeconds() * 1000);
-	  filterString[i] = scan.cvParam(MS_filter_string).value.empty() ? NA_STRING : Rcpp::String(scan.cvParam(MS_filter_string).value);
-	  ionMobilityDriftTime[i] = scan.cvParam(MS_ion_mobility_drift_time).value.empty() ? NA_REAL : (scan.cvParam(MS_ion_mobility_drift_time).timeInSeconds() * 1000);
-
-	  if (!scan.scanWindows.empty()) {
-	    scanWindowLowerLimit[i] = scan.scanWindows[0].cvParam(MS_scan_window_lower_limit).valueAs<double>();
-	    scanWindowUpperLimit[i] = scan.scanWindows[0].cvParam(MS_scan_window_upper_limit).valueAs<double>();
-	  } else {
-	    scanWindowLowerLimit[i] = NA_REAL;
-	    scanWindowUpperLimit[i] = NA_REAL;
-	  }
-	  
-	  if (!sp->precursors.empty()) {
-	    IsolationWindow iwin = sp->precursors[0].isolationWindow;
-	    if (!iwin.empty()) {
-	      isolationWindowTargetMZ[i] = iwin.cvParam(MS_isolation_window_target_m_z).value.empty() ? NA_REAL : iwin.cvParam(MS_isolation_window_target_m_z).valueAs<double>();
-	      isolationWindowLowerOffset[i] = iwin.cvParam(MS_isolation_window_lower_offset).value.empty() ? NA_REAL : iwin.cvParam(MS_isolation_window_lower_offset).valueAs<double>();
-	      isolationWindowUpperOffset[i] = iwin.cvParam(MS_isolation_window_upper_offset).value.empty() ? NA_REAL : iwin.cvParam(MS_isolation_window_upper_offset).valueAs<double>();
-	    } else {
-	      isolationWindowTargetMZ[i] = NA_REAL;
-	      isolationWindowLowerOffset[i] = NA_REAL;
-	      isolationWindowUpperOffset[i] = NA_REAL;
-	    }
-	  } else {
-	      isolationWindowTargetMZ[i] = NA_REAL;
-	      isolationWindowLowerOffset[i] = NA_REAL;
-	      isolationWindowUpperOffset[i] = NA_REAL;
-	  }
-	  peaksCount[i] = scanHeader.peaksCount;
-	  totIonCurrent[i] = scanHeader.totIonCurrent;
-	  retentionTime[i] = scanHeader.retentionTime;
-	  basePeakMZ[i] = scanHeader.basePeakMZ;
-	  basePeakIntensity[i] = scanHeader.basePeakIntensity;
-	  collisionEnergy[i] = scanHeader.collisionEnergy;
-	  ionisationEnergy[i] = scanHeader.ionisationEnergy;
-	  lowMZ[i] = scanHeader.lowMZ;
-	  highMZ[i] = scanHeader.highMZ;
-	  precursorScanNum[i] = scanHeader.precursorScanNum;
-	  precursorMZ[i] = scanHeader.precursorMZ;
-	  precursorCharge[i] = scanHeader.precursorCharge;
-	  precursorIntensity[i] = scanHeader.precursorIntensity;
-	  mergedScan[i] = scanHeader.mergedScan;
-	  mergedResultScanNum[i] = scanHeader.mergedResultScanNum;
-	  mergedResultStartScanNum[i] = scanHeader.mergedResultStartScanNum;
-	  mergedResultEndScanNum[i] = scanHeader.mergedResultEndScanNum;
-	  spectrumId[i] = sp->id;
-	  CVParam prm = sp->cvParamChild(MS_spectrum_representation);
-	  centroided[i] = (prm.cvid==MS_centroid_spectrum ? TRUE : (prm.cvid==MS_profile_spectrum ? FALSE : NA_LOGICAL));
-	}
-      // delete adapter issue #64
-      delete adapter;
-      adapter = NULL;
-
-      Rcpp::List header(31);
-      std::vector<std::string> names;
-      int i = 0;
-      names.push_back("seqNum");
-      header[i++] = Rcpp::wrap(seqNum);
-      names.push_back("acquisitionNum");
-      header[i++] = Rcpp::wrap(acquisitionNum);
-      names.push_back("msLevel");
-      header[i++] = Rcpp::wrap(msLevel);
-      names.push_back("polarity");
-      header[i++] = Rcpp::wrap(polarity);
-      names.push_back("peaksCount");
-      header[i++] = Rcpp::wrap(peaksCount);
-      names.push_back("totIonCurrent");
-      header[i++] = Rcpp::wrap(totIonCurrent);
-      names.push_back("retentionTime");
-      header[i++] = Rcpp::wrap(retentionTime);
-      names.push_back("basePeakMZ");
-      header[i++] = Rcpp::wrap(basePeakMZ);
-      names.push_back("basePeakIntensity");
-      header[i++] = Rcpp::wrap(basePeakIntensity);
-      names.push_back("collisionEnergy");
-      header[i++] = Rcpp::wrap(collisionEnergy);
-      names.push_back("ionisationEnergy");
-      header[i++] = Rcpp::wrap(ionisationEnergy);
-      names.push_back("lowMZ");
-      header[i++] = Rcpp::wrap(lowMZ);
-      names.push_back("highMZ");
-      header[i++] = Rcpp::wrap(highMZ);
-      names.push_back("precursorScanNum");
-      header[i++] = Rcpp::wrap(precursorScanNum);
-      names.push_back("precursorMZ");
-      header[i++] = Rcpp::wrap(precursorMZ);
-      names.push_back("precursorCharge");
-      header[i++] = Rcpp::wrap(precursorCharge);
-      names.push_back("precursorIntensity");
-      header[i++] = Rcpp::wrap(precursorIntensity);
-      names.push_back("mergedScan");
-      header[i++] = Rcpp::wrap(mergedScan);
-      names.push_back("mergedResultScanNum");
-      header[i++] = Rcpp::wrap(mergedResultScanNum);
-      names.push_back("mergedResultStartScanNum");
-      header[i++] = Rcpp::wrap(mergedResultStartScanNum);
-      names.push_back("mergedResultEndScanNum");
-      header[i++] = Rcpp::wrap(mergedResultEndScanNum);
-      names.push_back("injectionTime");
-      header[i++] = Rcpp::wrap(ionInjectionTime);
-      names.push_back("filterString");
-      header[i++] = Rcpp::wrap(filterString);
-      names.push_back("spectrumId");
-      header[i++] = Rcpp::wrap(spectrumId);
-      names.push_back("centroided");
-      header[i++] = Rcpp::wrap(centroided);
-      names.push_back("ionMobilityDriftTime");
-      header[i++] = Rcpp::wrap(ionMobilityDriftTime);      
-      names.push_back("isolationWindowTargetMZ");
-      header[i++] = Rcpp::wrap(isolationWindowTargetMZ);      
-      names.push_back("isolationWindowLowerOffset");
-      header[i++] = Rcpp::wrap(isolationWindowLowerOffset);      
-      names.push_back("isolationWindowUpperOffset");
-      header[i++] = Rcpp::wrap(isolationWindowUpperOffset);      
-      names.push_back("scanWindowLowerLimit");
-      header[i++] = Rcpp::wrap(scanWindowLowerLimit);      
-      names.push_back("scanWindowUpperLimit");
-      header[i++] = Rcpp::wrap(scanWindowUpperLimit);      
-      header.attr("names") = names;
-      
-      return header;
+      allScanHeaderInfo = getSpectrumHeader(Rcpp::seq(1, N));
+      isInCacheAllScanHeaderInfo = TRUE;	    
     }
+    return allScanHeaderInfo ;
+  }
   Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return Rcpp::DataFrame::create( );
 }
 
-Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( )
-{
-  if (msd != NULL)
-    {
-      if (!isInCacheAllScanHeaderInfo)
-        {
-	  SpectrumListPtr slp = msd->run.spectrumListPtr;
-	  int N = slp->size();
-
-	  allScanHeaderInfo = getScanHeaderInfo(Rcpp::seq(1, N));
-	  isInCacheAllScanHeaderInfo = TRUE;	    
-        }
-      return allScanHeaderInfo ;
+Rcpp::List RcppPwiz::getPeakList (int whichScan) {
+  if (msd != NULL) {
+    SpectrumListPtr slp = msd->run.spectrumListPtr;
+    if ((whichScan <= 0) || (whichScan > slp->size())) {
+      Rprintf("Index whichScan out of bounds [1 ... %d].\n", slp->size());
+      return Rcpp::List::create( );
     }
-  Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
-  return Rcpp::DataFrame::create( );
-}
+    SpectrumPtr s = slp->spectrum(whichScan - 1, true);
+    vector<MZIntensityPair> pairs;
+    s->getMZIntensityPairs(pairs);
 
-Rcpp::List RcppPwiz::getPeakList ( int whichScan )
-{
-  if (msd != NULL)
-    {
-      SpectrumListPtr slp = msd->run.spectrumListPtr;
+    Rcpp::NumericMatrix peaks(pairs.size(), 2);
 
-      if ((whichScan <= 0) || (whichScan > slp->size()))
-        {
-	  Rprintf("Index whichScan out of bounds [1 ... %d].\n", slp->size());
-	  return Rcpp::List::create( );
-        }
-
-      SpectrumPtr s = slp->spectrum(whichScan - 1, true);
-      vector<MZIntensityPair> pairs;
-      s->getMZIntensityPairs(pairs);
-
-      Rcpp::NumericMatrix peaks(pairs.size(), 2);
-
-      if(pairs.size()!=0)
-        {
-	  for (int i = 0; i < pairs.size(); i++)
-            {
-	      MZIntensityPair p = pairs.at(i);
-	      peaks(i,0) = p.mz;
-	      peaks(i,1) = p.intensity;
-            }
-
-        }
-
-      return Rcpp::List::create(
-				Rcpp::_["peaksCount"]  = pairs.size(),
-				Rcpp::_["peaks"]  = peaks
-				) ;
+    if(pairs.size()!=0) {
+      for (int i = 0; i < pairs.size(); i++) {
+	MZIntensityPair p = pairs.at(i);
+	peaks(i,0) = p.mz;
+	peaks(i,1) = p.intensity;
+      }
     }
+
+    return Rcpp::List::create(
+			      Rcpp::_["peaksCount"]  = pairs.size(),
+			      Rcpp::_["peaks"]  = peaks
+			      ) ;
+  }
   Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
   return Rcpp::List::create( );
 }

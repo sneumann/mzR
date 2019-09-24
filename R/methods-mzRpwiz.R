@@ -18,7 +18,6 @@ setMethod("chromatogramsInfo", "mzRpwiz",
               .Defunct("chromatogram")
           })
 
-
 setMethod("manufacturer", "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
