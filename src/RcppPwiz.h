@@ -98,7 +98,7 @@ public:
 
     Rcpp::DataFrame getAllChromatogramHeaderInfo();
 
-    Rcpp::List getPeakList(int whichScan);
+    Rcpp::List getPeakList(Rcpp::IntegerVector whichScan);
 
     Rcpp::NumericMatrix get3DMap(std::vector<int> scanNumbers, double whichMzLow, double whichMzHigh, double resMz);
 

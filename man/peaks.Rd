@@ -128,7 +128,7 @@
   \code{isolationWindowUpperOffset}, \code{scanWindowLowerLimit} and
   \code{scanWindowUpperLimit}. If multiple scans are queried, a
   \code{data.frame} is returned with the scans reported along the
-  rows.
+  rows. For missing or not defined spectrum variables \code{NA} is reported.
 
   The \code{get3Dmap} function performs a simple resampling between
   \code{lowMz} and \code{highMz} with \code{reMz} resolution. A matrix

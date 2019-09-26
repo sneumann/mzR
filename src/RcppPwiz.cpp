@@ -38,43 +38,6 @@ void RcppPwiz::close()
     }
 }
 
-
-// void RcppPwiz::writeMSfile(const string& file, const string& format)
-// {
-//     if (msd != NULL)
-//     {
-//         if(format == "mgf")
-//         {
-//             std::ofstream* mgfOutFileP = new std::ofstream(file.c_str());
-//             Serializer_MGF serializerMGF;
-//             serializerMGF.write(*mgfOutFileP, *msd);
-//             mgfOutFileP->flush();
-//             mgfOutFileP->close();
-//         }
-//         else if(format == "mzxml")
-//         {
-//             std::ofstream mzXMLOutFileP(file.c_str());
-//             Serializer_mzXML::Config config;
-//             config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
-//             Serializer_mzXML serializerMzXML(config);
-//             serializerMzXML.write(mzXMLOutFileP, *msd);
-//         }
-//         else if(format == "mzml")
-//         {
-//             std::ofstream mzXMLOutFileP(file.c_str());
-//             Serializer_mzML::Config config;
-//             config.binaryDataEncoderConfig.compression = BinaryDataEncoder::Compression_Zlib;
-//             Serializer_mzML mzmlSerializer(config);
-//             mzmlSerializer.write(mzXMLOutFileP, *msd);
-//         }
-//         else
-//             Rcpp::Rcerr << format << " format not supported! Please try mgf, mzML, mzXML or mz5." << std::endl;
-//     }
-//     else
-//         Rcpp::Rcerr << "No pwiz object available! Please open a file first!" << std::endl;
-// }
-
-
 string RcppPwiz::getFilename() {
   return filename;
 }
@@ -400,34 +363,43 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( ) {
   return Rcpp::DataFrame::create( );
 }
 
-Rcpp::List RcppPwiz::getPeakList (int whichScan) {
+Rcpp::List RcppPwiz::getPeakList(Rcpp::IntegerVector whichScan) {
   if (msd != NULL) {
     SpectrumListPtr slp = msd->run.spectrumListPtr;
-    if ((whichScan <= 0) || (whichScan > slp->size())) {
-      Rprintf("Index whichScan out of bounds [1 ... %d].\n", slp->size());
-      return Rcpp::List::create( );
-    }
-    SpectrumPtr s = slp->spectrum(whichScan - 1, true);
-    vector<MZIntensityPair> pairs;
-    s->getMZIntensityPairs(pairs);
-
-    Rcpp::NumericMatrix peaks(pairs.size(), 2);
-
-    if(pairs.size()!=0) {
-      for (int i = 0; i < pairs.size(); i++) {
-	MZIntensityPair p = pairs.at(i);
-	peaks(i,0) = p.mz;
-	peaks(i,1) = p.intensity;
+    int n_scans = slp->size();
+    int n_want = whichScan.size();
+    int current_scan;
+    SpectrumPtr sp;
+    BinaryDataArrayPtr mzs,ints;
+    std::vector<double> data;
+    Rcpp::NumericVector data_matrix;
+    Rcpp::List res(n_want);
+    for (int i = 0; i < n_want; i++) {
+      current_scan = whichScan[i];
+      if (current_scan < 1 || current_scan > n_scans) {
+	Rprintf("Index whichScan out of bounds [1 ... %d].\n", n_scans);
+	return Rcpp::List::create( );
       }
+      sp = slp->spectrum(current_scan - 1, true);
+      mzs = sp->getMZArray();
+      ints = sp->getIntensityArray();
+      if (!mzs.get() || !ints.get()) {
+	Rcpp::NumericMatrix pks(0, 2);
+	res[i] = pks;
+	continue;
+      }
+      if (mzs->data.size() != ints->data.size())
+	Rcpp::Rcerr << "Sizes of mz and intensity arrays don't match." << std::endl;
+      data = mzs->data;
+      data.insert(data.end(), ints->data.begin(), ints->data.end());
+      data_matrix = Rcpp::wrap(data);
+      data_matrix.attr("dim") = Rcpp::Dimension(ints->data.size(), 2);
+      res[i] = data_matrix;
     }
-
-    return Rcpp::List::create(
-			      Rcpp::_["peaksCount"]  = pairs.size(),
-			      Rcpp::_["peaks"]  = peaks
-			      ) ;
+    return res;
   }
   Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
-  return Rcpp::List::create( );
+  return Rcpp::List::create();
 }
 
 /**
