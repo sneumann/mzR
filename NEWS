@@ -1,3 +1,10 @@
+CHANGES IN VERSION 2.19.5
+-------------------------
+ o header for the pwiz backend returns NA instead of 0 for not defined or
+   missing information <2019-09-24 Tue>.
+ o peaks for pwiz backend rewritten (small performance improvement)
+   <2019-09-26 Thu>.
+
 CHANGES IN VERSION 2.19.4
 -------------------------
  o Add header columns scanWindowLowerLimit and scanWindowUpperLimit

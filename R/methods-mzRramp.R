@@ -18,18 +18,18 @@ setMethod("length",
           function(x) return(x@backend$getLastScan()))
 
 setMethod("peaks", "mzRramp",
-          function(object, scans) .peaks(object, scans))
+          function(object, scans) .peaks_ramp(object, scans))
 
 setMethod("spectra", "mzRramp",
-          function(object, scans) .peaks(object, scans))
+          function(object, scans) .peaks_ramp(object, scans))
 
 setMethod("peaksCount",
           signature=c("mzRramp","numeric"),
           function(object,scans) {
               if (length(scans)==1) {
-                  return(object@backend$getPeakList(scans)$peaksCount)
+                  object@backend$getPeakList(scans)$peaksCount
               } else {
-                  return(sapply(scans,function(x) object@backend$getPeakList(x)$peaksCount))
+                  sapply(scans,function(x) object@backend$getPeakList(x)$peaksCount)
               }
           })
 

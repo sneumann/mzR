@@ -18,7 +18,6 @@ setMethod("chromatogramsInfo", "mzRpwiz",
               .Defunct("chromatogram")
           })
 
-
 setMethod("manufacturer", "mzRpwiz",
           function(object) {
             info <- instrumentInfo(object)
@@ -82,19 +81,12 @@ setMethod("spectra", "mzRpwiz",
 
 setMethod("peaksCount", c("mzRpwiz", "numeric"),
           function(object, scans) {
-            if (length(scans) == 1) {
-              return(object@backend$getPeakList(scans)$peaksCount)
-            } else {
-                return(sapply(scans,
-                              function(x)
-                                  object@backend$getPeakList(x)$peaksCount))
-            }
+              lengths(object@backend$getPeakList(scans))/2
           })
 
 setMethod("peaksCount", c("mzRpwiz", "missing"),
           function(object) {
-            n <- length(object)
-            return(peaksCount(object, 1:n))
+            peaksCount(object, seq_along(object))
           })
 
 setMethod("runInfo", "mzRpwiz",

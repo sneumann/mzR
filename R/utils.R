@@ -1,19 +1,25 @@
 .peaks <- function(object, scans) {
     if (missing(scans))
         scans <- 1:length(object)
+    res <- object@backend$getPeakList(scans)
+    if (length(res) == 1)
+        res[[1]]
+    else res
+}
+
+.peaks_ramp <- function(object, scans) {
+    if (missing(scans))
+        scans <- 1:length(object)
     if (length(scans) == 1) {
-        return(object@backend$getPeakList(scans)$peaks)
+        object@backend$getPeakList(scans)$peaks
     } else {
-        return(sapply(scans,
-                      function(x) object@backend$getPeakList(x)$peaks,
-                      simplify = FALSE))
+        sapply(scans, function(x) object@backend$getPeakList(x)$peaks,
+               simplify = FALSE)
     }
 }
 
-
 setMethod("isolationWindow", "character",
           function(object, ...) .isolationWindow(object, ...))
-
 
 .isolationWindow <- function(x, unique. = TRUE, simplify = TRUE) {
     stopifnot(all(file.exists(x)))
