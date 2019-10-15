@@ -118,7 +118,7 @@ RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R"
 else
 ARCH_OBJS=./boost/libs/thread/src/pthread/once.o \
 ./boost/libs/thread/src/pthread/thread.o
-RHDF5_LIBS=`echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave`
+RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)
 endif
 
 MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
