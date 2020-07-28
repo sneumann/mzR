@@ -101,6 +101,7 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
     std::vector<double> experimentalMassToCharge;
     std::vector<double> calculatedMassToCharge;
     std::vector<std::string> seq;
+    std::vector<std::string> peptide_ref;
     std::vector<int> modification;
     std::vector<bool> isDecoy;
     std::vector<bool> passThreshold;
@@ -127,6 +128,7 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
 		experimentalMassToCharge.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->experimentalMassToCharge);
 		calculatedMassToCharge.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->calculatedMassToCharge);
 		seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptidePtr->peptideSequence);
+		peptide_ref.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptidePtr->id);
 		modification.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptidePtr->modification.size());
 		isDecoy.push_back(spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->isDecoy);
 		pre.push_back(string(1, spectrumIdResult[i]->spectrumIdentificationItem[j]->peptideEvidencePtr[k]->pre));
@@ -168,6 +170,7 @@ Rcpp::DataFrame RcppIdent::getPsmInfo(  )
 	       Rcpp::_["experimentalMassToCharge"]	= experimentalMassToCharge,
 	       Rcpp::_["calculatedMassToCharge"]	= calculatedMassToCharge,
 	       Rcpp::_["sequence"]	= seq,
+	       Rcpp::_["peptide_ref"]	= peptide_ref,
 	       Rcpp::_["modNum"]	= modification,
 	       Rcpp::_["isDecoy"]	= isDecoy,
 	       Rcpp::_["post"]	= post,
@@ -187,6 +190,7 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
     vector<SpectrumIdentificationResultPtr> spectrumIdResult = mzid->analysisCollection.spectrumIdentification[0]->spectrumIdentificationListPtr->spectrumIdentificationResult;
     vector<string> spectrumID;
     vector<string> seq;
+    vector<string> peptide_ref;
     vector<string> name;
     vector<double> mass;
     vector<int> loc;
@@ -201,6 +205,7 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
 		{
 		    spectrumID.push_back(spectrumIdResult[i]->spectrumID);
 		    seq.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->peptideSequence);
+		    peptide_ref.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->id);
 		    name.push_back(cvTermInfo(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->cvParams[0].cvid).name);
 		    mass.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->monoisotopicMassDelta);
 		    loc.push_back(spectrumIdResult[i]->spectrumIdentificationItem[k]->peptidePtr->modification[j]->location);
@@ -212,6 +217,7 @@ Rcpp::DataFrame RcppIdent::getModInfo(  )
     return Rcpp::DataFrame::create(
 	       Rcpp::_["spectrumID"]	= spectrumID,
 	       Rcpp::_["sequence"]	= seq,
+	       Rcpp::_["peptide_ref"]	= peptide_ref,
 	       Rcpp::_["name"]	= name,
 	       Rcpp::_["mass"]	= mass,
 	       Rcpp::_["location"]	= loc);
@@ -347,16 +353,16 @@ Rcpp::DataFrame RcppIdent::getSpecParams(  )
         }
 
         Rcpp::List res(score.size() + 1);
-        
+
         names.insert(names.begin(), "spectrumID");
-        
+
         res[0] = Rcpp::wrap(spectrumID);
-        
+
         for(size_t i = 0; i < score.size(); i++)
         {
             res[i + 1] = Rcpp::wrap(score[i]);
         }
-        
+
         res.attr("names") = names;
         Rcpp::DataFrame out(res);
 
