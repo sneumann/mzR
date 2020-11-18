@@ -1858,7 +1858,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
               {
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "contentType=\"") + 1 , '\"' );
-#if defined(__clang__)
+#if defined(__clang__) || __cplusplus >= 201103L
                   pEndAttrValue = 0; //change for C++-11
 #else
                   pEndAttrValue = '\0'; //change for C++-11
@@ -1881,7 +1881,7 @@ RAMPREAL *readPeaks(RAMPFILE *pFI,
               {
                   const char* pEndAttrValue;
                   pEndAttrValue = strchr( pBeginData + strlen( "compressionType=\"") + 1 , '\"' );
-#if defined(__clang__)
+#if defined(__clang__) || __cplusplus >= 201103L
                   pEndAttrValue = 0; //change for C++-11
 #else
                   pEndAttrValue = '\0'; //change for C++-11

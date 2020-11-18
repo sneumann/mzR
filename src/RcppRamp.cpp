@@ -157,8 +157,10 @@ Rcpp::List RcppRamp::getScanHeaderInfo ( int whichScan  )
         header[i++] = Rcpp::wrap(data.acquisitionNum);
         names.push_back("msLevel");
         header[i++] = Rcpp::wrap(data.msLevel);
+        // names.push_back("polarity");
+        // header[i++] = Rcpp::wrap(data.polarity);      int  polarity; // 1 - positive, 0 - negative
         names.push_back("polarity");
-        header[i++] = Rcpp::wrap(data.polarity);
+        header[i++] = Rcpp::wrap(!data.is_negative);     // positive : not is_negative == 1 , negative: not is_negative == 0
         names.push_back("peaksCount");
         header[i++] = Rcpp::wrap(data.peaksCount);
         names.push_back("totIonCurrent");
@@ -242,7 +244,8 @@ Rcpp::DataFrame RcppRamp::getAllScanHeaderInfo ( )
                 seqNum[whichScan-1] = scanHeader.seqNum;
                 acquisitionNum[whichScan-1] = scanHeader.acquisitionNum;
                 msLevel[whichScan-1] = scanHeader.msLevel;
-                polarity[whichScan-1] = scanHeader.polarity;
+                // polarity[whichScan-1] = scanHeader.polarity;
+                polarity[whichScan-1] = ! scanHeader.is_negative;
                 peaksCount[whichScan-1] = scanHeader.peaksCount;
                 totIonCurrent[whichScan-1] = scanHeader.totIonCurrent;
                 retentionTime[whichScan-1] = scanHeader.retentionTime;
