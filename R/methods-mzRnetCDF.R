@@ -51,41 +51,44 @@ setMethod("header",
           signature=c("mzRnetCDF","missing"),
           function(object) return(header(object, 1:length(object))))
 
-setMethod("header",
-          signature=c("mzRnetCDF","numeric"),
-          function(object, scans) {
-            empty_val <- rep(-1, length(scans))
-            result <- data.frame(seqNum=scans,
-                            acquisitionNum=scans,
-                            msLevel=rep(1, length(scans)),
-                            peaksCount=rep(1, length(scans)),
-                            totIonCurrent=netCDFVarDouble(object@backend, "total_intensity")[scans],
-                            retentionTime=netCDFVarDouble(object@backend, "scan_acquisition_time")[scans], 
-                            basePeakMZ = empty_val,
-                            basePeakIntensity = empty_val,
-                            collisionEnergy = empty_val,
-                            ionisationEnergy = empty_val,
-                            highMZ = empty_val,
-                            precursorScanNum = empty_val,
-                            precursorMZ = empty_val,
-                            precursorCharge = empty_val,
-                            precursorIntensity = empty_val,
-                            mergedScan = empty_val,
-                            mergedResultScanNum = empty_val,
-                            mergedResultStartScanNum = empty_val,
-                            mergedResultEndScanNum = empty_val,
-                            injectionTime = empty_val,
-                            spectrumId = paste0("scan=", scans),
-                            centroided = NA,
-                            ionMobilityDriftTime = empty_val,
-                            stringsAsFactors = FALSE)
-            result$isolationWindowTargetMZ <- NA_real_
-            result$isolationWindowLowerOffset <- NA_real_
-            result$isolationWindowUpperOffset <- NA_real_
-            result$scanWindowLowerLimit <- NA_real_
-            result$scanWindowUpperLimit <- NA_real_
-            return(result)
-          })
+setMethod("header", c("mzRnetCDF", "numeric"), function(object, scans) {
+    ls <- length(scans)
+    empty_val <- rep(-1, ls)
+    na_real <- rep(NA_real_, ls)
+    result <- data.frame(
+        seqNum=scans,
+        acquisitionNum=scans,
+        msLevel = rep(1L, length(scans)),
+        polarity = -1L,
+        peaksCount=rep(1, length(scans)),
+        totIonCurrent=netCDFVarDouble(object@backend, "total_intensity")[scans],
+        retentionTime=netCDFVarDouble(object@backend, "scan_acquisition_time")[scans],
+        basePeakMZ = empty_val,
+        basePeakIntensity = empty_val,
+        collisionEnergy = empty_val,
+        ionisationEnergy = empty_val,
+        lowMZ = empty_val,
+        highMZ = empty_val,
+        precursorScanNum = empty_val,
+        precursorMZ = empty_val,
+        precursorCharge = empty_val,
+        precursorIntensity = empty_val,
+        mergedScan = empty_val,
+        mergedResultScanNum = empty_val,
+        mergedResultStartScanNum = empty_val,
+        mergedResultEndScanNum = empty_val,
+        injectionTime = empty_val,
+        filterString = NA_character_,
+        spectrumId = paste0("scan=", scans),
+        centroided = NA,
+        ionMobilityDriftTime = empty_val,
+        isolationWindowTargetMZ = na_real,
+        isolationWindowLowerOffset = na_real,
+        isolationWindowUpperOffset = na_real,
+        scanWindowLowerLimit = na_real,
+        scanWindowUpperLimit = na_real)
+    return(result)
+})
 
 setMethod("close", 
           signature="mzRnetCDF",

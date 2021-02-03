@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.25.2
+-------------------------
+ o Fix issue #238: ensure `header` call returns the same columns for all
+   backends.
+
 CHANGES IN VERSION 2.25.1
 -------------------------
  o Bump version to trigger new build using latest Rcpp
