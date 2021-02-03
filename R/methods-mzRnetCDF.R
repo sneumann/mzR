@@ -58,8 +58,8 @@ setMethod("header", c("mzRnetCDF", "numeric"), function(object, scans) {
     result <- data.frame(
         seqNum=scans,
         acquisitionNum=scans,
-        msLevel=rep(1, length(scans)),
-        polarity = empty_val,
+        msLevel = rep(1L, length(scans)),
+        polarity = -1L,
         peaksCount=rep(1, length(scans)),
         totIonCurrent=netCDFVarDouble(object@backend, "total_intensity")[scans],
         retentionTime=netCDFVarDouble(object@backend, "scan_acquisition_time")[scans],
