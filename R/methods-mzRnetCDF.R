@@ -54,12 +54,13 @@ setMethod("header",
 setMethod("header", c("mzRnetCDF", "numeric"), function(object, scans) {
     ls <- length(scans)
     empty_val <- rep(-1, ls)
+    empty_int <- rep(-1L, ls)
     na_real <- rep(NA_real_, ls)
     result <- data.frame(
         seqNum=scans,
         acquisitionNum=scans,
         msLevel = rep(1L, length(scans)),
-        polarity = -1L,
+        polarity = empty_int,
         peaksCount=rep(1, length(scans)),
         totIonCurrent=netCDFVarDouble(object@backend, "total_intensity")[scans],
         retentionTime=netCDFVarDouble(object@backend, "scan_acquisition_time")[scans],
@@ -69,9 +70,9 @@ setMethod("header", c("mzRnetCDF", "numeric"), function(object, scans) {
         ionisationEnergy = empty_val,
         lowMZ = empty_val,
         highMZ = empty_val,
-        precursorScanNum = empty_val,
+        precursorScanNum = empty_int,
         precursorMZ = empty_val,
-        precursorCharge = empty_val,
+        precursorCharge = empty_int,
         precursorIntensity = empty_val,
         mergedScan = empty_val,
         mergedResultScanNum = empty_val,

@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.25.3
+-------------------------
+ o Ensure `header` for CDF returns columns with correct data type.
+
 CHANGES IN VERSION 2.25.2
 -------------------------
  o Fix issue #238: ensure `header` call returns the same columns for all
