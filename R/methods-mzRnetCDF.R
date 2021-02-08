@@ -61,7 +61,7 @@ setMethod("header", c("mzRnetCDF", "numeric"), function(object, scans) {
         acquisitionNum=scans,
         msLevel = rep(1L, length(scans)),
         polarity = empty_int,
-        peaksCount=rep(1, length(scans)),
+        peaksCount=rep(1L, length(scans)),
         totIonCurrent=netCDFVarDouble(object@backend, "total_intensity")[scans],
         retentionTime=netCDFVarDouble(object@backend, "scan_acquisition_time")[scans],
         basePeakMZ = empty_val,
