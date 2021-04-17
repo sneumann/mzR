@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.25.4
+-------------------------
+ o Add dependency "rmarkdown" to "suggests:"
+
 CHANGES IN VERSION 2.25.3
 -------------------------
  o Ensure `header` for CDF returns columns with correct data type.
