@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.25.5
+-------------------------
+ o Fix compile error on clang-11 reported (and fixed!) by Kurt Hornik, closes #244
+
 CHANGES IN VERSION 2.25.4
 -------------------------
  o Add dependency "rmarkdown" to "suggests:"
