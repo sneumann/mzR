@@ -154,7 +154,7 @@ class stream_vector_const_iterator
             return (that.end_ - that.begin_) / that.value_size_;
 	}
 
-	reference operator[](difference_type _Off) const
+	reference operator[](difference_type _Off)
 	{
         next_ = _Off * value_size_;
 		return (**this);
