@@ -1,7 +1,5 @@
-.travis.yml
-^.git$
+\.travis.yml
 ^.*\.Rproj$
 ^\.Rproj\.user$
-.git
-.gitignore
-.travis.yml
+^\.gitignore$
+^\.git$

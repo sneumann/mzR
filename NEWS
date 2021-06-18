@@ -1,3 +1,11 @@
+CHANGES IN VERSION 2.27.1
+-------------------------
+ o Add missing atomic_count_sync.hpp BH file (see PR #248 by vjcitn)
+
+CHANGES IN VERSION 2.27.0
+-------------------------
+ o New Bioc devel version
+
 CHANGES IN VERSION 2.25.5
 -------------------------
  o Fix compile error on clang-11 reported (and fixed!) by Kurt Hornik, closes #244
@@ -22,7 +30,7 @@ CHANGES IN VERSION 2.25.1
 CHANGES IN VERSION 2.25.0
 -------------------------
  o New Bioc devel version
- 
+
 CHANGES IN VERSION 2.21.2
 -------------------------
  o Update email address
