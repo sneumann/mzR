@@ -2,7 +2,7 @@ Package: mzR
 Type: Package
 Title: parser for netCDF, mzXML, mzData and mzML and mzIdentML files
        (mass spectrometry data)
-Version: 2.27.1
+Version: 2.27.2
 Author: Bernd Fischer, Steffen Neumann, Laurent Gatto, Qiang Kou, Johannes Rainer
 Maintainer: Steffen Neumann <sneumann@ipb-halle.de>,
             Laurent Gatto <laurent.gatto@uclouvain.be>,
@@ -16,12 +16,31 @@ Description: mzR provides a unified API to the common file formats and
         reading code has previously been used in XCMS.
 License: Artistic-2.0
 LazyLoad: yes
-Depends: Rcpp (>= 0.10.1), methods, utils
-Imports: Biobase, BiocGenerics (>= 0.13.6), ProtGenerics (>= 1.17.3), ncdf4
-Suggests: msdata (>= 0.15.1), RUnit, mzID, BiocStyle (>= 2.5.19), knitr, XML, rmarkdown
+Depends:
+    Rcpp (>= 0.10.1),
+    methods,
+    utils
+Imports:
+    Biobase,
+    BiocGenerics (>= 0.13.6),
+    ProtGenerics (>= 1.17.3),
+    ncdf4
+Suggests:
+    msdata (>= 0.15.1),
+    RUnit,
+    mzID,
+    BiocStyle (>= 2.5.19),
+    knitr,
+    XML,
+    rmarkdown
 VignetteBuilder: knitr
-LinkingTo: Rcpp, zlibbioc, Rhdf5lib (>= 1.1.4)
-RcppModules: Ramp, Pwiz, Ident
+LinkingTo:
+    Rcpp,
+    zlibbioc,
+    Rhdf5lib (>= 1.1.4)
+RcppModules:
+    Pwiz,
+    Ident
 SystemRequirements: C++11, GNU make
 URL: https://github.com/sneumann/mzR/
 BugReports: https://github.com/sneumann/mzR/issues/

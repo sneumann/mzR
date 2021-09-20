@@ -1,7 +1,7 @@
 ##############################################################
 ## Defines supported backend APIs
 ##  - NULL: default
-##  - C++Object: for Rcpp modules for ramp and pwiz backends
+##  - C++Object: for Rcpp modules for pwiz backends
 ##  - ncdf4 for netCDF files
 setOldClass("ncdf4")
 setClassUnion("msAPI",
@@ -27,27 +27,6 @@ setClass("mzR",
            if (is.null(msg)) TRUE
            else msg
          })
-
-
-##############################################################
-## mzRramp - ramp backend through RcppRamp module
-setClass("mzRramp",
-         representation(backend="C++Object"),
-         contains=c("mzR"),
-         prototype=prototype(
-           new("Versioned", versions=c(mzR="0.1.0"))),
-         validity=function(object) {
-           msg <- validMsg(NULL,NULL)
-           if (is.null(object@backend))
-             msg <- validMsg(msg,"cRamp object not initialised.")
-           if (!object@backend$OK())
-             msg <- validMsg(msg,"cRamp object not OK.")
-           if (object@fileName!=object@backend$getFilename())
-             msg <- validMsg(msg,"R slot and ramp filenames do not match.") 
-           if (is.null(msg)) TRUE
-           else msg
-         })
-
 
 ##############################################################
 ## mzRpwiz - pwiz backend through an Rcpp module 

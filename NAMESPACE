@@ -17,7 +17,6 @@ export(openMSfile,
 
 exportMethods(close,
               isInitialized,
-              initializeRamp,
               runInfo,
               fileName,
               instrumentInfo,
@@ -52,7 +51,6 @@ exportMethods(close,
               writeMSData)
 
 exportClasses("mzR",
-              "mzRramp",
               "mzRnetCDF",
               "mzRpwiz",
               "mzRident")

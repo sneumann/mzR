@@ -12,11 +12,6 @@ test_injection_time <- function() {
     checkTrue(any(colnames(hdr) == "injectionTime"))
     fl <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
                       package = "msdata")
-    mzxml <- openMSfile(fl, backend = "Ramp")
-    hdr <- header(mzxml)
-    mzR::close(mzxml)
-    checkTrue(all(hdr$injectionTime == 0))
-    checkTrue(any(colnames(hdr) == "injectionTime"))
 
     ## CDF
     fl <- system.file("cdf", "ko15.CDF",

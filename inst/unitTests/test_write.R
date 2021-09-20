@@ -123,10 +123,6 @@ test_copyWriteMSData <- function() {
                                         header = hdr, object = hdr,
                                         backend = "pwiz"))
     checkException(mzR::copyWriteMSData(file = fnew,
-                                        original_file = orig_file,
-                                        header = hdr, object = pks,
-                                        backend = "Ramp"))
-    checkException(mzR::copyWriteMSData(file = fnew,
                                         original_file = "somefile",
                                         header = hdr, object = pks,
                                         backend = "pwiz"))
@@ -556,51 +552,5 @@ test_writeMSData <- function() {
     checkEquals(pks, pks_2)
     cn <- c("spectrumId", "scanWindowLowerLimit", "scanWindowUpperLimit")
     checkEquals(hdr[, !(colnames(hdr_2) %in% cn)],
-                hdr_2[, !(colnames(hdr_2) %in% cn)])
-    
-    ## mzData:
-    test_file <- system.file("iontrap", "extracted.mzData", package = "msdata")
-    in_file <- openMSfile(test_file, backend = "Ramp")
-    hdr <- header(in_file)
-    hdr_orig <- hdr
-    pks <- peaks(in_file)
-    mzR::close(in_file)
-
-    ## mzML
-    out_file <- paste0(test_folder, "/test_write.mzML")
-    writeMSData(file = out_file, header = hdr_orig, object = pks)
-    in_file <- openMSfile(out_file, backend = "pwiz")
-    hdr_2 <- header(in_file)
-    pks_2 <- peaks(in_file)
-    mzR::close(in_file)
-    hdr <- data.frame(lapply(hdr, function(z) {
-        z[is.na(z)] <- 0
-        z
-    }))
-    hdr_2 <- data.frame(lapply(hdr_2, function(z) {
-        z[is.na(z)] <- 0
-        z
-    }))
-    checkEquals(hdr, hdr_2)
-    checkEquals(pks, pks_2)
-    ## validate mzML:
-    doc <- XML::xmlInternalTreeParse(out_file)
-    res <- XML::xmlSchemaValidate(mzML_xsd_idx, doc)
-    checkEquals(res$status, 0)
-
-    ## mzXML output:
-    out_file <- paste0(test_folder, "test_write.mzXML")
-    writeMSData(file = out_file, header = hdr_orig, object = pks,
-                outformat = "mzXML")
-    in_file <- openMSfile(out_file, backend = "pwiz")
-    hdr_2 <- header(in_file)
-    hdr_2 <- data.frame(lapply(hdr_2, function(z) {
-        z[is.na(z)] <- 0
-        z
-    }))
-    pks_2 <- peaks(in_file)
-    mzR::close(in_file)
-    checkEquals(pks, pks_2)
-    checkEquals(hdr[, colnames(hdr_2) != "centroided"],
-                hdr_2[, colnames(hdr_2) != "centroided"])
+                hdr_2[, !(colnames(hdr_2) %in% cn)])    
 }

@@ -62,7 +62,6 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/IO.o \
 ./pwiz/data/msdata/SpectrumList_BTDX.o \
 ./pwiz/data/msdata/SpectrumInfo.o \
-./pwiz/data/msdata/RAMPAdapter.o \
 ./pwiz/data/msdata/LegacyAdapter.o \
 ./pwiz/data/msdata/SpectrumIterator.o \
 ./pwiz/data/msdata/MSDataFile.o \
@@ -99,7 +98,6 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
 ./pwiz/utility/misc/sha1calc.o \
-./random_access_gzFile.o \
 ./RcppExports.o
 
 
@@ -110,7 +108,6 @@ ARCH_OBJS=./boost/libs/filesystem/src/path_traits.o \
 ./boost/libs/thread/src/win32/tss_pe.o \
 ./boost/libs/thread/src/win32/tss_dll.o \
 ./boost/libs/thread/src/win32/thread.o \
-./pwiz/data/msdata/ramp/wglob.o \
 ./boost_aux/boost/nowide/iostream.o
 ARCH_CPPFLAGS=-fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
 ARCH_LIBS=-lws2_32 -lz
@@ -121,9 +118,9 @@ ARCH_OBJS=./boost/libs/thread/src/pthread/once.o \
 RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)
 endif
 
-MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
+MZROBJECTS= RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
 
-OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) $(ARCH_OBJS) rampR.o 
+OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) $(ARCH_OBJS)
 
 ## Generate dependency files
 #DEPFLAGS = -MT $@ -MMD -MP 

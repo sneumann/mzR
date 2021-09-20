@@ -18,7 +18,6 @@ BUILT_RCPP_VERSION = package_version("1.0.6")
       require2 <- require
       require2("methods", character.only = TRUE, quietly = TRUE)
       #loadRcppModules()
-      loadModule("Ramp", TRUE)
       loadModule("Pwiz", TRUE)
       loadModule("Ident", TRUE)
       Sys.setenv("HDF5_DISABLE_VERSION_CHECK"=2)

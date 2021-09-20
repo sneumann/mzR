@@ -13,11 +13,6 @@ test_filter_string <- function() {
     checkTrue("filterString" %in% colnames(hdr))
     fl <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
                       package = "msdata")
-    mzxml <- openMSfile(fl, backend = "Ramp")
-    hdr <- header(mzxml)
-    mzR::close(mzxml)
-    checkTrue(all(is.na(hdr$filterString)))
-    checkTrue("filterString" %in% colnames(hdr))
 
     ## mzML - with filter string present.
     fl <- system.file("proteomics",

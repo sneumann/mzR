@@ -5,33 +5,23 @@
 \alias{peaksCount}
 \alias{get3Dmap}
 
-\alias{header,mzRramp,missing-method}
-\alias{header,mzRramp,numeric-method}
 \alias{header,mzRpwiz,missing-method}
 \alias{header,mzRpwiz,numeric-method}
 \alias{header,mzRnetCDF,missing-method}
 \alias{header,mzRnetCDF,numeric-method}
 
-\alias{peaksCount,mzRramp,missing-method}
-\alias{peaksCount,mzRramp,numeric-method}
 \alias{peaksCount,mzRpwiz,missing-method}
 \alias{peaksCount,mzRpwiz,numeric-method}
-\alias{peaks,mzRramp-method}
-\alias{spectra,mzRramp-method}
 \alias{peaks,mzRpwiz-method}
 \alias{spectra,mzRpwiz-method}
 \alias{peaks,mzRnetCDF-method}
 \alias{spectra,mzRnetCDF-method}
 
-\alias{get3Dmap,mzRramp-method}
 \alias{get3Dmap,mzRpwiz-method}
 
 \alias{chromatogram,mzRpwiz-method}
 \alias{chromatogramHeader,mzRpwiz-method}
 \alias{chromatograms,mzRpwiz-method}
-\alias{chromatogram,mzRramp-method}
-\alias{chromatogramHeader,mzRramp-method}
-\alias{chromatograms,mzRramp-method}
 \alias{chromatogram,mzRnetCDF-method}
 \alias{chromatogramHeader,mzRnetCDF-method}
 \alias{chromatograms,mzRnetCDF-method}
@@ -54,11 +44,9 @@
  peaksCount(object, scans, ...)
 
  \S4method{peaks}{mzRpwiz}(object, scans)
- \S4method{peaks}{mzRramp}(object, scans)
  \S4method{peaks}{mzRnetCDF}(object, scans)
 
  \S4method{spectra}{mzRpwiz}(object, scans)   ## same as peaks
- \S4method{spectra}{mzRramp}(object, scans)
  \S4method{spectra}{mzRnetCDF}(object, scans)
 
  get3Dmap(object, scans, lowMz, highMz, resMz, ...)
