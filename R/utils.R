@@ -7,17 +7,6 @@
     else res
 }
 
-.peaks_ramp <- function(object, scans) {
-    if (missing(scans))
-        scans <- 1:length(object)
-    if (length(scans) == 1) {
-        object@backend$getPeakList(scans)$peaks
-    } else {
-        sapply(scans, function(x) object@backend$getPeakList(x)$peaks,
-               simplify = FALSE)
-    }
-}
-
 setMethod("isolationWindow", "character",
           function(object, ...) .isolationWindow(object, ...))
 

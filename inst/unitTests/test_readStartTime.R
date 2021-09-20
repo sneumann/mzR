@@ -43,14 +43,4 @@ test_runStartTimeStamp_cdf <- function() {
     mzR::close(fh)
 }
 
-test_runStartTimeStamp_ramp <- function() {
-    ## Can not extract from ramp
-    f <- system.file("iontrap/extracted.mzData", package = "msdata")
-    fh <- mzR::openMSfile(f, backend = "Ramp")
-    run_info <- runInfo(fh)
-    checkTrue(any(names(run_info) == "startTimeStamp"))
-    checkTrue(is.na(run_info$startTimeStamp))
-    mzR::close(fh)
-}
-
 

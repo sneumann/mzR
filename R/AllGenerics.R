@@ -21,9 +21,6 @@ setGeneric("model", function(object) standardGeneric("model"))
 setGeneric("ionisation", function(object) standardGeneric("ionisation"))
 setGeneric("detector", function(object) standardGeneric("detector"))
 setGeneric("isInitialized", function(object) standardGeneric("isInitialized"))
-setGeneric("initializeRamp",
-           signature = c("object"),
-           function(object) standardGeneric("initializeRamp"))
 setGeneric("header", function(object, scans, ...) standardGeneric("header"))
 setGeneric("peaksCount",
            function(object, scans, ...) standardGeneric("peaksCount"))

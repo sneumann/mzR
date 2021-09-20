@@ -2,48 +2,35 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{mzR-class}
-\alias{mzRramp-class}
 \alias{mzRnetCDF-class}
 \alias{mzRpwiz-class}
 \alias{mzRident-class}
 \alias{class:mzR}
-\alias{class:mzRramp}
 \alias{class:mzRnetCDF}
 \alias{class:mzRpwiz}
 \alias{class:mzRident}
 \alias{close,mzRpwiz-method}
-\alias{close,mzRramp-method}
 \alias{close,mzRnetCDF-method}
 \alias{close}
-\alias{analyzer,mzRramp-method}
 \alias{analyzer,mzRpwiz-method}
 \alias{analyzer,mzRnetCDF-method}
-\alias{detector,mzRramp-method}
 \alias{detector,mzRpwiz-method}
 \alias{detector,mzRnetCDF-method}
 \alias{fileName,mzR-method}
-\alias{initializeRamp,mzRramp-method}
-\alias{instrumentInfo,mzRramp-method}
 \alias{instrumentInfo,mzRpwiz-method}
 \alias{instrumentInfo,mzRnetCDF-method}
-\alias{ionisation,mzRramp-method}
 \alias{ionisation,mzRpwiz-method}
 \alias{ionisation,mzRnetCDF-method}
-\alias{isInitialized,mzRramp-method}
 \alias{isInitialized,mzRnetCDF-method}
 \alias{length,mzRident-method}
-\alias{length,mzRramp-method}
 \alias{length,mzRpwiz-method}
 \alias{length,mzRnetCDF-method}
 \alias{length}
-\alias{manufacturer,mzRramp-method}
 \alias{manufacturer,mzRpwiz-method}
 \alias{manufacturer,mzRnetCDF-method}
-\alias{model,mzRramp-method}
 \alias{model,mzRpwiz-method}
 \alias{model,mzRnetCDF-method}
 
-\alias{runInfo,mzRramp-method}
 \alias{runInfo,mzRpwiz-method}
 \alias{runInfo,mzRnetCDF-method}
 \alias{chromatogramsInfo,mzRpwiz-method}
@@ -71,9 +58,8 @@
   directly.
 
   The sub-classes implement specific APIs to access the underlying data
-  and metadata in the files. Currently, \code{mzRramp} and
-  \code{mzRpwiz} are available implementations. \code{mzRramp} uses the
-  ISB 'RAMP' random access C/C++ API, and \code{mzRpwiz} uses
+  and metadata in the files. Currently \code{mzRpwiz} is available.
+  \code{mzRpwiz} uses
   Proteowizard to access the relevant information in \code{mzData},
   \code{mzXML} and \code{mzML} files. \code{mzRident} is used as an
   interface to \code{mzIdentML} files.
@@ -93,7 +79,7 @@
 \section{Objects from the Class}{
   \code{mzR} is a virtual class, so instances cannot be created.
 
-  Objects can be created by calls of the form \code{new("mzRramp",
+  Objects can be created by calls of the form \code{new("mzRpwiz",
     ...)}, but more often they will be created with
   \code{\link{openMSfile}}.
 
@@ -127,23 +113,6 @@
 
   \describe{ \item{fileName}{\code{signature(object = "mzR")}: ... } }
 
-  Methods currently implemented for \code{mzRramp}
-
-  \describe{
-    \item{analyzer}{\code{signature(object = "mzRramp")}: ... }
-    \item{close}{\code{signature(con = "mzRramp")}: ... }
-    \item{detector}{\code{signature(object = "mzRramp")}: ... }
-    \item{fileName}{\code{signature(object = "mzRramp")}: ... }
-    \item{initializeRamp}{\code{signature(object = "mzRramp")}: ... }
-    \item{instrumentInfo}{\code{signature(object = "mzRramp")}: ... }
-    \item{ionisation}{\code{signature(object = "mzRramp")}: ... }
-    \item{isInitialized}{\code{signature(object = "mzRramp")}: ... }
-    \item{length}{\code{signature(x = "mzRramp")}: ... }
-    \item{manufacturer}{\code{signature(object = "mzRramp")}: ... }
-    \item{model}{\code{signature(object = "mzRramp")}: ... }
-    \item{runInfo}{\code{signature(object = "mzRramp")}: ... }
-
-  }
   Methods currently implemented for \code{mzRpwiz}
   \describe{
     \item{analyzer}{\code{signature(object = "mzRpwiz")}: ... }
@@ -174,7 +143,6 @@
 }
 
 \references{
-  RAMP: http://tools.proteomecenter.org/wiki/index.php?title=Software:RAMP
   Proteowizard: http://proteowizard.sourceforge.net/
 }
 

@@ -10,18 +10,9 @@ openMSfile <- function(filename,
     filename <- path.expand(filename)
     if (is.null(backend))
         backend <- .mzRBackend(filename)
-    backend <- match.arg(backend, c("pwiz", "Ramp", "netCDF"))
+    backend <- match.arg(backend, c("pwiz", "netCDF"))
     
-    if (backend == "Ramp") {
-        rampModule <- new( Ramp ) 
-        rampModule$open(filename, declaredOnly = TRUE)
-        if (!rampModule$OK()) {
-            stop("Unable to create valid cRamp object.")
-        }
-        return(new("mzRramp",
-                   backend=rampModule,
-                   fileName=filename))
-    } else if (backend == "netCDF") { 
+    if (backend == "netCDF") { 
         if (netCDFIsFile(filename)) {
             ncid <- netCDFOpen(filename)
             if (!is.null(attr(ncid, "errortext"))) {
@@ -56,7 +47,7 @@ openMSfile <- function(filename,
 #' @param x \code{character(1)} representing the file name.
 #'
 #' @return A \code{character(1)} with the name of the backend (either
-#'     \code{"netCDF"}, \code{"Ramp"} or \code{"pwiz"}.
+#'     \code{"netCDF"} or \code{"pwiz"}.
 #'
 #' @author Johannes Rainer, Sebastian Gibb
 #'
@@ -65,13 +56,11 @@ openMSfile <- function(filename,
     if (length(x) != 1)
         stop("parameter 'x' has to be of length 1")
     ## Use if/else conditions based on a suggestion from sgibb to avoid loops.
-    if (grepl("\\.mzml($|\\.)|\\.mzxml($|\\.)", x, ignore.case = TRUE)) {
+    if (grepl("\\.mzml($|\\.)|\\.mzxml($|\\.)", x, ignore.case = TRUE))
         return("pwiz")
-    } else if (grepl("\\.mzdata($|\\.)", x, ignore.case = TRUE)) {
-        return("Ramp")
-    } else if (grepl("\\.cdf($|\\.)|\\.nc($|\\.)", x, ignore.case = TRUE)) {
+    else if (grepl("\\.cdf($|\\.)|\\.nc($|\\.)", x, ignore.case = TRUE))
         return("netCDF")
-    } else
+    else
         suppressWarnings(.mzRBackendFromContent(x))
 }
 
@@ -89,8 +78,6 @@ openMSfile <- function(filename,
 
     if (any(grepl("<mz[X]?ML", first_lines))) {
         return("pwiz")
-    } else if (any(grepl("<mzData", first_lines))) {
-        return("Ramp")
     } else if (rawToChar(readBin(x, raw(), n = 10)[2:4]) == "HDF") {
         return("pwiz")
     } else if (substr(readBin(x, character(), n = 1), 1, 3) == "CDF") {

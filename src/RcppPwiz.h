@@ -8,7 +8,7 @@
 #undef Free
 #endif
 
-#include "pwiz/data/msdata/RAMPAdapter.hpp"
+// #include "pwiz/data/msdata/RAMPAdapter.hpp"
 #include "pwiz/data/msdata/MSDataFile.hpp"
 #include "pwiz/data/msdata/MSData.hpp"
 #include "pwiz/data/msdata/LegacyAdapter.hpp"

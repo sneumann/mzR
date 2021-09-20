@@ -65,14 +65,12 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/IO.o \
 ./pwiz/data/msdata/SpectrumList_BTDX.o \
 ./pwiz/data/msdata/SpectrumInfo.o \
-./pwiz/data/msdata/RAMPAdapter.o \
 ./pwiz/data/msdata/LegacyAdapter.o \
 ./pwiz/data/msdata/SpectrumIterator.o \
 ./pwiz/data/msdata/MSDataFile.o \
 ./pwiz/data/msdata/MSNumpress.o \
 ./pwiz/data/msdata/SpectrumListCache.o \
 ./pwiz/data/msdata/Index_mzML.o \
-./pwiz/data/msdata/ramp/wglob.o \
 ./pwiz/data/identdata/IdentDataFile.o \
 ./pwiz/data/identdata/IdentData.o \
 ./pwiz/data/identdata/DefaultReaderList.o \
@@ -100,9 +98,7 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
 ./pwiz/utility/minimxml/XMLWriter.o \
-./pwiz/utility/minimxml/SAXParser.o \
-./random_access_gzFile.o \
-adler32.o compress.o crc32.o deflate.o gzclose.o gzlib.o gzread.o gzwrite.o infback.o inffast.o inflate.o inftrees.o trees.o uncompr.o zutil.o
+./pwiz/utility/minimxml/SAXParser.o
 
 
 all: libpwiz.a

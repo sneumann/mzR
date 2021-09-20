@@ -36,20 +36,15 @@ access, i.e. retrieving specific data of interest without having to
 sequentially browser the full content nor loading the entire data into
 memory.
 
-The actual work of reading and parsing the data files is handled by
-the included C/C++ libraries or *backends*. The `mzRramp` RAMP parser,
-written at the Institute for Systems Biology (ISB) is a fast and
-lightweight parser in pure C. Later, it gained support for the
-`mzData` format. The C++ reference implementation for the `mzML` is
-the proteowizard library [@Kessner08] (pwiz in short), which in turn
-makes use of the boost C++ (<http://www.boost.org/>) library. RAMP is
-able to access `mzML` files by calling pwiz methods. More recently,
-the proteowizard (http://proteowizard.sourceforge.net/)
-[@Chambers2012] has been fully integrated using the `mzRpwiz` backend
-for raw data, and is not the default option. The `mzRnetCDF` backend
-provides support to `CDF`-based formats. Finally, the `mzRident`
-backend is available to access identification data (`mzIdentML`)
-through pwiz.
+The actual work of reading and parsing the data files is handled by the included
+C/C++ libraries or *backends*. The C++ reference implementation for the `mzML`
+is the proteowizard library [@Kessner08] (pwiz in short), which in turn makes
+use of the boost C++ (<http://www.boost.org/>) library. More recently, the
+proteowizard (http://proteowizard.sourceforge.net/) [@Chambers2012] has been
+fully integrated using the `mzRpwiz` backend for raw data, and is not the
+default option. The `mzRnetCDF` backend provides support to `CDF`-based
+formats. Finally, the `mzRident` backend is available to access identification
+data (`mzIdentML`) through pwiz.
 
 The `r BiocStyle::Biocpkg("mzR")` package is in essence a collection of wrappers
 to the C++ code, and benefits from the C++ interface provided through
