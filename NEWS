@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.27.3
+-------------------------
+ o Pwiz backend partially re-written to avoid segfault on macOS
+   (https://github.com/sneumann/xcms/issues/422).
+
 CHANGES IN VERSION 2.27.2
 -------------------------
  o Remove support for the ramp backend.
