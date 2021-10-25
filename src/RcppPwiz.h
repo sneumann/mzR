@@ -28,6 +28,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <regex>
 
 #if defined(__MINGW32__)
 #include <windows.h>
@@ -49,18 +50,21 @@ private:
     Rcpp::DataFrame allScanHeaderInfo;
     bool isInCacheAllScanHeaderInfo;
     string filename;
+    CVID nativeIdFormat;
     void addSpectrumList(MSData& msd,
 			 Rcpp::DataFrame& spctr_header,
 			 Rcpp::List& spctr_data,
 			 bool rtime_seconds);
     void addDataProcessing(MSData& msd, Rcpp::StringVector soft_proc);
-
+    int getAcquisitionNumber(string id, size_t index) const;
+  
 public:
 
     RcppPwiz();
     virtual ~RcppPwiz();
 
-    void open(const string& fileNames);
+    // void open(const string& fileNames);
+    void open(Rcpp::StringVector fileNames);
     void close();
     /* void writeMSfile(const string& filenames, const string& format); */
     void writeSpectrumList(const string& file, const string& format,
