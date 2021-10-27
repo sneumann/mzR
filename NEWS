@@ -1,4 +1,4 @@
-CHANGES IN VERSION 2.27.3
+CHANGES IN VERSION 2.29.1
 -------------------------
  o Pwiz backend partially re-written to avoid segfault on macOS
    (https://github.com/sneumann/xcms/issues/422).
