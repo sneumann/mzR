@@ -3,6 +3,7 @@
 RcppPwiz::RcppPwiz()
 {
   msd = NULL;
+  nativeIdFormat = CVID_Unknown;
   instrumentInfo = Rcpp::List::create();
   chromatogramsInfo = Rcpp::DataFrame::create();
   isInCacheInstrumentInfo = FALSE;
@@ -15,12 +16,13 @@ RcppPwiz::~RcppPwiz()
   RcppPwiz::close();
 }
 
-void RcppPwiz::open(const string& fileName)
+// void RcppPwiz::open(const string& fileName)
+void RcppPwiz::open(Rcpp::StringVector fileName)
 {
 
-  filename = fileName;
-  msd = new MSDataFile(fileName);
-
+  filename = Rcpp::as<std::string>(fileName(0));
+  msd = new MSDataFile(filename);
+  nativeIdFormat = id::getDefaultNativeIDFormat(*msd);
 }
 
 /* Release all memory on close. */
@@ -30,6 +32,7 @@ void RcppPwiz::close()
     {
       delete msd;
       msd = NULL;
+      nativeIdFormat = CVID_Unknown;
       instrumentInfo = Rcpp::List::create();
       chromatogramsInfo = Rcpp::DataFrame::create();
       isInCacheInstrumentInfo = FALSE;
@@ -127,12 +130,45 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
   return instrumentInfo;
 }
 
+int RcppPwiz::getAcquisitionNumber(string id, size_t index) const
+{
+  // const SpectrumIdentity& si = msd->run.spectrumListPtr->spectrumIdentity(index);
+  string scanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, id);
+  if (scanNumber.empty())
+    return static_cast<int>(index) + 1;
+  else
+    return lexical_cast<int>(scanNumber);
+}
+
+// Using this function instead of pwiz translateNativeIDToScanNumber because
+// it randomly causes segfaults on macOS.
+// int RcppPwiz::getAcquisitionNumber(string id, size_t index) const
+// {
+//   if (id.find("controllerType") != std::string::npos) {
+//     if (id.find("controllerType=0 controllerNumber=1") == std::string::npos)
+//       return static_cast<int>(index) + 1;
+//   }
+//   string e;
+//   std::smatch match;
+//   if (id.find("scan=") != std::string::npos)
+//     e ="scan=(\\d+)";
+//   else if (id.find("index=") != std::string::npos)
+//     e = "index=(\\d+)";
+//   else if (id.find("spectrum=") != std::string::npos)
+//     e = "spectrum=(\\d+)";
+//   else if (id.find("scanId=") != std::string::npos)
+//     e = "scanId=(\\d+)";
+//   else return static_cast<int>(index) + 1;
+//   if (std::regex_search(id, match, std::regex(e)))
+//     return lexical_cast<int>(match[1]);
+//   else return static_cast<int>(index) + 1;
+// }
+
 Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
   if (msd != NULL) {
     SpectrumListPtr slp = msd->run.spectrumListPtr;
-    int N = slp->size();
-    int N_scans = whichScan.size();
-    CVID nativeIdFormat = id::getDefaultNativeIDFormat(*msd);
+    size_t N = slp->size();
+    size_t N_scans = whichScan.size();
     Rcpp::IntegerVector seqNum(N_scans); // number in sequence observed file (1-based)
     Rcpp::IntegerVector acquisitionNum(N_scans); // scan number as declared in File (may be gaps)
     Rcpp::IntegerVector msLevel(N_scans);
@@ -165,23 +201,20 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
     Rcpp::NumericVector scanWindowLowerLimit(N_scans);
     Rcpp::NumericVector scanWindowUpperLimit(N_scans);
     
-    for (int i = 0; i < N_scans; i++) {
+    for (size_t i = 0; i < N_scans; i++) {
       int current_scan = whichScan[i];
-      SpectrumPtr sp = slp->spectrum(current_scan - 1, false);
+      size_t current_index = static_cast<size_t>(current_scan - 1);
+      // SpectrumPtr sp = slp->spectrum(current_index, false);
+      SpectrumPtr sp = slp->spectrum(current_index, DetailLevel_FullMetadata);
       Scan dummy;
       Scan& scan = sp->scanList.scans.empty() ? dummy : sp->scanList.scans[0];
+      if (scan.empty())
+	Rprintf("Scan with index %d empty.\n", current_scan);
       // seqNum
       seqNum[i] = current_scan;
-      // acquisitionNum
-      string id = sp->id;
-      string scanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, id);
-      if (scanNumber.empty()) {
-	acquisitionNum[i] = current_scan;
-      } else {
-	acquisitionNum[i] = lexical_cast<int>(scanNumber);
-      }
+      acquisitionNum[i] = getAcquisitionNumber(sp->id, current_index);
       // spectrumId
-      spectrumId[i] = sp->id;
+      spectrumId[i] = Rcpp::String(sp->id);
       // msLevel
       msLevel[i] = sp->cvParam(MS_ms_level).valueAs<int>();
       // peaksCount
@@ -231,14 +264,8 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
 	collisionEnergy[i] = precursor.activation.cvParam(MS_collision_energy).valueAs<double>();
 	// precursorScanNum
 	size_t precursorIndex = slp->find(precursor.spectrumID);
-	if (precursorIndex < slp->size()) {
-	  const SpectrumIdentity& precursorSpectrum = slp->spectrumIdentity(precursorIndex);
-	  string precursorScanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, precursorSpectrum.id);
-	  if (precursorScanNumber.empty()) {
-	    precursorScanNum[i] = precursorIndex + 1;
-	  } else {
-	    precursorScanNum[i] = lexical_cast<int>(precursorScanNumber);
-	  }
+	if (precursorIndex < N) {
+	  precursorScanNum[i] = getAcquisitionNumber(precursor.spectrumID, precursorIndex);
 	} else {
 	  precursorScanNum[i] = NA_INTEGER;
 	}
@@ -277,7 +304,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
     
     Rcpp::List header(31);
     std::vector<std::string> names;
-    int i = 0;
+    size_t i = 0;
     names.push_back("seqNum");
     header[i++] = Rcpp::wrap(seqNum);
     names.push_back("acquisitionNum");
@@ -352,7 +379,7 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( ) {
   if (msd != NULL) {
     if (!isInCacheAllScanHeaderInfo) {
       SpectrumListPtr slp = msd->run.spectrumListPtr;
-      int N = slp->size();
+      size_t N = slp->size();
       
       allScanHeaderInfo = getScanHeaderInfo(Rcpp::seq(1, N));
       isInCacheAllScanHeaderInfo = TRUE;	    
@@ -366,21 +393,23 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( ) {
 Rcpp::List RcppPwiz::getPeakList(Rcpp::IntegerVector whichScan) {
   if (msd != NULL) {
     SpectrumListPtr slp = msd->run.spectrumListPtr;
-    int n_scans = slp->size();
-    int n_want = whichScan.size();
+    size_t n_scans = slp->size();
+    size_t n_want = whichScan.size();
     int current_scan;
     SpectrumPtr sp;
     BinaryDataArrayPtr mzs,ints;
     std::vector<double> data;
     Rcpp::NumericVector data_matrix;
     Rcpp::List res(n_want);
-    for (int i = 0; i < n_want; i++) {
+    for (size_t i = 0; i < n_want; i++) {
       current_scan = whichScan[i];
       if (current_scan < 1 || current_scan > n_scans) {
 	Rprintf("Index whichScan out of bounds [1 ... %d].\n", n_scans);
 	return Rcpp::List::create( );
       }
-      sp = slp->spectrum(current_scan - 1, true);
+      size_t current_index = static_cast<size_t>(current_scan - 1);
+      // sp = slp->spectrum(current_index, true);
+      sp = slp->spectrum(current_index, DetailLevel_FullData);
       mzs = sp->getMZArray();
       ints = sp->getIntensityArray();
       if (!mzs.get() || !ints.get()) {
@@ -847,7 +876,7 @@ Rcpp::DataFrame RcppPwiz::getChromatogramsInfo( int whichChrom )
 Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichChrom)
 {
   if (msd != NULL) {
-    CVID nativeIdFormat_ = id::getDefaultNativeIDFormat(*msd);
+    // CVID nativeIdFormat_ = id::getDefaultNativeIDFormat(*msd);
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
     if (clp.get() == 0) {
       Rf_warningcall(R_NilValue, "The direct support for chromatogram info is only available in mzML format.");
@@ -980,7 +1009,7 @@ Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double wh
       //Rprintf("%d\n",1);
       for (int i = 0; i < scanNumbers.size(); i++)
         {
-	  SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, true);
+	  SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, DetailLevel_FullMetadata);
 	  vector<MZIntensityPair> pairs;
 	  s->getMZIntensityPairs(pairs);
 
