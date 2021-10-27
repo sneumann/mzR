@@ -22,9 +22,7 @@ void RcppPwiz::open(Rcpp::StringVector fileName)
 
   filename = Rcpp::as<std::string>(fileName(0));
   msd = new MSDataFile(filename);
-  // Better not to guess the native ID format. For mzML/mzXML all should be fine
-  // with the default one.
-  // nativeIdFormat = id::getDefaultNativeIDFormat(*msd);
+  nativeIdFormat = id::getDefaultNativeIDFormat(*msd);
 }
 
 /* Release all memory on close. */
@@ -132,41 +130,39 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
   return instrumentInfo;
 }
 
-// int RcppPwiz::getAcquisitionNumber(size_t index) const
-// {
-//   const SpectrumIdentity& si = msd->run.spectrumListPtr->spectrumIdentity(index);
-//   string scanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, si.id);
-//   if (scanNumber.empty()) {
-//     return static_cast<int>(index) + 1;
-//   }
-//   else
-//     return lexical_cast<int>(scanNumber);
-//   // return static_cast<int>(index) + 1;
-// }
+int RcppPwiz::getAcquisitionNumber(string id, size_t index) const
+{
+  // const SpectrumIdentity& si = msd->run.spectrumListPtr->spectrumIdentity(index);
+  string scanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, id);
+  if (scanNumber.empty())
+    return static_cast<int>(index) + 1;
+  else
+    return lexical_cast<int>(scanNumber);
+}
 
 // Using this function instead of pwiz translateNativeIDToScanNumber because
 // it randomly causes segfaults on macOS.
-int RcppPwiz::getAcquisitionNumber(string id, size_t index) const
-{
-  if (id.find("controllerType") != std::string::npos) {
-    if (id.find("controllerType=0 controllerNumber=1") == std::string::npos)
-      return static_cast<int>(index) + 1;
-  }
-  string e;
-  std::smatch match;
-  if (id.find("scan=") != std::string::npos)
-    e ="scan=(\\d+)";
-  else if (id.find("index=") != std::string::npos)
-    e = "index=(\\d+)";
-  else if (id.find("spectrum=") != std::string::npos)
-    e = "spectrum=(\\d+)";
-  else if (id.find("scanId=") != std::string::npos)
-    e = "scanId=(\\d+)";
-  else return static_cast<int>(index) + 1;
-  if (std::regex_search(id, match, std::regex(e)))
-    return lexical_cast<int>(match[1]);
-  else return static_cast<int>(index) + 1;
-}
+// int RcppPwiz::getAcquisitionNumber(string id, size_t index) const
+// {
+//   if (id.find("controllerType") != std::string::npos) {
+//     if (id.find("controllerType=0 controllerNumber=1") == std::string::npos)
+//       return static_cast<int>(index) + 1;
+//   }
+//   string e;
+//   std::smatch match;
+//   if (id.find("scan=") != std::string::npos)
+//     e ="scan=(\\d+)";
+//   else if (id.find("index=") != std::string::npos)
+//     e = "index=(\\d+)";
+//   else if (id.find("spectrum=") != std::string::npos)
+//     e = "spectrum=(\\d+)";
+//   else if (id.find("scanId=") != std::string::npos)
+//     e = "scanId=(\\d+)";
+//   else return static_cast<int>(index) + 1;
+//   if (std::regex_search(id, match, std::regex(e)))
+//     return lexical_cast<int>(match[1]);
+//   else return static_cast<int>(index) + 1;
+// }
 
 Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
   if (msd != NULL) {
