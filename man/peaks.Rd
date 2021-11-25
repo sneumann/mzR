@@ -98,7 +98,7 @@
   provided (i.e all spectra in the oject are retured). \code{peaksCount}
   will return a numeric of length \code{n}.
   
-  The \code{\link{header}} function returns a list containing
+  The \code{\link{header}} function returns a \code{data.frame} containing
   \code{seqNum}, \code{acquisitionNum}, \code{msLevel},
   \code{peaksCount}, \code{totIonCurrent}, \code{retentionTime} (in
   seconds), \code{basePeakMZ}, \code{basePeakIntensity},
