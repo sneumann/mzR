@@ -8,16 +8,16 @@
 //   Cedars Sinai Medical Center, Los Angeles, California  90048
 // Copyright 2008 Vanderbilt University - Nashville, TN 37232
 //
-// Licensed under the Apache License, Version 2.0 (the "License"); 
-// you may not use this file except in compliance with the License. 
-// You may obtain a copy of the License at 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
 // http://www.apache.org/licenses/LICENSE-2.0
 //
-// Unless required by applicable law or agreed to in writing, software 
-// distributed under the License is distributed on an "AS IS" BASIS, 
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-// See the License for the specific language governing permissions and 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
 // limitations under the License.
 //
 
@@ -94,20 +94,6 @@ extern "C"
         PULONG ReturnLength
         );
 
-    struct SYSTEM_HANDLE {
-        ULONG ProcessID;
-        BYTE HandleType;
-        BYTE Flags;
-        USHORT Handle;
-        PVOID Object;
-        ACCESS_MASK GrantedAccess;
-    };
-
-    struct SYSTEM_HANDLE_INFORMATION {
-        ULONG HandleCount;
-        SYSTEM_HANDLE Handles[1];
-    };
-
     enum SECTION_INHERIT
     {
         ViewShare = 1,
@@ -154,6 +140,11 @@ extern "C"
     PVOID GetLibraryProcAddress(PSTR LibraryName, PSTR ProcName) {
         return GetProcAddress(GetModuleHandleA(LibraryName), ProcName);
     }
+
+    typedef struct __PUBLIC_OBJECT_TYPE_INFORMATION {
+      UNICODE_STRING TypeName;
+      ULONG Reserved[22];
+    } PUBLIC_OBJECT_TYPE_INFORMATION, *PPUBLIC_OBJECT_TYPE_INFORMATION;
 }
 
     int GetFileHandleTypeNumber(SYSTEM_HANDLE_INFORMATION* handleInfos)
@@ -170,15 +161,15 @@ extern "C"
         }
 
         map<int, int> handlesPerType;
-        for (size_t i = 0; i < handleInfos->HandleCount; ++i)
+        for (size_t i = 0; i < handleInfos->Count; ++i)
         {
-            if (handleInfos->Handles[i].ProcessID != currentProcessId)
+            if (handleInfos->Handle[i].OwnerPid != currentProcessId)
                 continue;
 
-            if (handleInfos->Handles[i].HandleType < 20) // this is not the File string you're looking for
+            if (handleInfos->Handle[i].ObjectType < 20) // this is not the File string you're looking for
                 continue;
 
-            const auto handle = reinterpret_cast<HANDLE>(handleInfos->Handles[i].Handle);
+            const auto handle = reinterpret_cast<HANDLE>(handleInfos->Handle[i].HandleValue);
             ULONG size;
             auto queryResult = NtQueryObject(handle, ObjectTypeInformation, typeInfoBytes.data(), typeInfoBytes.size(), &size);
             if (queryResult == STATUS_INFO_LENGTH_MISMATCH)
@@ -193,14 +184,15 @@ extern "C"
                 const auto type = std::wstring(typeInfo->TypeName.Buffer, typeInfo->TypeName.Length / sizeof(WCHAR));
                 if (type == fileType)
                     //return handleInfos->Handles[i].HandleType;
-                    ++handlesPerType[handleInfos->Handles[i].HandleType];
+                    ++handlesPerType[handleInfos->Handle[i].ObjectType];
             }
         }
 
         if (handlesPerType.empty())
             return 0;
 
-        auto typeMode = std::max_element(handlesPerType.begin(), handlesPerType.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
+        auto typeMode = std::max_element(handlesPerType.begin(),
+                                         handlesPerType.end(), [](const std::pair<const int, int> a, const std::pair<const int, int> b) { return a.second < b.second; });
         return typeMode->first;
     }
 
@@ -368,16 +360,16 @@ PWIZ_API_DECL void force_close_handles_to_filepath(const std::string& filepath, 
     wchar_t szPath[260];
 
     // iterate over every handle and close file handles that match the filepath
-    for (DWORD i = 0; i < pInfo->HandleCount; i++)
+    for (DWORD i = 0; i < pInfo->Count; i++)
     {
-        auto& handleInfo = pInfo->Handles[i];
-        if (handleInfo.ProcessID != currentProcessId)
+        auto& handleInfo = pInfo->Handle[i];
+        if (handleInfo.OwnerPid != currentProcessId)
             continue;
 
-        if (handleInfo.HandleType == fileHandleType)
+        if (handleInfo.ObjectType == fileHandleType)
         {
             szPath[0] = '\0';
-            if (!GetFileNameFromHandle((HANDLE)handleInfo.Handle, szPath, 260))
+            if (!GetFileNameFromHandle((HANDLE)handleInfo.HandleValue, szPath, 260))
             {
                 /*char messageBuffer[256];
                 memset(messageBuffer, 0, 256);
@@ -390,7 +382,7 @@ PWIZ_API_DECL void force_close_handles_to_filepath(const std::string& filepath, 
             wchar_t* handlePath = szPath;
             if (bal::iends_with(handlePath, wideFilepathWithoutRoot.c_str()))
             {
-                if (!CloseHandle((HANDLE)handleInfo.Handle))
+                if (!CloseHandle((HANDLE)handleInfo.HandleValue))
                     fprintf(stderr, "[force_close_handles_to_filepath()] Error closing file handle.\n");
                 //else
                 //    fprintf(stderr, "[force_close_handles_to_filepath()] Closed file handle: " + gcnew String(handlePath));
@@ -402,7 +394,7 @@ PWIZ_API_DECL void force_close_handles_to_filepath(const std::string& filepath, 
             SIZE_T viewSize = 1;
             PVOID viewBase = NULL;
 
-            NTSTATUS status = NtMapViewOfSection((HANDLE)handleInfo.Handle, currentProcessHandle, &viewBase, 0, 0, NULL, &viewSize, ViewShare, 0, PAGE_READONLY);
+            NTSTATUS status = NtMapViewOfSection((HANDLE)handleInfo.HandleValue, currentProcessHandle, &viewBase, 0, 0, NULL, &viewSize, ViewShare, 0, PAGE_READONLY);
 
             if (!NT_SUCCESS(status))
                 continue;
@@ -418,7 +410,7 @@ PWIZ_API_DECL void force_close_handles_to_filepath(const std::string& filepath, 
             if (!bal::iends_with(wstring(mappedFilename.data()), wideFilename))
                 continue;
 
-            if (!CloseHandle((HANDLE)handleInfo.Handle))
+            if (!CloseHandle((HANDLE)handleInfo.HandleValue))
                 fprintf(stderr, "[force_close_handles_to_filepath()] Error closing section handle.\n");
             //else
             //    fprintf(stderr, "[force_close_handles_to_filepath()] Closed section handle.\n");
