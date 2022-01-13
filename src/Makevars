@@ -145,7 +145,4 @@ all: clean $(SHLIB)
 
 clean:
 	rm -f $(OBJECTS)
-	find . -name \*~ -exec rm {} \;   ## from cleanup
-	find . -name \*.o -exec rm {} \;  ## from cleanup
-	find . -name "#*#" -exec rm {} \; ## from cleanup
 
