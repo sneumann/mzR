@@ -40,6 +40,9 @@ env:
   has_RUnit: 'false'
   has_BiocCheck: 'false'
   cache-version: 'cache-v1'
+  # Avoid application of UCRT
+  # https://developer.r-project.org/WindowsBuilds/winutf8/ucrt3/howto.html
+  _R_INSTALL_TIME_PATCHES: '=no'
 
 jobs:
   build-check:
