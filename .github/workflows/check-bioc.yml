@@ -42,7 +42,7 @@ env:
   cache-version: 'cache-v1'
   # Avoid application of UCRT
   # https://developer.r-project.org/WindowsBuilds/winutf8/ucrt3/howto.html
-  _R_INSTALL_TIME_PATCHES: 'no'
+  _R_INSTALL_TIME_PATCHES_: 'no'
 
 jobs:
   build-check:
