@@ -22,7 +22,7 @@
 
 namespace boost {
 namespace nowide {
-namespace details {
+namespace detail {
     class console_output_buffer : public std::streambuf {
     public:
         console_output_buffer(HANDLE h) :
@@ -61,7 +61,7 @@ namespace details {
         
         int write(char const *p,int n)
         {
-            namespace uf = boost::locale::utf;
+            namespace uf = boost::nowide::utf;
             char const *b = p;
             char const *e = p+n;
             if(!isatty_) {
@@ -159,7 +159,7 @@ namespace details {
         
         size_t read()
         {
-            namespace uf = boost::locale::utf;
+            namespace uf = boost::nowide::utf;
             if(!isatty_) {
                 DWORD read_bytes = 0;
                 if(!ReadFile(handle_,buffer_,buffer_size,&read_bytes,0))
@@ -203,7 +203,7 @@ namespace details {
         std::vector<char> pback_buffer_;
     };
 
-    winconsole_ostream::winconsole_ostream(int fd) : std::ostream(0)
+    winconsole_ostream::winconsole_ostream(int fd, winconsole_ostream* tieStream=0) : std::ostream(0)
     {
         HANDLE h = 0;
         switch(fd) {
@@ -222,7 +222,7 @@ namespace details {
     {
     }
 
-    winconsole_istream::winconsole_istream() : std::istream(0)
+    winconsole_istream::winconsole_istream(winconsole_ostream* tieStream=0) : std::istream(0)
     {
         HANDLE h = GetStdHandle(STD_INPUT_HANDLE);
         d.reset(new console_input_buffer(h));
@@ -233,12 +233,12 @@ namespace details {
     {
     }
     
-} // details
+} // detail
     
-BOOST_NOWIDE_DECL details::winconsole_istream cin;
-BOOST_NOWIDE_DECL details::winconsole_ostream cout(1);
-BOOST_NOWIDE_DECL details::winconsole_ostream cerr(2);
-BOOST_NOWIDE_DECL details::winconsole_ostream clog(2);
+BOOST_NOWIDE_DECL detail::winconsole_istream cin;
+BOOST_NOWIDE_DECL detail::winconsole_ostream cout(1);
+BOOST_NOWIDE_DECL detail::winconsole_ostream cerr(2);
+BOOST_NOWIDE_DECL detail::winconsole_ostream clog(2);
     
 namespace {
     struct initialize {
