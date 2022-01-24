@@ -38,6 +38,8 @@ PWIZOBJECTS=\
 ./boost/filesystem/src/codecvt_error_category.o \
 ./boost/thread/win32/thread.o \
 ./boost_aux/boost/nowide/iostream.o \
+./boost_aux/boost/nowide/filebuf.o \
+./boost_aux/libs/nowide/src/cstdio.o \
 ./pwiz/data/common/MemoryIndex.o \
 ./pwiz/data/common/CVTranslator.o \
 ./pwiz/data/common/cv.o \
@@ -105,6 +107,6 @@ all: libpwiz.a
 
 libpwiz.a: $(PWIZOBJECTS)
 	ar -rc $@ $(PWIZOBJECTS)
-	
+
 clean:
 	rm -rf $(PWIZOBJECTS)
