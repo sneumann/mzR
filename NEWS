@@ -4,9 +4,9 @@ CHANGES IN VERSION 2.29.3
  o Removed RAMP backend, dropping ability to read mzData
  o header always returns a data.frame even for a single scan.
 
- CHANGES IN VERSION 2.29.2
- -------------------------
- o Small fix in build to include fix by UCRT patch from Tomas Kalibera
+CHANGES IN VERSION 2.29.2
+-------------------------
+ o Cleanup in build files 
 
 CHANGES IN VERSION 2.29.1
 -------------------------
