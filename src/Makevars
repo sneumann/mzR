@@ -108,15 +108,10 @@ ARCH_OBJS=./boost/libs/filesystem/src/path_traits.o \
 ARCH_CPPFLAGS=-fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
 ARCH_LIBS=-lws2_32 -lz
 RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)
-ZLIB_CFLAGS=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'| "${R_HOME}/bin/R" --vanilla --slave)
-ZLIB_LIBS=$(shell echo 'zlibbioc::pkgconfig("PKG_LIBS_shared")' | "${R_HOME}/bin/R" --vanilla --slave)
 else
 ARCH_OBJS=./boost/libs/thread/src/pthread/once.o \
 ./boost/libs/thread/src/pthread/thread.o
 RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)
-ZLIB_CFLAGS=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'|\
-"${R_HOME}/bin/R" --vanilla --slave)
-ZLIB_LIBS=$(shell echo 'zlibbioc::pkgconfig("PKG_LIBS_shared")' | "${R_HOME}/bin/R" --vanilla --slave)
 endif
 
 MZROBJECTS= RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
@@ -143,4 +138,3 @@ all: clean $(SHLIB)
 
 clean:
 	rm -f $(OBJECTS)
-
