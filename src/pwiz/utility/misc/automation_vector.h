@@ -1,5 +1,5 @@
 //
-// $Id: automation_vector.h 7069 2015-01-08 22:59:05Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Andrei Alexandrescu

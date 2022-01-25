@@ -1,5 +1,5 @@
 //
-// $Id: sha1calc.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -24,7 +24,7 @@
 #include "SHA1Calculator.hpp"
 #include "unit.hpp"
 #include "pwiz/utility/misc/Std.hpp"
-#include <Rcpp.h>
+
 
 using namespace pwiz::util;
 
@@ -34,17 +34,17 @@ int main(int argc, char* argv[])
     try
     {
         if (argc<2) throw runtime_error("Usage: sha1calc filename"); 
-	Rcpp::Rcout << SHA1Calculator::hashFile(argv[1]) << endl;
+        cout << SHA1Calculator::hashFile(argv[1]) << endl;
         return 0;
     }
     catch (exception& e)
     {
-      Rcpp::Rcerr << e.what() << endl;
+        cerr << e.what() << endl;
         return 1;
     }
     catch (...)
     {
-      Rcpp::Rcerr << "Caught unknown exception.\n";
+        cerr << "Caught unknown exception.\n";
         return 1;
     }
 }

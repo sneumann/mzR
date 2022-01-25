@@ -1,5 +1,5 @@
 //
-// $Id: MemoryMRUCache.hpp 2595 2011-03-28 14:40:59Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

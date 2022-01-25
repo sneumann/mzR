@@ -1,5 +1,5 @@
 //
-// $Id: ParamTypes.hpp 6212 2014-05-20 22:38:47Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -263,6 +263,28 @@ struct PWIZ_API_DECL ParamContainer
     /// - if not found, CVParam(CVID_Unknown)
     /// - recursive: looks into paramGroupPtrs
     CVParam cvParamChild(CVID cvid) const;
+
+    /// finds cvid in the container:
+    /// - returns first CVParam result's value such that (result.cvid == cvid); 
+    /// - if not found, returns the given default value
+    /// - recursive: looks into paramGroupPtrs
+    template<typename ValueT>
+    ValueT cvParamValueOrDefault(CVID cvid, ValueT defaultValue) const
+    {
+        CVParam p = cvParam(cvid);
+        return p.empty() ? defaultValue : p.valueAs<ValueT>();
+    }
+
+    /// finds child of cvid in the container:
+    /// - returns first CVParam result's value such that (result.cvid is_a cvid); 
+    /// - if not found, returns the given default value
+    /// - recursive: looks into paramGroupPtrs
+    template<typename ValueT>
+    ValueT cvParamChildValueOrDefault(CVID cvid, ValueT defaultValue) const
+    {
+        CVParam p = cvParamChild(cvid);
+        return p.empty() ? defaultValue : p.valueAs<ValueT>();
+    }
 
     /// finds all children of cvid in the container:
     /// - returns all CVParam results such that (result.cvid is_a cvid); 

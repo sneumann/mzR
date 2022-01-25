@@ -1,5 +1,5 @@
 //
-// $Id: DiffTest.cpp 7331 2015-03-24 16:11:12Z chambm $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>

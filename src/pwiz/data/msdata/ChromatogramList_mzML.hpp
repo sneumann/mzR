@@ -1,5 +1,5 @@
 //
-// $Id: ChromatogramList_mzML.hpp 2898 2011-08-01 17:55:13Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

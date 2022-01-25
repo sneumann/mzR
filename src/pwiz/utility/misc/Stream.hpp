@@ -1,5 +1,5 @@
 //
-// $Id: Stream.hpp 6141 2014-05-05 21:03:47Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -29,6 +29,7 @@
 #include "pwiz/utility/misc/optimized_lexical_cast.hpp"
 #include <boost/nowide/fstream.hpp>
 #include <boost/nowide/iostream.hpp>
+#include <boost/nowide/system.hpp>
 #include <boost/nowide/args.hpp>
 
 namespace bio = boost::iostreams;
@@ -50,11 +51,12 @@ using std::stringstream;
 using std::istringstream;
 using std::ostringstream;
 
-using std::getline;
-
 using std::streampos;
 using std::streamoff;
 using std::streamsize;
+
+
+//using bnw::system; // TODO: add linting so unqualified system() calls will not be allowed to force developers to consider UTF-8 compatibility
 
 using bnw::cin;
 using bnw::cout;

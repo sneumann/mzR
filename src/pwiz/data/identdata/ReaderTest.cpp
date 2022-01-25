@@ -1,5 +1,5 @@
 //
-// $Id: ReaderTest.cpp 4129 2012-11-20 00:05:37Z chambm $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>

@@ -1,5 +1,5 @@
 //
-// $Id: BinaryDataEncoder.hpp 5084 2013-10-28 23:32:24Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -26,6 +26,7 @@
 
 
 #include "pwiz/utility/misc/Export.hpp"
+#include "pwiz/utility/misc/BinaryData.hpp"
 #include "boost/shared_ptr.hpp"
 #include <string>
 #include <vector>
@@ -60,6 +61,7 @@ class PWIZ_API_DECL BinaryDataEncoder
         double numpressFixedPoint;  // for Numpress_* use, 0=derive best value
         double numpressLinearErrorTolerance;  // guarantee abs(1.0-(encoded/decoded)) <= this, 0=do not guarantee anything
         double numpressSlofErrorTolerance;  // guarantee abs(1.0-(encoded/decoded)) <= this, 0=do not guarantee anything
+        double numpressLinearAbsMassAcc;  // absolute mass error for lossy linear compression in Th (e.g. use 1e-4 for 1ppm @ 100 Th)
 
         std::map<cv::CVID, Precision> precisionOverrides;
         std::map<cv::CVID, Numpress> numpressOverrides; 
@@ -71,7 +73,8 @@ class PWIZ_API_DECL BinaryDataEncoder
             numpress(Numpress_None),
             numpressFixedPoint(0.0),
             numpressLinearErrorTolerance(BinaryDataEncoder_default_numpressLinearErrorTolerance),
-            numpressSlofErrorTolerance(BinaryDataEncoder_default_numpressSlofErrorTolerance)
+            numpressSlofErrorTolerance(BinaryDataEncoder_default_numpressSlofErrorTolerance),
+            numpressLinearAbsMassAcc(-1.0)
         {}
     };
 
@@ -81,15 +84,23 @@ class PWIZ_API_DECL BinaryDataEncoder
 
     /// encode binary data as a text string
     void encode(const std::vector<double>& data, std::string& result, size_t* binaryByteCount = NULL) const;
+    void encode(const std::vector<std::int64_t>& data, std::string& result, size_t* binaryByteCount = NULL) const;
 
     /// encode binary data as a text string
     void encode(const double* data, size_t dataSize, std::string& result, size_t* binaryByteCount = NULL) const;
+    void encode(const std::int64_t* data, size_t dataSize, std::string& result, size_t* binaryByteCount = NULL) const;
 
     /// decode text-encoded data as binary 
-    void decode(const char *encodedData, size_t len, std::vector<double>& result) const;
-    void decode(const std::string& encodedData, std::vector<double>& result) const 
+    void decode(const char *encodedData, size_t len, pwiz::util::BinaryData<double>& result) const;
+    void decode(const std::string& encodedData, pwiz::util::BinaryData<double>& result) const
     {
         decode(encodedData.c_str(),encodedData.length(),result);
+    }
+
+    void decode(const char *encodedData, size_t len, pwiz::util::BinaryData<std::int64_t>& result) const;
+    void decode(const std::string& encodedData, pwiz::util::BinaryData<std::int64_t>& result) const
+    {
+        decode(encodedData.c_str(), encodedData.length(), result);
     }
 
     private:

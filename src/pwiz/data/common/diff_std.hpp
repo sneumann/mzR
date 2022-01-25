@@ -1,5 +1,5 @@
 //
-// $Id: diff_std.hpp 3725 2012-06-20 05:31:18Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>

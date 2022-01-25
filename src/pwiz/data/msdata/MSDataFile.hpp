@@ -1,5 +1,5 @@
 //
-// $Id: MSDataFile.hpp 4009 2012-10-17 18:40:44Z kaipot $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -55,9 +55,10 @@ struct PWIZ_API_DECL MSDataFile : public MSData
         BinaryDataEncoder::Config binaryDataEncoderConfig;
         bool indexed;
 		bool gzipped; // if true, file is written as .gz
+        bool useWorkerThreads;
 
         WriteConfig(Format _format = Format_mzML,bool _gzipped = false)
-        :   format(_format), indexed(true), gzipped(_gzipped)
+        :   format(_format), indexed(true), gzipped(_gzipped), useWorkerThreads(true)
         {}
     };
 

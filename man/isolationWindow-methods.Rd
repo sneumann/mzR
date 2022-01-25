@@ -4,7 +4,6 @@
 \alias{isolationWindow-methods}
 \alias{isolationWindow,character-method}
 \alias{isolationWindow,mzRpwiz-method}
-\alias{isolationWindow,mzRramp-method}
 
 \title{ Returns the ion selection isolation window }
 
@@ -35,9 +34,6 @@
 
     \item{\code{signature(object = "mzRpwiz", unique. = "logical",
 	simplify = "logical")}}{As above for \code{mzRpwiz} objects. }
-
-    \item{\code{signature(object = "mzRramp", unique. = "logical",
-	simplify = "logical")}}{As above for \code{mzRramp} object. }
 
   }
 }

@@ -1,3 +1,9 @@
+CHANGES IN VERSION 2.29.3
+-------------------------
+ o Update to Proteowizard 3_0_21263
+ o Removed RAMP backend, dropping ability to read mzData
+ o header always returns a data.frame even for a single scan.
+
 CHANGES IN VERSION 2.29.2
 -------------------------
  o Cleanup in build files 

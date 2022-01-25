@@ -1,5 +1,5 @@
 //
-// $Id: Modification.cpp 2454 2011-01-07 21:34:45Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

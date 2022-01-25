@@ -1,5 +1,5 @@
 //
-// $Id: Digestion.hpp 6909 2014-11-19 17:18:29Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -244,6 +244,8 @@ class PWIZ_API_DECL Digestion
         class Impl;
         boost::shared_ptr<Impl> impl_;
     };
+
+    typedef const_iterator iterator;
 
     const_iterator begin() const;
     const_iterator end() const;

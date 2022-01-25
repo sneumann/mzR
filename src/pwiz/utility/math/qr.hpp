@@ -1,5 +1,5 @@
 //
-// $Id: qr.hpp 2357 2010-11-09 19:59:54Z broter $
+// $Id$
 // 
 // Original author: Robert Burke <robert.burke@cshs.org>
 //

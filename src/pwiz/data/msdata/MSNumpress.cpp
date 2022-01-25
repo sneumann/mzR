@@ -1,5 +1,5 @@
 //
-// $Id: MSNumpress.cpp 6945 2014-11-26 18:58:33Z chambm $
+// $Id$
 //
 //
 // Original author: Johan Teleman <johan.teleman@immun.lth.se>
@@ -28,13 +28,13 @@
 #include <cmath>
 #include <algorithm>
 #include "MSNumpress.hpp"
-#include <Rcpp.h>
+
 namespace pwiz {
 namespace msdata {
 namespace MSNumpress {
 
 using std::cout;
-using Rcpp::Rcerr;
+using std::cerr;
 using std::endl;
 using std::min;
 using std::max;
@@ -195,6 +195,28 @@ void decodeInt(
 
 
 /////////////////////////////////////////////////////////////
+
+PWIZ_API_DECL
+double optimalLinearFixedPointMass(
+		const double *data, 
+		size_t dataSize,
+        double mass_acc
+) {
+	if (dataSize < 3) return 0; // we just encode the first two points as floats
+
+    // We calculate the maximal fixedPoint we need to achieve a specific mass
+    // accuracy. Note that the maximal error we will make by encoding as int is
+    // 0.5 due to rounding errors.
+    double maxFP = 0.5 / mass_acc;
+
+    // There is a maximal value for the FP given by the int length (32bit)
+    // which means we cannot choose a value higher than that. In case we cannot
+    // achieve the desired accuracy, return failure (-1).
+    double maxFP_overflow = optimalLinearFixedPoint(data, dataSize);
+    if (maxFP > maxFP_overflow) return -1;
+
+    return maxFP;
+}
 
 PWIZ_API_DECL
 double optimalLinearFixedPoint(
@@ -371,20 +393,20 @@ size_t decodeLinear(
             ints[2]         = y;
         }
     } catch (...) {
-        Rcpp::Rcerr << "DECODE ERROR" << endl;
-        Rcpp::Rcerr << "i: " << i << endl;
-        Rcpp::Rcerr << "ri: " << ri << endl;
-        Rcpp::Rcerr << "di: " << di << endl;
-        Rcpp::Rcerr << "half: " << half << endl;
-        Rcpp::Rcerr << "dataSize: " << dataSize << endl;
-        Rcpp::Rcerr << "ints[]: " << ints[0] << ", " << ints[1] << ", " << ints[2] << endl;
-        Rcpp::Rcerr << "extrapol: " << extrapol << endl;
-        Rcpp::Rcerr << "y: " << y << endl;
+        cerr << "DECODE ERROR" << endl;
+        cerr << "i: " << i << endl;
+        cerr << "ri: " << ri << endl;
+        cerr << "di: " << di << endl;
+        cerr << "half: " << half << endl;
+        cerr << "dataSize: " << dataSize << endl;
+        cerr << "ints[]: " << ints[0] << ", " << ints[1] << ", " << ints[2] << endl;
+        cerr << "extrapol: " << extrapol << endl;
+        cerr << "y: " << y << endl;
 
         for (i = di - 3; i < min(di + 3, dataSize); i++) {
-            Rcpp::Rcerr << "data[" << i << "] = " << data[i];
+            cerr << "data[" << i << "] = " << data[i];
         }
-        Rcpp::Rcerr << endl;
+        cerr << endl;
     }
     
     return ri;
@@ -494,17 +516,17 @@ size_t decodePic(
             result[ri++]     = count;
         }
     } catch (...) {
-        Rcpp::Rcerr << "DECODE ERROR" << endl;
-        Rcpp::Rcerr << "ri: " << ri << endl;
-        Rcpp::Rcerr << "di: " << di << endl;
-        Rcpp::Rcerr << "half: " << half << endl;
-        Rcpp::Rcerr << "dataSize: " << dataSize << endl;
-        Rcpp::Rcerr << "count: " << count << endl;
+        cerr << "DECODE ERROR" << endl;
+        cerr << "ri: " << ri << endl;
+        cerr << "di: " << di << endl;
+        cerr << "half: " << half << endl;
+        cerr << "dataSize: " << dataSize << endl;
+        cerr << "count: " << count << endl;
 
         for (i = di - 3; i < min(di + 3, dataSize); i++) {
-            Rcpp::Rcerr << "data[" << i << "] = " << data[i];
+            cerr << "data[" << i << "] = " << data[i];
         }
-        Rcpp::Rcerr << endl;
+        cerr << endl;
     }
     return ri;
 }

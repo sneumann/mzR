@@ -1,5 +1,5 @@
 //
-// $Id: Environment.hpp 2784 2011-06-15 18:46:58Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

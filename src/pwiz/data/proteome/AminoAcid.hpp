@@ -1,5 +1,5 @@
 //
-// $Id: AminoAcid.hpp 1808 2010-02-12 21:01:48Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

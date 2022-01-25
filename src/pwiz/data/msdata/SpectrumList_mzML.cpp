@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_mzML.cpp 8725 2015-08-04 15:49:57Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -98,7 +98,7 @@ const SpectrumIdentity& SpectrumList_mzMLImpl::spectrumIdentity(size_t index) co
 size_t SpectrumList_mzMLImpl::find(const string& id) const
 {
     //boost::call_once(indexInitialized_.flag, boost::bind(&SpectrumList_mzMLImpl::createIndex, this));
-    return index_->findSpectrumId(id);
+    return checkNativeIdFindResult(index_->findSpectrumId(id), id);
 }
 
 

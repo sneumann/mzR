@@ -1,5 +1,5 @@
 //
-// $Id: RAMPAdapter.hpp 3003 2011-09-21 21:43:45Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

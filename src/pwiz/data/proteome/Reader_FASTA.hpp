@@ -1,5 +1,5 @@
 //
-// $Id: Reader_FASTA.hpp 1623 2009-12-17 20:58:35Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

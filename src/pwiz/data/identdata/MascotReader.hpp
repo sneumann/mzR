@@ -1,5 +1,5 @@
 //
-// $Id: MascotReader.hpp 6826 2014-10-22 17:12:14Z chambm $
+// $Id$
 //
 //
 // Origional author: Robert Burke <robert.burke@proteowizard.org>

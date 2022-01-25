@@ -1,5 +1,5 @@
 //
-// $Id: Configuration_mz5.cpp 3484 2012-04-04 19:55:33Z mwilhelm42 $
+// $Id$
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -33,7 +33,7 @@ using namespace H5;
 hsize_t Configuration_mz5::EMPTY_CHUNK_SIZE = 0;
 size_t Configuration_mz5::NO_BUFFER_SIZE = 0;
 unsigned short Configuration_mz5::MZ5_FILE_MAJOR_VERSION = 0;
-unsigned short Configuration_mz5::MZ5_FILE_MINOR_VERSION = 9;
+unsigned short Configuration_mz5::MZ5_FILE_MINOR_VERSION = 10;
 
 bool Configuration_mz5::PRINT_HDF5_EXCEPTIONS = false;
 

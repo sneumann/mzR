@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_MGF.cpp 6585 2014-08-07 22:49:28Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -35,6 +35,7 @@ namespace msdata {
 
 using boost::iostreams::stream_offset;
 using boost::iostreams::offset_to_position;
+using namespace pwiz::util;
 
 
 namespace {
@@ -59,7 +60,7 @@ class SpectrumList_MGFImpl : public SpectrumList_MGF
     size_t find(const string& id) const
     {
         map<string, size_t>::const_iterator it = idToIndex_.find(id);
-        return it != idToIndex_.end() ? it->second : size();
+        return it != idToIndex_.end() ? it->second : checkNativeIdFindResult(size(), id);
     }
 
     size_t findNative(const string& nativeID) const
@@ -156,9 +157,9 @@ class SpectrumList_MGFImpl : public SpectrumList_MGF
         double basePeakIntensity = 0;
         spectrum.defaultArrayLength = 0;
         spectrum.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_detector_counts);
-        vector<double>& mzArray = spectrum.getMZArray()->data;
-        vector<double>& intensityArray = spectrum.getIntensityArray()->data;
-	    while (getline(*is_, lineStr))
+        BinaryData<double>& mzArray = spectrum.getMZArray()->data;
+        BinaryData<double>& intensityArray = spectrum.getIntensityArray()->data;
+	    while (getlinePortable(*is_, lineStr))
 	    {
             size_t lineBegin = lineStr.find_first_not_of(" \t");
             if (lineBegin == string::npos)
@@ -242,12 +243,18 @@ class SpectrumList_MGFImpl : public SpectrumList_MGF
                                 bal::split(charges, value, bal::is_any_of(" "));
                                 if (charges.size() > 1)
                                 {
-                                    BOOST_FOREACH(const string& charge, charges)
+                                    BOOST_FOREACH(string& charge, charges)
                                         if (charge != "and")
+                                        {
+                                            bal::trim_if(charge, bal::is_any_of("+-"));
                                             selectedIon.cvParams.push_back(CVParam(MS_possible_charge_state, lexical_cast<int>(charge)));
+                                        }
                                 }
                                 else
+                                {
+                                    bal::trim_if(value, bal::is_any_of("+-"));
                                     selectedIon.set(MS_charge_state, lexical_cast<int>(value));
+                                }
 				            }
                             else if (name == "RTINSECONDS")
 				            {
@@ -398,7 +405,7 @@ class SpectrumList_MGFImpl : public SpectrumList_MGF
         vector<SpectrumIdentity>::iterator curIdentityItr;
         map<string, size_t>::iterator curIdToIndexItr;
 
-	    while (getline(*is_, lineStr))
+	    while (std::getline(*is_, lineStr)) // need accurate line length, so do not use pwiz::util convenience wrapper
 	    {
 		    ++lineCount;
 		    if (lineStr.find("BEGIN IONS") == 0)

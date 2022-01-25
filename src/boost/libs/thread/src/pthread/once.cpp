@@ -8,14 +8,13 @@
 #include "./once_atomic.cpp"
 #else
 #define __STDC_CONSTANT_MACROS
-#include <boost/thread/pthread/pthread_mutex_scoped_lock.hpp>
 #include <boost/thread/once.hpp>
 #include <boost/assert.hpp>
 #include <boost/throw_exception.hpp>
 #include <pthread.h>
 #include <stdlib.h>
 #include <memory>
-
+#include <string.h> // memcmp.
 namespace boost
 {
     namespace thread_detail
@@ -53,6 +52,9 @@ namespace boost
                 {
                     if(memcmp(&epoch_tss_key_flag, &pthread_once_init_value, sizeof(pthread_once_t)))
                     {
+                        void* data = pthread_getspecific(epoch_tss_key);
+                        if (data)
+                            delete_epoch_tss_data(data);
                         pthread_key_delete(epoch_tss_key);
                     }
                 }

@@ -1,5 +1,5 @@
 //
-// $Id: LinearLeastSquares.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id$
 // 
 // Original author: Robert Burke <robert.burke@cshs.org>
 //

@@ -1,4 +1,4 @@
-// $Id: foreach_field.hpp 5091 2013-10-30 20:02:10Z chambm $
+// $Id$
 //
 // Copyright 2009 Chris Purcell.
 // Distributed under the Boost Software License, Version 1.0.

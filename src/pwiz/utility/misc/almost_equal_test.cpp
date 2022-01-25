@@ -1,5 +1,5 @@
 //
-// $Id: almost_equal_test.cpp 6141 2014-05-05 21:03:47Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

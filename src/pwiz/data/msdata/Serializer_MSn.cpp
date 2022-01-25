@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_MSn.cpp 8888 2015-09-24 20:16:23Z kaipot $
+// $Id$
 //
 //
 // Original author: Barbara Frewen <ferwen@u.washington.edu>
@@ -57,7 +57,8 @@ class Serializer_MSn::Impl
         Impl(MSn_Type filetype) : _filetype(filetype) {}
         
         void write(ostream& os, const MSData& msd, 
-                   const pwiz::util::IterationListenerRegistry* iterationListenerRegistry) const;
+                   const pwiz::util::IterationListenerRegistry* iterationListenerRegistry,
+                   bool useWorkerThreads = true) const;
         
         void read(shared_ptr<istream> is, MSData& msd) const;
 
@@ -137,10 +138,10 @@ namespace
         return (int)(charges.size() - startingChargesCount);
     }
     
-    int getScanNumber(SpectrumPtr s)
+    int getScanNumber(const SpectrumPtr& s, CVID nativeIdFormat)
     {
-        string scanNumber = id::translateNativeIDToScanNumber(MS_scan_number_only_nativeID_format, s->id);
-        int scanNum = 0;
+        string scanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, s->id);
+        int scanNum = s->index + 1;
         if (!scanNumber.empty())
         {
             scanNum = lexical_cast<int>(scanNumber);
@@ -149,14 +150,14 @@ namespace
         return scanNum;
     }
 
-    void writeSpectrumText(SpectrumPtr s, ostream& os)
+    void writeSpectrumText(const SpectrumPtr& s, ostream& os, CVID nativeIdFormat)
     {
         os << std::setprecision(7); // 123.4567
         bool ms1File = s->cvParam(MS_ms_level).valueAs<int>() == 1;
         
         // Write the scan numbers 
         os << "S\t";
-        int scanNum = getScanNumber(s);
+        int scanNum = getScanNumber(s, nativeIdFormat);
         os << scanNum <<  "\t" << scanNum;
 
         if (!ms1File)
@@ -167,7 +168,9 @@ namespace
             os << "\t" << mz;
         }
         os << "\n";
-        
+
+        os << "I\tNativeID\t" << s->id << "\n";
+
         // Write the scan time, if available
         if( !(s->scanList.empty()) && s->scanList.scans[0].cvParam(MS_scan_start_time).timeInSeconds() )
           os << "I\tRTime\t" << s->scanList.scans[0].cvParam(MS_scan_start_time).timeInSeconds()/60 << "\n";
@@ -236,7 +239,7 @@ namespace
         }
     }
 
-    void writeCompressedPeaks(SpectrumPtr s, ostream& os)
+    void writeCompressedPeaks(const SpectrumPtr& s, ostream& os)
     {
         // Build arrays to hold peaks prior to compression
         int numPeaks = (int) s->defaultArrayLength;
@@ -292,11 +295,11 @@ namespace
         }
     }
 
-    void writeSpectrumBinary(SpectrumPtr s, int version, bool compress, ostream& os)
+    void writeSpectrumBinary(const SpectrumPtr& s, int version, bool compress, ostream& os, CVID nativeIdFormat)
     {
         bool ms1File = s->cvParam(MS_ms_level).valueAs<int>() == 1;
 
-        int scanNum = getScanNumber(s);
+        int scanNum = getScanNumber(s, nativeIdFormat);
         os.write(reinterpret_cast<char *>(&scanNum), sizeIntMSn);
         os.write(reinterpret_cast<char *>(&scanNum), sizeIntMSn); // Yes, there are two
 
@@ -419,8 +422,11 @@ namespace
 
 
 void Serializer_MSn::Impl::write(ostream& os, const MSData& msd,
-    const pwiz::util::IterationListenerRegistry* iterationListenerRegistry) const
+    const pwiz::util::IterationListenerRegistry* iterationListenerRegistry,
+    bool useWorkerThreads) const
 {
+    CVID nativeIdFormat = id::getDefaultNativeIDFormat(msd);
+
     // Write the header
     if ((MSn_Type_BMS1 == _filetype) ||
         (MSn_Type_CMS1 == _filetype) ||
@@ -438,7 +444,7 @@ void Serializer_MSn::Impl::write(ostream& os, const MSData& msd,
     // Go through the spectrum list and write each spectrum
     bool ms1File = MSn_Type_MS1 == _filetype || MSn_Type_BMS1 == _filetype || MSn_Type_CMS1 == _filetype;
     SpectrumList& sl = *msd.run.spectrumListPtr;
-    SpectrumWorkerThreads spectrumWorkers(sl);
+    SpectrumWorkerThreads spectrumWorkers(sl, useWorkerThreads);
     for (size_t i=0, end=sl.size(); i < end; ++i)
     {
         //SpectrumPtr s = sl.spectrum(i, true);
@@ -450,22 +456,22 @@ void Serializer_MSn::Impl::write(ostream& os, const MSData& msd,
             switch (_filetype)
             {
             case MSn_Type_MS1:
-                writeSpectrumText(s, os);
+                writeSpectrumText(s, os, nativeIdFormat);
                 break;
             case MSn_Type_CMS1:
-                writeSpectrumBinary(s, 3 /* version */, true, os);
+                writeSpectrumBinary(s, 3 /* version */, true, os, nativeIdFormat);
                 break;
             case MSn_Type_BMS1:
-                writeSpectrumBinary(s, 3 /* version */, false, os);
+                writeSpectrumBinary(s, 3 /* version */, false, os, nativeIdFormat);
                 break;
             case MSn_Type_MS2:
-                writeSpectrumText(s, os);
+                writeSpectrumText(s, os, nativeIdFormat);
                 break;
             case MSn_Type_CMS2:
-                writeSpectrumBinary(s, 3 /* version */, true, os);
+                writeSpectrumBinary(s, 3 /* version */, true, os, nativeIdFormat);
                 break;
             case MSn_Type_BMS2:
-                writeSpectrumBinary(s, 3 /* version */, false, os);
+                writeSpectrumBinary(s, 3 /* version */, false, os, nativeIdFormat);
                 break;
             case MSn_Type_UNKNOWN:
                 throw runtime_error("[SpectrumList_MSn::Impl::write] Cannot create unknown MSn file type.");
@@ -514,7 +520,8 @@ PWIZ_API_DECL Serializer_MSn::Serializer_MSn(MSn_Type filetype)
 {}
 
 PWIZ_API_DECL void Serializer_MSn::write(ostream& os, const MSData& msd,
-    const pwiz::util::IterationListenerRegistry* iterationListenerRegistry) const
+    const pwiz::util::IterationListenerRegistry* iterationListenerRegistry,
+    bool useWorkerThreads) const
   
 {
     return impl_->write(os, msd, iterationListenerRegistry);

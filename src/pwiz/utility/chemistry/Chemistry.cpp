@@ -1,5 +1,5 @@
 //
-// $Id: Chemistry.cpp 6865 2014-10-31 21:47:12Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -27,7 +27,6 @@
 #include "ChemistryData.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/utility/misc/Singleton.hpp"
-#include <Rcpp.h>
 
 
 namespace pwiz {
@@ -122,10 +121,14 @@ struct Text2EnumMap : public map<string, Element::Type>,
 {
     Text2EnumMap(boost::restricted)
     {
-        for (detail::Element* it = detail::elements(); 
-             it != detail::elements() + detail::elementsSize();
-             ++it)
+        for (detail::Element* it = detail::elements();
+            it != detail::elements() + detail::elementsSize();
+            ++it)
+        {
             insert(make_pair(it->symbol, it->type));
+            if (it->synonym)
+                insert(make_pair(it->synonym, it->type));
+        }
     }
 };
 
@@ -147,8 +150,8 @@ PWIZ_API_DECL const Info::Record& Info::record(const string& symbol) {return rec
 
 PWIZ_API_DECL ostream& operator<<(ostream& os, const Info::Record& r)
 {
-  Rcpp::Rcout << r.symbol << " " << r.atomicNumber << " " << r.atomicWeight << " " << r.monoisotope << " ";
-  copy(r.isotopes.begin(), r.isotopes.end(), ostream_iterator<MassAbundance>(Rcpp::Rcout, " "));
+    cout << r.symbol << " " << r.atomicNumber << " " << r.atomicWeight << " " << r.monoisotope << " ";
+    copy(r.isotopes.begin(), r.isotopes.end(), ostream_iterator<MassAbundance>(cout, " "));
     return os;
 }
 
@@ -227,39 +230,56 @@ Formula::Impl::Impl(const string& formula)
 
     const string& whitespace_ = " \t\n\r";
     const string& digits_ = "-0123456789";
-    const string& letters_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    const string& symbolLeads_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    const string& lowers_ = "abcdefghijklmnopqrstuvwxyz";
 
     string::size_type index = 0;
-    while (index < formula.size())
+    while (index < formula.size() && index != string::npos)
     {
-        string::size_type indexTypeBegin = formula.find_first_of(letters_, index);
-        string::size_type indexTypeEnd = formula.find_first_not_of(letters_, indexTypeBegin);
-        string::size_type indexCountBegin = formula.find_first_of(digits_, indexTypeEnd);
-        string::size_type indexCountEnd = formula.find_first_not_of(digits_, indexCountBegin);
-
-        if (indexTypeBegin==string::npos || indexCountBegin==string::npos) 
+        string::size_type indexTypeBegin = formula.find_first_of(symbolLeads_, index);
+        if (indexTypeBegin == string::npos)
             throw runtime_error("[Formula::Impl::Impl()] Invalid formula: " + formula);
-
+        string::size_type indexTypeEnd = indexTypeBegin;
         if (formula[indexTypeBegin] == '_')
         {
-            indexTypeEnd = formula.find_first_not_of(digits_, indexTypeBegin + 1);
-            indexTypeEnd = formula.find_first_not_of(letters_, indexTypeEnd);
-            indexCountBegin = formula.find_first_of(digits_, indexTypeEnd);
-            indexCountEnd = formula.find_first_not_of(digits_, indexCountBegin);
-
-            if (indexCountBegin == string::npos)
-                throw runtime_error("[Formula::Impl::Impl()] Invalid formula: " + formula);
+            indexTypeEnd = formula.find_first_of(symbolLeads_, indexTypeBegin+1); // Skip the "2" in _2H
         }
+        // Distinguish "H" and "He" or "Uuu" and "Uub"
+        indexTypeEnd++;
+        while (indexTypeEnd < formula.size() && lowers_.find_first_of(formula[indexTypeEnd]) != string::npos)
+        {
+            indexTypeEnd++;
+        }
+        string symbol = formula.substr(indexTypeBegin, indexTypeEnd - indexTypeBegin);
+        string::size_type indexNextTypeBegin = (indexTypeEnd == formula.size()) ? string::npos :
+            formula.find_first_of(symbolLeads_, indexTypeEnd);
+        string::size_type indexCountBegin = (indexTypeEnd == formula.size()) ? string::npos :
+            formula.find_first_of(digits_, indexTypeEnd);
+        string::size_type indexCountEnd;
 
-        string symbol = formula.substr(indexTypeBegin, indexTypeEnd-indexTypeBegin);
         int count;
-        try
+        if (indexCountBegin == string::npos ||
+            (indexNextTypeBegin != string::npos && indexNextTypeBegin < indexCountBegin))
         {
-            count = lexical_cast<int>(formula.substr(indexCountBegin, indexCountEnd-indexCountBegin));
+            count = 1;
+            indexCountEnd = indexTypeEnd; // Start next symbol read from here
         }
-        catch(bad_lexical_cast&)
+        else
         {
-            throw runtime_error("[Formula::Impl::Impl()] Invalid count in formula: " + formula);
+            indexCountEnd = formula.find_first_not_of(digits_, indexCountBegin);
+            if (indexCountEnd == string::npos)
+            {
+                indexCountEnd = formula.size();
+            }
+
+            try
+            {
+                count = lexical_cast<int>(formula.substr(indexCountBegin, indexCountEnd-indexCountBegin));
+            }
+            catch(bad_lexical_cast&)
+            {
+                throw runtime_error("[Formula::Impl::Impl()] Invalid count in formula: " + formula);
+            }
         }
 
         Element::Type type = Element::text2enum(symbol);

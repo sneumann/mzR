@@ -1,5 +1,5 @@
 #
-# $Id: Jamfile.jam 6141 2014-05-05 21:03:47Z chambm $
+# $Id$
 #
 #
 # Original author: Darren Kessner <darren@proteowizard.org>
@@ -29,22 +29,26 @@ project
 ;
 
 
-lib ole32 : : <name>ole32 ; # for CoInitialize/CoUninitialize
 lib oleaut32 : : <name>oleaut32 ; # for Variant/SafeArray functions
-lib SHA1 : SHA1.cpp : <link>static ;
+lib psapi : : <name>psapi ; # for GetMappedFileNameW
+lib SHA1 : SHA1.cpp : <link>static <library>/ext/boost//filesystem ;
 
 # testing with precompiled header support
 #cpp-pch Std : Std.hpp : <include>. ;
 alias Std ;
 
+obj BinaryData : BinaryData.cpp : <toolset>msvc:<using-clr>true ;
+
 lib pwiz_utility_misc
     : # sources
-        Base64.cpp 
+        Base64.cpp
+        BinaryData
         IntegerSet.cpp
         IterationListener.cpp
         Filesystem.cpp
         random_access_compressed_ifstream.cpp
         SHA1Calculator.cpp
+        String.cpp
         TabReader.cpp
         MSIHandler.cpp
         SHA1
@@ -52,9 +56,8 @@ lib pwiz_utility_misc
     : # requirements
         <warnings>all
         <toolset>msvc:<source>automation_vector.cpp
-        <toolset>msvc:<source>COMInitializer.cpp
-        <toolset>msvc:<library>ole32
         <toolset>msvc:<library>oleaut32
+        <toolset>msvc:<library>psapi
         <library>/ext/boost//thread
         <library>/ext/boost//iostreams
         <library>/ext/boost//filesystem
@@ -69,8 +72,8 @@ lib pwiz_utility_misc
         <library>/ext/boost//date_time
         <library>/ext/boost//nowide
         <library>/ext/zlib//z
-        <toolset>msvc:<library>ole32
         <toolset>msvc:<library>oleaut32
+        <toolset>msvc:<library>psapi
     ;
 
 
@@ -96,10 +99,12 @@ lib pwiz_utility_vendor_reader_test_harness
     : # requirements
         <library>pwiz_utility_misc
         <library>$(PWIZ_ROOT_PATH)/pwiz/data/msdata//pwiz_data_msdata
+        <library>$(PWIZ_ROOT_PATH)/pwiz/analysis/spectrum_processing//pwiz_analysis_spectrum_processing
     : # default-build
     : # usage-requirements
         <library>pwiz_utility_misc
         <library>$(PWIZ_ROOT_PATH)/pwiz/data/msdata//pwiz_data_msdata
+        <library>$(PWIZ_ROOT_PATH)/pwiz/analysis/spectrum_processing//pwiz_analysis_spectrum_processing
         <testing.semaphore>io_semaphore
         #<testing.semaphore>mt_semaphore
     ;
@@ -109,6 +114,7 @@ explicit pwiz_utility_vendor_reader_test_harness ;
 unit-test-if-exists ExceptionTest : ExceptionTest.cpp pwiz_utility_misc Std ;
 unit-test-if-exists almost_equal_test : almost_equal_test.cpp pwiz_utility_misc Std ;
 unit-test-if-exists endian_test : endian_test.cpp pwiz_utility_misc Std ;
+unit-test-if-exists BinaryDataTestNative : BinaryDataTest.cpp pwiz_utility_misc Std ;
 unit-test-if-exists Base64Test : Base64Test.cpp pwiz_utility_misc Std ;
 unit-test-if-exists IntegerSetTest : IntegerSetTest.cpp pwiz_utility_misc Std ;
 unit-test-if-exists IterationListenerTest : IterationListenerTest.cpp pwiz_utility_misc Std ;
@@ -136,8 +142,9 @@ run-if-exists TabReaderTest.cpp pwiz_utility_misc Std
 import modules ;
 if [ modules.peek : NT ]
 {
+    unit-test-if-exists BinaryDataTestManaged : BinaryDataTest.cpp pwiz_utility_misc Std : <using-clr>true ;
     unit-test-if-exists automation_vector_test : automation_vector_test.cpp pwiz_utility_misc Std : <conditional>@msvc-requirement ;
-    unit-test-if-exists COMInitializerTest : COMInitializerTest.cpp pwiz_utility_misc Std : <conditional>@msvc-requirement ;
+    #unit-test-if-exists COMInitializerTest : COMInitializerTest.cpp pwiz_utility_misc Std : <conditional>@msvc-requirement ;
 }
 
 exe sha1calc : sha1calc.cpp pwiz_utility_misc ;

@@ -1,5 +1,5 @@
 //
-// $Id: MzidPredicates.hpp 2820 2011-06-27 22:51:16Z chambm $
+// $Id$
 //
 //
 // Origional author: Robert Burke <robert.burke@proteowizard.org>

@@ -1,5 +1,5 @@
 //
-// $Id: ExtendedReadTest.cpp 4129 2012-11-20 00:05:37Z chambm $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
                 cout << argv[i] << endl;
         }
 
-        cout << "\nhttp://proteowizard.sourceforge.net\n"
+        cout << "\nhttps://github.com/ProteoWizard\n"
              << "support@proteowizard.org\n";
 
     }

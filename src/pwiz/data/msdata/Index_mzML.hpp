@@ -1,5 +1,5 @@
 //
-// $Id: Index_mzML.hpp 3011 2011-09-27 05:17:39Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers <a.t> vanderbilt.edu>
@@ -35,6 +35,12 @@ namespace pwiz {
 namespace msdata {
 
 struct SpectrumIdentityFromXML; // forward ref
+
+class index_error : public std::runtime_error
+{
+    public:
+    index_error(const char* msg) : runtime_error(msg) {}
+};
 
 struct PWIZ_API_DECL Index_mzML
 {

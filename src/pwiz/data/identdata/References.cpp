@@ -1,5 +1,5 @@
 //
-// $Id: References.cpp 2820 2011-06-27 22:51:16Z chambm $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -51,7 +51,7 @@ void resolve(shared_ptr<object_type>& reference,
     if (!reference.get() || reference->id.empty())
         return; 
 
-    typename vector< shared_ptr<object_type> >::const_iterator it = 
+    typename vector< shared_ptr<object_type> >::const_iterator it =
         find_if(referentList.begin(), referentList.end(), HasID<object_type>(reference->id));
 
     if (it == referentList.end())
@@ -61,8 +61,8 @@ void resolve(shared_ptr<object_type>& reference,
             << "  object type: " << typeid(object_type).name() << endl
             << "  reference id: " << reference->id << endl
             << "  referent list: " << referentList.size() << endl;
-        for (typename vector< shared_ptr<object_type> >::const_iterator it=referentList.begin();
-             it!=referentList.end(); ++it)
+        for (typename vector< shared_ptr<object_type> >::const_iterator it = referentList.begin();
+            it != referentList.end(); ++it)
             oss << "    " << (*it)->id << endl;
         throw runtime_error(oss.str().c_str());
     }
@@ -152,18 +152,6 @@ PWIZ_API_DECL void resolve(vector<ContactPtr>& vcp, IdentData& mzid)
     }
 }
 
-
-PWIZ_API_DECL void resolve(SequenceCollection& sc, IdentData& mzid)
-{
-    BOOST_FOREACH(DBSequencePtr& dbs, sc.dbSequences)
-        resolve(dbs->searchDatabasePtr, mzid.dataCollection.inputs.searchDatabase);
-
-    // Create a single Enzyme referent list
-    vector<EnzymePtr> enzymePtrs;
-    BOOST_FOREACH(const SpectrumIdentificationProtocolPtr& sip, mzid.analysisProtocolCollection.spectrumIdentificationProtocol)
-        enzymePtrs.insert(enzymePtrs.end(), sip->enzymes.enzymes.begin(), sip->enzymes.enzymes.end());    
-}
-
 PWIZ_API_DECL void resolve(MassTablePtr& mt, const vector<SpectrumIdentificationProtocolPtr>& spectrumIdProts)
 {
     if (!mt.get() || mt->id.empty())
@@ -197,10 +185,10 @@ PWIZ_API_DECL void resolve(PeptideEvidencePtr& pe, const IdentData& mzid)
     if (!pe.get())
         throw runtime_error("NULL value passed into resolve(PeptideEvidencePtr, IdentData&)");
 
-    if (pe->peptidePtr.get())
+    if (!pe->peptidePtr || pe->peptidePtr->peptideSequence.empty())
         resolve(pe->peptidePtr, mzid.sequenceCollection.peptides);
 
-    if (pe->dbSequencePtr.get())
+    if (!pe->dbSequencePtr || (pe->dbSequencePtr->seq.empty() && pe->dbSequencePtr->length == 0))
         resolve(pe->dbSequencePtr, mzid.sequenceCollection.dbSequences);
 
     // TODO construct a collection of TranslationTable's from all the
@@ -244,14 +232,80 @@ PWIZ_API_DECL void resolve(SpectrumIdentificationListPtr& sil, IdentData& mzid)
                 sii->peptidePtr.get() &&
                 sii->peptidePtr->peptideSequence.empty())
             {
-                ResolvePE rpe(&mzid);
-                for_each(sii->peptideEvidencePtr.begin(),
-                         sii->peptideEvidencePtr.end(),
-                         rpe);
                 resolve(sii->peptidePtr, mzid.sequenceCollection.peptides);
             }
+
+            ResolvePE rpe(&mzid);
+            for_each(sii->peptideEvidencePtr.begin(),
+                     sii->peptideEvidencePtr.end(),
+                     rpe);
         }
     }
+}
+
+PWIZ_API_DECL void resolve(SequenceCollection& sc, IdentData& mzid)
+{
+    BOOST_FOREACH(DBSequencePtr& dbs, sc.dbSequences)
+        resolve(dbs->searchDatabasePtr, mzid.dataCollection.inputs.searchDatabase);
+    
+    // look for unresolved PeptidePtr and DBSequencePtr in PeptideEvidences
+
+    bool needPeptideResolved = false, needDbSeqResolved = false;
+    for (const auto& pe : sc.peptideEvidence)
+    {
+        if (!pe) throw runtime_error("NULL PeptideEvidencePtr");
+        if (!pe->dbSequencePtr) throw runtime_error("NULL dbSequencePtr for PeptideEvidence (no id to resolve)");
+        if (!pe->peptidePtr) throw runtime_error("NULL peptidePtr for PeptideEvidence (no id to resolve)");
+
+        if (pe->dbSequencePtr->seq.empty() && pe->dbSequencePtr->length == 0)
+            needDbSeqResolved = true;
+        if (pe->peptidePtr->peptideSequence.empty())
+            needPeptideResolved = true;
+
+        if (needDbSeqResolved && needPeptideResolved)
+            break;
+    }
+
+    map<string, const DBSequencePtr*> dbSeqById;
+    if (needDbSeqResolved)
+        for (const auto& s : sc.dbSequences)
+            if (s)
+                dbSeqById[s->id] = &s;
+
+    map<string, const PeptidePtr*> peptideById;
+    if (needPeptideResolved)
+        for (const auto& p : sc.peptides)
+            if (p)
+                peptideById[p->id] = &p;
+
+    for (auto& pe : sc.peptideEvidence)
+    {
+        // null check still needed in case loop above broke early
+        if (!pe) throw runtime_error("NULL PeptideEvidencePtr");
+        if (!pe->dbSequencePtr) throw runtime_error("NULL dbSequencePtr for PeptideEvidence (no id to resolve)");
+        if (!pe->peptidePtr) throw runtime_error("NULL peptidePtr for PeptideEvidence (no id to resolve)");
+
+        if (needDbSeqResolved && pe->dbSequencePtr->seq.empty() && pe->dbSequencePtr->length == 0)
+        {
+            auto findItr = dbSeqById.find(pe->dbSequencePtr->id);
+            if (findItr == dbSeqById.end())
+                throw runtime_error("dBSequence_ref for PeptideEvidence " + pe->id + " does not resolve to a DBSequence element");
+            pe->dbSequencePtr = *findItr->second;
+        }
+
+        if (needPeptideResolved && pe->peptidePtr->peptideSequence.empty())
+        {
+            auto findItr = peptideById.find(pe->peptidePtr->id);
+            if (findItr == peptideById.end())
+                throw runtime_error("peptide_ref for PeptideEvidence " + pe->id + " does not resolve to a Peptide element");
+            pe->peptidePtr = *findItr->second;
+        }
+    }
+
+    // Create a single Enzyme referent list
+    vector<EnzymePtr> enzymePtrs;
+    BOOST_FOREACH(const SpectrumIdentificationProtocolPtr& sip, mzid.analysisProtocolCollection.spectrumIdentificationProtocol)
+        enzymePtrs.insert(enzymePtrs.end(), sip->enzymes.enzymes.begin(), sip->enzymes.enzymes.end());
 }
 
 PWIZ_API_DECL void resolve(SpectrumIdentification& si, IdentData& mzid)
@@ -344,6 +398,8 @@ PWIZ_API_DECL void resolve(DataCollection& dc, IdentData& mzid)
 
             BOOST_FOREACH(PeptideHypothesis& ph, pdh->peptideHypothesis)
             {
+                if (ph.peptideEvidencePtr && ph.peptideEvidencePtr->peptidePtr)
+                    continue;
                 resolve(ph.peptideEvidencePtr, mzid.sequenceCollection.peptideEvidence);
 
                 //BOOST_FOREACH(SpectrumIdentificationItemPtr& sii, ph.spectrumIdentificationItemPtr)

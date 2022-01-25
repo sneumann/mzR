@@ -1,26 +1,17 @@
 PWIZOBJECTS=\
 ./boost/libs/system/src/error_code.o \
 ./boost/libs/regex/src/posix_api.o \
-./boost/libs/regex/src/fileiter.o \
-./boost/libs/regex/src/regex_raw_buffer.o \
-./boost/libs/regex/src/cregex.o \
 ./boost/libs/regex/src/regex_debug.o \
-./boost/libs/regex/src/instances.o \
-./boost/libs/regex/src/icu.o \
-./boost/libs/regex/src/usinstances.o \
 ./boost/libs/regex/src/regex.o \
 ./boost/libs/regex/src/wide_posix_api.o \
-./boost/libs/regex/src/regex_traits_defaults.o \
-./boost/libs/regex/src/winstances.o \
-./boost/libs/regex/src/wc_regex_traits.o \
-./boost/libs/regex/src/c_regex_traits.o \
-./boost/libs/regex/src/cpp_regex_traits.o \
 ./boost/libs/regex/src/static_mutex.o \
-./boost/libs/regex/src/w32_regex_traits.o \
 ./boost/libs/iostreams/src/zlib.o \
 ./boost/libs/iostreams/src/file_descriptor.o \
 ./boost/libs/filesystem/src/operations.o \
+./boost/libs/filesystem/src/directory.o \
+./boost/libs/filesystem/src/exception.o \
 ./boost/libs/filesystem/src/path.o \
+./boost/libs/filesystem/src/unique_path.o \
 ./boost/libs/filesystem/src/utf8_codecvt_facet.o \
 ./boost/libs/chrono/src/chrono.o \
 ./boost/libs/chrono/src/process_cpu_clocks.o \
@@ -40,7 +31,6 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/mz5/ReferenceRead_mz5.o \
 ./pwiz/data/msdata/mz5/ReferenceWrite_mz5.o \
 ./pwiz/data/msdata/mz5/Translator_mz5.o \
-./pwiz/data/msdata/SpectrumList_MGF.o \
 ./pwiz/data/msdata/DefaultReaderList.o \
 ./pwiz/data/msdata/ChromatogramList_mzML.o \
 ./pwiz/data/msdata/ChromatogramList_mz5.o \
@@ -51,6 +41,8 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/Serializer_mz5.o \
 ./pwiz/data/msdata/Serializer_MGF.o \
 ./pwiz/data/msdata/Serializer_mzXML.o \
+./pwiz/data/msdata/SpectrumListBase.o \
+./pwiz/data/msdata/SpectrumList_MGF.o \
 ./pwiz/data/msdata/SpectrumList_mzML.o \
 ./pwiz/data/msdata/SpectrumList_MSn.o \
 ./pwiz/data/msdata/SpectrumList_mz5.o \
@@ -62,7 +54,6 @@ PWIZOBJECTS=\
 ./pwiz/data/msdata/IO.o \
 ./pwiz/data/msdata/SpectrumList_BTDX.o \
 ./pwiz/data/msdata/SpectrumInfo.o \
-./pwiz/data/msdata/RAMPAdapter.o \
 ./pwiz/data/msdata/LegacyAdapter.o \
 ./pwiz/data/msdata/SpectrumIterator.o \
 ./pwiz/data/msdata/MSDataFile.o \
@@ -91,6 +82,7 @@ PWIZOBJECTS=\
 ./pwiz/utility/chemistry/MZTolerance.o \
 ./pwiz/utility/misc/IntegerSet.o \
 ./pwiz/utility/misc/Base64.o \
+./pwiz/utility/misc/BinaryData.o \
 ./pwiz/utility/misc/IterationListener.o \
 ./pwiz/utility/misc/MSIHandler.o \
 ./pwiz/utility/misc/Filesystem.o \
@@ -99,7 +91,7 @@ PWIZOBJECTS=\
 ./pwiz/utility/misc/SHA1.o \
 ./pwiz/utility/misc/SHA1Calculator.o \
 ./pwiz/utility/misc/sha1calc.o \
-./random_access_gzFile.o \
+./pwiz/utility/misc/String.o \
 ./RcppExports.o
 
 
@@ -110,23 +102,24 @@ ARCH_OBJS=./boost/libs/filesystem/src/path_traits.o \
 ./boost/libs/thread/src/win32/tss_pe.o \
 ./boost/libs/thread/src/win32/tss_dll.o \
 ./boost/libs/thread/src/win32/thread.o \
-./pwiz/data/msdata/ramp/wglob.o \
-./boost_aux/boost/nowide/iostream.o
+./boost_aux/libs/nowide/src/iostream.o \
+./boost_aux/libs/nowide/src/cstdio.o \
+./boost_aux/libs/nowide/src/filebuf.o
 ARCH_CPPFLAGS=-fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
 ARCH_LIBS=-lws2_32 -lz
-RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)  
+RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)
 else
 ARCH_OBJS=./boost/libs/thread/src/pthread/once.o \
 ./boost/libs/thread/src/pthread/thread.o
 RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)
 endif
 
-MZROBJECTS=cramp.o ramp_base64.o ramp.o RcppRamp.o RcppRampModule.o RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
+MZROBJECTS= RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
 
-OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) $(ARCH_OBJS) rampR.o 
+OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) $(ARCH_OBJS)
 
 ## Generate dependency files
-#DEPFLAGS = -MT $@ -MMD -MP 
+#DEPFLAGS = -MT $@ -MMD -MP
 
 ##
 ## R complains about assert(), hence -D_NODEBUG
@@ -145,4 +138,3 @@ all: clean $(SHLIB)
 
 clean:
 	rm -f $(OBJECTS)
-

@@ -1,5 +1,5 @@
 //
-// $Id: Peptide.cpp 2901 2011-08-03 20:16:57Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

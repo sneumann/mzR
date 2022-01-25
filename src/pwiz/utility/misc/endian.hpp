@@ -1,5 +1,5 @@
 //
-// $Id: endian.hpp 3214 2012-01-13 01:08:04Z pcbrefugee $ 
+// $Id$ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -43,7 +43,6 @@ namespace util {
 
 
 #if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__LITTLE_ENDIAN) || \
-    (defined(PWIZ_GCC) && defined(__BYTE_ORDER__) && __BYTE_ORDER__==__ORDER_LITTLE_ENDIAN__) || \
     (defined(__DARWIN_BYTE_ORDER) && __DARWIN_BYTE_ORDER==__DARWIN_LITTLE_ENDIAN) || \
     (defined(__LITTLE_ENDIAN__)) || \
     (defined(__MINGW32__)) || \
@@ -53,8 +52,7 @@ namespace util {
 #endif
 
 
-#if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__BIG_ENDIAN) || \
-    (defined(PWIZ_GCC) && defined(__BYTE_ORDER__) && __BYTE_ORDER__==__ORDER_BIG_ENDIAN__)
+#if (defined(PWIZ_GCC) && defined(__BYTE_ORDER) && __BYTE_ORDER==__BIG_ENDIAN)
 #define PWIZ_BIG_ENDIAN
 #endif
 

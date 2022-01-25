@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumWorkerThreads.hpp 6585 2014-08-07 22:49:28Z chambm $
+// $Id$
 //
 //
 // Original author: William French <william.r.frenchwr .@. vanderbilt.edu>
@@ -35,9 +35,9 @@ class SpectrumWorkerThreads
 {
     public:
 
-    SpectrumWorkerThreads(const SpectrumList& sl);
+    SpectrumWorkerThreads(const SpectrumList& sl, bool useWorkerThreads);
     ~SpectrumWorkerThreads();
-    SpectrumPtr processBatch(size_t index, bool getBinaryData = true);
+    SpectrumPtr processBatch(size_t index, DetailLevel detailLevel = DetailLevel_FullData);
 
     private:
     class Impl;

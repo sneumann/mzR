@@ -1,5 +1,5 @@
 //
-// $Id: OrderedPair.hpp 1832 2010-02-22 22:21:00Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

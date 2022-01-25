@@ -1,5 +1,5 @@
 //
-// $Id: IterationListener.cpp 4042 2012-10-24 18:02:26Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -71,11 +71,15 @@ class IterationListenerRegistry::Impl
             const CallbackInfo& callbackInfo = itr->second;
             CallbackInfo::PeriodType periodType = callbackInfo.periodType;
 
+            // only update if the iteration has incremented or the message has changed
+            bool iterationIncreased = updateMessage.iterationIndex > callbackInfo.lastIterationIndex || &updateMessage.message != callbackInfo.lastMessage;
+
             bool shouldUpdate =
-                updateMessage.iterationIndex == 0 ||
-                (updateMessage.iterationCount > 0 && updateMessage.iterationIndex+1 >= updateMessage.iterationCount) ||
-                (periodType == CallbackInfo::PeriodType_Iteration && (updateMessage.iterationIndex+1) % callbackInfo.iterationPeriod == 0) ||
-                (periodType == CallbackInfo::PeriodType_Time && difftime(now, callbackInfo.timestamp) >= callbackInfo.timePeriod);
+                updateMessage.iterationIndex == 0 || // always update on iteration 0
+                (iterationIncreased && updateMessage.iterationCount > 0 && updateMessage.iterationIndex + 1 >= updateMessage.iterationCount) || // always update on the last iteration (index+1 >= count)
+                (iterationIncreased &&
+                    ((periodType == CallbackInfo::PeriodType_Iteration && (updateMessage.iterationIndex+1) % callbackInfo.iterationPeriod == 0) ||
+                     (periodType == CallbackInfo::PeriodType_Time && difftime(now, callbackInfo.timestamp) >= callbackInfo.timePeriod)));
 
             if (shouldUpdate)
             {
@@ -84,6 +88,8 @@ class IterationListenerRegistry::Impl
 
                 if (periodType == CallbackInfo::PeriodType_Time)
                     callbackInfo.timestamp = now;
+                callbackInfo.lastIterationIndex = updateMessage.iterationIndex;
+                callbackInfo.lastMessage = &updateMessage.message;
             }
         }
 
@@ -101,17 +107,23 @@ class IterationListenerRegistry::Impl
         double timePeriod; // seconds
 
         mutable time_t timestamp;
+        mutable size_t lastIterationIndex;
+        mutable const string* lastMessage; // never dereference this, only compare pointer values
 
         CallbackInfo(size_t _iterationPeriod = 1)
         :   periodType(PeriodType_Iteration),
             iterationPeriod(_iterationPeriod),
-            timePeriod(0)
+            timePeriod(0),
+            lastIterationIndex(0),
+            lastMessage(NULL)
         {}
 
         CallbackInfo(double _timePeriod, bool mustBeTrue)
         :   periodType(PeriodType_Time),
             iterationPeriod(0),
-            timePeriod(_timePeriod)
+            timePeriod(_timePeriod),
+            lastIterationIndex(0),
+            lastMessage(NULL)
         {
             if (mustBeTrue != true)
                 throw runtime_error("[IterationListenerRegistry::CallbackInfo] Wrong constructor."); 
@@ -123,6 +135,7 @@ class IterationListenerRegistry::Impl
     mutable Listeners listeners_;
 };
 
+PWIZ_API_DECL std::string IterationListener::no_message;
 
 //
 // IterationListenerRegistry

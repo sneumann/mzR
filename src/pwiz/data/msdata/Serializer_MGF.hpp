@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_MGF.hpp 1188 2009-08-14 17:19:55Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -44,7 +44,8 @@ class PWIZ_API_DECL Serializer_MGF
     /// write MSData object to ostream as MGF;
     /// iterationListenerRegistry may be used to receive progress updates
     void write(std::ostream& os, const MSData& msd,
-               const pwiz::util::IterationListenerRegistry* iterationListenerRegistry = 0) const;
+               const pwiz::util::IterationListenerRegistry* iterationListenerRegistry = 0,
+               bool useWorkerThreads = true) const;
 
     /// read in MSData object from an MGF istream 
     /// note: istream may be managed by MSData's SpectrumList, to allow for 

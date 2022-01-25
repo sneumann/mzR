@@ -1,5 +1,5 @@
 //
-// $Id: Diff.hpp 1766 2010-01-29 21:42:48Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -146,6 +146,13 @@ void diff(const BinaryDataArray& a,
           const DiffConfig& config);
 
 PWIZ_API_DECL
+void diff(const IntegerDataArray& a,
+          const IntegerDataArray& b,
+          IntegerDataArray& a_b,
+          IntegerDataArray& b_a,
+          const DiffConfig& config);
+
+PWIZ_API_DECL
 void diff(const Spectrum& a,
           const Spectrum& b,
           Spectrum& a_b,
@@ -213,6 +220,9 @@ struct PWIZ_API_DECL DiffConfig : public pwiz::data::BaseDiffConfig
     ///  - precursor.ionSelection
     bool ignoreMetadata;
 
+    /// ignore arrays like mobility, charge state, noise, SNR, etc.
+    bool ignoreExtraBinaryDataArrays;
+
     bool ignoreSpectra;
     bool ignoreChromatograms;
 
@@ -222,6 +232,7 @@ struct PWIZ_API_DECL DiffConfig : public pwiz::data::BaseDiffConfig
     :   pwiz::data::BaseDiffConfig(),
         ignoreIdentity(false),
         ignoreMetadata(false),
+        ignoreExtraBinaryDataArrays(false),
         ignoreSpectra(false),
         ignoreChromatograms(false),
         ignoreDataProcessing(false)

@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_protXML.hpp 3703 2012-06-15 18:23:36Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Brian Pratt <brian.pratt .@. insilicos.com>

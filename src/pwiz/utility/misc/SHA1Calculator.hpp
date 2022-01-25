@@ -1,5 +1,5 @@
 //
-// $Id: SHA1Calculator.hpp 1616 2009-12-11 21:26:54Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

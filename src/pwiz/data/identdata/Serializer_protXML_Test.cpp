@@ -1,6 +1,6 @@
 // TODO this is just a copy of the pepXML work, not yet populated for protXML
 //
-// $Id: Serializer_protXML_Test.cpp 4129 2012-11-20 00:05:37Z chambm $
+// $Id$
 //
 // Original author: Brian Pratt <brian.pratt .@. insilicos.com>
 //  after Serializer_pepXML_Test by Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -99,14 +99,9 @@ int main(int argc, char** argv)
     try
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
-        std::string srcparent(argv[0]);
-        size_t pos = srcparent.find("build");
 
-        if (pos == std::string::npos) {
-            srcparent = __FILE__; // nonstandard build, maybe?  try using source file name
-            // something like \ProteoWizard\pwiz\pwiz\data\identdata\Serializer_ProtXML_Test.cpp
-            pos = srcparent.rfind("pwiz");
-        }
+        std::string srcparent(__FILE__);
+        size_t pos = srcparent.find((bfs::path("pwiz") / "data").string());
         srcparent.resize(pos);
         string example_data_dir = srcparent + "example_data";
         testSerialize(example_data_dir);

@@ -1,0 +1,141 @@
+PWIZOBJECTS=\
+./boost/libs/system/src/error_code.o \
+./boost/libs/regex/src/posix_api.o \
+./boost/libs/regex/src/regex_debug.o \
+./boost/libs/regex/src/regex.o \
+./boost/libs/regex/src/wide_posix_api.o \
+./boost/libs/regex/src/static_mutex.o \
+./boost/libs/iostreams/src/zlib.o \
+./boost/libs/iostreams/src/file_descriptor.o \
+./boost/libs/filesystem/src/operations.o \
+./boost/libs/filesystem/src/directory.o \
+./boost/libs/filesystem/src/exception.o \
+./boost/libs/filesystem/src/path.o \
+./boost/libs/filesystem/src/unique_path.o \
+./boost/libs/filesystem/src/utf8_codecvt_facet.o \
+./boost/libs/chrono/src/chrono.o \
+./boost/libs/chrono/src/process_cpu_clocks.o \
+./boost/libs/chrono/src/thread_clock.o \
+./pwiz/data/msdata/Version.o \
+./pwiz/data/identdata/Version.o \
+./pwiz/data/common/MemoryIndex.o \
+./pwiz/data/common/CVTranslator.o \
+./pwiz/data/common/cv.o \
+./pwiz/data/common/ParamTypes.o \
+./pwiz/data/common/BinaryIndexStream.o \
+./pwiz/data/common/diff_std.o \
+./pwiz/data/common/Unimod.o \
+./pwiz/data/msdata/mz5/Configuration_mz5.o \
+./pwiz/data/msdata/mz5/Connection_mz5.o \
+./pwiz/data/msdata/mz5/Datastructures_mz5.o \
+./pwiz/data/msdata/mz5/ReferenceRead_mz5.o \
+./pwiz/data/msdata/mz5/ReferenceWrite_mz5.o \
+./pwiz/data/msdata/mz5/Translator_mz5.o \
+./pwiz/data/msdata/DefaultReaderList.o \
+./pwiz/data/msdata/ChromatogramList_mzML.o \
+./pwiz/data/msdata/ChromatogramList_mz5.o \
+./pwiz/data/msdata/examples.o \
+./pwiz/data/msdata/Serializer_mzML.o \
+./pwiz/data/msdata/Serializer_MSn.o \
+./pwiz/data/msdata/Reader.o \
+./pwiz/data/msdata/Serializer_mz5.o \
+./pwiz/data/msdata/Serializer_MGF.o \
+./pwiz/data/msdata/Serializer_mzXML.o \
+./pwiz/data/msdata/SpectrumListBase.o \
+./pwiz/data/msdata/SpectrumList_MGF.o \
+./pwiz/data/msdata/SpectrumList_mzML.o \
+./pwiz/data/msdata/SpectrumList_MSn.o \
+./pwiz/data/msdata/SpectrumList_mz5.o \
+./pwiz/data/msdata/BinaryDataEncoder.o \
+./pwiz/data/msdata/Diff.o \
+./pwiz/data/msdata/MSData.o \
+./pwiz/data/msdata/References.o \
+./pwiz/data/msdata/SpectrumList_mzXML.o \
+./pwiz/data/msdata/IO.o \
+./pwiz/data/msdata/SpectrumList_BTDX.o \
+./pwiz/data/msdata/SpectrumInfo.o \
+./pwiz/data/msdata/LegacyAdapter.o \
+./pwiz/data/msdata/SpectrumIterator.o \
+./pwiz/data/msdata/MSDataFile.o \
+./pwiz/data/msdata/MSNumpress.o \
+./pwiz/data/msdata/SpectrumListCache.o \
+./pwiz/data/msdata/Index_mzML.o \
+./pwiz/data/msdata/SpectrumWorkerThreads.o \
+./pwiz/data/identdata/IdentDataFile.o \
+./pwiz/data/identdata/IdentData.o \
+./pwiz/data/identdata/DefaultReaderList.o \
+./pwiz/data/identdata/Reader.o \
+./pwiz/data/identdata/Serializer_protXML.o \
+./pwiz/data/identdata/Serializer_pepXML.o \
+./pwiz/data/identdata/Serializer_mzid.o \
+./pwiz/data/identdata/IO.o \
+./pwiz/data/identdata/References.o \
+./pwiz/data/identdata/MascotReader.o \
+./pwiz/data/proteome/Modification.o \
+./pwiz/data/proteome/Digestion.o \
+./pwiz/data/proteome/Peptide.o \
+./pwiz/data/proteome/AminoAcid.o \
+./pwiz/utility/minimxml/XMLWriter.o \
+./pwiz/utility/minimxml/SAXParser.o \
+./pwiz/utility/chemistry/Chemistry.o \
+./pwiz/utility/chemistry/ChemistryData.o \
+./pwiz/utility/chemistry/MZTolerance.o \
+./pwiz/utility/misc/IntegerSet.o \
+./pwiz/utility/misc/Base64.o \
+./pwiz/utility/misc/BinaryData.o \
+./pwiz/utility/misc/IterationListener.o \
+./pwiz/utility/misc/MSIHandler.o \
+./pwiz/utility/misc/Filesystem.o \
+./pwiz/utility/misc/TabReader.o \
+./pwiz/utility/misc/random_access_compressed_ifstream.o \
+./pwiz/utility/misc/SHA1.o \
+./pwiz/utility/misc/SHA1Calculator.o \
+./pwiz/utility/misc/sha1calc.o \
+./pwiz/utility/misc/String.o \
+./RcppExports.o
+
+
+ifeq ($(OS),Windows_NT)
+ARCH_OBJS=./boost/libs/filesystem/src/path_traits.o \
+./boost/libs/filesystem/src/windows_file_codecvt.o \
+./boost/libs/filesystem/src/codecvt_error_category.o \
+./boost/libs/thread/src/win32/tss_pe.o \
+./boost/libs/thread/src/win32/tss_dll.o \
+./boost/libs/thread/src/win32/thread.o \
+./boost_aux/libs/nowide/src/iostream.o \
+./boost_aux/libs/nowide/src/cstdio.o \
+./boost_aux/libs/nowide/src/filebuf.o
+ARCH_CPPFLAGS=-fpermissive -DWINDOWS_NATIVE -DWIN32 -DBOOST_HAS_WINTHREADS -DBOOST_THREAD_BUILD_LIB
+ARCH_LIBS=-lws2_32 -lz
+RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)
+else
+ARCH_OBJS=./boost/libs/thread/src/pthread/once.o \
+./boost/libs/thread/src/pthread/thread.o
+RHDF5_LIBS=$(shell echo 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")'| "${R_HOME}/bin/R" --vanilla --slave)
+endif
+
+MZROBJECTS= RcppPwiz.o RcppPwizModule.o RcppIdent.o RcppIdentModule.o
+
+OBJECTS= $(MZROBJECTS) $(PWIZOBJECTS) $(ARCH_OBJS)
+
+## Generate dependency files
+#DEPFLAGS = -MT $@ -MMD -MP
+
+##
+## R complains about assert(), hence -D_NODEBUG
+##  http://www.gamedev.net/topic/555511-is-there-a-way-to-only-disable-boost-debug-checks/
+##
+
+PWIZ_CPPFLAGS=-I./boost_aux/ -I./boost/ -I. -D_LARGEFILE_SOURCE -DHAVE_PWIZ_MZML_LIB -D_NODEBUG
+PWIZ_LDFLAGS=-lpthread
+
+## Use the R_HOME indirection to support installations of multiple R version
+PKG_CPPFLAGS=$(PWIZ_CPPFLAGS) $(NC_CFLAGS)  $(ARCH_CPPFLAGS)
+
+PKG_LIBS=$(PWIZ_LDFLAGS) $(RHDF5_LIBS) $(NC_LIBS)  $(ARCH_LIBS)
+
+all: clean $(SHLIB)
+
+clean:
+	rm -f $(OBJECTS)
+

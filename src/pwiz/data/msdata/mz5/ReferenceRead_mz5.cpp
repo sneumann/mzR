@@ -1,5 +1,5 @@
 //
-// $Id: ReferenceRead_mz5.cpp 3484 2012-04-04 19:55:33Z mwilhelm42 $
+// $Id$
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -447,6 +447,14 @@ void ReferenceRead_mz5::fill(boost::shared_ptr<Connection_mz5>& connectionPtr)
                     = rl[0].defaultSpectrumDataProcessingRefID.refID;
         }
         connectionPtr.get()->clean(Configuration_mz5::Run, rl, dsend);
+    }
+
+    if (fields.find(Configuration_mz5::SpectrumMetaData) != fields.end())
+    {
+        SpectrumMZ5* smd = (SpectrumMZ5*) connectionPtr->readDataSet(Configuration_mz5::SpectrumMetaData, dsend);
+        for (size_t i = 0; i < dsend; ++i)
+            addSpectrumIndexPair(smd[i].id, smd[i].index);
+        connectionPtr->clean(Configuration_mz5::SpectrumMetaData, smd, dsend);
     }
 }
 

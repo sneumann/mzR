@@ -1,5 +1,5 @@
 //
-// $Id: TabReader.cpp 7297 2015-03-12 05:30:33Z paragmallick $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -263,8 +263,8 @@ bool TabReader::Impl::process(const char* filename)
     {
         th_->open();
         
-        getline(in, line);
-        while(getline(in, line))
+        getlinePortable(in, line);
+        while(getlinePortable(in, line))
         {
             if (isComment(line))
                 continue;

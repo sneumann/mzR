@@ -1,5 +1,5 @@
 //
-// $Id: Index.hpp 1704 2010-01-15 23:42:49Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

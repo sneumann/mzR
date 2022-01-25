@@ -1,5 +1,5 @@
 //
-// $Id: IdentDataFile.hpp 2824 2011-06-29 18:37:47Z chambm $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>

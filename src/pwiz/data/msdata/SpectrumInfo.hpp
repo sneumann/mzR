@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumInfo.hpp 2842 2011-07-07 22:11:07Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

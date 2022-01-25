@@ -1,5 +1,5 @@
 //
-// $Id: MatrixInverse.hpp 4146 2012-11-26 23:46:34Z pcbrefugee $
+// $Id$
 //
 //
 // NB: Variations of this file appear in many open source projects,

@@ -1,5 +1,5 @@
 //
-// $Id: automation_vector_test.cpp 4129 2012-11-20 00:05:37Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

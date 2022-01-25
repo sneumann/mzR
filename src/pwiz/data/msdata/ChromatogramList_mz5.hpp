@@ -1,5 +1,5 @@
 //
-// $Id: ChromatogramList_mz5.hpp 2811 2011-06-23 20:44:29Z chambm $
+// $Id$
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>

@@ -1,5 +1,5 @@
 //
-// $Id: ProteinListCache.cpp 2071 2010-06-21 21:00:31Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
