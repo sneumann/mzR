@@ -20,6 +20,7 @@ Description: mzR provides a unified API to the common file formats and
 License: Artistic-2.0
 LazyLoad: yes
 Depends:
+    R (>= 4.0.0),
     Rcpp (>= 0.10.1),
     methods,
     utils
