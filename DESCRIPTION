@@ -35,9 +35,7 @@ Suggests:
     XML,
     rmarkdown
 VignetteBuilder: knitr
-LinkingTo:
-    Rcpp,
-    Rhdf5lib (>= 1.1.4)
+LinkingTo: Rcpp, Rhdf5lib
 RcppModules:
     Pwiz,
     Ident

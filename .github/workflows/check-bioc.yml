@@ -226,9 +226,6 @@ jobs:
       - name: Run CMD check
         env:
           _R_CHECK_CRAN_INCOMING_: false
-          # Avoid application of UCRT
-          # https://developer.r-project.org/WindowsBuilds/winutf8/ucrt3/howto.html
-          _R_INSTALL_TIME_PATCHES_: 'no'
 
         run: |
           rcmdcheck::rcmdcheck(
