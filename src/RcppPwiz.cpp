@@ -374,6 +374,7 @@ Rcpp::List RcppPwiz::getPeakList(Rcpp::IntegerVector whichScan) {
     std::vector<double> data;
     Rcpp::NumericVector data_matrix;
     Rcpp::List res(n_want);
+    Rcpp::CharacterVector cn = Rcpp::CharacterVector::create("mz", "intensity");
     for (int i = 0; i < n_want; i++) {
       current_scan = whichScan[i];
       if (current_scan < 1 || current_scan > n_scans) {
@@ -385,6 +386,7 @@ Rcpp::List RcppPwiz::getPeakList(Rcpp::IntegerVector whichScan) {
       ints = sp->getIntensityArray();
       if (!mzs.get() || !ints.get()) {
 	Rcpp::NumericMatrix pks(0, 2);
+	Rcpp::colnames(pks) = cn;
 	res[i] = pks;
 	continue;
       }
@@ -394,6 +396,7 @@ Rcpp::List RcppPwiz::getPeakList(Rcpp::IntegerVector whichScan) {
       data.insert(data.end(), ints->data.begin(), ints->data.end());
       data_matrix = Rcpp::wrap(data);
       data_matrix.attr("dim") = Rcpp::Dimension(ints->data.size(), 2);
+      Rcpp::colnames(data_matrix) = cn;
       res[i] = data_matrix;
     }
     return res;
