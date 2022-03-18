@@ -1,5 +1,5 @@
 //
-// $Id: DelimWriter.hpp 2820 2011-06-27 22:51:16Z chambm $
+// $Id$
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
 //

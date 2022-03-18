@@ -3,6 +3,7 @@
 RcppPwiz::RcppPwiz()
 {
   msd = NULL;
+  nativeIdFormat = CVID_Unknown;
   instrumentInfo = Rcpp::List::create();
   chromatogramsInfo = Rcpp::DataFrame::create();
   isInCacheInstrumentInfo = FALSE;
@@ -15,12 +16,13 @@ RcppPwiz::~RcppPwiz()
   RcppPwiz::close();
 }
 
-void RcppPwiz::open(const string& fileName)
+// void RcppPwiz::open(const string& fileName)
+void RcppPwiz::open(Rcpp::StringVector fileName)
 {
 
-  filename = fileName;
-  msd = new MSDataFile(fileName);
-
+  filename = Rcpp::as<std::string>(fileName(0));
+  msd = new MSDataFile(filename);
+  nativeIdFormat = id::getDefaultNativeIDFormat(*msd);
 }
 
 /* Release all memory on close. */
@@ -30,6 +32,7 @@ void RcppPwiz::close()
     {
       delete msd;
       msd = NULL;
+      nativeIdFormat = CVID_Unknown;
       instrumentInfo = Rcpp::List::create();
       chromatogramsInfo = Rcpp::DataFrame::create();
       isInCacheInstrumentInfo = FALSE;
@@ -67,7 +70,7 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
       if (!isInCacheInstrumentInfo)
         {
 
-	  vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs; // NULL for mzData	    
+	  vector<InstrumentConfigurationPtr> icp = msd->instrumentConfigurationPtrs; // NULL for mzData
 	  if (icp.size() != 0)
             {
 	      CVTranslator cvTranslator;
@@ -85,13 +88,13 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
 	      // defined.
 	      // Have to use try-catch
 	      try {
-		ionisation = std::string(adapter.ionisation());		  
+		ionisation = std::string(adapter.ionisation());
 	      } catch(...) {}
 	      try {
-		analyzer = std::string(adapter.analyzer());		  
+		analyzer = std::string(adapter.analyzer());
 	      } catch(...) {}
 	      try {
-		detector = std::string(adapter.detector());		  
+		detector = std::string(adapter.detector());
 	      } catch(...) {}
 	      instrumentInfo = Rcpp::List::create(
 						  Rcpp::_["manufacturer"]  = std::string(adapter.manufacturer()),
@@ -127,12 +130,45 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
   return instrumentInfo;
 }
 
+int RcppPwiz::getAcquisitionNumber(string id, size_t index) const
+{
+  // const SpectrumIdentity& si = msd->run.spectrumListPtr->spectrumIdentity(index);
+  string scanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, id);
+  if (scanNumber.empty())
+    return static_cast<int>(index) + 1;
+  else
+    return lexical_cast<int>(scanNumber);
+}
+
+// Using this function instead of pwiz translateNativeIDToScanNumber because
+// it randomly causes segfaults on macOS.
+// int RcppPwiz::getAcquisitionNumber(string id, size_t index) const
+// {
+//   if (id.find("controllerType") != std::string::npos) {
+//     if (id.find("controllerType=0 controllerNumber=1") == std::string::npos)
+//       return static_cast<int>(index) + 1;
+//   }
+//   string e;
+//   std::smatch match;
+//   if (id.find("scan=") != std::string::npos)
+//     e ="scan=(\\d+)";
+//   else if (id.find("index=") != std::string::npos)
+//     e = "index=(\\d+)";
+//   else if (id.find("spectrum=") != std::string::npos)
+//     e = "spectrum=(\\d+)";
+//   else if (id.find("scanId=") != std::string::npos)
+//     e = "scanId=(\\d+)";
+//   else return static_cast<int>(index) + 1;
+//   if (std::regex_search(id, match, std::regex(e)))
+//     return lexical_cast<int>(match[1]);
+//   else return static_cast<int>(index) + 1;
+// }
+
 Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
   if (msd != NULL) {
     SpectrumListPtr slp = msd->run.spectrumListPtr;
-    int N = slp->size();
-    int N_scans = whichScan.size();
-    CVID nativeIdFormat = id::getDefaultNativeIDFormat(*msd);
+    size_t N = slp->size();
+    size_t N_scans = whichScan.size();
     Rcpp::IntegerVector seqNum(N_scans); // number in sequence observed file (1-based)
     Rcpp::IntegerVector acquisitionNum(N_scans); // scan number as declared in File (may be gaps)
     Rcpp::IntegerVector msLevel(N_scans);
@@ -164,24 +200,21 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
     Rcpp::NumericVector isolationWindowUpperOffset(N_scans);
     Rcpp::NumericVector scanWindowLowerLimit(N_scans);
     Rcpp::NumericVector scanWindowUpperLimit(N_scans);
-    
-    for (int i = 0; i < N_scans; i++) {
+
+    for (size_t i = 0; i < N_scans; i++) {
       int current_scan = whichScan[i];
-      SpectrumPtr sp = slp->spectrum(current_scan - 1, false);
+      size_t current_index = static_cast<size_t>(current_scan - 1);
+      // SpectrumPtr sp = slp->spectrum(current_index, false);
+      SpectrumPtr sp = slp->spectrum(current_index, DetailLevel_FullMetadata);
       Scan dummy;
       Scan& scan = sp->scanList.scans.empty() ? dummy : sp->scanList.scans[0];
+      if (scan.empty())
+	Rprintf("Scan with index %d empty.\n", current_scan);
       // seqNum
       seqNum[i] = current_scan;
-      // acquisitionNum
-      string id = sp->id;
-      string scanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, id);
-      if (scanNumber.empty()) {
-	acquisitionNum[i] = current_scan;
-      } else {
-	acquisitionNum[i] = lexical_cast<int>(scanNumber);
-      }
+      acquisitionNum[i] = getAcquisitionNumber(sp->id, current_index);
       // spectrumId
-      spectrumId[i] = sp->id;
+      spectrumId[i] = Rcpp::String(sp->id);
       // msLevel
       msLevel[i] = sp->cvParam(MS_ms_level).valueAs<int>();
       // peaksCount
@@ -203,7 +236,7 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
       polarity[i] = (param.cvid==MS_negative_scan ? 0 : (param.cvid==MS_positive_scan ? +1 : -1 ) );
       // centroided
       param = sp->cvParamChild(MS_spectrum_representation);
-      centroided[i] = (param.cvid==MS_centroid_spectrum ? TRUE : (param.cvid==MS_profile_spectrum ? FALSE : NA_LOGICAL));      
+      centroided[i] = (param.cvid==MS_centroid_spectrum ? TRUE : (param.cvid==MS_profile_spectrum ? FALSE : NA_LOGICAL));
       // retentionTime
       retentionTime[i] = scan.cvParam(MS_scan_start_time).timeInSeconds();
       // ionInjectionTime
@@ -231,14 +264,8 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
 	collisionEnergy[i] = precursor.activation.cvParam(MS_collision_energy).valueAs<double>();
 	// precursorScanNum
 	size_t precursorIndex = slp->find(precursor.spectrumID);
-	if (precursorIndex < slp->size()) {
-	  const SpectrumIdentity& precursorSpectrum = slp->spectrumIdentity(precursorIndex);
-	  string precursorScanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, precursorSpectrum.id);
-	  if (precursorScanNumber.empty()) {
-	    precursorScanNum[i] = precursorIndex + 1;
-	  } else {
-	    precursorScanNum[i] = lexical_cast<int>(precursorScanNumber);
-	  }
+	if (precursorIndex < N) {
+	  precursorScanNum[i] = getAcquisitionNumber(precursor.spectrumID, precursorIndex);
 	} else {
 	  precursorScanNum[i] = NA_INTEGER;
 	}
@@ -274,10 +301,10 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
 	isolationWindowUpperOffset[i] = NA_REAL;
       }
     }
-    
+
     Rcpp::List header(31);
     std::vector<std::string> names;
-    int i = 0;
+    size_t i = 0;
     names.push_back("seqNum");
     header[i++] = Rcpp::wrap(seqNum);
     names.push_back("acquisitionNum");
@@ -329,19 +356,19 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
     names.push_back("centroided");
     header[i++] = Rcpp::wrap(centroided);
     names.push_back("ionMobilityDriftTime");
-    header[i++] = Rcpp::wrap(ionMobilityDriftTime);      
+    header[i++] = Rcpp::wrap(ionMobilityDriftTime);
     names.push_back("isolationWindowTargetMZ");
-    header[i++] = Rcpp::wrap(isolationWindowTargetMZ);      
+    header[i++] = Rcpp::wrap(isolationWindowTargetMZ);
     names.push_back("isolationWindowLowerOffset");
-    header[i++] = Rcpp::wrap(isolationWindowLowerOffset);      
+    header[i++] = Rcpp::wrap(isolationWindowLowerOffset);
     names.push_back("isolationWindowUpperOffset");
-    header[i++] = Rcpp::wrap(isolationWindowUpperOffset);      
+    header[i++] = Rcpp::wrap(isolationWindowUpperOffset);
     names.push_back("scanWindowLowerLimit");
-    header[i++] = Rcpp::wrap(scanWindowLowerLimit);      
+    header[i++] = Rcpp::wrap(scanWindowLowerLimit);
     names.push_back("scanWindowUpperLimit");
-    header[i++] = Rcpp::wrap(scanWindowUpperLimit);      
+    header[i++] = Rcpp::wrap(scanWindowUpperLimit);
     header.attr("names") = names;
-    
+
     return header;
   }
   Rf_warningcall(R_NilValue, "pwiz not yet initialized.");
@@ -352,10 +379,10 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( ) {
   if (msd != NULL) {
     if (!isInCacheAllScanHeaderInfo) {
       SpectrumListPtr slp = msd->run.spectrumListPtr;
-      int N = slp->size();
-      
+      size_t N = slp->size();
+
       allScanHeaderInfo = getScanHeaderInfo(Rcpp::seq(1, N));
-      isInCacheAllScanHeaderInfo = TRUE;	    
+      isInCacheAllScanHeaderInfo = TRUE;
     }
     return allScanHeaderInfo ;
   }
@@ -366,8 +393,8 @@ Rcpp::DataFrame RcppPwiz::getAllScanHeaderInfo ( ) {
 Rcpp::List RcppPwiz::getPeakList(Rcpp::IntegerVector whichScan) {
   if (msd != NULL) {
     SpectrumListPtr slp = msd->run.spectrumListPtr;
-    int n_scans = slp->size();
-    int n_want = whichScan.size();
+    size_t n_scans = slp->size();
+    size_t n_want = whichScan.size();
     int current_scan;
     SpectrumPtr sp;
     BinaryDataArrayPtr mzs,ints;
@@ -375,13 +402,15 @@ Rcpp::List RcppPwiz::getPeakList(Rcpp::IntegerVector whichScan) {
     Rcpp::NumericVector data_matrix;
     Rcpp::List res(n_want);
     Rcpp::CharacterVector cn = Rcpp::CharacterVector::create("mz", "intensity");
-    for (int i = 0; i < n_want; i++) {
+    for (size_t i = 0; i < n_want; i++) {
       current_scan = whichScan[i];
       if (current_scan < 1 || current_scan > n_scans) {
 	Rprintf("Index whichScan out of bounds [1 ... %d].\n", n_scans);
 	return Rcpp::List::create( );
       }
-      sp = slp->spectrum(current_scan - 1, true);
+      size_t current_index = static_cast<size_t>(current_scan - 1);
+      // sp = slp->spectrum(current_index, true);
+      sp = slp->spectrum(current_index, DetailLevel_FullData);
       mzs = sp->getMZArray();
       ints = sp->getIntensityArray();
       if (!mzs.get() || !ints.get()) {
@@ -470,7 +499,7 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
       addDataProcessing(newmsd, Rcpp::as<Rcpp::StringVector>(software_processing(sp)));
     }
   }
-  
+
   // o run
   // Initialize the run and fill with data from the original file.
   Run &original_run = msd->run;
@@ -484,7 +513,7 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
   }
   // Now filling with new data
   addSpectrumList(newmsd, spctr_header, spctr_data, rtime_seconds);
-  
+
   if (format == "mgf") {
     std::ofstream* mgfOutFileP = new std::ofstream(file.c_str());
     Serializer_MGF serializerMGF;
@@ -510,7 +539,7 @@ void RcppPwiz::copyWriteMSfile(const string& file, const string& format,
   }
   else
     Rcpp::Rcerr << format << " format not supported! Please try mgf, mzML, mzXML or mz5." << std::endl;
-  
+
   // Cleanup.
   delete msd;
 }
@@ -544,7 +573,7 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
       addDataProcessing(newmsd, Rcpp::as<Rcpp::StringVector>(software_processing(sp)));
     }
   }
-  
+
   newmsd.run.id = "Experiment_1";
 
   // Now filling with new data
@@ -581,9 +610,9 @@ void RcppPwiz::writeSpectrumList(const string& file, const string& format,
  * o soft_proc: is supposed to be a character vector of length >= 2:
  *   soft_proc[0]: The software name (required).
  *   soft_proc[1]: The software version (required).
- *   soft_proc[2]: The CV ID of the software. Use "MS:-1" if not known, in 
+ *   soft_proc[2]: The CV ID of the software. Use "MS:-1" if not known, in
  *                 which case we are NOT writing the corresponding CV element.
- *   soft_proc[3-length]: CV IDs of the processing steps (optional). 
+ *   soft_proc[3-length]: CV IDs of the processing steps (optional).
  */
 void RcppPwiz::addDataProcessing(MSData& msd, Rcpp::StringVector soft_proc) {
   SoftwarePtr new_soft(new Software);
@@ -663,7 +692,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   Rcpp::NumericVector isolationWindowUpperOffset = spctr_header["isolationWindowUpperOffset"];
   Rcpp::NumericVector scanWindowLowerLimit = spctr_header["scanWindowLowerLimit"];
   Rcpp::NumericVector scanWindowUpperLimit = spctr_header["scanWindowUpperLimit"];
-  
+
   // From MSnbase::Spectrum        Column in the header
   // msLevel integer               $msLevel
   // peaksCount integer
@@ -684,7 +713,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   // precursorIntensity numeric    $precursorIntensity
   // precursorCharge integer       $precursorCharge
   // collisionEnergy numeric       $collisionEnergy
-  
+
   // Now filling with new data
   shared_ptr<SpectrumListSimple> spectrumList(new SpectrumListSimple);
   // Add the default Processing pointer (fix issue #151
@@ -745,7 +774,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
       spct_scan.scanWindows.push_back(ScanWindow(scanWindowLowerLimit[i], scanWindowUpperLimit[i], MS_m_z));
     }
     // MSn - precursor:
-    if (precursorScanNum[i] > 0 | precursorMZ[i] > 0) {
+    if ( (precursorScanNum[i] > 0) | (precursorMZ[i] > 0) ) {
       // Fill precursor data. This preserves the precursor data even if the
       // precursor scan is not available (e.g. after MS level filtering).
       spct.precursors.resize(1);
@@ -788,7 +817,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     // [X] precursorCharge
     // [X] precursorIntensity
     // [ ] mergedScan
-    
+
     Rcpp::NumericMatrix spct_vals = spctr_data[i];
     // mz values
     Rcpp::NumericVector mz_vals = spct_vals( Rcpp::_, 0);
@@ -850,7 +879,7 @@ Rcpp::DataFrame RcppPwiz::getChromatogramsInfo( int whichChrom )
 Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichChrom)
 {
   if (msd != NULL) {
-    CVID nativeIdFormat_ = id::getDefaultNativeIDFormat(*msd);
+    // CVID nativeIdFormat_ = id::getDefaultNativeIDFormat(*msd);
     ChromatogramListPtr clp = msd->run.chromatogramListPtr;
     if (clp.get() == 0) {
       Rf_warningcall(R_NilValue, "The direct support for chromatogram info is only available in mzML format.");
@@ -860,7 +889,7 @@ Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichCh
       return Rcpp::DataFrame::create();
     }
 
-    int N = clp->size();  
+    int N = clp->size();
     int N_chrom = whichChrom.size();
 
     Rcpp::StringVector chromatogramId(N_chrom); // the ID from the chrom
@@ -876,7 +905,7 @@ Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichCh
     Rcpp::NumericVector productIsolationWindowTargetMZ(N_chrom);
     Rcpp::NumericVector productIsolationWindowLowerOffset(N_chrom);
     Rcpp::NumericVector productIsolationWindowUpperOffset(N_chrom);
-        
+
     for (int i = 0; i < N_chrom; i++) {
       int current_chrom = whichChrom[i];
       if (current_chrom < 0 || current_chrom > N) {
@@ -892,7 +921,7 @@ Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichCh
 	precursorIsolationWindowTargetMZ[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_target_m_z).value.empty() ? NA_REAL : ch->precursor.isolationWindow.cvParam(MS_isolation_window_target_m_z).valueAs<double>();
 	precursorIsolationWindowLowerOffset[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_lower_offset).value.empty() ? NA_REAL : ch->precursor.isolationWindow.cvParam(MS_isolation_window_lower_offset).valueAs<double>();
 	precursorIsolationWindowUpperOffset[i] = ch->precursor.isolationWindow.cvParam(MS_isolation_window_upper_offset).value.empty() ? NA_REAL : ch->precursor.isolationWindow.cvParam(MS_isolation_window_upper_offset).valueAs<double>();
-	precursorCollisionEnergy[i] = ch->precursor.activation.cvParam(MS_collision_energy).value.empty() ? NA_REAL : ch->precursor.activation.cvParam(MS_collision_energy).valueAs<double>(); 
+	precursorCollisionEnergy[i] = ch->precursor.activation.cvParam(MS_collision_energy).value.empty() ? NA_REAL : ch->precursor.activation.cvParam(MS_collision_energy).valueAs<double>();
       } else {
 	precursorIsolationWindowTargetMZ[i] = NA_REAL;
 	precursorIsolationWindowLowerOffset[i] = NA_REAL;
@@ -932,7 +961,7 @@ Rcpp::DataFrame RcppPwiz::getChromatogramHeaderInfo (Rcpp::IntegerVector whichCh
     chromHeader[i++] = Rcpp::wrap(productIsolationWindowLowerOffset);
     names.push_back("productIsolationWindowUpperOffset");
     chromHeader[i++] = Rcpp::wrap(productIsolationWindowUpperOffset);
-    
+
     chromHeader.attr("names") = names;
     return chromHeader;
   }
@@ -983,7 +1012,7 @@ Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double wh
       //Rprintf("%d\n",1);
       for (int i = 0; i < scanNumbers.size(); i++)
         {
-	  SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, true);
+	  SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, DetailLevel_FullMetadata);
 	  vector<MZIntensityPair> pairs;
 	  s->getMZIntensityPairs(pairs);
 

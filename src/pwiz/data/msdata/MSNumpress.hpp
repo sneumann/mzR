@@ -1,5 +1,5 @@
 //
-// $Id: MSNumpress.hpp 6945 2014-11-26 18:58:33Z chambm $
+// $Id$
 //
 //
 // Original author: Johan Teleman <johan.teleman@immun.lth.se>
@@ -59,6 +59,13 @@ namespace MSNumpress {
 	double PWIZ_API_DECL optimalLinearFixedPoint(
 		const double *data, 
 		size_t dataSize);
+
+	double PWIZ_API_DECL optimalLinearFixedPointMass(
+			const double *data, 
+			size_t dataSize,
+			double mass_acc
+	);
+
 	
 	/**
 	 * Encodes the doubles in data by first using a 

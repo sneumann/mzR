@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_Text.hpp 3173 2011-12-13 20:05:03Z broter $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>

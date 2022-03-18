@@ -1,5 +1,5 @@
 //
-// $Id: ChemistryData.hpp 1638 2009-12-18 23:26:34Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -52,6 +52,7 @@ struct PWIZ_API_DECL Element
     double atomicWeight;
     Isotope* isotopes;
     int isotopesSize;
+    const char* synonym; // As with "D" for "_2H"
 };
 
 

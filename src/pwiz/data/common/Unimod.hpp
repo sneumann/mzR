@@ -1,5 +1,5 @@
 //
-// $Id: Unimod.hpp 9934 2016-08-02 17:48:03Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -29,7 +29,7 @@
 #include "pwiz/utility/chemistry/MZTolerance.hpp"
 #include "cv.hpp"
 #include <boost/enum.hpp>
-#include <boost/logic/tribool.hpp>
+#include <boost/logic/tribool_io.hpp>
 
 
 namespace pwiz {

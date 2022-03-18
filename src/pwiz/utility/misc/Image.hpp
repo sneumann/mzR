@@ -1,5 +1,5 @@
 //
-// $Id: Image.hpp 4072 2012-11-02 21:00:39Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

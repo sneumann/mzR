@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_FASTA.cpp 6979 2014-12-09 16:15:35Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -25,6 +25,7 @@
 #include "Serializer_FASTA.hpp"
 #include "pwiz/data/common/Index.hpp"
 #include "pwiz/utility/misc/Std.hpp"
+#include "pwiz/utility/misc/SHA1Calculator.hpp"
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/xpressive/xpressive_dynamic.hpp>
@@ -45,6 +46,7 @@ class ProteinList_FASTA : public ProteinList
 {
     shared_ptr<istream> fsPtr_;
     string fsSHA1_;
+    pwiz::util::SHA1Calculator sha1_;
 
     size_t size_;
 
@@ -66,7 +68,7 @@ class ProteinList_FASTA : public ProteinList
         set<string> idSet;
 
         Index::stream_offset indexOffset = 0;
-        while (getline(*fsPtr_, buf))
+        while (getlinePortable(*fsPtr_, buf))
         {
             size_t bufLength = buf.length() + 1; // include newline
             indexOffset += bufLength;
@@ -74,35 +76,38 @@ class ProteinList_FASTA : public ProteinList
             if (buf.empty())
                 continue;
 
-			if (buf[0] == '>') // signifies a new protein record in a FASTA file
-			{
+            if (buf[0] == '>') // signifies a new protein record in a FASTA file
+            {
                 index.push_back(Index::Entry());
                 Index::Entry& ie = index.back();
 
                 bal::trim_right_if(buf, bal::is_any_of(" \r"));
 
-                BOOST_FOREACH(bxp::sregex& idAndDescriptionRegex, idAndDescriptionRegexes_)
+                string id;
+                for(bxp::sregex& idAndDescriptionRegex : idAndDescriptionRegexes_)
                 {
                     bxp::smatch match;
                     if (bxp::regex_match(buf, match, idAndDescriptionRegex))
                     {
-                        ie.id = match[1].str();
+                        id = match[1].str();
                         break;
                     }
                 }
 
-                if (ie.id.empty())
+                if (id.empty())
                     throw runtime_error("[ProteinList_FASTA::createIndex] could not parse id from entry \"" + buf + "\"");
+
+                ie.id = sha1_.hash(id);
 
                 // note: We could silently skip the duplicates, but that would only be
                 //       reasonable after checking that the sequences are equal.
                 if (!idSet.insert(ie.id).second)
-                    throw runtime_error("[ProteinList_FASTA::createIndex] duplicate protein id \"" + ie.id + "\"");
+                    throw runtime_error("[ProteinList_FASTA::createIndex] duplicate protein id \"" + id + "\"");
 
                 ie.index = index.size()-1;
                 ie.offset = indexOffset - bufLength;
-			}
-		}
+            }
+        }
 
         idSet.clear();
         vector<Index::Entry> tmp(index.begin(), index.end());
@@ -114,7 +119,7 @@ class ProteinList_FASTA : public ProteinList
     ProteinList_FASTA(shared_ptr<istream> fsPtr, IndexPtr indexPtr, const vector<string>& idAndDescriptionRegexes)
         : fsPtr_(fsPtr), indexPtr_(indexPtr)
     {
-        BOOST_FOREACH(const string& regexString, idAndDescriptionRegexes)
+        for(const string& regexString : idAndDescriptionRegexes)
         {
             bxp::sregex idAndDescriptionRegex = bxp::sregex::compile(regexString);
             if (idAndDescriptionRegex.mark_count() == 1)
@@ -133,7 +138,7 @@ class ProteinList_FASTA : public ProteinList
 
     virtual size_t find(const string& id) const
     {
-        Index::EntryPtr entryPtr = indexPtr_->find(id);
+        Index::EntryPtr entryPtr = indexPtr_->find(sha1_.hash(id));
         return entryPtr.get() ? entryPtr->index : indexPtr_->size();
     }
 
@@ -155,7 +160,7 @@ class ProteinList_FASTA : public ProteinList
         fsPtr_->seekg(entryPtr->offset);
 
         string buf;
-        getline(*fsPtr_, buf);
+        getlinePortable(*fsPtr_, buf);
 
         // test that the index offset is valid
         if (buf.empty() || buf[0] != '>')
@@ -174,7 +179,7 @@ class ProteinList_FASTA : public ProteinList
             fsPtr_->seekg(entryPtr->offset);
 
             string buf;
-            getline(*fsPtr_, buf);
+            getlinePortable(*fsPtr_, buf);
 
             // if the offset is still invalid, throw
             if (buf.empty() || buf[0] != '>')
@@ -184,14 +189,15 @@ class ProteinList_FASTA : public ProteinList
         // trim whitespace and carriage returns from the end of the line
         bal::trim_right_if(buf, bal::is_any_of(" \r"));
 
-        string description;
-        BOOST_FOREACH(const bxp::sregex& idAndDescriptionRegex, idAndDescriptionRegexes_)
+        string id, description;
+        for(const bxp::sregex& idAndDescriptionRegex : idAndDescriptionRegexes_)
         {
             if (idAndDescriptionRegex.mark_count() == 2)
             {
                 bxp::smatch match;
                 if (bxp::regex_match(buf, match, idAndDescriptionRegex))
                 {
+                    id = match[1].str();
                     description = match[2].str();
                     break;
                 }
@@ -202,16 +208,16 @@ class ProteinList_FASTA : public ProteinList
 
         string sequence;
         if (getSequence)
-            while (getline(*fsPtr_, buf))
+            while (getlinePortable(*fsPtr_, buf))
             {
                 if (buf.empty() || buf[0] == '\r') // skip blank lines
                     continue;
-		        if (buf[0] == '>') // signifies the next protein record in a FASTA file
+                if (buf[0] == '>') // signifies the next protein record in a FASTA file
                     break;
                 size_t lineEnd = std::min(buf.length(), buf.find_first_of("\r\n"));
                 sequence.append(buf.begin(), buf.begin()+lineEnd);
             }
-       return ProteinPtr(new Protein(entryPtr->id, index, description, sequence));
+       return ProteinPtr(new Protein(id, index, description, sequence));
     }
 };
 

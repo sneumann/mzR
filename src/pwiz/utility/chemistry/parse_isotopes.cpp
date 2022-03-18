@@ -1,5 +1,5 @@
 //
-// $Id: parse_isotopes.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id$
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License. 

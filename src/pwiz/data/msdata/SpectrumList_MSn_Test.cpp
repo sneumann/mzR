@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_MSn_Test.cpp 7331 2015-03-24 16:11:12Z chambm $
+// $Id$
 //
 //
 // Original author: Barbara Frewen <frewen@u.washington.edu>

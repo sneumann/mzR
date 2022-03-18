@@ -1,5 +1,5 @@
 //
-// $Id: unit.hpp 9810 2016-06-13 21:41:53Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -28,9 +28,8 @@
 #include "Exception.hpp"
 #include "DateTime.hpp"
 #include "Filesystem.hpp"
+#include "Stream.hpp"
 #include "pwiz/utility/math/round.hpp"
-#include <string>
-#include <sstream>
 #include <cmath>
 #include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
 
@@ -90,10 +89,10 @@ inline std::string quote_string(const string& str) {return "\"" + str + "\"";}
 
 
 #define unit_assert_operator_equal(expected, actual) \
-    (!(expected == actual) ? throw std::runtime_error(unit_assert_equal_message(__FILE__, __LINE__, lexical_cast<string>(expected), lexical_cast<string>(actual), #actual)) : 0)
+    (!((expected) == (actual)) ? throw std::runtime_error(unit_assert_equal_message(__FILE__, __LINE__, lexical_cast<string>(expected), lexical_cast<string>(actual), #actual)) : 0)
 
 #define unit_assert_operator_equal_to_stream(expected, actual, os) \
-    ((os) << (!(expected == actual) ? unit_assert_equal_message(__FILE__, __LINE__, lexical_cast<string>(expected), lexical_cast<string>(actual), #actual) + "\n" : ""))
+    ((os) << (!((expected) == (actual)) ? unit_assert_equal_message(__FILE__, __LINE__, lexical_cast<string>(expected), lexical_cast<string>(actual), #actual) + "\n" : ""))
 
 
 #define unit_assert_equal(x, y, epsilon) \
@@ -171,6 +170,7 @@ inline std::string escape_teamcity_string(const std::string& str)
     } \
     int testExitStatus = 0;
 
+
 #define TEST_PROLOG(argc, argv) TEST_PROLOG_EX(argc, argv, "")
 
 #define TEST_FAILED(x) \
@@ -188,6 +188,78 @@ inline std::string escape_teamcity_string(const std::string& str)
 
 } // namespace util
 } // namespace pwiz
+
+
+// without PWIZ_DOCTEST defined, disable doctest macros; when it is defined, doctest will be configured with main()
+#if !defined(PWIZ_DOCTEST) && !defined(PWIZ_DOCTEST_NO_MAIN)
+#ifndef __cplusplus_cli
+#define DOCTEST_CONFIG_DISABLE
+#include "libraries/doctest.h"
+#endif
+#else
+#define DOCTEST_CONFIG_IMPLEMENT
+#include "libraries/doctest.h"
+
+#ifndef PWIZ_DOCTEST_NO_MAIN
+int main(int argc, char* argv[])
+{
+    TEST_PROLOG(argc, argv)
+
+    try
+    {
+        doctest::Context context;
+        testExitStatus = context.run();
+    }
+    catch (std::exception& e)
+    {
+        TEST_FAILED(e.what())
+    }
+    catch (...)
+    {
+        TEST_FAILED("Caught unknown exception.")
+    }
+
+    TEST_EPILOG
+}
+#endif
+
+namespace std
+{
+    template <typename T>
+    vector<doctest::Approx> operator~(const vector<T>& lhs)
+    {
+        vector<doctest::Approx> result(lhs.size(), doctest::Approx(0));
+        for (size_t i = 0; i < lhs.size(); ++i)
+            result[i] = doctest::Approx(lhs[i]);
+        return result;
+    }
+
+    inline ostream& operator<< (ostream& o, const doctest::Approx& rhs)
+    {
+        o << rhs.toString();
+        return o;
+    }
+
+    template <typename T>
+    bool operator==(const vector<T>& lhs, const vector<doctest::Approx>& rhs)
+    {
+        if (doctest::isRunningInTest())
+            REQUIRE(lhs.size() == rhs.size());
+        else if (lhs.size() != rhs.size())
+            return false;
+
+        for (size_t i = 0; i < lhs.size(); ++i)
+            if (lhs[i] != rhs[i]) return false;
+        return true;
+    }
+
+    template <typename T>
+    bool operator==(const vector<doctest::Approx>& rhs, const vector<T>& lhs)
+    {
+        return lhs == rhs;
+    }
+}
+#endif
 
 
 #endif // _UNIT_HPP_

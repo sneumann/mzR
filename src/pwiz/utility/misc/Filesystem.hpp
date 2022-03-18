@@ -1,5 +1,5 @@
 //
-// $Id: Filesystem.hpp 7303 2015-03-13 20:19:40Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -24,6 +24,11 @@
 
 #ifndef _FILESYSTEM_HPP_
 #define _FILESYSTEM_HPP_
+
+#ifdef __cplusplus_cli
+// "boost/filesystem/path.hpp" uses "generic" as an identifier which is a reserved word in C++/CLI
+#define generic __identifier(generic)
+#endif
 
 #include "Export.hpp"
 #include "String.hpp"
@@ -66,6 +71,19 @@ namespace pwiz {
 namespace util {
 
 
+/// returns true iff process is Windows executable running under Wine
+PWIZ_API_DECL bool running_on_wine();
+
+
+/// on Windows, closes all file handles and memory mapped sections relating to the given filepath
+PWIZ_API_DECL void force_close_handles_to_filepath(const std::string& filepath, bool closeMemoryMappedSections = false) noexcept(true);
+
+
+/// adds utf8_codecvt_facet to boost::filesystem::path's default behavior so it works with UTF-8 std::strings;
+/// uses a singleton so the imbuement is only done once
+PWIZ_API_DECL void enable_utf8_path_operations();
+
+
 /// expands (aka globs) a pathmask to zero or more matching paths and returns the number of matching paths
 /// - matching paths can be either files or directories
 /// - matching paths will be absolute if input pathmask was absolute
@@ -101,8 +119,23 @@ std::string abbreviate_byte_size(boost::uintmax_t byteSize,
                                  ByteSizeAbbreviation abbreviationType = ByteSizeAbbreviation_SI);
 
 
+PWIZ_API_DECL bool isHTTP(const std::string& filepath);
+
 PWIZ_API_DECL std::string read_file_header(const std::string& filepath, size_t length = 512);
 
+
+/// creates a unique named file in the user temp directory
+PWIZ_API_DECL class TemporaryFile
+{
+    public:
+    TemporaryFile(const string& extension/* = ".tmp"*/);
+    ~TemporaryFile();
+
+    const bfs::path& path() const { return filepath; }
+
+    private:
+    bfs::path filepath;
+};
 
 /// attempts to get the platform-specific console bounds (number of columns and lines), returns defaultBounds if an error occurs or the platform is not supported
 PWIZ_API_DECL std::pair<int, int> get_console_bounds(const std::pair<int, int>& defaultBounds = std::pair<int, int>(80, 24));

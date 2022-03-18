@@ -1,5 +1,5 @@
 //
-// $Id: Translator_mz5.hpp 3484 2012-04-04 19:55:33Z mwilhelm42 $
+// $Id$
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>

@@ -1,5 +1,5 @@
 //
-// $Id: LegacyAdapter.cpp 11174 2017-08-07 17:54:32Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

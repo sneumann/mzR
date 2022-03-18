@@ -1,5 +1,5 @@
 //
-// $Id: DefaultReaderList.cpp 7095 2015-01-16 22:39:29Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>

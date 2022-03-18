@@ -1,5 +1,5 @@
 //
-// $Id: KwCVMap.cpp 6909 2014-11-19 17:18:29Z chambm $
+// $Id$
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
 //
@@ -27,6 +27,7 @@
 #include <stdexcept>
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
+#include "pwiz/utility/misc/String.hpp"
 #include "KwCVMap.hpp"
 
 namespace pwiz{
@@ -254,7 +255,7 @@ ostream& operator<<(ostream& os, const CVMap* cmp)
 istream& operator>>(istream& is, CVMapPtr& cm)
 {
     string line;
-    getline(is, line);
+    getlinePortable(is, line);
 
     if (!line.size())
         //throw length_error("empty line found where record

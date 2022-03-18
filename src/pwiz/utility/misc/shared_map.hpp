@@ -1,5 +1,5 @@
 //
-// $Id: shared_map.hpp 2759 2011-06-09 16:34:23Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

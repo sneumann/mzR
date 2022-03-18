@@ -1,6 +1,5 @@
 \name{openMSfile}
 \alias{openMSfile}
-\alias{initializeRamp}
 \alias{isInitialized}
 \alias{fileName}
 \alias{openIDfile}
@@ -10,8 +9,6 @@
 }
 \usage{
  openMSfile(filename, backend = NULL, verbose = FALSE)
-
- initializeRamp(object)
 
  isInitialized(object)
 
@@ -26,7 +23,7 @@
   }
   \item{backend}{
     A \code{character(1)} specifiying which backend API to
-    use. Currently 'Ramp', 'netCDF'  and 'pwiz' are supported. If
+    use. Currently 'netCDF'  and 'pwiz' are supported. If
     \code{backend = NULL} (the default), the function tries to determine
     the backend to be used based on either the file extension of the
     file content.
@@ -39,7 +36,7 @@
 \description{
   The \code{openMSfile} constructor will create a new format-specifc
   \code{mzR} object, open 'filename' file and all header information is
-  loaded as a Rcpp module and made accessible through the \code{ramp} or \code{pwiz}
+  loaded as a Rcpp module and made accessible through the \code{pwiz}
   slot of the resulting object.
   
   The \code{openIDfile} constructor will create a new format-specifc
@@ -47,11 +44,6 @@
   loaded as a Rcpp module. The mzid format is supported throught
   \code{pwiz} backend. Only mzIdentML 1.1 is supported.
 
-  % If the object was created manually with e.g. new("mzR"), then
-  % initializeRamp() will open the given file. An mzR object can be
-  % queried, whether it is assigned to a raw file with isInitialized(),
-  % and finally fileName(object) will return the path to the file "behind"
-  % the mzR object.
 }
 
 \author{

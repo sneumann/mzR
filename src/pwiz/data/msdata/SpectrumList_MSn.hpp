@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_MSn.hpp 4009 2012-10-17 18:40:44Z kaipot $
+// $Id$
 //
 //
 // Original author: Barbara Frewen <frewen@u.washington.edu>

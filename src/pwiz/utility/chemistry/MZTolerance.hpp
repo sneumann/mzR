@@ -1,5 +1,5 @@
 //
-// $Id: MZTolerance.hpp 3317 2012-02-27 16:36:06Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

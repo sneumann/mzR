@@ -1,5 +1,5 @@
 //
-// $Id: XMLWriter.cpp 5091 2013-10-30 20:02:10Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

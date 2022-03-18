@@ -1,5 +1,5 @@
 //
-// $Id: ChromatogramListBase.hpp 9490 2016-03-22 22:20:36Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

@@ -1,5 +1,5 @@
 //
-// $Id: Peptide.hpp 2453 2011-01-07 21:29:27Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

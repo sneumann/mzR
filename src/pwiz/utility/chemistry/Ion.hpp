@@ -1,5 +1,5 @@
 //
-// $Id: Ion.hpp 2322 2010-10-21 22:15:34Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

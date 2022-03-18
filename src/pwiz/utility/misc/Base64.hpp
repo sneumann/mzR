@@ -1,5 +1,5 @@
 //
-// $Id: Base64.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

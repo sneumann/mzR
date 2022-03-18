@@ -1,5 +1,5 @@
 //
-// $Id: SAXParser.cpp 9576 2016-04-18 19:54:12Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -372,6 +372,38 @@ void unescapeXML(char *str)
             *amp = '\'';
             adjustlen = 5;
         }
+        else if (i+3 < end && str[i+1] == '#') // numeric character entities &#0; to &#127; (decimal) or &#x0; to &#x7f; (hex)
+        {
+            size_t j = i+3;
+            while (str[j] != ';')
+            {
+                if (++j >= i+6 || j >= end)
+                    throw runtime_error("[SAXParser::unescapeXML] Invalid escape sequence.");
+            }
+            size_t entitylen = j-i-2;
+            char *entitybegin = str+i+2;
+            int entitybase = 10;
+            if (str[i+2] == 'x') // hex
+            {
+                --entitylen;
+                ++entitybegin;
+                entitybase = 16;
+            }
+            char *entitystr = (char*)malloc(entitylen);
+            strncpy(entitystr, entitybegin, entitylen);
+            entitystr[entitylen] = '\0';
+            char *convertend;
+            long int entity = strtol(entitystr, &convertend, entitybase);
+            bool success = entitystr != convertend;
+            free(entitystr);
+            if (success && 0 <= entity && entity <= 127)
+            {
+                *amp = (char)entity;
+                adjustlen = j-i;
+            }
+            else
+                throw runtime_error("[SAXParser::unescapeXML] Invalid escape sequence.");
+        }
         else
             throw runtime_error("[SAXParser::unescapeXML] Invalid escape sequence.");
         memmove(amp+1,amp+adjustlen+1,(end-(i+adjustlen)));
@@ -551,8 +583,7 @@ PWIZ_API_DECL void parse(istream& is, Handler& handler)
 
 string xml_root_element(const string& fileheader)
 {
-    // TODO: make this static again when we switch to a proper C++11 compiler (e.g. VC++ 2015)
-    const /*static*/ bxp::sregex e = bxp::sregex::compile("<\\?xml.*?>.*?<([^?!]\\S+?)[\\s>]");
+    const static bxp::sregex e = bxp::sregex::compile("<\\?xml.*?>.*?<([^?!]\\S+?)[\\s>]");
 
     // convert Unicode to ASCII
     string asciiheader;

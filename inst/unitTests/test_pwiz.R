@@ -18,8 +18,8 @@ test_mzXML <- function() {
     checkTrue(all(hdr$centroided))
     checkTrue(any(colnames(hdr) == "scanWindowLowerLimit"))
     checkTrue(any(colnames(hdr) == "scanWindowUpperLimit"))
-    checkTrue(all(is.na(hdr$scanWindowLowerLimit)))
-    checkTrue(all(is.na(hdr$scanWindowUpperLimit)))
+    checkTrue(all(!is.na(hdr$scanWindowLowerLimit)))
+    checkTrue(all(!is.na(hdr$scanWindowUpperLimit)))
     hdr <- header(mzxml,1)
     checkTrue(is.list(hdr))
     hdr <- header(mzxml, 2:3)
@@ -82,79 +82,50 @@ test_getScanHeaderInfo <- function() {
     ## by the Ramp backend.
     file <- system.file("microtofq", "MM14.mzML", package = "msdata")
     mzml <- openMSfile(file, backend = "pwiz")
-    ramp <- openMSfile(file, backend = "Ramp")
     ## Read single scan header.
     scan_3 <- header(mzml, scans = 3)
-    scan_3_ramp <- header(ramp, scans = 3)
     cn <- names(scan_3)
     cn <- cn[!(cn %in% c("spectrumId", "scanWindowLowerLimit",
                          "scanWindowUpperLimit", "centroided"))]
     scan_3 <- scan_3[cn]
-    scan_3_ramp <- scan_3_ramp[cn]
     ## Special case for columns that have an NA reported: they might have a
     ## 0 or NA in Ramp.
     nas <- is.na(scan_3)
     ## Ramp does not read polarity
     scan_3$polarity <- 0
-    checkEquals(scan_3[!nas], scan_3_ramp[!nas])
-    ## All others have to be 0 or NA
-    checkEquals(all(scan_3_ramp[nas] == 0 | is.na(scan_3_ramp[nas])), TRUE)
 
     ## Read all scan header
     all_scans <- header(mzml)
-    all_scans_ramp <- header(ramp)
     all_scans <- all_scans[, cn]
-    all_scans_ramp <- all_scans_ramp[, cn]
     all_scans$polarity <- 0
     nas <- vapply(all_scans, function(z) all(is.na(z)), logical(1))
-    checkEquals(all_scans[, !nas], all_scans_ramp[, !nas])
-    ## All others have to be 0 or NA
-    checkEquals(all(all_scans_ramp[nas] == 0 | is.na(all_scans_ramp[nas])), TRUE)
         
     ## passing the index of all scan headers should return the same
     all_scans <- header(mzml, scans = 1:nrow(all_scans))
-    all_scans_ramp <- header(ramp, scans = 1:nrow(all_scans))
     all_scans <- all_scans[, cn]
-    all_scans_ramp <- all_scans_ramp[, cn]
     all_scans$polarity <- 0
     nas <- vapply(all_scans, function(z) all(is.na(z)), logical(1))
-    checkEquals(all_scans[, !nas], all_scans_ramp[, !nas])
-    ## All others have to be 0 or NA
-    checkEquals(all(all_scans_ramp[, nas] == 0 | is.na(all_scans_ramp[, nas])), TRUE)
     
     ## Some selected scans
     all_scans <- header(mzml, scans = c(3, 1, 14))
-    all_scans_ramp <- header(ramp, scans = c(3, 1, 14))
     all_scans <- all_scans[, cn]
-    all_scans_ramp <- all_scans_ramp[, cn]
     all_scans$polarity <- 0
     nas <- vapply(all_scans, function(z) all(is.na(z)), logical(1))
-    checkEquals(all_scans[, !nas], all_scans_ramp[, !nas])
-    ## All others have to be 0 or NA
-    checkEquals(all(all_scans_ramp[, nas] == 0 | is.na(all_scans_ramp[, nas])), TRUE)
 
     close(mzml)
-    close(ramp)
 
     ## The same for an mzXML file:
     file <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
                         package = "msdata")
     mzml <- openMSfile(file, backend = "pwiz")
-    ramp <- openMSfile(file, backend = "Ramp")
     ## Read single scan header.
     scan_3 <- header(mzml, scans = 3)
-    scan_3_ramp <- header(ramp, scans = 3)
     scan_3 <- scan_3[cn]
-    scan_3_ramp <- scan_3_ramp[cn]
     nas <- vapply(scan_3, function(z) all(is.na(z)), logical(1))
-    checkEquals(scan_3[!nas], scan_3_ramp[!nas])
-    checkEquals(all(scan_3_ramp[nas] == 0 | is.na(scan_3_ramp[nas])), TRUE)
     
     ## Read all scan header
     all_scans <- header(mzml)
-    all_scans_ramp <- header(ramp)
     all_scans <- all_scans[, cn]
-    all_scans_ramp <- all_scans_ramp[, cn]
     
     ## Ramp unable to read precursorScanNum from an mzXML file.
     all_scans$precursorScanNum <- 0
@@ -163,57 +134,35 @@ test_getScanHeaderInfo <- function() {
         z[is.na(z)] <- 0
         z
     }))
-    all_scans_ramp <- data.frame(lapply(all_scans_ramp, function(z) {
-        z[is.na(z)] <- 0
-        z
-    }))
-    checkEquals(all_scans, all_scans_ramp)
     
     ## passing the index of all scan headers should return the same
     all_scans <- header(mzml, scans = 1:nrow(all_scans))
-    all_scans_ramp <- header(ramp, scans = 1:nrow(all_scans))
     all_scans$precursorScanNum <- 0
     all_scans <- all_scans[, cn]
-    all_scans_ramp <- all_scans_ramp[, cn]
     ## Replace all NA in all_scans with 0
     all_scans <- data.frame(lapply(all_scans, function(z) {
         z[is.na(z)] <- 0
         z
     }))
-    all_scans_ramp <- data.frame(lapply(all_scans_ramp, function(z) {
-        z[is.na(z)] <- 0
-        z
-    }))
-    checkEquals(all_scans, all_scans_ramp)
 
     ## Some selected scans
     all_scans <- header(mzml, scans = c(3, 1, 14))
-    all_scans_ramp <- header(ramp, scans = c(3, 1, 14))
     all_scans$precursorScanNum <- 0
     all_scans <- all_scans[, cn]
-    all_scans_ramp <- all_scans_ramp[, cn]
     ## Replace all NA in all_scans with 0
     all_scans <- data.frame(lapply(all_scans, function(z) {
         z[is.na(z)] <- 0
         z
     }))
-    all_scans_ramp <- data.frame(lapply(all_scans_ramp, function(z) {
-        z[is.na(z)] <- 0
-        z
-    }))
-    checkEquals(all_scans, all_scans_ramp)
 
     close(mzml)
-    close(ramp)
 
     ## Again for an MSn mzml file.
     file <- msdata::proteomics(full.names = TRUE,
                                pattern = "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz")
     mzml <- openMSfile(file, backend = "pwiz")
-    ramp <- openMSfile(file, backend = "Ramp")
     ## Read single scan header.
     scan_3 <- header(mzml, scans = 3)
-    scan_3_ramp <- header(ramp, scans = 3)
     ## Ramp does not read polarity, injectionTime or filterString
     cn <- names(scan_3)
     cn <- cn[!(cn %in% c("spectrumId", "scanWindowLowerLimit",
@@ -224,54 +173,32 @@ test_getScanHeaderInfo <- function() {
                          "isolationWindowUpperOffset",
                          "injectionTime"))]
     scan_3 <- scan_3[cn]
-    scan_3_ramp <- scan_3_ramp[cn]
     scan_3[is.na(scan_3)] <- 0 
-    scan_3_ramp[is.na(scan_3_ramp)] <- 0
-    checkEquals(scan_3, scan_3_ramp)
         
     ## Read all scan header
     all_scans <- header(mzml)[, cn]
-    all_scans_ramp <- header(ramp)[, cn]
     ## Replace all NA in all_scans with 0
     all_scans <- data.frame(lapply(all_scans, function(z) {
         z[is.na(z)] <- 0
         z
     }))
-    all_scans_ramp <- data.frame(lapply(all_scans_ramp, function(z) {
-        z[is.na(z)] <- 0
-        z
-    }))
-    checkEquals(all_scans, all_scans_ramp)
     
     ## passing the index of all scan headers should return the same
     all_scans_2 <- header(mzml, scans = 1:nrow(all_scans))[, cn]
-    all_scans_ramp <- header(ramp, scans = 1:nrow(all_scans))[, cn]
     ## Replace all NA in all_scans with 0
     all_scans_2 <- data.frame(lapply(all_scans_2, function(z) {
         z[is.na(z)] <- 0
         z
     }))
-    all_scans_ramp <- data.frame(lapply(all_scans_ramp, function(z) {
-        z[is.na(z)] <- 0
-        z
-    }))
-    checkEquals(all_scans, all_scans_ramp)
     checkEquals(all_scans, all_scans_2)
     
     ## Some selected scans
     all_scans <- header(mzml, scans = c(3, 1, 14))[, cn]
-    all_scans_ramp <- header(ramp, scans = c(3, 1, 14))[, cn]
     ## Replace all NA in all_scans with 0
     all_scans <- data.frame(lapply(all_scans, function(z) {
         z[is.na(z)] <- 0
         z
     }))
-    all_scans_ramp <- data.frame(lapply(all_scans_ramp, function(z) {
-        z[is.na(z)] <- 0
-        z
-    }))
-    checkEquals(all_scans, all_scans_ramp)
 
     close(mzml)
-    close(ramp)
 }

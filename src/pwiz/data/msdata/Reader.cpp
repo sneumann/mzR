@@ -1,5 +1,5 @@
 //
-// $Id: Reader.cpp 9283 2016-01-11 21:31:03Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -40,9 +40,16 @@ Reader::Config::Config()
     : simAsSpectra(false)
     , srmAsSpectra(false)
     , acceptZeroLengthSpectra(false)
+    , ignoreZeroIntensityPoints(false)
     , combineIonMobilitySpectra(false)
+    , reportSonarBins(false)
     , unknownInstrumentIsError(false)
     , adjustUnknownTimeZonesToHostTimeZone(true)
+    , iterationListenerRegistry(nullptr)
+    , preferOnlyMsLevel(0)
+    , allowMsMsWithoutPrecursor(true)
+    , sortAndJitter(false)
+    , globalChromatogramsAreMs1Only(false)
 {
 }
 
@@ -52,9 +59,17 @@ Reader::Config::Config(const Config& rhs)
     simAsSpectra = rhs.simAsSpectra;
     srmAsSpectra = rhs.srmAsSpectra;
 	acceptZeroLengthSpectra = rhs.acceptZeroLengthSpectra;
+    ignoreZeroIntensityPoints = rhs.ignoreZeroIntensityPoints;
     combineIonMobilitySpectra = rhs.combineIonMobilitySpectra;
+    reportSonarBins = rhs.reportSonarBins;
     unknownInstrumentIsError = rhs.unknownInstrumentIsError;
     adjustUnknownTimeZonesToHostTimeZone = rhs.adjustUnknownTimeZonesToHostTimeZone;
+    iterationListenerRegistry = rhs.iterationListenerRegistry;
+    preferOnlyMsLevel = rhs.preferOnlyMsLevel;
+    allowMsMsWithoutPrecursor = rhs.allowMsMsWithoutPrecursor;
+    isolationMzAndMobilityFilter = rhs.isolationMzAndMobilityFilter;
+    sortAndJitter = rhs.sortAndJitter;
+    globalChromatogramsAreMs1Only = rhs.globalChromatogramsAreMs1Only;
 }
 
 // default implementation; most Readers don't need to worry about multi-run input files
@@ -144,6 +159,49 @@ PWIZ_API_DECL void ReaderList::readIds(const string& filename, const string& hea
 }
 
 
+PWIZ_API_DECL std::vector<std::string> ReaderList::getTypes() const
+{
+    vector<string> result;
+    result.reserve(size());
+    for (const ReaderPtr& reader : *this)
+    {
+        result.emplace_back(reader->getType());
+    }
+    return result;
+}
+
+PWIZ_API_DECL std::vector<CVID> ReaderList::getCvTypes() const
+{
+    vector<CVID> result;
+    result.reserve(size());
+    for (const ReaderPtr& reader : *this)
+    {
+        result.emplace_back(reader->getCvType());
+    }
+    return result;
+}
+
+PWIZ_API_DECL std::vector<std::string> ReaderList::getFileExtensions() const
+{
+    vector<string> result;
+    result.reserve(size());
+    for (const ReaderPtr& reader : *this)
+    {
+        auto exts = reader->getFileExtensions();
+        result.insert(result.end(), exts.begin(), exts.end());
+    }
+    return result;
+}
+
+PWIZ_API_DECL std::map<std::string, std::vector<std::string>> ReaderList::getFileExtensionsByType() const
+{
+    map<string, vector<string>> result;
+    for (const ReaderPtr& reader : *this)
+        result[reader->getType()] = reader->getFileExtensions();
+    return result;
+}
+
+
 PWIZ_API_DECL ReaderList& ReaderList::operator +=(const ReaderList& rhs)
 {
     insert(end(), rhs.begin(), rhs.end());
@@ -183,31 +241,35 @@ PWIZ_API_DECL ReaderList operator +(const ReaderPtr& lhs, const ReaderPtr& rhs)
 }
 
 
-PWIZ_API_DECL CVID identifyFileFormat(const ReaderPtr& reader, const std::string& filepath)
+
+PWIZ_API_DECL ReaderPtr ReaderList::identifyAsReader(const std::string& filepath) const
 {
     try
     {
         string head = read_file_header(filepath, 512);
-        string type = reader->identify(filepath, head);
-        if (type == "mzML") return MS_mzML_format;
-        else if (type == "mzXML") return MS_ISB_mzXML_format;
-        else if (type == "MZ5") return MS_mz5_format;
-        else if (type == "Mascot Generic") return MS_Mascot_MGF_format;
-        else if (type == "MSn") return MS_MS2_format;
-        else if (type == "ABSciex WIFF") return MS_ABI_WIFF_format;
-        else if (type == "ABSciex T2D") return MS_SCIEX_TOF_TOF_T2D_format;
-        else if (type == "Agilent MassHunter") return MS_Agilent_MassHunter_format;
-        else if (type == "Thermo RAW") return MS_Thermo_RAW_format;
-        else if (type == "Waters RAW") return MS_Waters_raw_format;
-        else if (type == "Bruker FID") return MS_Bruker_FID_format;
-        else if (type == "Bruker YEP") return MS_Bruker_Agilent_YEP_format;
-        else if (type == "Bruker BAF") return MS_Bruker_BAF_format;
+        string type = identify(filepath, head);
+        std::string result;
+        for (const auto& readerPtr : *this)
+        {
+            string result = readerPtr->identify(filepath, head);
+            if (result.empty())
+                continue;
+            if (result == readerPtr->getType())
+                return readerPtr;
+
+            // HACK: would be better to have individual format readers identify their files respectively but there would probably be some performance hit for that
+            for (const auto& readerPtr2 : *this)
+            {
+                if (result == readerPtr2->getType())
+                    return readerPtr2;
+            }
+        }
     }
     catch (exception&)
     {
         // the filepath is missing or inaccessible
     }
-    return CVID_Unknown;
+    return ReaderPtr();
 }
 
 

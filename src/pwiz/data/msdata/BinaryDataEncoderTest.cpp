@@ -1,5 +1,5 @@
 //
-// $Id: BinaryDataEncoderTest.cpp 5084 2013-10-28 23:32:24Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -154,6 +154,9 @@ void testConfiguration(const BinaryDataEncoder::Config& config_in)
     vector<double> binary(sampleDataSize_);
     copy(sampleData_, sampleData_+sampleDataSize_, binary.begin());
 
+    vector<std::int64_t> binaryInt(sampleDataSize_);
+    copy(sampleData_, sampleData_ + sampleDataSize_, binaryInt.begin());
+
     bool checkNumpressMaxErrorSupression = (BinaryDataEncoder::Numpress_None != config.numpress)&&(config.numpressLinearErrorTolerance>0);
     if (checkNumpressMaxErrorSupression) 
     {
@@ -167,7 +170,8 @@ void testConfiguration(const BinaryDataEncoder::Config& config_in)
     {
         *os_ << "original: " << binary.size() << endl;
         *os_ << setprecision(20) << fixed;
-        copy(binary.begin(), binary.end(), ostream_iterator<double>(*os_, "\n")); 
+        copy(binary.begin(), binary.end(), ostream_iterator<double>(*os_, " ")); 
+        *os_ << endl;
     }
 
     // instantiate encoder
@@ -179,8 +183,14 @@ void testConfiguration(const BinaryDataEncoder::Config& config_in)
     string encoded;
     encoder.encode(binary, encoded);
 
+    string encodedInt;
+    encoder.encode(binaryInt, encodedInt);
+
     if (os_)
+    {
         *os_ << "encoded: " << encoded.size() << endl << encoded << endl;
+        *os_ << "encodedInt: " << encodedInt.size() << endl << encodedInt << endl;
+    }
 
     // regression testing for encoding
 
@@ -188,29 +198,38 @@ void testConfiguration(const BinaryDataEncoder::Config& config_in)
 
     // decode
 
-    vector<double> decoded;
+    BinaryData<double> decoded;
     encoder.decode(encoded, decoded);
+
+    BinaryData<std::int64_t> decodedInt;
+    encoder.decode(encodedInt, decodedInt);
 
     if (os_)
     {
         *os_ << "decoded: " << decoded.size() << endl;
-        copy(decoded.begin(), decoded.end(), ostream_iterator<double>(*os_, "\n")); 
+        copy(decoded.begin(), decoded.end(), ostream_iterator<double>(*os_, " "));
+        *os_ << endl;
+
+        *os_ << "decodedInt: " << decodedInt.size() << endl;
+        copy(decodedInt.begin(), decodedInt.end(), ostream_iterator<std::int64_t>(*os_, " "));
+        *os_ << endl;
     }
 
     // validate by comparing scan data before/after encode/decode
 
     unit_assert(binary.size() == decoded.size());
+    unit_assert(binaryInt.size() == decodedInt.size());
 
     const double epsilon = config.precision == BinaryDataEncoder::Precision_64 ? 1e-14 : 1e-5 ;
 
+    auto jt = decoded.begin();
     switch (config.numpress) 
     { 
     case BinaryDataEncoder::Numpress_Linear: 
     case BinaryDataEncoder::Numpress_Slof: 
     case BinaryDataEncoder::Numpress_Pic:
         // lossy compression
-        for (vector<double>::const_iterator it=binary.begin(), jt=decoded.begin();  
-             it!=binary.end(); ++it, ++jt)
+        for (auto it = binary.begin(); it!=binary.end(); ++it, ++jt)
         {
             if (0==*it || 0==*jt)
                 unit_assert_equal(*it, *jt, 0.1);
@@ -221,8 +240,7 @@ void testConfiguration(const BinaryDataEncoder::Config& config_in)
         }
         break;
     default:
-        for (vector<double>::const_iterator it=binary.begin(), jt=decoded.begin();  
-             it!=binary.end(); ++it, ++jt)
+        for (auto it = binary.begin(); it!=binary.end(); ++it, ++jt)
         {
             unit_assert_equal(*it, *jt, epsilon);
         }
@@ -310,7 +328,7 @@ void testBadFile(const string& filename)
     }
     catch (exception&)
     {
-        Rcpp::Rcerr << "\nUnable to find file " << filename << endl;
+        cerr << "\nUnable to find file " << filename << endl;
         return;
     }
 
@@ -342,7 +360,7 @@ void testBadFile(const string& filename)
     string encoded;
     encoder.encode(data, encoded); 
 
-    vector<double> decoded;
+    BinaryData<double> decoded;
     encoder.decode(encoded, decoded);
     
     // verify

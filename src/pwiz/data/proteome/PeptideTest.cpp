@@ -1,5 +1,5 @@
 //
-// $Id: PeptideTest.cpp 4129 2012-11-20 00:05:37Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -607,7 +607,7 @@ struct TestFragmentation
 };
 
 // test masses calculated at:
-// $Id: PeptideTest.cpp 4129 2012-11-20 00:05:37Z chambm $tml
+// $Id$tml
 const TestFragmentation testFragmentations[] =
 {
     { "MEERKAT",

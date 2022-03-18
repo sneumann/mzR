@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumListCache.cpp 6945 2014-11-26 18:58:33Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

@@ -1,5 +1,5 @@
 //
-// $Id: ProteinListWrapper.hpp 2069 2010-06-21 16:56:35Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_mzXML.cpp 6585 2014-08-07 22:49:28Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -106,13 +106,14 @@ const SpectrumIdentity& SpectrumList_mzXMLImpl::spectrumIdentity(size_t index) c
 size_t SpectrumList_mzXMLImpl::find(const string& id) const
 {
     map<string,size_t>::const_iterator it=idToIndex_.find(id);
-    return it!=idToIndex_.end() ? it->second : size();
+    return it!=idToIndex_.end() ? it->second : checkNativeIdFindResult(size(), id);
 }
 
 
 struct HandlerPrecursor : public SAXParser::Handler
 {
     Precursor* precursor;
+    Scan* scan;
     CVID nativeIdFormat;
 
     HandlerPrecursor()
@@ -127,17 +128,23 @@ struct HandlerPrecursor : public SAXParser::Handler
                                 stream_offset position)
     {
         if (!precursor)
-            throw runtime_error("[SpectrumList_mzXML::HandlerPrecursor] Null precursor."); 
+            throw runtime_error("[SpectrumList_mzXML::HandlerPrecursor] Null precursor.");
+
+        if (!scan)
+            throw runtime_error("[SpectrumList_mzXML::HandlerPrecursor] Null scan.");
 
         if (name == "precursorMz")
         {
-            string precursorScanNum, precursorIntensity, precursorCharge, possibleCharges, activationMethod, windowWideness;
+            string precursorScanNum, precursorIntensity, precursorCharge, possibleCharges, activationMethod, windowWideness, driftTime, collisionalCrossSection, invK0;
             getAttribute(attributes, "precursorScanNum", precursorScanNum);
             getAttribute(attributes, "precursorIntensity", precursorIntensity);
             getAttribute(attributes, "precursorCharge", precursorCharge);
             getAttribute(attributes, "possibleCharges", possibleCharges);
             getAttribute(attributes, "activationMethod", activationMethod);
             getAttribute(attributes, "windowWideness", windowWideness);
+            getAttribute(attributes, "DT", driftTime);
+            getAttribute(attributes, "CCS", collisionalCrossSection);
+            getAttribute(attributes, "invK0", invK0);
 
             if (!precursorScanNum.empty()) // precursorScanNum is an optional element
                 precursor->spectrumID = id::translateScanNumberToNativeID(nativeIdFormat, precursorScanNum);
@@ -186,6 +193,14 @@ struct HandlerPrecursor : public SAXParser::Handler
                 precursor->isolationWindow.set(MS_isolation_window_lower_offset, isolationWindowWidth);
                 precursor->isolationWindow.set(MS_isolation_window_upper_offset, isolationWindowWidth);
             }
+
+            if (!driftTime.empty())
+                scan->set(MS_ion_mobility_drift_time, driftTime, UO_millisecond);
+            else if (!invK0.empty())
+                scan->set(MS_inverse_reduced_ion_mobility, invK0, MS_Vs_cm_2);
+
+            if (!collisionalCrossSection.empty())
+                scan->userParams.emplace_back("CCS", collisionalCrossSection);
 
             return Status::Ok;
         }
@@ -273,7 +288,7 @@ class HandlerPeaks : public SAXParser::Handler
         }
 
         BinaryDataEncoder encoder(config_);
-        vector<double> decoded;
+        pwiz::util::BinaryData<double> decoded;
         encoder.decode(text.c_str(), text.length(), decoded);
 
         if (decoded.size()%2 != 0 || decoded.size()/2 != peaksCount) 
@@ -455,6 +470,12 @@ class HandlerScan : public SAXParser::Handler
                 scan.set(MS_scan_start_time, retentionTime, UO_second);
             }
 
+            if (endMz <= 0)
+            {
+                // If instrument settings are omitted, note observed mz range instead
+                getAttribute(attributes, "lowMz", startMz);
+                getAttribute(attributes, "highMz", endMz);
+            }
             if (endMz > 0)
                 scan.scanWindows.push_back(ScanWindow(startMz, endMz, MS_m_z));
             
@@ -480,6 +501,7 @@ class HandlerScan : public SAXParser::Handler
                 precursor.activation.set(MS_collision_energy, collisionEnergy_, UO_electronvolt);
 
             handlerPrecursor_.precursor = &precursor; 
+            handlerPrecursor_.scan = spectrum_.scanList.scans.empty() ? NULL : &spectrum_.scanList.scans[0];
             return Status(Status::Delegate, &handlerPrecursor_);
         }
         else if (name == "peaks")
@@ -501,10 +523,10 @@ class HandlerScan : public SAXParser::Handler
         else if (name == "nameValue")
         {
             // arbitrary name value pairs are converted to UserParams
-            string name, value;
-            getAttribute(attributes, "name", name);
+            string nameAttr, value;
+            getAttribute(attributes, "name", nameAttr);
             getAttribute(attributes, "value", value);
-            spectrum_.userParams.push_back(UserParam(name, value, "xsd:string"));
+            spectrum_.userParams.push_back(UserParam(nameAttr, value, "xsd:string"));
             return Status::Ok;
         }
         else if (name == "scanOrigin")
@@ -877,9 +899,22 @@ void SpectrumList_mzXMLImpl::createIndex()
 
 void SpectrumList_mzXMLImpl::createMaps()
 {
+    if (index_.empty())
+        return;
+
     vector<SpectrumIdentityFromMzXML>::const_iterator it=index_.begin();
-    for (unsigned int i=0; i!=index_.size(); ++i, ++it)
+    for (size_t i = 0; i != index_.size(); ++i, ++it)
         idToIndex_[it->id] = i;
+
+    // for mzXML where nativeID has been interpreted, create secondary mapping just from raw scan numbers
+    // NB: translateNativeIDToScanNumber should always work because only nativeIds that can be represented by scan numbers can be interpreted from mzXML
+    if (!bal::starts_with(index_.begin()->id, "scan="))
+    {
+        CVID nativeIdFormat = pwiz::msdata::id::getDefaultNativeIDFormat(msd_);
+        it = index_.begin();
+        for (size_t i = 0; i != index_.size(); ++i, ++it)
+            idToIndex_["scan=" + id::translateNativeIDToScanNumber(nativeIdFormat, it->id)] = i;
+    }
 }
 
 

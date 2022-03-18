@@ -1,6 +1,30 @@
-CHANGES IN VERSION 2.27.2
+CHANGES IN VERSION 2.27.5
 -------------------------
  o `peaks` method for pwiz backend sets colnames on returned matrices.
+
+CHANGES IN VERSION 2.29.4
+-------------------------
+ o Re-apply fix for compile error on clang by Kurt Hornik, closes #263
+ o Remove text in DESCRIPTION hinting at the RAMP wrapper for mzData removed in 2.29.3
+
+CHANGES IN VERSION 2.29.3
+-------------------------
+ o Update to Proteowizard 3_0_21263
+ o Removed RAMP backend, dropping ability to read mzData
+ o header always returns a data.frame even for a single scan.
+
+CHANGES IN VERSION 2.29.2
+-------------------------
+ o Cleanup in build files
+
+CHANGES IN VERSION 2.29.1
+-------------------------
+ o Pwiz backend partially re-written to avoid segfault on macOS
+   (https://github.com/sneumann/xcms/issues/422).
+
+CHANGES IN VERSION 2.27.2
+-------------------------
+ o Remove support for the ramp backend.
 
 CHANGES IN VERSION 2.27.1
 -------------------------

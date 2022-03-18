@@ -1,5 +1,5 @@
 //
-// $Id: BinaryIndexStream.hpp 1621 2009-12-15 17:43:15Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

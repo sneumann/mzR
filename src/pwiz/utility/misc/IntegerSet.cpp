@@ -1,5 +1,5 @@
 //
-// $Id: IntegerSet.cpp 2051 2010-06-15 18:39:13Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -307,6 +307,12 @@ PWIZ_API_DECL bool IntegerSet::Iterator::operator==(const Iterator& that) const
     return (it_!=end_ && that.it_!=that.end_ && it_==that.it_ && value_==that.value_ ||
             it_==end_ && that.it_==nothing_.end());
 }
+
+
+const IntegerSet IntegerSet::emptySet = IntegerSet();
+const IntegerSet IntegerSet::positive = IntegerSet(1, std::numeric_limits<int>::max());
+const IntegerSet IntegerSet::negative = IntegerSet(std::numeric_limits<int>::min(), -1);
+const IntegerSet IntegerSet::whole = IntegerSet(0, std::numeric_limits<int>::max());
 
 
 } // namespace util 

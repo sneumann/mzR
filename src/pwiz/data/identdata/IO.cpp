@@ -1,5 +1,5 @@
 //
-// $Id: IO.cpp 8868 2015-09-22 20:51:26Z kaipot $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -2032,7 +2032,7 @@ struct HandlerEnzyme : public HandlerIdentifiable
             inSiteRegexp = false;
         else if (name == "Enzyme")
         {
-            if (ez->enzymeName.hasCVParam(MS_unspecific_cleavage))
+            if (ez->enzymeName.hasCVParam(MS_NoEnzyme_OBSOLETE))
             {
                 ez->enzymeName.clear();
                 CVID cleavageAgent = proteome::Digestion::getCleavageAgentByRegex(ez->siteRegexp);
@@ -2040,6 +2040,8 @@ struct HandlerEnzyme : public HandlerIdentifiable
                     ez->enzymeName.set(cleavageAgent);
                 ez->terminalSpecificity = proteome::Digestion::NonSpecific;
             }
+            else if (ez->enzymeName.hasCVParam(MS_unspecific_cleavage))
+                ez->terminalSpecificity = proteome::Digestion::NonSpecific;
             else if (_semiSpecific == "true")
                 ez->terminalSpecificity = proteome::Digestion::SemiSpecific;
         }
@@ -3876,11 +3878,14 @@ struct HandlerSpectrumIdentificationItem : public HandlerIdentifiableParamContai
 
             string value;
             getAttribute(attributes, peptide_ref(version), value);
-            map<string, PeptidePtr>::const_iterator findItr = sequenceIndex.peptides.find(value);
-            if (findItr == sequenceIndex.peptides.end())
-                siip->peptidePtr = PeptidePtr(new Peptide(value));
-            else
-                siip->peptidePtr = findItr->second;
+            if (!value.empty())
+            {
+                map<string, PeptidePtr>::const_iterator findItr = sequenceIndex.peptides.find(value);
+                if (findItr == sequenceIndex.peptides.end())
+                    siip->peptidePtr = PeptidePtr(new Peptide(value));
+                else
+                    siip->peptidePtr = findItr->second;
+            }
 
             getAttribute(attributes, "rank", siip->rank);
 

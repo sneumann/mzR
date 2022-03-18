@@ -1,5 +1,5 @@
 //
-// $Id: ReferenceWrite_mz5.hpp 2811 2011-06-23 20:44:29Z chambm $
+// $Id$
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -134,10 +134,9 @@ public:
     /**
      *
      */
-    void
-            writeTo(
-                    Connection_mz5& connection,
-                    const pwiz::util::IterationListenerRegistry* iterationListenerRegistry);
+    void writeTo(Connection_mz5& connection,
+                 const pwiz::util::IterationListenerRegistry* iterationListenerRegistry,
+                 bool useWorkerThreads);
 
 private:
     /**
@@ -151,7 +150,8 @@ private:
                     Connection_mz5& connection,
                     std::vector<BinaryDataMZ5>& bdl,
                     std::vector<SpectrumMZ5>& spl,
-                    const pwiz::util::IterationListenerRegistry* iterationListenerRegistry);
+                    const pwiz::util::IterationListenerRegistry* iterationListenerRegistry,
+                    bool useWorkerThreads);
 
     /**
      * Reads and writes all chromtograms using an existing mz5 connection.

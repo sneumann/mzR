@@ -1,5 +1,5 @@
 //
-// $Id: FilesystemTest.cpp 7297 2015-03-12 05:30:33Z paragmallick $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -126,14 +126,28 @@ void createTestPath()
 {
     for (int i=0; i < testPathContentPairArraySize; i += 2)
     {
-        // if content is empty, create a directory
-        if (strlen(testPathContentPairArray[i+1]) == 0)
-            bfs::create_directory(setSystemDrive(testPathContentPairArray[i]));
-        else
-            create_file(setSystemDrive(testPathContentPairArray[i]), testPathContentPairArray[i+1]);
+        auto testPath = setSystemDrive(testPathContentPairArray[i]);
+
+        try
+        {
+            // if content is empty, create a directory
+            if (strlen(testPathContentPairArray[i + 1]) == 0)
+                bfs::create_directory(testPath);
+            else
+                create_file(testPath, testPathContentPairArray[i + 1]);
+        }
+        catch (exception&)
+        {
+            // the absolute path tests on Windows will fail if not run with administartor permissions; don't count these as test failures
+            if (string(ABS) != REL && bal::starts_with(testPath, setSystemDrive(ABS)))
+            {
+                cerr << "Test on \"" << testPath << "\" skipped; requires administrator permissions." << endl;
+                continue;
+            }
+        }
 
         // test that the directory/file was really created
-        unit_assert(bfs::exists(setSystemDrive(testPathContentPairArray[i])));
+        unit_assert(bfs::exists(testPath));
     }
 }
 
@@ -167,6 +181,8 @@ void testExpandPathmask()
     // create a filesystem tree for testing
     createTestPath();
 
+    int failedTests = 0;
+
     for (int i=0; i < testPathmaskArraySize; ++i)
     {
         try
@@ -186,17 +202,27 @@ void testExpandPathmask()
         }
         catch (exception& e)
         {
+            // the absolute path tests on Windows will fail if not run with administartor permissions; don't count these as test failures
+            if (string(ABS) != REL && bal::starts_with(testPathmaskArray[i].pathmask, ABS))
+                continue;
+
             cout << "Unit test on pathmask \"" << setSystemDrive(testPathmaskArray[i].pathmask) << "\" failed:\n"
                  << e.what() << endl;
+            ++failedTests;
         }
     }
 
-    // special test of wildcard in the root (on Windows)
-    vector<bfs::path> matchingPaths;
-    expand_pathmask(setSystemDrive(ABS"*"), matchingPaths);
-    unit_assert(find(matchingPaths.begin(), matchingPaths.end(), setSystemDrive(ABS"pwiz_foofoo_test")) != matchingPaths.end());
-    unit_assert(find(matchingPaths.begin(), matchingPaths.end(), setSystemDrive(ABS"pwiz_foo_test")) != matchingPaths.end());
-    unit_assert(find(matchingPaths.begin(), matchingPaths.end(), setSystemDrive(ABS"pwiz_bar_test")) != matchingPaths.end());
+    unit_assert_operator_equal(0, failedTests);
+
+    // special test of wildcard in the root (on Windows, if run with administrator permissions)
+    if (bfs::exists(setSystemDrive(ABS"pwiz_foofoo_test")))
+    {
+        vector<bfs::path> matchingPaths;
+        expand_pathmask(setSystemDrive(ABS"*"), matchingPaths);
+        unit_assert(find(matchingPaths.begin(), matchingPaths.end(), setSystemDrive(ABS"pwiz_foofoo_test")) != matchingPaths.end());
+        unit_assert(find(matchingPaths.begin(), matchingPaths.end(), setSystemDrive(ABS"pwiz_foo_test")) != matchingPaths.end());
+        unit_assert(find(matchingPaths.begin(), matchingPaths.end(), setSystemDrive(ABS"pwiz_bar_test")) != matchingPaths.end());
+    }
 
     // cleanup test tree
     deleteTestPath();
@@ -205,29 +231,33 @@ void testExpandPathmask()
 
 void testAbbreviateByteSize()
 {
-    unit_assert(abbreviate_byte_size(1) == "1 B");
-    unit_assert(abbreviate_byte_size(999) == "999 B");
-    unit_assert(abbreviate_byte_size(1000) == "1 KB");
-    unit_assert(abbreviate_byte_size(999999) == "999 KB");
-    unit_assert(abbreviate_byte_size(1000000) == "1 MB");
-    unit_assert(abbreviate_byte_size(999999999) == "999 MB");
-    unit_assert(abbreviate_byte_size(1000000000) == "1 GB");
+    unit_assert_operator_equal("1 B", abbreviate_byte_size(1));
+    unit_assert_operator_equal("999 B", abbreviate_byte_size(999));
+    unit_assert_operator_equal("1 KB", abbreviate_byte_size(1000));
+    unit_assert_operator_equal("999 KB", abbreviate_byte_size(999000));
+    unit_assert_operator_equal("1 MB", abbreviate_byte_size(1000000));
+    unit_assert_operator_equal("999 MB", abbreviate_byte_size(999000000));
+    unit_assert_operator_equal("1 GB", abbreviate_byte_size(1000000000));
+    unit_assert_operator_equal("100 GB", abbreviate_byte_size(100000000000));
+    unit_assert_operator_equal("1.23 KB", abbreviate_byte_size(1230));
+    unit_assert_operator_equal("12.3 KB", abbreviate_byte_size(12300));
+    unit_assert_operator_equal("123 KB", abbreviate_byte_size(123000));
 
-    unit_assert(abbreviate_byte_size(1, ByteSizeAbbreviation_IEC) == "1 B");
-    unit_assert(abbreviate_byte_size(1023, ByteSizeAbbreviation_IEC) == "1023 B");
-    unit_assert(abbreviate_byte_size(1024, ByteSizeAbbreviation_IEC) == "1 KiB");
-    unit_assert(abbreviate_byte_size((1024 << 10)-1, ByteSizeAbbreviation_IEC) == "1023 KiB");
-    unit_assert(abbreviate_byte_size((1024 << 10), ByteSizeAbbreviation_IEC) == "1 MiB");
-    unit_assert(abbreviate_byte_size((1024 << 20)-1, ByteSizeAbbreviation_IEC) == "1023 MiB");
-    unit_assert(abbreviate_byte_size((1024 << 20), ByteSizeAbbreviation_IEC) == "1 GiB");
+    unit_assert_operator_equal("1 B", abbreviate_byte_size(1, ByteSizeAbbreviation_IEC));
+    unit_assert_operator_equal("1023 B", abbreviate_byte_size(1023, ByteSizeAbbreviation_IEC));
+    unit_assert_operator_equal("1 KiB", abbreviate_byte_size(1024, ByteSizeAbbreviation_IEC));
+    unit_assert_operator_equal("1023 KiB", abbreviate_byte_size((1024 << 10)-1024, ByteSizeAbbreviation_IEC));
+    unit_assert_operator_equal("1 MiB", abbreviate_byte_size((1024 << 10), ByteSizeAbbreviation_IEC));
+    unit_assert_operator_equal("1023 MiB", abbreviate_byte_size((1024 << 20)-(1024*1024), ByteSizeAbbreviation_IEC));
+    unit_assert_operator_equal("1 GiB", abbreviate_byte_size((1024 << 20), ByteSizeAbbreviation_IEC));
 
-    unit_assert(abbreviate_byte_size(1, ByteSizeAbbreviation_JEDEC) == "1 B");
-    unit_assert(abbreviate_byte_size(1023, ByteSizeAbbreviation_JEDEC) == "1023 B");
-    unit_assert(abbreviate_byte_size(1024, ByteSizeAbbreviation_JEDEC) == "1 KB");
-    unit_assert(abbreviate_byte_size((1024 << 10)-1, ByteSizeAbbreviation_JEDEC) == "1023 KB");
-    unit_assert(abbreviate_byte_size((1024 << 10), ByteSizeAbbreviation_JEDEC) == "1 MB");
-    unit_assert(abbreviate_byte_size((1024 << 20)-1, ByteSizeAbbreviation_JEDEC) == "1023 MB");
-    unit_assert(abbreviate_byte_size((1024 << 20), ByteSizeAbbreviation_JEDEC) == "1 GB");
+    unit_assert_operator_equal("1 B", abbreviate_byte_size(1, ByteSizeAbbreviation_JEDEC));
+    unit_assert_operator_equal("1023 B", abbreviate_byte_size(1023, ByteSizeAbbreviation_JEDEC));
+    unit_assert_operator_equal("1 KB", abbreviate_byte_size(1024, ByteSizeAbbreviation_JEDEC));
+    unit_assert_operator_equal("1023 KB", abbreviate_byte_size((1024 << 10)-1024, ByteSizeAbbreviation_JEDEC));
+    unit_assert_operator_equal("1 MB", abbreviate_byte_size((1024 << 10), ByteSizeAbbreviation_JEDEC));
+    unit_assert_operator_equal("1023 MB", abbreviate_byte_size((1024 << 20)-(1024*1024), ByteSizeAbbreviation_JEDEC));
+    unit_assert_operator_equal("1 GB", abbreviate_byte_size((1024 << 20), ByteSizeAbbreviation_JEDEC));
 }
 
 

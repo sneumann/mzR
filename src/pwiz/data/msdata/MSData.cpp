@@ -1,5 +1,5 @@
 //
-// $Id: MSData.cpp 6452 2014-07-03 19:01:15Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -437,6 +437,14 @@ PWIZ_API_DECL bool BinaryDataArray::empty() const
 }
 
 
+PWIZ_API_DECL bool IntegerDataArray::empty() const
+{
+    return (!dataProcessingPtr.get() || dataProcessingPtr->empty()) && 
+           data.empty() && 
+           ParamContainer::empty();
+}
+
+
 //
 // MZIntensityPair 
 //
@@ -493,6 +501,9 @@ pair<string,string> stringToPair(const string& nameValuePair)
 
 PWIZ_API_DECL map<string,string> parse(const string& id)
 {
+    if (id.empty())
+        throw runtime_error("[MSData::parse] Empty id");
+
     vector<string> pairs;
     boost::split(pairs, id, boost::is_any_of(" \t\n\r"));
 
@@ -627,6 +638,16 @@ PWIZ_API_DECL bool Spectrum::empty() const
            ParamContainer::empty();
 }
 
+PWIZ_API_DECL bool Spectrum::hasBinaryData() const
+{
+    return (binaryDataArrayPtrs.size() &&
+            binaryDataArrayPtrs[0] &&
+            !binaryDataArrayPtrs[0]->data.empty())
+           ||
+           (integerDataArrayPtrs.size() &&
+            integerDataArrayPtrs[0] &&
+            !integerDataArrayPtrs[0]->data.empty());
+};
 
 namespace {
 
@@ -709,6 +730,13 @@ PWIZ_API_DECL void Spectrum::getMZIntensityPairs(MZIntensityPair* output, size_t
     }
 }
 
+PWIZ_API_DECL BinaryDataArrayPtr Spectrum::getArrayByCVID(CVID arrayType) const
+{
+    for (const auto& arrayPtr : binaryDataArrayPtrs) 
+        if (arrayPtr->hasCVParam(arrayType)) return arrayPtr;
+    return BinaryDataArrayPtr();
+}
+
 
 PWIZ_API_DECL BinaryDataArrayPtr Spectrum::getMZArray() const
 {
@@ -724,13 +752,7 @@ PWIZ_API_DECL BinaryDataArrayPtr Spectrum::getMZArray() const
 
 PWIZ_API_DECL BinaryDataArrayPtr Spectrum::getIntensityArray() const
 {
-    for (vector<BinaryDataArrayPtr>::const_iterator it = binaryDataArrayPtrs.begin();
-         it != binaryDataArrayPtrs.end();
-         ++it)
-    {
-        if ((*it)->hasCVParam(MS_intensity_array)) return *it;
-    }
-    return BinaryDataArrayPtr();
+    return getArrayByCVID(MS_intensity_array);
 }
 
 
@@ -790,7 +812,7 @@ PWIZ_API_DECL void Spectrum::setMZIntensityPairs(const MZIntensityPair* input, s
 
 /// set m/z and intensity arrays separately (they must be the same size) by swapping the vector contents
 /// this allows for a more nearly zero copy setup.  Contents of mzArray and intensityArray are undefined after calling.
-PWIZ_API_DECL void Spectrum::swapMZIntensityArrays(std::vector<double>& mzArray, std::vector<double>& intensityArray, CVID intensityUnits)
+PWIZ_API_DECL void Spectrum::swapMZIntensityArrays(pwiz::util::BinaryData<double>& mzArray, pwiz::util::BinaryData<double>& intensityArray, CVID intensityUnits)
 {
     if (mzArray.size() != intensityArray.size())
         throw runtime_error("[MSData::Spectrum::swapMZIntensityArrays()] Sizes do not match.");
@@ -823,10 +845,18 @@ PWIZ_API_DECL void Spectrum::swapMZIntensityArrays(std::vector<double>& mzArray,
 
     bd_mz->data.swap(mzArray);
     bd_intensity->data.swap(intensityArray);
-
 }
 
-PWIZ_API_DECL void Spectrum::setMZIntensityArrays(const std::vector<double>& mzArray, const std::vector<double>& intensityArray, CVID intensityUnits)
+
+PWIZ_API_DECL void Spectrum::setMZIntensityArrays(const vector<double>& mzArray, const vector<double>& intensityArray, CVID intensityUnits)
+{
+    pwiz::util::BinaryData<double> mz, intensity;
+    mz = mzArray, intensity = intensityArray;
+    setMZIntensityArrays(mz, intensity, intensityUnits);
+}
+
+
+PWIZ_API_DECL void Spectrum::setMZIntensityArrays(const pwiz::util::BinaryData<double>& mzArray, const pwiz::util::BinaryData<double>& intensityArray, CVID intensityUnits)
 {
     if (mzArray.size() != intensityArray.size())
         throw runtime_error("[MSData::Spectrum::setMZIntensityArrays()] Sizes do not match.");
@@ -1058,17 +1088,30 @@ PWIZ_API_DECL size_t SpectrumList::findAbbreviated(const string& abbreviatedId, 
     // "1.1.123.2" splits to { 1, 1, 123, 2 }
     bal::split(abbreviatedTokens, abbreviatedId, bal::is_any_of(string(1, delimiter)));
 
-    if (empty()) return 0;
+    if (empty()) return size();
 
     // "sample=1 period=1 cycle=123 experiment=2" splits to { sample, 1, period, 1, cycle, 123, experiment, 2 }
-    string firstId = spectrumIdentity(0).id;
-    bal::split(actualTokens, firstId, bal::is_any_of(" ="));
+    for (size_t s = size(); s-- > 0;) // Some files contain mixed scan types - e.g. Waters where lockmass scans may be non-IMS and others IMS, so we may need to search a bit to find a format match
+    {
+        string firstId = spectrumIdentity(s).id;
+        bal::split(actualTokens, firstId, bal::is_any_of(" ="));
 
-    string fullId(actualTokens[0] + "=" + abbreviatedTokens[0]);
-    for (size_t i = 1; i < abbreviatedTokens.size(); ++i)
-        fullId += " " + actualTokens[2*i] + "=" + abbreviatedTokens[i];
+        if (actualTokens.size() != abbreviatedTokens.size() * 2)
+        {
+            // TODO log this since I assume Skyline devs/uers don't want to see it
+            //warn_once(("[SpectrumList::findAbbreviated] abbreviated id (" + abbreviatedId + ") has different number of terms from spectrum list (" + firstId + ")").c_str());
+            if (s==0)
+                return size();
+        }
 
-    return find(fullId);
+        string fullId(actualTokens[0] + "=" + abbreviatedTokens[0]);
+        for (size_t i = 1; i < abbreviatedTokens.size(); ++i)
+            fullId += " " + actualTokens[2*i] + "=" + abbreviatedTokens[i];
+
+        size_t result = find(fullId);
+        if ((result >= 0 && result < size()) || s == 0)
+            return result;
+    }
 }
 
 
@@ -1116,6 +1159,34 @@ PWIZ_API_DECL SpectrumPtr SpectrumList::spectrum(size_t index, DetailLevel detai
 
 PWIZ_API_DECL void SpectrumList::warn_once(const char *msg) const
 {
+}
+
+PWIZ_API_DECL DetailLevel SpectrumList::min_level_accepted(std::function<boost::tribool(const Spectrum&)> predicate) const
+{
+    DetailLevel result = DetailLevel_InstantMetadata;
+
+    for (size_t i = 0, end = size(); i < end; ++i)
+    {
+        boost::tribool accepted;
+
+        do
+        {
+            SpectrumPtr s = spectrum(i, result);
+            accepted = predicate(*s);
+
+            if (accepted)
+                return result;
+            if (!accepted && (int)result < (int)DetailLevel_FullData)
+                result = DetailLevel(int(result) + 1);
+            else if (boost::logic::indeterminate(accepted))
+            {
+                break;
+            }
+        } while ((int)result < (int)DetailLevel_FullData);
+    }
+
+    // if we reach this point, no spectrum satisfied the predicate even at the highest detail level
+    throw runtime_error("[SpectrumList::min_level_accepted] no spectrum satisfied the given predicate at any DetailLevel");
 }
 
 
@@ -1167,6 +1238,16 @@ PWIZ_API_DECL size_t ChromatogramList::find(const string& id) const
         if (chromatogramIdentity(index).id == id) 
             return index;
     return size();
+}
+
+
+PWIZ_API_DECL ChromatogramPtr ChromatogramList::chromatogram(size_t index, DetailLevel detailLevel) const
+{
+    // By default faster metadata access is not implemented
+    if (detailLevel == DetailLevel_FastMetadata || detailLevel == DetailLevel_InstantMetadata)
+        return ChromatogramPtr(new Chromatogram);
+
+    return chromatogram(index, detailLevel == DetailLevel_FullData);
 }
 
 

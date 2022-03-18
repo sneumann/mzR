@@ -1,5 +1,5 @@
 //
-// $Id: MSnReaderTest.cpp 4129 2012-11-20 00:05:37Z chambm $
+// $Id$
 //
 //
 // Original author: Barbara Frewen <frewen@u.washington.edu>
@@ -137,7 +137,7 @@ void test(const bfs::path& datadir, int msLevel)
         filenames.push_back("10-spec.bms2.gz");
         filenames.push_back("10-spec.cms2");
     } else {
-        Rcpp::Rcerr << "Invalid MS level." << endl;
+        cerr << "Invalid MS level." << endl;
         return;
     }
 
@@ -216,16 +216,11 @@ int main(int argc, char* argv[])
     {
         if (argc>1 && !strcmp(argv[1],"-v")) os_ = &cout;
 
-        std::string buildparent(argv[0]);
-        size_t pos = buildparent.find("build");
-        if (string::npos==pos)
-        {
-            buildparent = __FILE__; // nonstandard build, maybe?  try using source file name
-            // something like \ProteoWizard\pwiz\pwiz\data\msdata\RAMPAdapterTest.cpp
-            pos = buildparent.rfind("pwiz");
-        }
-        buildparent.resize(pos);
-        bfs::path example_data_dir = buildparent + "example_data/";
+        std::string srcparent(__FILE__);
+        size_t pos = srcparent.find((bfs::path("pwiz") / "data").string());
+        srcparent.resize(pos);
+
+        bfs::path example_data_dir = srcparent + "example_data/";
         test(example_data_dir, 1);
         test(example_data_dir, 2);
 

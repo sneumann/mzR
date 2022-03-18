@@ -1,5 +1,5 @@
 //
-// $Id: ClickwrapPrompter.cpp 2395 2010-12-01 17:41:12Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

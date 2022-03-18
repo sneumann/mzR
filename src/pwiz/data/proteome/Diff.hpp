@@ -1,5 +1,5 @@
 //
-// $Id: Diff.hpp 1656 2009-12-30 20:54:17Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

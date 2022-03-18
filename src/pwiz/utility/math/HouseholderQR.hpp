@@ -1,5 +1,5 @@
 //
-// $Id: HouseholderQR.hpp 1195 2009-08-14 22:12:04Z chambm $
+// $Id$
 //
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 

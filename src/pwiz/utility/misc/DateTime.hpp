@@ -1,5 +1,5 @@
 //
-// $Id: DateTime.hpp 2616 2011-04-07 22:26:33Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -62,7 +62,7 @@ time_type time_from_OADATE(double oa_date)
     double fraction = fabs(modf(oa_date, &dayOffset)) * 24; // fraction = hours
     fraction = modf(fraction, &hourOffset) * 60; // fraction = minutes
     fraction = modf(fraction, &minuteOffset) * 60; // fraction = seconds
-    modf(fraction, &secondOffset);
+    secondOffset = round(fraction);
     time_type t(base_time);
     t += time_duration_type(hourOffset, minuteOffset, secondOffset);
     t += date_duration_type(dayOffset);

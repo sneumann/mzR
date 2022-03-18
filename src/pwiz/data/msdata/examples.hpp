@@ -1,5 +1,5 @@
 //
-// $Id: examples.hpp 1189 2009-08-14 17:36:06Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

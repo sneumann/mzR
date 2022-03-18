@@ -1,5 +1,5 @@
 //
-// $Id: ProteomeDataFile.hpp 1688 2010-01-13 20:01:21Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

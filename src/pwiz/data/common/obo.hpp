@@ -1,5 +1,5 @@
 //
-// $Id: obo.hpp 2778 2011-06-14 16:08:39Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -77,7 +77,7 @@ struct PWIZ_API_DECL OBO
 {
     std::string filename;
     std::vector<std::string> header;
-    std::string prefix; // e.g. "MS", "UO"
+    std::set<std::string> prefixes; // e.g. "MS", "UO"
     std::set<Term> terms;
 
     OBO(){}

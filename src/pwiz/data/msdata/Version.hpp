@@ -1,5 +1,5 @@
 //
-// $Id: Version.hpp 1188 2009-08-14 17:19:55Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -35,6 +35,7 @@ struct Version
     static int Major();
     static int Minor();
     static int Revision();
+    static std::string Branch(); // Source control branch name (usually "master", indicating trunk code line in Git)
     static std::string str();
     static std::string LastModified();
 };

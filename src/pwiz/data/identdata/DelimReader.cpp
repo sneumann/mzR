@@ -1,5 +1,5 @@
 //
-// $Id: DelimReader.cpp 9934 2016-08-02 17:48:03Z chambm $
+// $Id$
 //
 //
 // Origional author: Robert Burke <robert.burke@proteowizard.org>
@@ -177,7 +177,7 @@ void DelimReader::read(const string& filename,
         // Each line is parsed into its fields
         int no=0;
         string line;
-        while(getline(is, line, pimpl->type->record_sep))
+        while(getlinePortable(is, line, pimpl->type->record_sep))
         {
             vector<string> fields;
             

@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_mzML_Test.cpp 5084 2013-10-28 23:32:24Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

@@ -1,5 +1,5 @@
 //
-// $Id: SpectrumList_MSn.cpp 10158 2016-11-02 22:29:05Z kaipot $
+// $Id$
 //
 //
 // Original author: Barbara Frewen <frewen@u.washington.edu>
@@ -38,6 +38,7 @@ namespace msdata {
 using boost::iostreams::stream_offset;
 using boost::iostreams::offset_to_position;
 using namespace pwiz::chemistry;
+using namespace pwiz::util;
 
 
 namespace {
@@ -143,7 +144,7 @@ class SpectrumList_MSnImpl : public SpectrumList_MSn
   size_t find(const string& id) const
   {
     map<string, size_t>::const_iterator it = idToIndex_.find(id);
-    return it != idToIndex_.end() ? it->second : size();
+    return it != idToIndex_.end() ? it->second : checkNativeIdFindResult(size(), id);
   }
   
   size_t findNative(const string& nativeID) const
@@ -233,12 +234,12 @@ class SpectrumList_MSnImpl : public SpectrumList_MSn
     double basePeakIntensity = 0;
     spectrum.defaultArrayLength = 0;
     spectrum.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_detector_counts);
-    vector<double>& mzArray = spectrum.getMZArray()->data;
-    vector<double>& intensityArray = spectrum.getIntensityArray()->data;
+    BinaryData<double>& mzArray = spectrum.getMZArray()->data;
+    BinaryData<double>& intensityArray = spectrum.getIntensityArray()->data;
     double precursor_mz = 0;
     
     // start reading the file
-    if( getline(*is_, lineStr) )	// not end of file
+    if(getlinePortable(*is_, lineStr) )	// not end of file
     {
         // confirm that the first line is an S line
         if (lineStr.find("S") != 0)
@@ -277,7 +278,7 @@ class SpectrumList_MSnImpl : public SpectrumList_MSn
     vector< pair<int, double> > chargeMassPairs;
 
     // read in remainder of spectrum
-    while (getline(*is_, lineStr))
+    while (getlinePortable(*is_, lineStr))
     {
         if (lineStr.find("S") == 0) // we are at the next spectrum
         {
@@ -586,8 +587,8 @@ class SpectrumList_MSnImpl : public SpectrumList_MSn
     double basePeakIntensity = 0;
     spectrum.defaultArrayLength = 0;
     spectrum.setMZIntensityArrays(vector<double>(), vector<double>(), MS_number_of_detector_counts);
-    vector<double>& mzArray = spectrum.getMZArray()->data;
-    vector<double>& intensityArray = spectrum.getIntensityArray()->data;
+    BinaryData<double>& mzArray = spectrum.getMZArray()->data;
+    BinaryData<double>& intensityArray = spectrum.getIntensityArray()->data;
     double mz = 0;
     float intensity = 0;
 
@@ -640,7 +641,7 @@ class SpectrumList_MSnImpl : public SpectrumList_MSn
     size_t lineCount = 0;
     map<string, size_t>::iterator curIdToIndexItr;
     
-    while (getline(*is_, lineStr))
+    while (std::getline(*is_, lineStr)) // need accurate line length, so do not use pwiz::util convenience wrapper
     {
       ++lineCount;
       if (lineStr.find("S") == 0)

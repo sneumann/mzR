@@ -1,5 +1,5 @@
 //
-// $Id: Exception.hpp 4976 2013-09-19 21:55:32Z donmarsh $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -46,6 +46,11 @@ class user_error : public std::runtime_error
 } // namespace pwiz
 
 
+#ifdef _WIN32
+// preprocessed prototype of SetErrorMode so windows.h doesn't have to be included;
+// this requires linking to the shared runtime but pwiz always does that on Windows
+extern "C" __declspec(dllimport) unsigned int __stdcall SetErrorMode(unsigned int uMode);
+
 // make debug assertions throw exceptions in MSVC
 #ifdef _DEBUG
 #include <crtdbg.h>
@@ -53,9 +58,6 @@ class user_error : public std::runtime_error
 #include <locale>
 #include <sstream>
 
-// preprocessed prototype of SetErrorMode so windows.h doesn't have to be included;
-// this requires linking to the shared runtime but pwiz always does that on Windows
-extern "C" __declspec(dllimport) unsigned int __stdcall SetErrorMode(unsigned int uMode);
 
 namespace {
 
@@ -70,16 +72,21 @@ inline std::string narrow(const std::wstring& str)
 
 inline int CrtReportHook(int reportType, char *message, int *returnValue)
 {
-    if (reportType == _CRT_ERROR || reportType == _CRT_ASSERT)
-        throw std::runtime_error(message);
-    return 0;
+    static bool isThrowing = false; // avoid stack overflow when CrtReportHook is called from a destructor
+
+    if (reportType != _CRT_ERROR && reportType != _CRT_ASSERT)
+        return 0;
+    
+    if (isThrowing)
+        return 1;
+
+    isThrowing = true;
+    throw std::runtime_error(message);
 }
 
 inline int CrtReportHookW(int reportType, wchar_t *message, int *returnValue)
 {
-    if (reportType == _CRT_ERROR || reportType == _CRT_ASSERT)
-        throw std::runtime_error(narrow(message));
-    return 0;
+    return CrtReportHook(reportType, const_cast<char*>(narrow(message).c_str()), returnValue);
 }
 
 } // namespace
@@ -101,8 +108,18 @@ struct ReportHooker
         _CrtSetReportHookW2(_CRT_RPTHOOK_REMOVE, &CrtReportHookW);
     }
 };
-static ReportHooker reportHooker;
+#else
+struct ReportHooker
+{
+    ReportHooker()
+    {
+        SetErrorMode(SetErrorMode(0) | 0x0002); // SEM_NOGPFAULTERRORBOX
+    }
+};
 #endif // _DEBUG
+
+static ReportHooker reportHooker;
+#endif
 
 
 // make Boost assertions throw exceptions

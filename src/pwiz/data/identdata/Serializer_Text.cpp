@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_Text.cpp 6909 2014-11-19 17:18:29Z chambm $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>
@@ -552,7 +552,7 @@ void Serializer_Text::Impl::read(boost::shared_ptr<istream> is, IdentData& mzid)
     string line;
 
     // Get the header line from the file & split it into fields
-    getline(*is, line);
+    getlinePortable(*is, line);
     split(headers, line, is_any_of("\t"));
 
     // Sort out which fields we can manage.

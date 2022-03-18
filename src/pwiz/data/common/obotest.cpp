@@ -1,5 +1,5 @@
 //
-// $Id: obotest.cpp 4129 2012-11-20 00:05:37Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -143,7 +143,7 @@ void test()
    
     unit_assert(obo.filename == filename);    
     unit_assert(obo.header.size() == 5); 
-    unit_assert(obo.prefix == "MS");
+    unit_assert(obo.prefixes.count("MS") > 0);
     unit_assert(obo.terms.size() == 12); // including obsolete terms
 
     set<Term>::const_iterator term = obo.terms.begin();
@@ -211,7 +211,7 @@ void test()
     // test term with [stuff to ignore]
     ++term;
     unit_assert(term->id == 9999999);
-    unit_assert(term->def == "description");
+    unit_assert_operator_equal("description", term->def);
  
     ++term;
     // test property values

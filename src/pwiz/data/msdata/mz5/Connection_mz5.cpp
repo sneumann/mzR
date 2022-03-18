@@ -1,5 +1,5 @@
 //
-// $Id: Connection_mz5.cpp 7032 2014-12-31 22:46:22Z pcbrefugee $
+// $Id$
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -27,6 +27,7 @@
 #include "Translator_mz5.hpp"
 #include <algorithm>
 #include "boost/thread/mutex.hpp"
+#include "pwiz/utility/misc/String.hpp"
 
 namespace pwiz {
 namespace msdata {
@@ -41,6 +42,9 @@ Connection_mz5::Connection_mz5(const std::string filename, const OpenPolicy op,
     config_(config)
 {
     boost::mutex::scoped_lock lock(connectionReadMutex_);
+
+    if (pwiz::util::findUnicodeBytes(filename) != filename.end())
+        throw ReaderFail("[Connection_mz5] MZ5 does not support Unicode in filepaths ('" + filename + "')");
 
     FileCreatPropList fcparm = FileCreatPropList::DEFAULT;
     FileAccPropList faparm = FileAccPropList::DEFAULT;
@@ -57,6 +61,8 @@ Connection_mz5::Connection_mz5(const std::string filename, const OpenPolicy op,
         rdcc_nelmts = config_.getRdccSlots();
         faparm.setCache(mds_nelemts, rdcc_nelmts, rdcc_nbytes, rdcc_w0);
     }
+
+    H5E_BEGIN_TRY
 
     unsigned int openFlag = H5F_ACC_TRUNC;
     switch (op)
@@ -83,6 +89,8 @@ Connection_mz5::Connection_mz5(const std::string filename, const OpenPolicy op,
         break;
     }
     closed_ = false;
+
+    H5E_END_TRY
 }
 
 Connection_mz5::~Connection_mz5()
@@ -192,6 +200,7 @@ void Connection_mz5::readFile()
                 config_.setTranslating(fi[0].deltaMZ && fi[0].translateInten);
             }
         }
+        fileInfo_ = *fi;
         hsize_t dim[1] =
         { static_cast<hsize_t> (dsend) };
         DataSpace dspr(1, dim);
@@ -398,6 +407,11 @@ void Connection_mz5::flush(const Configuration_mz5::MZ5DataSets v)
 const Configuration_mz5& Connection_mz5::getConfiguration()
 {
     return config_;
+}
+
+const FileInformationMZ5& Connection_mz5::getFileInformation() const
+{
+    return fileInfo_;
 }
 
 void Connection_mz5::close()

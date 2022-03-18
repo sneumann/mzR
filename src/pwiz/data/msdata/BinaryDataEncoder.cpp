@@ -1,5 +1,5 @@
 //
-// $Id: BinaryDataEncoder.cpp 6945 2014-11-26 18:58:33Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -37,7 +37,7 @@
 #include "boost/iostreams/device/array.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 #include "pwiz/data/msdata/MSNumpress.hpp"
-#include <Rcpp.h>
+
 namespace pwiz {
 namespace msdata {
 
@@ -59,10 +59,12 @@ class BinaryDataEncoder::Impl
     :   config_(config)
     {}
 
-    void encode(const vector<double>& data, string& result, size_t* binaryByteCount);
+    template <typename T, typename T32> void encode(const vector<T>& data, string& result, size_t* binaryByteCount);
     void encode(const double* data, size_t dataSize, std::string& result, size_t* binaryByteCount);
-    void decode(const char *encodedData, size_t len, vector<double>& result);
-    void decode(const string& encodedData, vector<double>& result) 
+    void encode(const std::int64_t* data, size_t dataSize, std::string& result, size_t* binaryByteCount);
+    void decode(const char *encodedData, size_t len, pwiz::util::BinaryData<double>& result);
+    void decode(const char *encodedData, size_t len, pwiz::util::BinaryData<std::int64_t>& result);
+    template <typename T, typename T32> void decode(const string& encodedData, pwiz::util::BinaryData<T>& result)
     {
         decode(encodedData.c_str(),encodedData.length(),result);
     }
@@ -79,13 +81,14 @@ BOOST_STATIC_ASSERT(sizeof(float) == 4);
 BOOST_STATIC_ASSERT(sizeof(double) == 8);
 
 
+template <typename T, typename T32>
 struct DoubleToFloat
 {
-    float operator()(double d) {return float(d);}
+    float operator()(T d) {return T32(d);}
 };
 
-
-void BinaryDataEncoder::Impl::encode(const vector<double>& data, string& result, size_t* binaryByteCount)
+template <typename T, typename T32>
+void BinaryDataEncoder::Impl::encode(const vector<T>& data, string& result, size_t* binaryByteCount)
 {
     if (data.empty()) return;
     encode(&data[0], data.size(), result, binaryByteCount);
@@ -121,24 +124,27 @@ void filterArray(const void* byteBuffer, size_t byteCount, vector<unsigned char>
 
 void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::string& result, size_t* binaryByteCount)
 {
+    typedef double T;
+    typedef float T32;
+
     // using MSNumpress, from johan.teleman@immun.lth.se
     size_t byteCount;
     const void* byteBuffer;
     vector<unsigned char> compressed;
     vector<unsigned char> numpressed;
-    vector<float> data32;
-    vector<double> data64endianized;
+    vector<T32> data32;
+    vector<T> data64endianized;
 
     if (Numpress_None != config_.numpress) { // lossy numerical representation
         try {
             switch(config_.numpress)
             {
             case Numpress_Linear:
-                numpressed.resize(dataSize * sizeof(double) + 8);
+                numpressed.resize(dataSize * sizeof(T) + 8);
                 break;
 
             case Numpress_Pic:
-                numpressed.resize(dataSize * sizeof(double));
+                numpressed.resize(dataSize * sizeof(T));
                 break;
 
             case Numpress_Slof:
@@ -149,11 +155,28 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
                 throw runtime_error("[BinaryDataEncoder::encode()] unknown numpress mode");
                 break;
             }
-            vector<double> unpressed; // for checking excessive accurary loss
+            vector<T> unpressed; // for checking excessive accuracy loss
+            int n=-1;
             double numpressErrorTolerance = 0.0;
             switch (config_.numpress) {
                 case Numpress_Linear:
-                    byteCount = MSNumpress::encodeLinear(data, dataSize, &numpressed[0], config_.numpressFixedPoint);
+                    if (config_.numpressLinearAbsMassAcc > 0.0)
+                    {
+                      double fp = MSNumpress::optimalLinearFixedPointMass(data, dataSize, config_.numpressLinearAbsMassAcc);
+                      if (fp < 0.0) 
+                      { 
+                        // failure: cannot achieve that accuracy, thus don't numpress (see below)
+                        n = 0;
+                        byteCount = MSNumpress::encodeLinear(data, dataSize, &numpressed[0], config_.numpressFixedPoint);
+                      }
+                      else
+                      {
+                        byteCount = MSNumpress::encodeLinear(data, dataSize, &numpressed[0], fp);
+                      }
+                    }
+                    else {
+                      byteCount = MSNumpress::encodeLinear(data, dataSize, &numpressed[0], config_.numpressFixedPoint);
+                    }
                     numpressed.resize(byteCount);
                     if ((numpressErrorTolerance=config_.numpressLinearErrorTolerance) > 0) // decompress to check accuracy loss
                         MSNumpress::decodeLinear(numpressed,unpressed); 
@@ -163,7 +186,7 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
                     byteCount = MSNumpress::encodePic(data, dataSize, &numpressed[0]);
                     numpressed.resize(byteCount);
                     numpressErrorTolerance = 0.5; // it's an integer rounding, so always +- 0.5
-                    MSNumpress::decodePic(numpressed,unpressed); // but susceptable to overflow, so always check
+                    MSNumpress::decodePic(numpressed,unpressed); // but susceptible to overflow, so always check
                     break; 
 
                 case Numpress_Slof:
@@ -177,7 +200,6 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
                     break;
             }
             // now check to see if encoding introduces excessive error
-            int n=-1;
             if (numpressErrorTolerance) 
             {
                 if (Numpress_Pic == config_.numpress)  // integer rounding, abs accuracy is +- 0.5
@@ -215,9 +237,9 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
             else
                 byteBuffer = reinterpret_cast<const void*>(&numpressed[0]);
         } catch (int e) {
-            Rcpp::Rcerr << "MZNumpress encoder threw exception: " << e << endl;
+            cerr << "MZNumpress encoder threw exception: " << e << endl;
         } catch (...) {
-            Rcpp::Rcerr << "Unknown exception while encoding " << dataSize << " doubles" << endl;
+            cerr << "Unknown exception while encoding " << dataSize << " doubles" << endl;
         }
 
     }
@@ -234,7 +256,7 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
         //
 
         byteBuffer = reinterpret_cast<const void*>(data); 
-        byteCount = dataSize * sizeof(double);
+        byteCount = dataSize * sizeof(T);
 
         // 64-bit -> 32-bit downconversion
 
@@ -242,9 +264,9 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
         if (config_.precision == Precision_32)
         {
             data32.resize(dataSize);
-            transform(data, data+dataSize, data32.begin(), DoubleToFloat());
+            transform(data, data+dataSize, data32.begin(), DoubleToFloat<T, T32>());
             byteBuffer = reinterpret_cast<void*>(&data32[0]);
-            byteCount = data32.size() * sizeof(float);
+            byteCount = data32.size() * sizeof(T32);
         }
 
         // byte ordering
@@ -269,12 +291,12 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
                 unsigned long long* to = reinterpret_cast<unsigned long long*>(&data64endianized[0]);
                 transform(from, from+dataSize, to, endianize64);
                 byteBuffer = reinterpret_cast<void*>(&data64endianized[0]);
-                byteCount = dataSize * sizeof(double);
+                byteCount = dataSize * sizeof(T);
             }
         }
     }
-    // compression
 
+    // zlib compression (is done after 32/64bit conversion and after numpress)
     if (config_.compression == Compression_Zlib)
     {
         filterArray<zlib_compressor>(byteBuffer, byteCount,compressed);
@@ -316,8 +338,114 @@ void BinaryDataEncoder::Impl::encode(const double* data, size_t dataSize, std::s
 }
 
 
-template <typename float_type>
-void copyBuffer(const void* byteBuffer, size_t byteCount, vector<double>& result)
+
+void BinaryDataEncoder::Impl::encode(const std::int64_t* data, size_t dataSize, std::string& result, size_t* binaryByteCount)
+{
+    typedef std::int64_t T;
+    typedef std::int32_t T32;
+
+    // using MSNumpress, from johan.teleman@immun.lth.se
+    size_t byteCount;
+    const void* byteBuffer;
+    vector<unsigned char> compressed;
+    vector<unsigned char> numpressed;
+    vector<T32> data32;
+    vector<T> data64endianized;
+
+    //
+    // We use buffer abstractions, since we may need to change buffers during
+    // downconversion and compression -- these are eventually passed to
+    // the Base64 encoder.  Note that:
+    //  - byteBuffer and byteCount must remain valid at the end of any block
+    //    in this function
+    //  - by default, no processing is done, resulting in no buffer changes
+    //    and fall through to Base64 encoding
+    //
+
+    byteBuffer = reinterpret_cast<const void*>(data);
+    byteCount = dataSize * sizeof(T);
+
+    // 64-bit -> 32-bit downconversion
+
+
+    if (config_.precision == Precision_32)
+    {
+        data32.resize(dataSize);
+        transform(data, data + dataSize, data32.begin(), DoubleToFloat<T, T32>());
+        byteBuffer = reinterpret_cast<void*>(&data32[0]);
+        byteCount = data32.size() * sizeof(T32);
+    }
+
+    // byte ordering
+
+#ifdef PWIZ_LITTLE_ENDIAN
+    bool mustEndianize = (config_.byteOrder == ByteOrder_BigEndian);
+#elif defined(PWIZ_BIG_ENDIAN)
+    bool mustEndianize = (config_.byteOrder == ByteOrder_LittleEndian);
+#endif
+
+    if (mustEndianize)
+    {
+        if (config_.precision == Precision_32)
+        {
+            unsigned int* p = reinterpret_cast<unsigned int *>(&data32[0]);
+            transform(p, p + data32.size(), p, endianize32);
+        }
+        else // Precision_64 
+        {
+            data64endianized.resize(dataSize);
+            const unsigned long long* from = reinterpret_cast<const unsigned long long*>(data);
+            unsigned long long* to = reinterpret_cast<unsigned long long*>(&data64endianized[0]);
+            transform(from, from + dataSize, to, endianize64);
+            byteBuffer = reinterpret_cast<void*>(&data64endianized[0]);
+            byteCount = dataSize * sizeof(T);
+        }
+    }
+
+    // zlib compression (is done after 32/64bit conversion and after numpress)
+    if (config_.compression == Compression_Zlib)
+    {
+        filterArray<zlib_compressor>(byteBuffer, byteCount, compressed);
+        if (!compressed.empty())
+        {
+            byteBuffer = reinterpret_cast<void*>(&compressed[0]);
+            byteCount = compressed.size();
+        }
+        else
+        {
+            throw runtime_error("[BinaryDataEncoder::encode()] Compression error?");
+        }
+    }
+
+    // Base64 encoding
+
+    result.resize(Base64::binaryToTextSize(byteCount));
+
+    // std::string storage is not guaranteed contiguous in older C++ standards,
+    // and on long strings this has caused problems in the wild.  So test for
+    // actual contiguousness, and fall back to std::vector if needed
+    // thx Johan Teleman
+    size_t textSize;
+    char *first = &result[0];
+    char *last = &result[result.size() - 1];
+    if ((int)result.size() == 1 + (last - first)) // pointer math agrees with [] operator
+        textSize = Base64::binaryToText(byteBuffer, byteCount, &result[0]);
+    else
+    {
+        std::vector<char> contig;  // work in this contiguous memory then copy to string
+        contig.resize(result.size());
+        textSize = Base64::binaryToText(byteBuffer, byteCount, &contig[0]);
+        copy(contig.begin(), contig.end(), result.begin());
+    }
+    result.resize(textSize);
+
+    if (binaryByteCount != NULL)
+        *binaryByteCount = byteCount; // size before base64 encoding
+}
+
+
+template <typename source_type, typename float_type>
+void copyBuffer(const void* byteBuffer, size_t byteCount, pwiz::util::BinaryData<source_type>& result)
 {
     const float_type* floatBuffer = reinterpret_cast<const float_type*>(byteBuffer);
 
@@ -332,8 +460,11 @@ void copyBuffer(const void* byteBuffer, size_t byteCount, vector<double>& result
 }
 
 
-void BinaryDataEncoder::Impl::decode(const char *encodedData, size_t length, vector<double>& result)
+void BinaryDataEncoder::Impl::decode(const char *encodedData, size_t length, pwiz::util::BinaryData<double>& result)
 {
+    typedef double T;
+    typedef float T32;
+
     if (!encodedData || !length) return;
 
     // Base64 decoding
@@ -423,13 +554,13 @@ void BinaryDataEncoder::Impl::decode(const char *encodedData, size_t length, vec
                 if (config_.precision == Precision_32)
                 {
                     unsigned int* p = reinterpret_cast<unsigned int*>(byteBuffer);
-                    size_t floatCount = byteCount / sizeof(float);
+                    size_t floatCount = byteCount / sizeof(T32);
                     transform(p, p+floatCount, p, endianize32);
                 }
                 else // Precision_64
                 {
                     unsigned long long* p = reinterpret_cast<unsigned long long*>(byteBuffer);
-                    size_t doubleCount = byteCount / sizeof(double);
+                    size_t doubleCount = byteCount / sizeof(T);
                     transform(p, p+doubleCount, p, endianize64);
                 }
             }
@@ -437,15 +568,89 @@ void BinaryDataEncoder::Impl::decode(const char *encodedData, size_t length, vec
             // (upconversion and) copy to result buffer
 
             if (config_.precision == Precision_32)
-                copyBuffer<float>(byteBuffer, byteCount, result);
+                copyBuffer<T, T32>(byteBuffer, byteCount, result);
             else // Precision_64
-                copyBuffer<double>(byteBuffer, byteCount, result);
+                copyBuffer<T, T>(byteBuffer, byteCount, result);
             }
             break;
         default: 
             throw runtime_error("BinaryDataEncoder::Impl::decode  unknown numpress method");
             break;
    }
+}
+
+void BinaryDataEncoder::Impl::decode(const char *encodedData, size_t length, pwiz::util::BinaryData<std::int64_t>& result)
+{
+    typedef std::int64_t T;
+    typedef std::int32_t T32;
+
+    if (!encodedData || !length) return;
+
+    // Base64 decoding
+
+    vector<unsigned char> binary(Base64::textToBinarySize(length));
+    size_t binarySize = Base64::textToBinary(encodedData, length, &binary[0]);
+    binary.resize(binarySize);
+
+    // buffer abstractions
+
+    void* byteBuffer = &binary[0];
+    size_t byteCount = binarySize;
+
+    // decompression
+
+    vector<unsigned char> decompressed;
+    switch (config_.compression) {
+        case Compression_Zlib:
+        {
+            filterArray<zlib_decompressor>(byteBuffer, byteCount, decompressed);
+            if (!decompressed.empty())
+            {
+                byteBuffer = reinterpret_cast<void*>(&decompressed[0]);
+                byteCount = decompressed.size();
+            }
+            else
+            {
+                throw runtime_error("[BinaryDataEncoder::decode()] Compression error?");
+            }
+        }
+        break;
+        case Compression_None:
+            break;
+        default:
+            throw runtime_error("[BinaryDataEncoder::decode()] unknown compression type");
+            break;
+    }
+    // endianization for non-numpress cases
+
+#ifdef PWIZ_LITTLE_ENDIAN
+    bool mustEndianize = (config_.byteOrder == ByteOrder_BigEndian);
+#elif defined(PWIZ_BIG_ENDIAN)
+    bool mustEndianize = (config_.byteOrder == ByteOrder_LittleEndian);
+#endif
+
+    if (mustEndianize)
+    {
+        if (config_.precision == Precision_32)
+        {
+            unsigned int* p = reinterpret_cast<unsigned int*>(byteBuffer);
+            size_t floatCount = byteCount / sizeof(T32);
+            transform(p, p + floatCount, p, endianize32);
+        }
+        else // Precision_64
+        {
+            unsigned long long* p = reinterpret_cast<unsigned long long*>(byteBuffer);
+            size_t doubleCount = byteCount / sizeof(T);
+            transform(p, p + doubleCount, p, endianize64);
+        }
+    }
+
+    // (upconversion and) copy to result buffer
+
+    if (config_.precision == Precision_32)
+        copyBuffer<T, T32>(byteBuffer, byteCount, result);
+    else // Precision_64
+        copyBuffer<T, T>(byteBuffer, byteCount, result);
 }
 
 
@@ -460,7 +665,7 @@ PWIZ_API_DECL BinaryDataEncoder::BinaryDataEncoder(const Config& config)
 
 PWIZ_API_DECL void BinaryDataEncoder::encode(const std::vector<double>& data, std::string& result, size_t* binaryByteCount /*= NULL*/) const
 {
-    impl_->encode(data, result, binaryByteCount);
+    impl_->encode<double, float>(data, result, binaryByteCount);
 }
 
 
@@ -470,7 +675,24 @@ PWIZ_API_DECL void BinaryDataEncoder::encode(const double* data, size_t dataSize
 }
 
 
-PWIZ_API_DECL void BinaryDataEncoder::decode(const char * encodedData, size_t len, std::vector<double>& result) const
+PWIZ_API_DECL void BinaryDataEncoder::decode(const char * encodedData, size_t len, pwiz::util::BinaryData<double> &result) const
+{
+    impl_->decode(encodedData, len, result);
+}
+
+PWIZ_API_DECL void BinaryDataEncoder::encode(const std::vector<std::int64_t>& data, std::string& result, size_t* binaryByteCount /*= NULL*/) const
+{
+    impl_->encode<std::int64_t, std::int32_t>(data, result, binaryByteCount);
+}
+
+
+PWIZ_API_DECL void BinaryDataEncoder::encode(const std::int64_t* data, size_t dataSize, std::string& result, size_t* binaryByteCount /*= NULL*/) const
+{
+    impl_->encode(data, dataSize, result, binaryByteCount);
+}
+
+
+PWIZ_API_DECL void BinaryDataEncoder::decode(const char * encodedData, size_t len, pwiz::util::BinaryData<std::int64_t> &result) const
 {
     impl_->decode(encodedData, len, result);
 }

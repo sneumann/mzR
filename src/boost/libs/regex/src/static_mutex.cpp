@@ -17,7 +17,10 @@
   */
 
 #define BOOST_REGEX_SOURCE
-#include <boost/config.hpp>
+#include <boost/regex/config.hpp>
+
+#if defined(BOOST_REGEX_CXX03)
+
 #include <boost/assert.hpp>
 
 #ifdef BOOST_HAS_THREADS
@@ -28,7 +31,9 @@
 #ifndef NOMINMAX
 #  define NOMINMAX
 #endif
-#define WIN32_LEAN_AND_MEAN
+#ifndef WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 #include <boost/static_assert.hpp>
 #endif
@@ -181,3 +186,4 @@ void scoped_static_mutex_lock::unlock()
 }
 
 #endif // BOOST_HAS_THREADS
+#endif

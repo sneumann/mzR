@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_mzid_Test.cpp 4309 2013-01-30 17:34:36Z nickshulman $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>

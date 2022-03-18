@@ -1,5 +1,5 @@
 //
-// $Id: SAXParserTest.cpp 4243 2012-12-28 20:24:37Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -465,7 +465,7 @@ void testDone()
     parse(is, handler); // parses <AnotherRootElement> and aborts
     
     string buffer;
-    getline(is, buffer, '<');
+    getlinePortable(is, buffer, '<');
     
     if (os_) *os_ << "buffer: " << buffer << "\n\n";
     unit_assert_operator_equal("The quick brown fox jumps over the lazy dog.", buffer);

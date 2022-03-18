@@ -1,5 +1,5 @@
 //
-// $Id: erf.hpp 4151 2012-11-28 18:32:03Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>

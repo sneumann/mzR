@@ -1,5 +1,5 @@
 //
-// $Id: Serializer_mz5_Test.cpp 4129 2012-11-20 00:05:37Z chambm $
+// $Id$
 //
 //
 // Original authors: Mathias Wilhelm <mw@wilhelmonline.com>
@@ -110,10 +110,10 @@ void testThreadSafetyWorker(boost::barrier* testBarrier)
         testWriteRead();
     } catch (exception& e)
     {
-        Rcpp::Rcerr << "Exception in worker thread: " << e.what() << endl;
+        cerr << "Exception in worker thread: " << e.what() << endl;
     } catch (...)
     {
-        Rcpp::Rcerr << "Unhandled exception in worker thread." << endl;
+        cerr << "Unhandled exception in worker thread." << endl;
         exit(1); // fear the unknown!
     }
 }

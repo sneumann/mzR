@@ -1,5 +1,5 @@
 //
-// $Id: MascotReaderTest.cpp 6867 2014-10-31 23:13:34Z chambm $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

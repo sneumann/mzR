@@ -1,5 +1,5 @@
 //
-// $Id: TextWriter.hpp 8868 2015-09-22 20:51:26Z kaipot $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>

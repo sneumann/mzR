@@ -1,5 +1,5 @@
 //
-// $Id: IOTest.cpp 5759 2014-02-19 22:26:29Z chambm $
+// $Id$
 //
 //
 // Original author: Robert Burke <robert.burke@proteowizard.org>

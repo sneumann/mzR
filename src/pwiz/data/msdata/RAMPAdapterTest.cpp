@@ -1,5 +1,5 @@
 //
-// $Id: RAMPAdapterTest.cpp 4129 2012-11-20 00:05:37Z chambm $
+// $Id$
 //
 //
 // Original author: Darren Kessner <darren@proteowizard.org>
@@ -84,6 +84,7 @@ ostream& operator<<(ostream& os, const ScanHeaderStruct& header)
    os << "seqNum: " << header.seqNum << endl;
    os << "acquisitionNum: " << header.acquisitionNum << endl;
    os << "msLevel: " << header.msLevel << endl;
+   os << "activationMethod: " << header.activationMethod  << endl;
    os << "peaksCount: " << header.peaksCount << endl;
    os << "totIonCurrent: " << header.totIonCurrent << endl;
    os << "retentionTime: " << header.retentionTime << endl;
@@ -162,6 +163,7 @@ void test(const string& filename)
     unit_assert_equal(header1.highMZ, 1795.56, epsilon);
     unit_assert(header1.precursorScanNum == 0);
     unit_assert(header1.scanType == string("Full"));
+    unit_assert(header1.activationMethod == string(""));
 
     vector<double> peaks;
     adapter.getScanPeaks(0, peaks);
@@ -181,6 +183,7 @@ void test(const string& filename)
     unit_assert(header2.seqNum == 2);
     unit_assert(header2.acquisitionNum == 20);
     unit_assert(header2.msLevel == 2);
+    unit_assert(header2.activationMethod == string("collision-induced dissociation"));
     unit_assert(header2.peaksCount == 10);
     unit_assert_equal(header2.totIonCurrent, 1.66755e7, epsilon);
     unit_assert_equal(header2.retentionTime, 359.43, epsilon);
@@ -238,19 +241,13 @@ void test(const string& filename)
     unit_assert(!strcmp(instrument.detector, "electron multiplier"));
 }
 
-static void test_mzML_1_0(const char *test_app_name) {
-	// depending on where you invoke bjam from, test_app_name will have name like...
-	// ..\build\pwiz\data\msdata\gcc-mingw-3.4.5\release\link-static\runtime-link-static\threading-multi\RAMPAdapterTest.exe
-	// build\pwiz\data\msdata\gcc-mingw-3.4.5\release\link-static\runtime-link-static\threading-multi\RAMPAdapterTest.exe
-	std::string buildparent(test_app_name);
-	size_t pos = buildparent.find("build");
-    if (pos == std::string::npos) {
-        buildparent = __FILE__; // nonstandard build, maybe?  try using source file name
-        // something like \ProteoWizard\pwiz\pwiz\data\msdata\RAMPAdapterTest.cpp
-        pos = buildparent.rfind("pwiz");
-    }
-	buildparent.resize(pos);
-	std::string example_data_dir = buildparent + "example_data/";
+static void test_mzML_1_0() {
+
+    std::string srcparent(__FILE__);
+    size_t pos = srcparent.find((bfs::path("pwiz") / "data").string());
+    srcparent.resize(pos);
+
+	std::string example_data_dir = srcparent + "example_data/";
 	RAMPAdapter adapter_1_0(example_data_dir + "tiny.pwiz.1.0.mzML");
     const char *testfiles[2] = {"tiny.pwiz.1.1.mzML","tiny.pwiz.mzXML"};
     for (int tf=2;tf--;) { // test mzML 1.0 vs mzML 1.1 and mzXML
@@ -300,7 +297,7 @@ int main(int argc, char* argv[])
         boost::filesystem::remove(filename);
         boost::filesystem::remove(gzfilename);
 		// and make sure we're still good with older files
-		test_mzML_1_0(argv[0]); // passing in app name as it contains our path
+		test_mzML_1_0();
         
     }
     catch (exception& e)

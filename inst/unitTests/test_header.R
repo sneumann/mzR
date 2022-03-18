@@ -11,10 +11,5 @@ test_header_all <- function() {
     header_pwiz <- header(mzxml)
     close(mzxml)
 
-    mzxml <- openMSfile(file, backend="Ramp")
-    header_ramp <- header(mzxml)
-    close(mzxml)
-
     checkEquals(colnames(header_cdf), colnames(header_pwiz))
-    checkEquals(colnames(header_ramp), colnames(header_pwiz))
 }

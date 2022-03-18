@@ -1,5 +1,5 @@
 //
-// $Id: CharIndexedVector.hpp 1195 2009-08-14 22:12:04Z chambm $ 
+// $Id$ 
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>

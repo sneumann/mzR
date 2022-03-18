@@ -1,5 +1,5 @@
 //
-// $Id: Index_mzML.cpp 4601 2013-05-29 23:23:30Z pcbrefugee $
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers <a.t> vanderbilt.edu>
@@ -265,8 +265,11 @@ class HandlerIndexCreator : public SAXParser::Handler
     : spectrumCount_(spectrumCount),
       spectrumIndex_(spectrumIndex),
       chromatogramCount_(chromatogramCount),
-      chromatogramIndex_(chromatogramIndex)
-    {}
+      chromatogramIndex_(chromatogramIndex),
+      legacyIdRefToNativeId(&legacyIdRefToNativeId)
+    {
+        version = schemaVersion_;
+    }
 
     virtual Status startElement(const string& name, 
                                 const Attributes& attributes,
@@ -280,6 +283,29 @@ class HandlerIndexCreator : public SAXParser::Handler
 
             getAttribute(attributes, "id", si->id);
             getAttribute(attributes, "spotID", si->spotID);
+
+            // mzML 1.0
+            if (version == 1)
+            {
+                string idRef, nativeID;
+                getAttribute(attributes, "id", idRef);
+                getAttribute(attributes, "nativeID", nativeID);
+                if (nativeID.empty())
+                    si->id = idRef;
+                else
+                {
+                    try
+                    {
+                        lexical_cast<int>(nativeID);
+                        si->id = "scan=" + nativeID;
+                    }
+                    catch (exception&)
+                    {
+                        si->id = nativeID;
+                    }
+                    (*legacyIdRefToNativeId)[idRef] = si->id;
+                }
+            }
 
             si->index = spectrumCount_;
             si->sourceFilePosition = position;
@@ -310,6 +336,7 @@ class HandlerIndexCreator : public SAXParser::Handler
     vector<SpectrumIdentityFromXML>& spectrumIndex_;
     size_t& chromatogramCount_;
     vector<ChromatogramIdentity>& chromatogramIndex_;
+    map<string, string>* legacyIdRefToNativeId;
 };
 
 } // namespace
@@ -327,11 +354,11 @@ void Index_mzML::Impl::readIndex() const
 
     string::size_type indexIndexOffset = buffer.find("<indexListOffset>");
     if (indexIndexOffset == string::npos)
-        throw runtime_error("Index_mzML::readIndex()] <indexListOffset> not found."); 
+        throw index_error("Index_mzML::readIndex()] <indexListOffset> not found.");
 
     is_->seekg(-bufferSize + static_cast<int>(indexIndexOffset), std::ios::end);
     if (!*is_)
-        throw runtime_error("Index_mzML::readIndex()] Error seeking to <indexListOffset>."); 
+        throw index_error("Index_mzML::readIndex()] Error seeking to <indexListOffset>.");
     
     // read <indexListOffset>
 
@@ -339,13 +366,13 @@ void Index_mzML::Impl::readIndex() const
     HandlerIndexListOffset handlerIndexListOffset(indexListOffset);
     SAXParser::parse(*is_, handlerIndexListOffset);
     if (indexListOffset == 0)
-        throw runtime_error("Index_mzML::readIndex()] Error parsing <indexListOffset>."); 
+        throw index_error("Index_mzML::readIndex()] Error parsing <indexListOffset>.");
 
     // read <index>
 
     is_->seekg(offset_to_position(indexListOffset));
     if (!*is_) 
-        throw runtime_error("[Index_mzML::readIndex()] Error seeking to <index>.");
+        throw index_error("[Index_mzML::readIndex()] Error seeking to <index>.");
 
     HandlerIndexList handlerIndexList(schemaVersion_,
                                       spectrumCount_, spectrumIndex_, legacyIdRefToNativeId_,
