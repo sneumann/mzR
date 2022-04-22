@@ -725,9 +725,9 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     Spectrum& spct = *spectrumList->spectra[i];
     spct.set(MS_ms_level, msLevel[i]);
     // centroided
-    if (centroided[i] != NA_LOGICAL && centroided[i] == TRUE)
+    if (!Rcpp::LogicalVector::is_na(centroided[i]) && centroided[i] == TRUE)
       spct.set(MS_centroid_spectrum);
-    if (centroided[i] != NA_LOGICAL && centroided[i] == FALSE)
+    if (!Rcpp::LogicalVector::is_na(centroided[i]) && centroided[i] == FALSE)
       spct.set(MS_profile_spectrum);
     // [X] polarity
     if (polarity[i] == 0)
@@ -765,12 +765,13 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     if (!Rcpp::StringVector::is_na(filterString[i]))
       spct_scan.set(MS_filter_string, filterString[i]);
 
-    if (ionMobilityDriftTime[i] != NA_REAL)
+    if (!Rcpp::NumericVector::is_na(ionMobilityDriftTime[i]))
       spct_scan.set(MS_ion_mobility_drift_time, ionMobilityDriftTime[i],
 		    UO_millisecond);
 
     // scanWindow
-    if (scanWindowLowerLimit[i] != NA_REAL && scanWindowUpperLimit[i] != NA_REAL) {
+    if (!Rcpp::NumericVector::is_na(scanWindowLowerLimit[i]) &&
+	!Rcpp::NumericVector::is_na(scanWindowUpperLimit[i])) {
       spct_scan.scanWindows.push_back(ScanWindow(scanWindowLowerLimit[i], scanWindowUpperLimit[i], MS_m_z));
     }
     // MSn - precursor:
@@ -804,7 +805,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
 	prec.spectrumID = spectrumId[precursor_idx];
       }
       // isolation window
-      if (isolationWindowTargetMZ[i] != NA_REAL) {
+      if (!Rcpp::NumericVector::is_na(isolationWindowTargetMZ[i])) {
 	prec.isolationWindow.set(MS_isolation_window_target_m_z, isolationWindowTargetMZ[i]);
 	prec.isolationWindow.set(MS_isolation_window_lower_offset, isolationWindowLowerOffset[i]);
 	prec.isolationWindow.set(MS_isolation_window_upper_offset, isolationWindowUpperOffset[i]);
