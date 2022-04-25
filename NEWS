@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.27.6
+-------------------------
+ o Only export certain spectra header parameters if their values are not NA.
+   Closes #266.
+
 CHANGES IN VERSION 2.27.5
 -------------------------
  o `peaks` method for pwiz backend sets colnames on returned matrices.
