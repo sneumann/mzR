@@ -1013,7 +1013,7 @@ Rcpp::NumericMatrix RcppPwiz::get3DMap ( std::vector<int> scanNumbers, double wh
       //Rprintf("%d\n",1);
       for (int i = 0; i < scanNumbers.size(); i++)
         {
-	  SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, DetailLevel_FullMetadata);
+	  SpectrumPtr s = slp->spectrum(scanNumbers[i] - 1, DetailLevel_FullData);
 	  vector<MZIntensityPair> pairs;
 	  s->getMZIntensityPairs(pairs);
 

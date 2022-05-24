@@ -202,3 +202,9 @@ test_getScanHeaderInfo <- function() {
 
     close(mzml)
 }
+
+test_get3Dmap <- function() {
+    ms <- openMSfile(system.file("microtofq", "MM14.mzML", package = "msdata"))
+    td <- get3Dmap(ms, scans = 1:100, lowMz = 100, highMz = 1000, resMz = 1)
+    checkTrue(any(td > 0))
+}
