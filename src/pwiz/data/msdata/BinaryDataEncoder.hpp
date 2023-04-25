@@ -32,6 +32,7 @@
 #include <vector>
 #include <map>
 #include "pwiz/data/common/cv.hpp"
+#include <cstdint>
 
 
 namespace pwiz {
