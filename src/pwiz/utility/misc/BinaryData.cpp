@@ -32,6 +32,7 @@
 #pragma managed
 #include "pinned_gcroot.h"
 #endif
+#include <cstdint>
 
 namespace pwiz {
 namespace util {
