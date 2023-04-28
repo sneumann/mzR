@@ -73,6 +73,7 @@ jobs:
         run: |
           mkdir /__w/_temp/Library
           echo ".libPaths('/__w/_temp/Library')" > ~/.Rprofile
+          echo 'options(HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])))' >> ~/.Rprofile
 
       ## Add bin/R to PATH, which is missing on rhub/fedora-gcc-devel      
       - name: Ensure R is on the PATH       
