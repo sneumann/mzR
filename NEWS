@@ -1,3 +1,8 @@
+CHANGES IN VERSION 2.37.2
+-------------------------
+o remove mentions of mzData in the DESCRIPTION, vignette and manual
+  files (support dropped in 2.29.3)
+
 CHANGES IN VERSION 2.37.1
 -------------------------
  o fix compilation on centOS 7 / R-4.3.1 reported in #286

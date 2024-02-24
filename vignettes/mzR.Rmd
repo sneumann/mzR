@@ -13,22 +13,23 @@ bibliography: mzR.bib
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Accessin raw mass spectrometry and identification data}
-  %\VignetteKeywords{mzXML, mzData, netCDF, mzML, mzIdentML, mass spectrometry, proteomics, metabolomics}
+  %\VignetteKeywords{mzXML, netCDF, mzML, mzIdentML, mass spectrometry, proteomics, metabolomics}
   %\VignetteEncoding{UTF-8}
   %\VignettePackage{mzR}
 ---
 
 # Introduction
 
-The `r BiocStyle::Biocpkg("mzR")` package aims at providing a common, low-level
-interface to several mass spectrometry data formats, namely `mzData`
-[@Orchard2007], `mzXML` [@Pedrioli2004], `mzML` [@Martens2010] for raw
-data, and `mzIdentML` [@Jones2012], somewhat similar to the
-Bioconductor package affyio for affymetrix raw data. No processing is
-done in `r BiocStyle::Biocpkg("mzR")`, which is left to packages such as `r
-BiocStyle::Biocpkg("xcms")` [@Smith:2006, Tautenhahn:2008] or
-`r BiocStyle::Biocpkg("MSnbase")` [@Gatto:2012]. These packages also provide more
-convenient, high-level interfaces to raw and identification. data
+The `r BiocStyle::Biocpkg("mzR")` package aims at providing a common,
+low-level interface to several mass spectrometry data formats, namely,
+`mzXML` [@Pedrioli2004], `mzML` [@Martens2010] for raw data, and
+`mzIdentML` [@Jones2012], somewhat similar to the Bioconductor package
+affyio for affymetrix raw data. No processing is done in `r
+BiocStyle::Biocpkg("mzR")`, which is left to packages such as `r
+BiocStyle::Biocpkg("xcms")` [@Smith:2006, Tautenhahn:2008] or `r
+BiocStyle::Biocpkg("MSnbase")` [@Gatto:2012]. These packages also
+provide more convenient, high-level interfaces to raw and
+identification. data
 
 Most importantly, access to the data should be fast and memory
 efficient. This is made possible by allowing on-disk random file
@@ -110,7 +111,7 @@ depends on the MS software which converted the data.
 
 # Example
 
-## `mzXML`/`mzML`/`mzData` files
+## `mzXML`/`mzML` files
 
 A short example sequence to read data from a mass spectrometer.
 First open the file.

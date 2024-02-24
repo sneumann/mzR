@@ -59,8 +59,7 @@
 
   The sub-classes implement specific APIs to access the underlying data
   and metadata in the files. Currently \code{mzRpwiz} is available.
-  \code{mzRpwiz} uses
-  Proteowizard to access the relevant information in \code{mzData},
+  \code{mzRpwiz} uses Proteowizard to access the relevant information in
   \code{mzXML} and \code{mzML} files. \code{mzRident} is used as an
   interface to \code{mzIdentML} files.
 
@@ -154,7 +153,7 @@
  library(msdata)
  filepath <- system.file("microtofq", package = "msdata")
  file <- list.files(filepath, pattern="MM14.mzML",
-		     full.names=TRUE, recursive = TRUE)
+                     full.names=TRUE, recursive = TRUE)
  mzml <- openMSfile(file)
  close(mzml)
 

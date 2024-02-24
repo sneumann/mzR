@@ -5,7 +5,7 @@
 \alias{openIDfile}
 
 \title{
-  Create and check mzR objects from netCDF, mzXML, mzData or mzML files.
+  Create and check mzR objects from netCDF, mzXML or mzML files.
 }
 \usage{
  openMSfile(filename, backend = NULL, verbose = FALSE)
@@ -13,12 +13,12 @@
  isInitialized(object)
 
  fileName(object, ...)
- 
+
  openIDfile(filename, verbose = FALSE)
 }
 \arguments{
   \item{filename}{
-    Path name of the netCDF, mzData, mzXML or mzML file to
+    Path name of the netCDF, mzXML or mzML file to
     read/write.
   }
   \item{backend}{
@@ -38,7 +38,7 @@
   \code{mzR} object, open 'filename' file and all header information is
   loaded as a Rcpp module and made accessible through the \code{pwiz}
   slot of the resulting object.
-  
+
   The \code{openIDfile} constructor will create a new format-specifc
   \code{mzR} object, open 'filename' file and all information is
   loaded as a Rcpp module. The mzid format is supported throught
@@ -65,7 +65,7 @@
     mz <- openMSfile(file, backend = "pwiz")
     mz
   }
-  
+
   file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
   mzid <- openIDfile(file)
   softwareInfo(mzid)
