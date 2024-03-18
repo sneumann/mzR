@@ -52,7 +52,7 @@ namespace nowide {
         class BOOST_NOWIDE_DECL winconsole_istream : public std::istream
         {
         public:
-            explicit winconsole_istream(winconsole_ostream* tieStream);
+            explicit winconsole_istream(winconsole_ostream* tieStream=0);
             ~winconsole_istream();
 
         private:
