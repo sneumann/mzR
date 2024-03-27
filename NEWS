@@ -1,3 +1,7 @@
+CHANGES IN VERSION 2.37.4
+-------------------------
+o Fix compilation on MacOS with gcc gcc-13.2.0
+
 CHANGES IN VERSION 2.37.3
 -------------------------
 o Fix compilation on Windows/aarch64 (#290), thanks to Tomas Kalibera for the patch
