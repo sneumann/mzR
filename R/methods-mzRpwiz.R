@@ -158,31 +158,25 @@ setMethod("chromatograms", "mzRpwiz",
 
 
 setMethod("chromatogram", "mzRpwiz",
-          function(object, chrom) {
+          function(object, chrom, drop = TRUE) {
               ## To avoid confusion, the first chromatogram (at index
               ## 0) is indexed at position 1 in R and the last one (at
               ## index nChrom(object) - 1) is indexed at position
               ## nChrom(object).
               n <- nChrom(object)
               all <- FALSE
-              if (missing(chrom)) {
+              if (missing(chrom))
                   chrom <- 1:n
-                  all <- TRUE
-              }
               stopifnot(is.numeric(chrom))
               chrom <- as.integer(chrom)
               if (min(chrom) < 1 | max(chrom) > n)
                   stop("Index out of bound [", 1, ":", n, "].")
               ## Update index to match original indices at the C-level
               chrom <- chrom - 1L
-              if (length(chrom) == 1 & !all) {
-                  ans <- object@backend$getChromatogramsInfo(chrom)
-              } else {
-                  ans <- lapply(chrom,
-                                function(x)
-                                    object@backend$getChromatogramsInfo(x))
-              }
-              return(ans)
+              if (length(chrom) == 1 && drop)
+                  object@backend$getChromatogramsInfo(chrom)
+              else
+                  lapply(chrom, object@backend$getChromatogramsInfo)
           })
 
 setMethod("chromatogramHeader", "mzRpwiz",

@@ -84,6 +84,14 @@
     for all chromatograms is returned. 
   }
   
+  \item{drop}{
+    For \code{chromatogram}, \code{chromatograms}: \code{logical(1)}
+    whether the result should always be a \code{list} of
+    \code{data.frame} (\code{drop = FALSE}), even if data from a single
+    chromatogram is requested, or if, in such cases, a \code{data.frame}
+    should be returned (\code{drop = TRUE}, the default).    
+  }
+  
   \item{...}{Other arguments. A \code{scan} parameter can be passed to
     \code{peaks}.}  }
 
@@ -125,9 +133,8 @@
 
   The \code{chromatogram} (\code{chromatograms}) accessors return
   chromatograms for the MS file handle. If a single index is provided,
-  as \code{data.frame} containing the retention time (1st columns) and
-  intensities (2nd column) is returned. The name of the former is always
-  \code{time}, while the latter will depend on the run parameters.
+  as \code{data.frame} containing the retention time (\code{"rtime"},
+  1st column) and intensities (\code{"intensity"}, 2nd column) is returned.
 
   If more than 1 or no chromatogram indices are provided, then a list of
   chromatograms is returned; either those passed as argument or all of
