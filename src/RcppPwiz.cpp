@@ -875,8 +875,8 @@ Rcpp::DataFrame RcppPwiz::getChromatogramsInfo( int whichChrom )
 	intensity.push_back(p.intensity);
       }
 
-      chromatogramsInfo = Rcpp::DataFrame::create(Rcpp::_["time"] = time,
-						  Rcpp::_[c->id]  = intensity);
+      chromatogramsInfo = Rcpp::DataFrame::create(Rcpp::_["rtime"] = time,
+						  Rcpp::_["intensity"] = intensity);
 
     }
     return(chromatogramsInfo);

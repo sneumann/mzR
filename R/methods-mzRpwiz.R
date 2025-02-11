@@ -154,34 +154,29 @@ setMethod("tic", "mzRpwiz",
           })
 
 setMethod("chromatograms", "mzRpwiz",
-          function(object, chrom) chromatogram(object, chrom))
-
+          function(object, chrom, drop = TRUE) chromatogram(object, chrom,
+                                                            drop = drop))
 
 setMethod("chromatogram", "mzRpwiz",
-          function(object, chrom) {
+          function(object, chrom, drop = TRUE) {
               ## To avoid confusion, the first chromatogram (at index
               ## 0) is indexed at position 1 in R and the last one (at
               ## index nChrom(object) - 1) is indexed at position
               ## nChrom(object).
               n <- nChrom(object)
-              all <- FALSE
-              if (missing(chrom)) {
+              if (missing(chrom))
                   chrom <- 1:n
-                  all <- TRUE
+              else {
+                  stopifnot(is.numeric(chrom))
+                  chrom <- as.integer(chrom)
               }
-              stopifnot(is.numeric(chrom))
-              chrom <- as.integer(chrom)
               if (min(chrom) < 1 | max(chrom) > n)
                   stop("Index out of bound [", 1, ":", n, "].")
               # chromatogram index is adjusted in the backend function
-              if (length(chrom) == 1 & !all) {
-                  ans <- object@backend$getChromatogramsInfo(chrom)
-              } else {
-                  ans <- lapply(chrom,
-                                function(x)
-                                    object@backend$getChromatogramsInfo(x))
-              }
-              return(ans)
+              if (drop && length(chrom) == 1)
+                  object@backend$getChromatogramsInfo(chrom)
+              else
+                  lapply(chrom, object@backend$getChromatogramsInfo)
           })
 
 setMethod("chromatogramHeader", "mzRpwiz",
@@ -191,7 +186,6 @@ setMethod("chromatogramHeader", "mzRpwiz",
               } else {
                   stopifnot(is.numeric(chrom))
                   n <- nChrom(object)
-
                   if (min(chrom) < 1 | max(chrom) > n)
                     stop("Index out of bound [", 1, ":", n, "]")
                   # chromatogram index is adjusted in the backend function

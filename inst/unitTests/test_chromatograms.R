@@ -11,6 +11,12 @@ test_chromatograms1 <- function() {
     checkIdentical(nrow(chromatogram(x, 136L)), 527L)
     checkIdentical(nrow(chromatogram(x, 137L)), 567L)
     checkIdentical(nrow(chromatogram(x, 138L)), 567L)
+    chr <- chromatogram(x, 138L)
+    checkTrue(is.data.frame(chr))
+    checkIdentical(colnames(chr), c("rtime", "intensity"))
+    chr1 <- chromatogram(x, 138L, drop = FALSE)
+    checkTrue(is.list(chr1))
+    checkEquals(chr, chr1[[1L]])
     close(x)
 }
 
@@ -62,9 +68,9 @@ test_chromatogramHeader_indexing <- function() {
         checkTrue(grepl("Index out of bound", e$message))
     })
 
+    all_chrom <- chromatogram(x)
     chrom2 <- chromatogram(x, 2)
-    ch2SafeChromId <- make.names(ch2$chromatogramId)
-    checkEquals(ch2SafeChromId, colnames(chrom2)[2])
+    checkEquals(all_chrom[[2]], chrom2)
 
     close(x)
 }

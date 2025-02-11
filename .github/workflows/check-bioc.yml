@@ -34,10 +34,10 @@ name: R-CMD-check-bioc
 ## Note that you can always run a GHA test without the cache by using the word
 ## "/nocache" in the commit message.
 env:
-  has_testthat: 'true'
+  has_testthat: 'false'
   run_covr: 'true'
   run_pkgdown: 'true'
-  has_RUnit: 'false'
+  has_RUnit: 'true'
   has_BiocCheck: 'false'
   cache-version: 'cache-v1'
 
@@ -123,33 +123,14 @@ jobs:
       - name: Install macOS system dependencies
         if: matrix.config.os == 'macOS-latest'
         run: |
-          ## Enable installing XML from source if needed
-          brew install libxml2
-          echo "XML_CONFIG=/usr/local/opt/libxml2/bin/xml2-config" >> $GITHUB_ENV
-
-          ## Required to install magick as noted at
-          ## https://github.com/r-lib/usethis/commit/f1f1e0d10c1ebc75fd4c18fa7e2de4551fd9978f#diff-9bfee71065492f63457918efcd912cf2
-          brew install imagemagick@6
-
-          ## For textshaping, required by ragg, and required by pkgdown
-          brew install harfbuzz fribidi
-
-          ## For installing usethis's dependency gert
-          brew install libgit2
-
-          ## required for ncdf4
-          ## brew install netcdf ## Does not work as it is compiled with gcc
-          ## Use pre-compiled libraries from https://mac.r-project.org/libs-4/
-          curl -O https://mac.r-project.org/libs-4/netcdf-4.7.4-darwin.17-x86_64.tar.gz
-          tar fvxzm netcdf-4.7.4-darwin.17-x86_64.tar.gz -C /
-          rm netcdf-4.7.4-darwin.17-x86_64.tar.gz
-          curl -O https://mac.r-project.org/libs-4/hdf5-1.12.0-darwin.17-x86_64.tar.gz
-          tar fvxzm hdf5-1.12.0-darwin.17-x86_64.tar.gz -C /
-          rm hdf5-1.12.0-darwin.17-x86_64.tar.gz
-          curl -O https://mac.r-project.org/libs-4/szip-2.1.1-darwin.17-x86_64.tar.gz
-          tar fvxzm szip-2.1.1-darwin.17-x86_64.tar.gz -C /
-          rm szip-2.1.1-darwin.17-x86_64.tar.gz
-
+          ## Install pre-compiled libraries from
+          ## https://mac.r-project.org/bin/darwin17/x86_64/
+          ## The path might need to be updated depending on the macOS version.
+          
+          # curl -O https://mac.r-project.org/bin/darwin20/arm64/openssl-3.3.2-darwin.20-arm64.tar.xz
+          # tar -xvmpf openssl-3.3.2-darwin.20-arm64.tar.xz -C /
+          # rm openssl-3.3.2-darwin.20-arm64.tar.xz
+          
       - name: Install Windows system dependencies
         if: runner.os == 'Windows'
         run: |
@@ -201,17 +182,17 @@ jobs:
         if:  env.has_RUnit == 'true'
         run: |
           ## Install BiocGenerics
-          BiocManager::install("BiocGenerics")
+          BiocManager::install(c("BiocGenerics", "RUnit"))
         shell: Rscript {0}
 
       - name: Install covr
-        if: github.ref == 'refs/heads/master' && env.run_covr == 'true' && runner.os == 'Linux'
+        if: github.ref == 'refs/heads/devel' && env.run_covr == 'true' && runner.os == 'Linux'
         run: |
           remotes::install_cran("covr")
         shell: Rscript {0}
 
       - name: Install pkgdown
-        if: github.ref == 'refs/heads/master' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+        if: github.ref == 'refs/heads/devel' && env.run_pkgdown == 'true' && runner.os == 'Linux'
         run: |
           remotes::install_github("r-lib/pkgdown")
         shell: Rscript {0}
@@ -261,20 +242,21 @@ jobs:
         shell: Rscript {0}
 
       - name: Test coverage
-        if: github.ref == 'refs/heads/master' && env.run_covr == 'true' && runner.os == 'Linux'
+        if: github.ref == 'refs/heads/devel' && env.run_covr == 'true' && runner.os == 'Linux'
         run: |
           covr::codecov()
         shell: Rscript {0}
 
       - name: Install package
-        if: github.ref == 'refs/heads/master' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+        if: github.ref == 'refs/heads/devel' && env.run_pkgdown == 'true' && runner.os == 'Linux'
         run: R CMD INSTALL .
 
       - name: Deploy package
-        if: github.ref == 'refs/heads/master' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+        if: github.ref == 'refs/heads/devel' && env.run_pkgdown == 'true' && runner.os == 'Linux'
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
+          git config --global --add safe.directory /__w/mzR/mzR
           Rscript -e "pkgdown::deploy_to_branch(new_process = FALSE)"
         shell: bash {0}
         ## Note that you need to run pkgdown::deploy_to_branch(new_process = FALSE)

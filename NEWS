@@ -1,6 +1,12 @@
+CHANGES IN VERSION 2.41.4
+-------------------------
+o Use "rtime" and "intensity" as column names for the data.frame returned
+  by `chromatogram()`. Fixes #304.
+
 CHANGES IN VERSION 2.41.3
 -------------------------
-o Fixed off-by-one indexing issue with index access for chromatogramHeader vs chromatogram. Fixes #302. Thanks Nils Hoffmann !
+o Fixed off-by-one indexing issue with index access for chromatogramHeader vs
+  chromatogram. Fixes #302. Thanks Nils Hoffmann !
 
 CHANGES IN VERSION 2.41.2
 -------------------------
