@@ -788,13 +788,13 @@ void RcppPwiz::addSpectrumList(MSData& msd,
       // precursor scan is not available (e.g. after MS level filtering).
       spct.precursors.resize(1);
       Precursor& prec = spct.precursors.front();
-      if (collisionEnergy[i] != 0) {
+      if (!std::isnan(collisionEnergy[i]) && collisionEnergy[i] != 0) {
         prec.activation.set(MS_collision_induced_dissociation);
         prec.activation.set(MS_collision_energy, collisionEnergy[i],
         UO_electronvolt);
       }
       // EAD
-      if (electronBeamEnergy[i] != 0) {
+      if (!std::isnan(electronBeamEnergy[i]) && electronBeamEnergy[i] != 0) {
         prec.activation.set(MS_electron_activated_dissociation);
         prec.activation.set(MS_electron_beam_energy, electronBeamEnergy[i],
         UO_electronvolt);
