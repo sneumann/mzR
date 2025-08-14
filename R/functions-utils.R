@@ -24,6 +24,7 @@
                   basePeakMZ = "numeric",
                   basePeakIntensity = "numeric",
                   collisionEnergy = "numeric",
+                  electronBeamEnergy = "numeric",
                   ionisationEnergy = "numeric",
                   lowMZ = "numeric",
                   highMZ = "numeric",

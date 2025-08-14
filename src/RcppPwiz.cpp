@@ -329,6 +329,8 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
     header[i++] = Rcpp::wrap(basePeakIntensity);
     names.push_back("collisionEnergy");
     header[i++] = Rcpp::wrap(collisionEnergy);
+    names.push_back("electronBeamEnergy");
+    header[i++] = Rcpp::wrap(electronBeamEnergy);
     names.push_back("ionisationEnergy");
     header[i++] = Rcpp::wrap(ionisationEnergy);
     names.push_back("lowMZ");
@@ -371,8 +373,6 @@ Rcpp::DataFrame RcppPwiz::getScanHeaderInfo (Rcpp::IntegerVector whichScan) {
     header[i++] = Rcpp::wrap(scanWindowLowerLimit);
     names.push_back("scanWindowUpperLimit");
     header[i++] = Rcpp::wrap(scanWindowUpperLimit);
-    names.push_back("electronBeamEnergy");
-    header[i++] = Rcpp::wrap(electronBeamEnergy);
     header.attr("names") = names;
 
     return header;
@@ -679,6 +679,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   Rcpp::NumericVector basePeakMZ = spctr_header["basePeakMZ"];
   Rcpp::NumericVector basePeakIntensity = spctr_header["basePeakIntensity"];
   Rcpp::NumericVector collisionEnergy = spctr_header["collisionEnergy"];
+  Rcpp::NumericVector electronBeamEnergy = spctr_header["electronBeamEnergy"];
   Rcpp::NumericVector ionisationEnergy = spctr_header["ionisationEnergy"];
   Rcpp::NumericVector lowMZ = spctr_header["lowMZ"];
   Rcpp::NumericVector highMZ = spctr_header["highMZ"];
@@ -719,6 +720,7 @@ void RcppPwiz::addSpectrumList(MSData& msd,
   // precursorIntensity numeric    $precursorIntensity
   // precursorCharge integer       $precursorCharge
   // collisionEnergy numeric       $collisionEnergy
+  // electronBeamEnergy numeric    $electronBeamEnergy
 
   // Now filling with new data
   shared_ptr<SpectrumListSimple> spectrumList(new SpectrumListSimple);
@@ -787,9 +789,15 @@ void RcppPwiz::addSpectrumList(MSData& msd,
       spct.precursors.resize(1);
       Precursor& prec = spct.precursors.front();
       if (collisionEnergy[i] != 0) {
-	prec.activation.set(MS_collision_induced_dissociation);
-	prec.activation.set(MS_collision_energy, collisionEnergy[i],
-			    UO_electronvolt);
+        prec.activation.set(MS_collision_induced_dissociation);
+        prec.activation.set(MS_collision_energy, collisionEnergy[i],
+        UO_electronvolt);
+      }
+      // EAD
+      if (electronBeamEnergy[i] != 0) {
+        prec.activation.set(MS_electron_activated_dissociation);
+        prec.activation.set(MS_electron_beam_energy, electronBeamEnergy[i],
+        UO_electronvolt);
       }
       prec.selectedIons.resize(1);
       prec.selectedIons[0].set(MS_selected_ion_m_z, precursorMZ[i], MS_m_z);

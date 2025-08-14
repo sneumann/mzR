@@ -67,6 +67,7 @@ setMethod("header", c("mzRnetCDF", "numeric"), function(object, scans) {
         basePeakMZ = empty_val,
         basePeakIntensity = empty_val,
         collisionEnergy = empty_val,
+        electronBeamEnergy = empty_val,
         ionisationEnergy = empty_val,
         lowMZ = empty_val,
         highMZ = empty_val,
