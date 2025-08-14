@@ -1,7 +1,7 @@
 format-version: 1.2
-data-version: 4.1.199
-date: 25:07:2025 21:40
-saved-by: Wout Bittremieux
+data-version: 4.1.197
+date: 17:07:2025 21:31
+saved-by: David Cox
 default-namespace: MS
 namespace-id-rule: * MS:$sequence(7,0,9999999)$
 namespace-id-rule: * PEFF:$sequence(7,0,9999999)$
@@ -22855,32 +22855,6 @@ def: "SCIEX WIFF2 file format." [PSI:MS]
 is_a: MS:1000560 ! mass spectrometer file format
 
 [Term]
-id: MS:1003449
-name: ISQ 7000
-def: "Thermo Scientific ISQ 7000 Single Quadrupole GC-MS System." [PSI:MS]
-is_a: MS:1000494 ! Thermo Scientific instrument model
-
-[Term]
-id: MS:1003450
-name: FAIMS compensation voltage ramp start
-def: "DC potential at the start of the FAIMS voltage ramp." [PSI:PI]
-is_a: MS:1002892 ! ion mobility attribute
-is_a: MS:1000455 ! ion selection attribute
-is_a: MS:1003254 ! peak attribute
-relationship: has_units UO:0000218 ! volt
-relationship: has_value_type xsd:double ! The allowed value-type for this CV term
-
-[Term]
-id: MS:1003451
-name: FAIMS compensation voltage ramp end
-def: "DC potential at the end of the FAIMS voltage ramp." [PSI:PI]
-is_a: MS:1002892 ! ion mobility attribute
-is_a: MS:1000455 ! ion selection attribute
-is_a: MS:1003254 ! peak attribute
-relationship: has_units UO:0000218 ! volt
-relationship: has_value_type xsd:double ! The allowed value-type for this CV term
-
-[Term]
 id: MS:4000000
 name: PSI-MS CV Quality Control Vocabulary
 def: "PSI Quality Control controlled vocabulary term." [PSI:MS]
@@ -24785,156 +24759,6 @@ relationship: has_metric_category MS:4000022 ! MS2 metric
 relationship: has_units UO:0000191 ! fraction
 relationship: has_value_concept STATO:0000291
 relationship: has_value_type xsd:float
-
-[Term]
-id: MS:4000189
-name: DIAMetric
-def: "DIAMetric is a Data-Independent Acquisition Quality Metric Generator." [PSI:MS, https://github.com/dtabb73/DIAMetric]
-is_a: MS:1001456 ! analysis software
-
-[Term]
-id: MS:4000190
-name:  MS1 TIC quantile RT
-def: "The amount of time elapsed since the start of the data acquisition until the implied quantile of all MS1 TIC has been accumulated. The number of values in the tuple implies the quantile mode." [PSI:MS]
-is_a: MS:4000004 ! n-tuple
-relationship: has_metric_category MS:4000009 ! ID free metric
-relationship: has_metric_category MS:4000012 ! single run based metric
-relationship: has_metric_category MS:4000016 ! retention time metric
-relationship: has_metric_category MS:4000021 ! MS1 metric
-relationship: has_units UO:0000031 ! minute
-relationship: has_value_type xsd:float
-
-[Term]
-id: MS:4000191
-name:  MS2 TIC quantile RT
-def: "The amount of time elapsed since the start of the data acquisition until the implied quantile of all MS2 TIC has been accumulated. The number of values in the tuple implies the quantile mode." [PSI:MS]
-is_a: MS:4000004 ! n-tuple
-relationship: has_metric_category MS:4000009 ! ID free metric
-relationship: has_metric_category MS:4000012 ! single run based metric
-relationship: has_metric_category MS:4000016 ! retention time metric
-relationship: has_metric_category MS:4000022 ! MS2 metric
-relationship: has_units UO:0000031 ! minute
-relationship: has_value_type xsd:float
-
-[Term]
-id: MS:4000192
-name: MS1 median cycle time
-def: "The median time between consecutive MS1 scans across the full run." [PSI:MS]
-synonym: "sampling frequency" RELATED [MS:1000029]
-synonym: "fastest frequency for MS level 1 collection" RELATED [MS:4000065]
-is_a: MS:4000003 ! single value
-relationship: has_metric_category MS:4000009 ! ID free metric
-relationship: has_metric_category MS:4000012 ! single run based metric
-relationship: has_metric_category MS:4000019 ! MS metric
-relationship: has_units UO:0000010 ! second
-relationship: has_value_type xsd:float
-
-[Term]
-id: MS:4000193
-name: DIA isolation window median cycle time
-def: "The median time between consecutive measurements of the same DIA isolation window across the full run." [PSI:MS]
-synonym: "sampling frequency" RELATED [MS:1000029]
-synonym: "fastest frequency for MS level 2 collection" RELATED [MS:4000066]
-is_a: MS:4000003 ! single value
-relationship: has_metric_category MS:4000009 ! ID free metric
-relationship: has_metric_category MS:4000012 ! single run based metric
-relationship: has_metric_category MS:4000019 ! MS metric
-relationship: has_units UO:0000010 ! second
-relationship: has_value_type xsd:float
-
-[Term]
-id: MS:4000194
-name: DIA isolation window count
-def: "The number of distinct DIA isolation windows (i.e. sharing the same low m/z boundary, high m/z boundary, and ion mobility parameters)." [PSI:MS]
-is_a: MS:4000003 ! single value
-relationship: has_metric_category MS:4000009 ! ID free metric
-relationship: has_metric_category MS:4000012 ! single run based metric
-relationship: has_metric_category MS:4000022 ! MS2 metric
-relationship: has_metric_category MS:1000792 ! isolation window attribute
-relationship: has_units UO:0000189 ! count unit
-relationship: has_value_type xsd:int
-
-[Term]
-id: MS:4000195
-name: DIA isolation window m/z widths
-def: "The minimum and maximum m/z width of the DIA isolation windows, defined as the subtraction between the high m/z boundary and the low m/z boundary. For fixed-window DIA methods, the same value is reported twice." [PSI:MS]
-is_a: MS:4000004 ! n-tuple
-relationship: has_metric_category MS:4000009 ! ID free metric
-relationship: has_metric_category MS:4000012 ! single run based metric
-relationship: has_metric_category MS:4000022 ! MS2 metric
-relationship: has_metric_category MS:1000792 ! isolation window attribute
-relationship: has_units MS:1000040 ! m/z
-relationship: has_value_type xsd:float
-
-[Term]
-id: MS:4000196
-name: DIA isolation window count
-def: "The minimum and maximum number of times any specific DIA isolation window is measured via MS/MS. In case all isolation windows are sampled the same number of times, this value is reported twice." [PSI:MS]
-is_a: MS:4000004 ! n-tuple
-relationship: has_metric_category MS:4000009 ! ID free metric
-relationship: has_metric_category MS:4000012 ! single run based metric
-relationship: has_metric_category MS:4000022 ! MS2 metric
-relationship: has_metric_category MS:1000792 ! isolation window attribute
-relationship: has_units UO:0000189 ! count unit
-relationship: has_value_type xsd:int
-
-[Term]
-id: MS:4000197
-name: DIA isolation window half TIC RT
-def: "The minimum and maximum retention time in which at least half of the TIC for any given DIA isolation window compared to the full TIC in this isolation window has been collected." [PSI:MS]
-is_a: MS:4000004 ! n-tuple
-relationship: has_metric_category MS:4000009 ! ID free metric
-relationship: has_metric_category MS:4000012 ! single run based metric
-relationship: has_metric_category MS:4000016 ! retention time metric
-relationship: has_metric_category MS:4000022 ! MS2 metric
-relationship: has_metric_category MS:1000792 ! isolation window attribute
-relationship: has_metric_category MS:1000235 ! total ion current chromatogram
-relationship: has_units UO:0000031 ! minute
-relationship: has_value_type xsd:float
-
-[Term]
-id: MS:4000198
-name: DIA isolation window TIC
-def: "The minimum and maximum TIC collected in any given DIA isolation window." [PSI:MS]
-comment: "Because isolation windows measure different m/z regions, the TIC for their MS/MS signals may vary considerably from each other."
-is_a: MS:4000004 ! n-tuple
-relationship: has_metric_category MS:4000009 ! ID free metric
-relationship: has_metric_category MS:4000012 ! single run based metric
-relationship: has_metric_category MS:4000022 ! MS2 metric
-relationship: has_metric_category MS:1000792 ! isolation window attribute
-relationship: has_metric_category MS:1000235 ! total ion current chromatogram
-relationship: has_units MS:1000043 ! intensity unit
-relationship: has_value_type xsd:float
-
-[Term]
-id: MS:4000199
-name: DIA isolation window peak count
-def: "For each DIA isolation window, we compute the median number of peaks per MS/MS measurement. This metric reports the lowest and highest peak count medians among the isolation windows." [PSI:MS]
-is_a: MS:4000004 ! n-tuple
-relationship: has_metric_category MS:4000009 ! ID free metric
-relationship: has_metric_category MS:4000012 ! single run based metric
-relationship: has_metric_category MS:4000022 ! MS2 metric
-relationship: has_metric_category MS:1000792 ! isolation window attribute
-relationship: has_units UO:0000189 ! count unit
-relationship: has_value_type xsd:int
-
-[Term]
-id: MS:4000200
-name: run outlier score PCA distance
-def: "Outlier score for MS runs based on the median Euclidean distance for each run to every other run after robust PCA transformation of the QC metrics for all runs." [doi:10.1021/ac4034455, PSI:MS]
-is_a: MS:4000005 ! table
-relationship: has_metric_category MS:4000013 ! multiple runs based metric
-relationship: has_column MS:4000086 ! mzQC input reference
-relationship: has_column OBI:0200114 ! euclidean distance calculation
-
-[Term]
-id: MS:4000201
-name: run outlier score LoOP
-def: "Outlier score for MS runs based on the local outlier probabilities (LoOP) algorithm applied to QC metrics from all runs." [doi:10.1021/acs.jproteome.6b00028, PSI:MS]
-is_a: MS:4000005 ! table
-relationship: has_metric_category MS:4000013 ! multiple runs based metric
-relationship: has_column MS:4000086 ! mzQC input reference
-relationship: has_column NCIT:C54154 ! Probability
 
 [Term]
 id: PEFF:0000001
