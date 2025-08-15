@@ -749,8 +749,10 @@ void RcppPwiz::addSpectrumList(MSData& msd,
     spct.set(MS_lowest_observed_m_z, lowMZ[i], MS_m_z);
     spct.set(MS_highest_observed_m_z, highMZ[i], MS_m_z);
     spct.set(MS_base_peak_m_z, basePeakMZ[i], MS_m_z);
-    spct.set(MS_base_peak_intensity, basePeakIntensity[i],
-	     MS_number_of_detector_counts);
+    if (!Rcpp::NumericVector::is_na(basePeakIntensity[i])) {
+      spct.set(MS_base_peak_intensity, basePeakIntensity[i],
+               MS_number_of_detector_counts);
+    }
     spct.set(MS_total_ion_current, totIonCurrent[i]);
     // TODO:
     // [X] seqNum: number observed in file.
@@ -820,11 +822,15 @@ void RcppPwiz::addSpectrumList(MSData& msd,
       }
       // isolation window
       if (!Rcpp::NumericVector::is_na(isolationWindowTargetMZ[i])) {
-	prec.isolationWindow.set(MS_isolation_window_target_m_z, isolationWindowTargetMZ[i]);
-	prec.isolationWindow.set(MS_isolation_window_lower_offset, isolationWindowLowerOffset[i]);
-	prec.isolationWindow.set(MS_isolation_window_upper_offset, isolationWindowUpperOffset[i]);
+        prec.isolationWindow.set(MS_isolation_window_target_m_z, isolationWindowTargetMZ[i]);
+        if (!Rcpp::NumericVector::is_na(isolationWindowLowerOffset[i])) {
+          prec.isolationWindow.set(MS_isolation_window_lower_offset, isolationWindowLowerOffset[i]);
+          }
+        if (!Rcpp::NumericVector::is_na(isolationWindowUpperOffset[i])) {
+          prec.isolationWindow.set(MS_isolation_window_upper_offset, isolationWindowUpperOffset[i]);
+          }
+        }
       }
-    }
     // [X] collisionEnergy
     // [ ] ionisationEnergy
     // [X] precursorScanNum
