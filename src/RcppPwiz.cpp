@@ -802,10 +802,19 @@ void RcppPwiz::addSpectrumList(MSData& msd,
         UO_electronvolt);
       }
       prec.selectedIons.resize(1);
-      prec.selectedIons[0].set(MS_selected_ion_m_z, precursorMZ[i], MS_m_z);
-      prec.selectedIons[0].set(MS_peak_intensity, precursorIntensity[i],
-			       MS_number_of_detector_counts);
-      prec.selectedIons[0].set(MS_charge_state, precursorCharge[i]);
+      // Only set values if they are not NaN
+      if (!std::isnan(precursorMZ[i])) {
+        prec.selectedIons[0].set(MS_selected_ion_m_z, precursorMZ[i], MS_m_z);
+      }
+      
+      if (!std::isnan(precursorIntensity[i])) {
+        prec.selectedIons[0].set(MS_peak_intensity, precursorIntensity[i],
+                                 MS_number_of_detector_counts);
+      }
+      
+      if (!std::isnan(precursorCharge[i])) {
+        prec.selectedIons[0].set(MS_charge_state, precursorCharge[i]);
+      }
       // Get the spectrumId of the precursor. Assuming that precursorScanNum is
       // linked to the acquisitionNum of the precursor.
       // This seems to be correct, since both the acquisitionNum and the
