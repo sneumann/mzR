@@ -80,11 +80,11 @@ test_header <- function() {
   checkTrue(all(is.na(h$scanWindowUpperLimit)))
 
   h <- header(cdf, 1)
-  checkEquals(ncol(h), 31)
+  checkEquals(ncol(h), 32)
   checkEquals(nrow(h), 1)
 
   h <- header(cdf, 2:3)
-  checkEquals(ncol(h), 31)
+  checkEquals(ncol(h), 32)
   checkEquals(nrow(h), 2)
 
   close(cdf)
