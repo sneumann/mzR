@@ -9,7 +9,12 @@ Authors@R: c(
     person("Laurent", "Gatto", email="laurent.gatto@uclouvain.be", role=c("aut")),
     person("Qiakng", "Kou", email="qkou@umail.iu.edu", role=c("aut")),
     person("David","Rauh",email="drauh@ipb-halle.de", role=c("ctb")),
-    person("Sascha","Manier",email="sascha.manier@uni-saarland.de", role=c("ctb"))
+    person("Sascha","Manier",email="sascha.manier@uni-saarland.de", role=c("ctb")),
+    person(given = "Adriano",
+           family = "Rutz",
+           email = "adafede@gmail.com",
+           role = c("ctb"),
+           comment = c(ORCID = "0000-0003-0443-9902"))
     )
 Description: mzR provides a unified API to the common file formats and
         parsers available for mass spectrometry data. It comes with a
