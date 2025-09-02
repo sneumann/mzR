@@ -64,7 +64,7 @@ test_header <- function() {
   cdf <- openMSfile(file, backend="netCDF")        
 
   h <- header(cdf)
-  checkEquals(ncol(h), 31)
+  checkEquals(ncol(h), 32)
   checkEquals(nrow(h), 1278)
   checkTrue(any(colnames(h) == "centroided"))
   checkTrue(all(is.na(h$centroided)))

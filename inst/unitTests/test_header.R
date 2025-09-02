@@ -18,7 +18,8 @@ test_header_all <- function() {
                           "mergedResultScanNum", "mergedResultStartScanNum", "mergedResultEndScanNum",  
                           "injectionTime", "filterString", "spectrumId", "centroided",  
                           "ionMobilityDriftTime", "isolationWindowTargetMZ", "isolationWindowLowerOffset",  
-                          "isolationWindowUpperOffset", "scanWindowLowerLimit", "scanWindowUpperLimit" )
+                          "isolationWindowUpperOffset", "scanWindowLowerLimit", "scanWindowUpperLimit",
+                          "electronBeamEnergy")
     
     checkTrue( all(neededCdfHeaders %in% colnames(header_cdf)) )
     checkTrue( all(neededCdfHeaders %in% colnames(header_pwiz)) )
