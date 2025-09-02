@@ -60,6 +60,8 @@
         x$scanWindowLowerLimit <- NA_real_
     if (!any(colnames(x) == "scanWindowUpperLimit"))
         x$scanWindowUpperLimit <- NA_real_
+    if (!any(colnames(x) == "electronBeamEnergy"))
+        x$electronBeamEnergy <- NA_real_
     if (!(all(names(req_cols) %in% colnames(x))))
         return(paste0("'x' is missing one or more required columns: ",
                       paste(names(req_cols), collapse = ", ")))
