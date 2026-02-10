@@ -52,4 +52,4 @@ URL: https://github.com/sneumann/mzR/
 BugReports: https://github.com/sneumann/mzR/issues/
 biocViews: ImmunoOncology, Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry
-RoxygenNote: 6.0.1
+RoxygenNote: 7.3.3

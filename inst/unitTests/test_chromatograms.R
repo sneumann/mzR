@@ -21,12 +21,18 @@ test_chromatograms1 <- function() {
 }
 
 test_chromatograms2 <- function() {
+    f <- MsDataHub::X20171016_POOL_POS_1_105.134.mzML()
     f <- proteomics(full.names = TRUE,
                     pattern = "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz")
     x <- openMSfile(f, backend = "pwiz")
+    checkIdentical(nChrom(x), 0L)
+    close(x)
+    
+    f <- MsDataHub::PestMix1_DDA.mzML()
+    x <- openMSfile(f, backend = "pwiz")
     checkIdentical(nChrom(x), 1L)
     checkIdentical(tic(x), chromatogram(x, 1L))
-    checkIdentical(nrow(tic(x)), 7534L)
+    checkIdentical(nrow(tic(x)), 7603L)
     close(x)
 }
 

@@ -1,5 +1,5 @@
 library("mzR")
-library("msdata")
+library("MsDataHub")
 
 
 ## Catch warnings as well:
