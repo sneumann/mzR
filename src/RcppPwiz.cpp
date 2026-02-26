@@ -117,11 +117,10 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
 						  Rcpp::_["analyzer"]      = "",
 						  Rcpp::_["detector"]      = "",
 						  Rcpp::_["software"]      = "",
-						  Rcpp::_["sample"]		  = "",
-						  Rcpp::_["source"]		  = ""
+						  Rcpp::_["sample"]	   = "",
+						  Rcpp::_["source"]	   = ""
 						  ) ;
             }
-
 	  isInCacheInstrumentInfo = TRUE;
         }
       return(instrumentInfo);
@@ -133,11 +132,18 @@ Rcpp::List RcppPwiz::getInstrumentInfo ( )
 int RcppPwiz::getAcquisitionNumber(string id, size_t index) const
 {
   // const SpectrumIdentity& si = msd->run.spectrumListPtr->spectrumIdentity(index);
-  string scanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, id);
-  if (scanNumber.empty())
-    return static_cast<int>(index) + 1;
-  else
-    return lexical_cast<int>(scanNumber);
+  try
+    {
+      string scanNumber = id::translateNativeIDToScanNumber(nativeIdFormat, id);
+      if (scanNumber.empty())
+	return static_cast<int>(index) + 1;
+      else
+	return lexical_cast<int>(scanNumber);
+    }
+  catch(const std::exception& e)
+    {
+      return static_cast<int>(index) + 1;
+    }
 }
 
 // Using this function instead of pwiz translateNativeIDToScanNumber because
