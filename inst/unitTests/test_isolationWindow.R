@@ -1,5 +1,4 @@
 test_isolationWindow <- function() {
-    library("msdata")
     f <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
     rw2 <- openMSfile(f, backend = "pwiz")
     i1 <- isolationWindow(f)

@@ -1,7 +1,4 @@
 test_injection_time <- function() {
-    library(msdata)
-    library(mzR)
-    library(RUnit)
     fl <- MsDataHub::PestMix1_DDA.mzML()
     mzxml <- openMSfile(fl, backend = "pwiz")
     hdr <- header(mzxml)

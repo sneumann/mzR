@@ -1,15 +1,18 @@
 test_hasChromatograms <- function() {
-    x <- mzR::openMSfile(MsDataHub::MRM.standmix.5.mzML())
+    fl <- MsDataHub::MRM.standmix.5.mzML()
+    x <- mzR::openMSfile(fl)
     checkTrue(mzR:::.hasChromatograms(x))
     checkTrue(mzR:::.hasChromatograms(fl))
     close(x)
-    
-    x <- openMSfile(MsDataHub::ko15.CDF())
+
+    fl <- MsDataHub::ko15.CDF()
+    x <- openMSfile(fl)
     suppressWarnings(checkTrue(!mzR:::.hasChromatograms(x)))
     suppressWarnings(checkTrue(!mzR:::.hasChromatograms(fl)))
     close(x)
 
-    x <- mzR::openMSfile(MsDataHub::PestMix1_DDA.mzML())
+    fl <- MsDataHub::PestMix1_DDA.mzML()
+    x <- openMSfile(fl)
     checkTrue(mzR:::.hasChromatograms(x))
     checkTrue(mzR:::.hasChromatograms(fl))
     close(x)
