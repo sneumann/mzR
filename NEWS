@@ -1,4 +1,12 @@
+CHANGES IN VERSION 2.45.1
+-------------------------
+
+o Load test files from the MsDataHub package and remove dependency on the
+  msdata package.
+o Catch error in spectrum ID parsing.
+
 CHANGES IN VERSION 2.43.3
+-------------------------
 
 o Make electronBeamEnergy an optional header field.
 

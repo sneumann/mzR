@@ -207,18 +207,14 @@
 }
 
 \examples{
- library(msdata)
- filepath <- system.file("microtofq", package = "msdata")
- file <- list.files(filepath, pattern="MM14.mzML",
-                     full.names=TRUE, recursive = TRUE)
+ file <- MsDataHub::PestMix1_DDA.mzML()
  mz <- openMSfile(file)
  runInfo(mz)
  colnames(header(mz))
  close(mz)
 
  ## A shotgun LCMSMS experiment
- f <- proteomics(full.names = TRUE,
-                 pattern = "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz")
+ f <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzML.gz()
  x <- openMSfile(f, backend = "pwiz")
  x
  nChrom(x)
@@ -230,7 +226,7 @@
  head(peaks(x, scan=4)) ## extract just peaks from the 4th scan
 
  ## An MRM experiment
- f <- proteomics(full.names = TRUE, pattern = "MRM")
+ f <- MsDataHub::MRM.standmix.5.mzML()
  x <- openMSfile(f, backend = "pwiz")
  x
  nChrom(x)

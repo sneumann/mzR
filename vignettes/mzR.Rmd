@@ -120,11 +120,8 @@ First open the file.
 
 ```{r openraw}
 library(mzR)
-library(msdata)
-
-mzxml <- system.file("threonine/threonine_i2_e35_pH_tree.mzXML",
-                     package = "msdata")
-aa <- openMSfile(mzxml)
+f <- MsDataHub::PestMix1_DDA.mzML()
+aa <- openMSfile(f)
 ```
 
 We can obtain different kind of header information.
@@ -158,9 +155,8 @@ which use the pwiz backend.
 
 ```{r openid}
 library(mzR)
-library(msdata)
 
-file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
+file <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzid()
 x <- openIDfile(file)
 ```
 

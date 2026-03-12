@@ -95,9 +95,7 @@
 
 \examples{
 ## Open a MS file and read the spectrum and header information
-library(msdata)
-fl <- system.file("threonine", "threonine_i2_e35_pH_tree.mzXML",
-    package = "msdata")
+fl <- MsDataHub::PestMix1_DDA.mzML()
 ms_fl <- openMSfile(fl, backend = "pwiz")
 
 ## Get the spectra

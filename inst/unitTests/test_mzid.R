@@ -1,6 +1,6 @@
 test_mzid <- function() {
     library("mzID")
-    file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
+    file <- MsDataHub::TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.20141210.mzid()
     x <- openIDfile(file)
     validObject(x)
     y <- mzID(file)

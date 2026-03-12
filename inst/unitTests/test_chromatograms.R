@@ -82,11 +82,7 @@ test_chromatogramHeader_indexing <- function() {
 }
 
 test_chromatogramHeader <- function() {
-    library(mzR)
-    library(RUnit)
-    library(msdata)
-
-    f <- proteomics(full.names = TRUE, pattern = "MRM")
+    f <- MsDataHub::MRM.standmix.5.mzML()
     x <- openMSfile(f)
 
     chrs <- chromatogram(x)
@@ -106,7 +102,7 @@ test_chromatogramHeader <- function() {
     close(x)
 
     ## Should return only the TIC.
-    f <- proteomics(full.names = TRUE, pattern = "MS3")
+    f <- MsDataHub::PestMix1_DDA.mzML()
     x <- openMSfile(f[1])
     ch <- chromatogramHeader(x)
     checkEquals(nrow(ch), 1)
