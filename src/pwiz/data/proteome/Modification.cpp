@@ -1,5 +1,5 @@
 //
-// $Id$ 
+// $Id$
 //
 //
 // Original author: Matt Chambers <matt.chambers .@. vanderbilt.edu>
@@ -8,16 +8,16 @@
 //   Cedars Sinai Medical Center, Los Angeles, California  90048
 // Copyright 2008 Vanderbilt University - Nashville, TN 37232
 //
-// Licensed under the Apache License, Version 2.0 (the "License"); 
-// you may not use this file except in compliance with the License. 
-// You may obtain a copy of the License at 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
 // http://www.apache.org/licenses/LICENSE-2.0
 //
-// Unless required by applicable law or agreed to in writing, software 
-// distributed under the License is distributed on an "AS IS" BASIS, 
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-// See the License for the specific language governing permissions and 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
 // limitations under the License.
 //
 
@@ -86,7 +86,8 @@ class Modification::Impl
     }
 
     private:
-    auto_ptr<Formula> formula_;
+    // auto_ptr<Formula> formula_; // see #315
+    unique_ptr<Formula> formula_;
     double monoDeltaMass;
     double avgDeltaMass;
 };
@@ -195,7 +196,7 @@ PWIZ_API_DECL bool ModificationList::operator<(const ModificationList& rhs) cons
                 return *itr < *rhsItr;
         }
         return false; // lists are equal
-    } 
+    }
 
     return size() < rhs.size();
 }
@@ -417,44 +418,44 @@ void ModificationMap::swap(ModificationMap& other)
 PWIZ_API_DECL
 bool ModificationMap::operator==(const ModificationMap& rhs) const
 {
-	if (size() != rhs.size())
+        if (size() != rhs.size())
         return false;
 
-	ModificationMap::const_iterator itr, rhsItr;
-	for (itr = begin(), rhsItr = rhs.begin();
+        ModificationMap::const_iterator itr, rhsItr;
+        for (itr = begin(), rhsItr = rhs.begin();
          itr != end() && rhsItr != rhs.end();
          ++itr, ++rhsItr)
     {
-		// compare positions and modification lists
-		if (itr->first != rhsItr->first || !(itr->second == rhsItr->second))
-			return false;
-	}
+                // compare positions and modification lists
+                if (itr->first != rhsItr->first || !(itr->second == rhsItr->second))
+                        return false;
+        }
     return true;
 }
 
 PWIZ_API_DECL
 bool ModificationMap::operator<(const ModificationMap& rhs) const
 {
-	if (size() < rhs.size())
-	{
-		ModificationMap::const_iterator itr, rhsItr;
-		for (itr = begin(), rhsItr = rhs.begin();
-			 itr != end() && rhsItr != rhs.end();
-			 ++itr, ++rhsItr)
-		{
-			// compare positions
-			if (itr->first == rhsItr->first)
-			{
-				// compare modification lists
-				return itr->second < rhsItr->second;
-			}
+        if (size() < rhs.size())
+        {
+                ModificationMap::const_iterator itr, rhsItr;
+                for (itr = begin(), rhsItr = rhs.begin();
+                         itr != end() && rhsItr != rhs.end();
+                         ++itr, ++rhsItr)
+                {
+                        // compare positions
+                        if (itr->first == rhsItr->first)
+                        {
+                                // compare modification lists
+                                return itr->second < rhsItr->second;
+                        }
             else
-				return itr->first < rhsItr->first;
-		}
+                                return itr->first < rhsItr->first;
+                }
         return false;
-	} 
-	
-	return size() < rhs.size();
+        }
+
+        return size() < rhs.size();
 }
 
 
