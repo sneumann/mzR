@@ -1,5 +1,5 @@
 test_chromatograms1 <- function() {
-    f <- proteomics(full.names = TRUE, pattern = "MRM")
+    f <- MsDataHub::MRM.standmix.5.mzML()
     x <- openMSfile(f, backend = "pwiz")
     checkIdentical(nChrom(x), 138L)
     checkIdentical(tic(x), chromatogram(x, 1L))
@@ -21,17 +21,21 @@ test_chromatograms1 <- function() {
 }
 
 test_chromatograms2 <- function() {
-    f <- proteomics(full.names = TRUE,
-                    pattern = "TMT_Erwinia_1uLSike_Top10HCD_isol2_45stepped_60min_01.mzML.gz")
+    f <- MsDataHub::X20171016_POOL_POS_1_105.134.mzML()
+    x <- openMSfile(f, backend = "pwiz")
+    checkIdentical(nChrom(x), 0L)
+    close(x)
+    
+    f <- MsDataHub::PestMix1_DDA.mzML()
     x <- openMSfile(f, backend = "pwiz")
     checkIdentical(nChrom(x), 1L)
     checkIdentical(tic(x), chromatogram(x, 1L))
-    checkIdentical(nrow(tic(x)), 7534L)
+    checkIdentical(nrow(tic(x)), 7603L)
     close(x)
 }
 
 test_chromatogramHeader_indexing <- function() {
-    f <- proteomics(full.names = TRUE, pattern = "MRM")
+    f <- MsDataHub::MRM.standmix.5.mzML()
     x <- openMSfile(f, backend = "pwiz")
     tic <- chromatogramHeader(x, 1)
     tic1 <- chromatogramHeader(x, 1:1)
@@ -76,11 +80,7 @@ test_chromatogramHeader_indexing <- function() {
 }
 
 test_chromatogramHeader <- function() {
-    library(mzR)
-    library(RUnit)
-    library(msdata)
-
-    f <- proteomics(full.names = TRUE, pattern = "MRM")
+    f <- MsDataHub::MRM.standmix.5.mzML()
     x <- openMSfile(f)
 
     chrs <- chromatogram(x)
@@ -100,7 +100,7 @@ test_chromatogramHeader <- function() {
     close(x)
 
     ## Should return only the TIC.
-    f <- proteomics(full.names = TRUE, pattern = "MS3")
+    f <- MsDataHub::PestMix1_DDA.mzML()
     x <- openMSfile(f[1])
     ch <- chromatogramHeader(x)
     checkEquals(nrow(ch), 1)

@@ -51,10 +51,7 @@
 }
 
 \examples{
- library(msdata)
- filepath <- system.file("microtofq", package = "msdata")
- file <- list.files(filepath, pattern="MM14.mzML",
-                     full.names=TRUE, recursive = TRUE)
+ file <- MsDataHub::PestMix1_DDA.mzML()
  mz <- openMSfile(file)
  fileName(mz)
  runInfo(mz)
@@ -66,8 +63,4 @@
     mz
   }
 
-  file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
-  mzid <- openIDfile(file)
-  softwareInfo(mzid)
-  enzymes(mzid)
 }

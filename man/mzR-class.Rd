@@ -93,13 +93,7 @@
       original filename used when the instance was created. }
     \item{\code{backend}:}{ One of the implemented backens or
       \code{NULL}. }
-    \item{\code{.__classVersion__}:}{Object of class \code{"Versioned"},
-      from Biobase.}
   }
-}
-
-\section{Extends}{
-  Class \code{"\linkS4class{Versioned}"}, directly.
 }
 
 \section{Methods}{
@@ -150,15 +144,9 @@
 }
 
 \examples{
- library(msdata)
- filepath <- system.file("microtofq", package = "msdata")
- file <- list.files(filepath, pattern="MM14.mzML",
-                     full.names=TRUE, recursive = TRUE)
+ file <- MsDataHub::PestMix1_DDA.mzML()
  mzml <- openMSfile(file)
  close(mzml)
-
- ## using the pwiz backend
- mzml <- openMSfile(file, backend = "pwiz")
 
 }
 

@@ -85,24 +85,19 @@ specParams(object)
 }
 
 \examples{
- library(msdata)
 
- file <- system.file("microtofq/MM8.mzML", package = "msdata")
+ file <- MsDataHub::PestMix1_DDA.mzML()
  mz <- openMSfile(file)
  fileName(mz)
  instrumentInfo(mz)
  runInfo(mz)
  close(mz)
 
- file <- system.file("cdf/ko15.CDF", package = "msdata")
+ file <- MsDataHub::ko15.CDF()
  mz <- openMSfile(file, backend = "netCDF")
  fileName(mz)
  instrumentInfo(mz)
  runInfo(mz)
  close(mz)
  
- file <- system.file("mzid", "Tandem.mzid.gz", package="msdata")
- mzid <- openIDfile(file)
- softwareInfo(mzid)
- enzymes(mzid)
 }
