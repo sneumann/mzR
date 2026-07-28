@@ -138,7 +138,7 @@ extern "C"
         );
 
     PVOID GetLibraryProcAddress(PSTR LibraryName, PSTR ProcName) {
-        return GetProcAddress(GetModuleHandleA(LibraryName), ProcName);
+        return (PVOID)GetProcAddress(GetModuleHandleA(LibraryName), ProcName);
     }
 
     typedef struct __PUBLIC_OBJECT_TYPE_INFORMATION {
