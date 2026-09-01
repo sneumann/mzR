@@ -222,7 +222,7 @@ namespace detail {
     {
     }
 
-    winconsole_istream::winconsole_istream(winconsole_ostream* tieStream=0) : std::istream(0)
+    winconsole_istream::winconsole_istream(winconsole_ostream* tieStream) : std::istream(0)
     {
         HANDLE h = GetStdHandle(STD_INPUT_HANDLE);
         d.reset(new console_input_buffer(h));
