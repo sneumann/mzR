@@ -49,3 +49,44 @@ Also on:
 
 Please read the [contributions guide and code of conduct](./CONTRIBUTIONS.md).
 
+# Updating Controlled Vocabulary (CV) Files
+
+**WARNING:** The Proteowizard project has been restructured to .NET/CLI. The 
+C++ source files (cv.hpp, cv.cpp, CVTranslator.*) are **NO LONGER available**
+from their GitHub repository at `https://raw.githubusercontent.com/ProteoWizard/pwiz/master`.
+Using wget/curl to download these files will result in empty or corrupted files.
+
+The CV files used by mzR can be updated using the `updateCvParams.sh` script:
+
+```bash
+cd src
+./updateCvParams.sh
+```
+
+This script downloads only the `.obo` files (PSI-MS, UniMod, and Unit ontologies)
+from their upstream repositories.
+
+**IMPORTANT:** After updating the OBO files, the C++ source files `cv.hpp` and `cv.cpp`
+should be regenerated using the cvgen tool. See
+[`src/pwiz/data/common/REGENERATE_CV.md`](./src/pwiz/data/common/REGENERATE_CV.md)
+for detailed instructions.
+
+**Do NOT download CVTranslator.hpp, CVTranslator.cpp, or CVTranslatorTest.cpp** -
+these are mzR-local files containing specific conflict-resolution logic that must
+be preserved in version control.
+
+# CV Version Compatibility
+
+The `.obo` files and generated `cv.hpp`/`cv.cpp` files must be from compatible versions:
+
+```bash
+# Check psi-ms.obo version
+grep "data-version:" src/pwiz/data/common/psi-ms.obo
+
+# Check cv.hpp version
+grep "data-version:" src/pwiz/data/common/cv.hpp
+```
+
+If you encounter compilation errors after updating, the cv.hpp/cv.cpp files may need
+to be regenerated to match the new .obo file versions.
+

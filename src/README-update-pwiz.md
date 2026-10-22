@@ -7,23 +7,47 @@
   cp -avx pwiz pwiz-old
   git rm -rf pwiz
 
-
 ## Updating CVs
 
-```
+**WARNING:** The Proteowizard project has been restructured to .NET/CLI. The 
+GitHub repository at `https://api.github.com/repos/ProteoWizard/pwiz/contents/pwiz/data/common`
+no longer contains the C++ files. Using wget to download them will result in JSON
+responses instead of actual files, causing corruption.
+
+### The updateCvParams.sh Script
+
+The `updateCvParams.sh` script (in the repository root) should only be used to
+download the `.obo` files:
+
+```bash
 #!/bin/bash
-set -x
-cd src
+# Download only .obo files from their upstream sources
+# These are the actual ontology files that need updating
 
-PWIZGITHUBPREFIX=https://raw.githubusercontent.com/ProteoWizard/pwiz/master
+mkdir -p src/pwiz/data/common
 
-CVFILES="pwiz/data/common/CVTranslator.cpp \
-  pwiz/data/common/CVTranslator.hpp \
-  pwiz/data/common/CVTranslatorTest.cpp \
-  pwiz/data/common/cv.cpp pwiz/data/common/cv.hpp \
-  pwiz/data/common/psi-ms.obo"
+# PSI-MS ontology from HUPO-PSI
+wget -O src/pwiz/data/common/psi-ms.obo \
+  https://github.com/HUPO-PSI/psi-ms-CV/raw/master/psi-ms.obo
 
-for F in $CVFILES ; do
-  wget -O $F $PWIZGITHUBPREFIX/$F
-done
+# UniMod ontology
+wget -O src/pwiz/data/common/unimod.obo \
+  https://www.unimod.org/obo/unimod.obo
+
+# Unit ontology (UO)
+wget -O src/pwiz/data/common/unit.obo \
+  https://raw.githubusercontent.com/bio-ontology-research-group/unit-ontology/master/uo.obo
 ```
+
+### CVTranslator Files Must Be Preserved
+
+**DO NOT** attempt to download CVTranslator.hpp, CVTranslator.cpp, or 
+CVTranslatorTest.cpp from external sources. These files are mzR-local
+modifications containing conflict-resolution logic for CV term mappings.
+
+They should be maintained in version control and NOT regenerated or downloaded.
+
+### Regenerating cv.hpp and cv.cpp
+
+If you need to regenerate cv.hpp and cv.cpp from updated .obo files, see:
+[`pwiz/data/common/REGENERATE_CV.md`](./pwiz/data/common/REGENERATE_CV.md)
