@@ -1,3 +1,4 @@
+
 # Continuous integration
 
 The mzR project master branch is subjected to CI using travis: 
@@ -48,18 +49,3 @@ Also on:
 
 Please read the [contributions guide and code of conduct](./CONTRIBUTIONS.md).
 
-# Updating CV Files
-
-**WARNING:** Proteowizard is now .NET/CLI. Do NOT download cv.hpp, cv.cpp, or
-CVTranslator.* from GitHub - you'll get empty/corrupted files.
-
-```bash
-# Update .obo files only:
-cd src
-./updateCvParams.sh
-```
-
-See `src/pwiz/data/common/REGENERATE_CV.md` if you need to regenerate cv.hpp/cv.cpp.
-
-**Important:** CVTranslator.hpp/.cpp/.hpp are mzR-local files with conflict-resolution
-logic. Never overwrite them with downloaded versions.
