@@ -150,7 +150,8 @@
     </link>
     <documentation>
       <url>https://bioconductor.org/packages/release/bioc/manuals/mzR/man/mzR.pdf</url>
-      <type>API documentation</type>
+      <type>General</type>
+      <note>Package documentation</note>
     </documentation>
     <documentation>
       <url>https://bioconductor.org/packages/release/bioc/vignettes/mzR/inst/doc/mzR.html</url>

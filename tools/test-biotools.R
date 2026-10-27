@@ -38,6 +38,10 @@ stopifnot(length(xml2::xml_find_all(doc, "//b:credit", ns)) == 7L)
 stopifnot("https://orcid.org/0000-0002-6977-7147" %in% texts(doc, "//b:orcidid"))
 stopifnot("Primary contact" %in% texts(doc, "//b:typeRole"))
 stopifnot(any(grepl("Access spectra, chromatograms", texts(doc, "//b:note"), fixed = TRUE)))
+stopifnot(file.exists("R/mzR.R"), !file.exists("R/mzR-biotools.R"))
+stopifnot(identical(texts(doc, "//b:documentation[1]/b:type"), "General"))
+stopifnot(identical(texts(doc, "//b:documentation[1]/b:note"), "Package documentation"))
+stopifnot(identical(texts(doc, "//b:documentation[2]/b:type"), "User manual"))
 
 local({
     path <- tempfile("biotools-test-")
@@ -68,6 +72,7 @@ local({
         "@edam_input_format mzXML (format_3654)",
         "@edam_output_data Mass spectrometry data (data_2536)",
         "@biotools_tool_type Library",
+        "@biotools_documentation Package documentation | https://example.org/reference",
         "@biotools_documentation User manual | https://example.org/manual",
         "@noRd")
     source <- c(paste0("#' ", annotations), "NULL")
@@ -78,8 +83,11 @@ local({
     stopifnot(length(xml2::xml_find_all(result, "//b:operation", ns)) == 2L)
     stopifnot(identical(texts(result, "//b:input[1]/b:format/b:term"), "mzML"))
     stopifnot(identical(texts(result, "//b:input[2]/b:format/b:term"), "mzXML"))
-    stopifnot(identical(texts(result, "//b:note"),
+    stopifnot(identical(texts(result, "//b:function/b:note"),
         "Read & write <spectra> Existing documentation is extracted."))
+    stopifnot(identical(texts(result, "//b:documentation[1]/b:type"), "General"))
+    stopifnot(identical(texts(result, "//b:documentation[1]/b:note"),
+                        "Package documentation"))
     output <- roxygen2::roclet_output(roclet, result, path)
     stopifnot(isTRUE(xml2::xml_validate(biotools_read_xml(output), schema)))
     before <- readBin(output, "raw", n = file.info(output)$size)

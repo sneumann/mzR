@@ -102,7 +102,12 @@ biotools_add_links <- function(parent, name, values) {
             stop("@biotools_", name, " requires Type | URL", call. = FALSE)
         node <- xml2::xml_add_child(parent, name)
         xml2::xml_add_child(node, "url", parts[2])
-        xml2::xml_add_child(node, "type", parts[1])
+        if (name == "documentation" && parts[1] == "Package documentation") {
+            xml2::xml_add_child(node, "type", "General")
+            xml2::xml_add_child(node, "note", parts[1])
+        } else {
+            xml2::xml_add_child(node, "type", parts[1])
+        }
     }
 }
 

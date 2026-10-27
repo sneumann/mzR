@@ -84,7 +84,7 @@ Use `@edam_output_format` for file outputs. The title, description and details
 become the function note. `@noRd` allows annotations alongside hand-maintained
 Rd manuals without replacing them.
 
-Package-wide annotations live in `R/mzR-biotools.R`:
+Package-wide annotations live in `R/mzR.R`:
 
 | Tag | Value |
 | --- | --- |
@@ -95,6 +95,10 @@ Package-wide annotations live in `R/mzR-biotools.R`:
 | `@biotools_link` | `Type \| URL`, e.g. `Software catalogue \| https://bioconductor.org/packages/mzR/` |
 | `@biotools_documentation` | `Type \| URL`, e.g. `User manual \| https://example.org/manual` |
 | `@biotools_id` | Optional registered bio.tools identifier; omit until assigned |
+
+Use `Package documentation | URL` for the package reference manual. Since
+biotoolsSchema has no `Package documentation` type, the roclet emits the
+schema-supported `General` type with `Package documentation` as its note.
 
 These tags can be repeated except for the identifier. Topics and package-wide
 values are deduplicated. EDAM tags require `Label (branch_NNNN)` with the

@@ -12,7 +12,7 @@
 #' @biotools_language R
 #' @biotools_language C++
 #' @biotools_link Software catalogue | https://bioconductor.org/packages/mzR/
-#' @biotools_documentation API documentation | https://bioconductor.org/packages/release/bioc/manuals/mzR/man/mzR.pdf
+#' @biotools_documentation Package documentation | https://bioconductor.org/packages/release/bioc/manuals/mzR/man/mzR.pdf
 #' @biotools_documentation User manual | https://bioconductor.org/packages/release/bioc/vignettes/mzR/inst/doc/mzR.html
 #' @noRd
 NULL
