@@ -49,3 +49,71 @@ Also on:
 
 Please read the [contributions guide and code of conduct](./CONTRIBUTIONS.md).
 
+# bio.tools metadata
+
+`inst/biotools.xml` is a bio.tools submission document generated from DESCRIPTION,
+`inst/CITATION` and roxygen2 annotations. It describes raw-data and identification
+reading, spectrum writing, and metadata-preserving conversion. It does not
+register or update an entry on bio.tools automatically.
+
+From the repository root, install the suggested `roxygen2` and `xml2` packages
+and run `Rscript tools/update-biotools.R`. This metadata-only command does not
+load or compile mzR. The custom roclet is also included in DESCRIPTION's
+`Roxygen` configuration, so normal `roxygen2::roxygenise()` runs update the XML
+alongside the existing documentation. The development-only implementation lives
+in `tools/biotools.R`; it adds no runtime dependencies to mzR.
+
+Annotate public functionality in its roxygen block, for example:
+
+```r
+#' Read mass spectrometry raw data
+#'
+#' Open a file and expose its spectra and metadata.
+#' @edam_operation Data parsing (operation_1812)
+#' @edam_input_data Mass spectrometry data (data_2536)
+#' @edam_input_format mzML (format_3244)
+#' @edam_output_data Mass spectrometry data (data_2536)
+#' @noRd
+```
+
+Each block with `@edam_operation` becomes one bio.tools function. Repeating the
+operation tag adds alternative operations to that function. Formats belong to
+the preceding input/output data tag in the same block; repeat a data tag to
+start another input/output, rather than forming an ambiguous cross product.
+Use `@edam_output_format` for file outputs. The title, description and details
+become the function note. `@noRd` allows annotations alongside hand-maintained
+Rd manuals without replacing them.
+
+Package-wide annotations live in `R/mzR.R`:
+
+| Tag | Value |
+| --- | --- |
+| `@edam_topic` | EDAM label and identifier, e.g. `Proteomics (topic_0121)` |
+| `@biotools_tool_type` | bio.tools type, e.g. `Library` |
+| `@biotools_operating_system` | `Linux`, `Windows` or `Mac` |
+| `@biotools_language` | Language, e.g. `R` or `C++` |
+| `@biotools_link` | `Type \| URL`, e.g. `Software catalogue \| https://bioconductor.org/packages/mzR/` |
+| `@biotools_documentation` | `Type \| URL`, e.g. `User manual \| https://example.org/manual` |
+| `@biotools_id` | Optional registered bio.tools identifier; omit until assigned |
+
+Use `Package documentation | URL` for the package reference manual. Since
+biotoolsSchema has no `Package documentation` type, the roclet emits the
+schema-supported `General` type with `Package documentation` as its note.
+
+These tags can be repeated except for the identifier. Topics and package-wide
+values are deduplicated. EDAM tags require `Label (branch_NNNN)` with the
+appropriate topic, operation, data or format branch. The underscore spellings
+also work with roxygen2 7.x through registered prefix parsers.
+
+Name, description, homepage, version, license, author credits (including email,
+roles and ORCID), repository and issue-tracker links, and available publication
+DOI/PMID/PMCID identifiers are extracted automatically. CITATION entries without
+any of those identifiers are not emitted because biotoolsSchema requires one.
+Supported platforms and languages are explicit annotations, not guesses based
+on the machine running roxygen.
+
+Generation validates the complete XML against the pinned upstream schema in
+`tools/biotools/` before replacing the output. Invalid tags, orphan formats,
+missing operations or invalid schema values fail explicitly. Run
+`Rscript tools/test-biotools.R` for the metadata regression checks. Updating the
+XML prepares a submission; publishing it still requires bio.tools registration.

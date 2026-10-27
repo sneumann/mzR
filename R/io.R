@@ -1,3 +1,15 @@
+#' Read mass spectrometry raw data
+#'
+#' Open netCDF, mzXML or mzML files using a format-specific backend. Access
+#' spectra, chromatograms, and run and instrument metadata through mzR objects.
+#'
+#' @edam_operation Data parsing (operation_1812)
+#' @edam_input_data Mass spectrometry data (data_2536)
+#' @edam_input_format mzML (format_3244)
+#' @edam_input_format mzXML (format_3654)
+#' @edam_input_format NetCDF (format_3650)
+#' @edam_output_data Mass spectrometry data (data_2536)
+#' @noRd
 openMSfile <- function(filename,
                        backend = NULL,
                        verbose = FALSE) {
@@ -86,6 +98,16 @@ openMSfile <- function(filename,
         stop("Could not determine file type for ", x)        
 }
 
+#' Read peptide identification data
+#'
+#' Open mzIdentML 1.1 files using the ProteoWizard backend to access
+#' peptide-spectrum matches, scores and identification metadata.
+#'
+#' @edam_operation Data parsing (operation_1812)
+#' @edam_input_data Mass spectrometry data (data_2536)
+#' @edam_input_format mzIdentML (format_3247)
+#' @edam_output_data Mass spectrometry data (data_2536)
+#' @noRd
 openIDfile <- function(filename, verbose = FALSE) {
   if (!file.exists(filename))
     stop("File ",filename," not found.\n")
@@ -100,6 +122,17 @@ openIDfile <- function(filename, verbose = FALSE) {
                fileName=filename))
 }
 
+#' Write mass spectrometry spectra
+#'
+#' Export a list of spectrum matrices and a header data frame to an mzML or
+#' mzXML file, including software processing information.
+#'
+#' @edam_operation Data handling (operation_2409)
+#' @edam_input_data Mass spectrometry data (data_2536)
+#' @edam_output_data Mass spectrometry data (data_2536)
+#' @edam_output_format mzML (format_3244)
+#' @edam_output_format mzXML (format_3654)
+#' @noRd
 setMethod("writeMSData", signature(object = "list", file = "character"),
           function(object, file, header, backend = "pwiz",
                    outformat = "mzml", rtime_seconds = TRUE,
@@ -139,6 +172,19 @@ setMethod("writeMSData", signature(object = "list", file = "character"),
               }
           })
 
+#' Copy metadata and write modified mass spectrometry data
+#'
+#' Write spectra in mzML or mzXML format, preserving general metadata from an
+#' original mass spectrometry file.
+#'
+#' @edam_operation Conversion (operation_3434)
+#' @edam_input_data Mass spectrometry data (data_2536)
+#' @edam_input_format mzML (format_3244)
+#' @edam_input_format mzXML (format_3654)
+#' @edam_output_data Mass spectrometry data (data_2536)
+#' @edam_output_format mzML (format_3244)
+#' @edam_output_format mzXML (format_3654)
+#' @noRd
 copyWriteMSData <- function(object, file, original_file, header,
                             backend = "pwiz",
                             outformat = "mzml",
@@ -187,4 +233,3 @@ copyWriteMSData <- function(object, file, original_file, header,
                                    software_processing)
     }
 }
-

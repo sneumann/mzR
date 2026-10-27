@@ -42,7 +42,9 @@ Suggests:
     mzID,
     BiocStyle (>= 2.5.19),
     knitr,
+    roxygen2 (>= 7.3.0),
     XML,
+    xml2,
     rmarkdown
 VignetteBuilder: knitr
 LinkingTo:
@@ -57,3 +59,5 @@ BugReports: https://github.com/sneumann/mzR/issues/
 biocViews: ImmunoOncology, Infrastructure, DataImport, Proteomics, Metabolomics,
         MassSpectrometry
 RoxygenNote: 7.3.3
+Roxygen: list(roclets = c("rd", "namespace",
+    "local({source('tools/biotools.R', local = TRUE); biotools_roclet()})"))

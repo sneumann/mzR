@@ -1,0 +1,5 @@
+source("tools/biotools.R")
+roclet <- biotools_roclet()
+blocks <- roxygen2::parse_package(".", env = NULL)
+results <- roxygen2::roclet_process(roclet, blocks, env = NULL, base_path = ".")
+roxygen2::roclet_output(roclet, results, base_path = ".")
