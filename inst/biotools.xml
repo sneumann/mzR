@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tools xmlns="biotoolsSchema">
+  <tool>
+    <name>mzR</name>
+    <description>mzR provides a unified API to the common file formats and parsers available for mass spectrometry data. It comes with a subset of the proteowizard library for mzXML, mzML and mzIdentML. The netCDF reading code has previously been used in XCMS.</description>
+    <homepage>https://github.com/sneumann/mzR/</homepage>
+    <version>2.45.3</version>
+    <toolType>Library</toolType>
+    <topic>
+      <uri>http://edamontology.org/topic_0121</uri>
+      <term>Proteomics</term>
+    </topic>
+    <topic>
+      <uri>http://edamontology.org/topic_3172</uri>
+      <term>Metabolomics</term>
+    </topic>
+    <operatingSystem>Linux</operatingSystem>
+    <operatingSystem>Windows</operatingSystem>
+    <operatingSystem>Mac</operatingSystem>
+    <language>R</language>
+    <language>C++</language>
+    <license>Artistic-2.0</license>
+    <function>
+      <operation>
+        <uri>http://edamontology.org/operation_1812</uri>
+        <term>Data parsing</term>
+      </operation>
+      <input>
+        <data>
+          <uri>http://edamontology.org/data_2536</uri>
+          <term>Mass spectrometry data</term>
+        </data>
+        <format>
+          <uri>http://edamontology.org/format_3244</uri>
+          <term>mzML</term>
+        </format>
+        <format>
+          <uri>http://edamontology.org/format_3654</uri>
+          <term>mzXML</term>
+        </format>
+        <format>
+          <uri>http://edamontology.org/format_3650</uri>
+          <term>NetCDF</term>
+        </format>
+      </input>
+      <output>
+        <data>
+          <uri>http://edamontology.org/data_2536</uri>
+          <term>Mass spectrometry data</term>
+        </data>
+      </output>
+      <note>Read mass spectrometry raw data Open netCDF, mzXML or mzML files using a format-specific backend. Access spectra, chromatograms, and run and instrument metadata through mzR objects.</note>
+    </function>
+    <function>
+      <operation>
+        <uri>http://edamontology.org/operation_1812</uri>
+        <term>Data parsing</term>
+      </operation>
+      <input>
+        <data>
+          <uri>http://edamontology.org/data_2536</uri>
+          <term>Mass spectrometry data</term>
+        </data>
+        <format>
+          <uri>http://edamontology.org/format_3247</uri>
+          <term>mzIdentML</term>
+        </format>
+      </input>
+      <output>
+        <data>
+          <uri>http://edamontology.org/data_2536</uri>
+          <term>Mass spectrometry data</term>
+        </data>
+      </output>
+      <note>Read peptide identification data Open mzIdentML 1.1 files using the ProteoWizard backend to access peptide-spectrum matches, scores and identification metadata.</note>
+    </function>
+    <function>
+      <operation>
+        <uri>http://edamontology.org/operation_2409</uri>
+        <term>Data handling</term>
+      </operation>
+      <input>
+        <data>
+          <uri>http://edamontology.org/data_2536</uri>
+          <term>Mass spectrometry data</term>
+        </data>
+      </input>
+      <output>
+        <data>
+          <uri>http://edamontology.org/data_2536</uri>
+          <term>Mass spectrometry data</term>
+        </data>
+        <format>
+          <uri>http://edamontology.org/format_3244</uri>
+          <term>mzML</term>
+        </format>
+        <format>
+          <uri>http://edamontology.org/format_3654</uri>
+          <term>mzXML</term>
+        </format>
+      </output>
+      <note>Write mass spectrometry spectra Export a list of spectrum matrices and a header data frame to an mzML or mzXML file, including software processing information.</note>
+    </function>
+    <function>
+      <operation>
+        <uri>http://edamontology.org/operation_3434</uri>
+        <term>Conversion</term>
+      </operation>
+      <input>
+        <data>
+          <uri>http://edamontology.org/data_2536</uri>
+          <term>Mass spectrometry data</term>
+        </data>
+        <format>
+          <uri>http://edamontology.org/format_3244</uri>
+          <term>mzML</term>
+        </format>
+        <format>
+          <uri>http://edamontology.org/format_3654</uri>
+          <term>mzXML</term>
+        </format>
+      </input>
+      <output>
+        <data>
+          <uri>http://edamontology.org/data_2536</uri>
+          <term>Mass spectrometry data</term>
+        </data>
+        <format>
+          <uri>http://edamontology.org/format_3244</uri>
+          <term>mzML</term>
+        </format>
+        <format>
+          <uri>http://edamontology.org/format_3654</uri>
+          <term>mzXML</term>
+        </format>
+      </output>
+      <note>Copy metadata and write modified mass spectrometry data Write spectra in mzML or mzXML format, preserving general metadata from an original mass spectrometry file.</note>
+    </function>
+    <link>
+      <url>https://bioconductor.org/packages/mzR/</url>
+      <type>Software catalogue</type>
+    </link>
+    <link>
+      <url>https://github.com/sneumann/mzR/</url>
+      <type>Repository</type>
+    </link>
+    <link>
+      <url>https://github.com/sneumann/mzR/issues/</url>
+      <type>Issue tracker</type>
+    </link>
+    <documentation>
+      <url>https://bioconductor.org/packages/release/bioc/manuals/mzR/man/mzR.pdf</url>
+      <type>API documentation</type>
+    </documentation>
+    <documentation>
+      <url>https://bioconductor.org/packages/release/bioc/vignettes/mzR/inst/doc/mzR.html</url>
+      <type>User manual</type>
+    </documentation>
+    <publication>
+      <doi>10.1038/nbt.2377</doi>
+      <pmid>23051804</pmid>
+    </publication>
+    <publication>
+      <doi>10.1074/mcp.R110.000133</doi>
+      <pmid>20716697</pmid>
+    </publication>
+    <publication>
+      <doi>10.1038/nbt1031</doi>
+      <pmid>15529173</pmid>
+    </publication>
+    <publication>
+      <doi>10.1093/bioinformatics/btn323</doi>
+      <pmid>18606607</pmid>
+    </publication>
+    <credit>
+      <name>Steffen Neumann</name>
+      <email>sneumann@ipb-halle.de</email>
+      <typeEntity>Person</typeEntity>
+      <typeRole>Developer</typeRole>
+      <typeRole>Primary contact</typeRole>
+    </credit>
+    <credit>
+      <name>Laurent Gatto</name>
+      <email>laurent.gatto@uclouvain.be</email>
+      <typeEntity>Person</typeEntity>
+      <typeRole>Developer</typeRole>
+    </credit>
+    <credit>
+      <name>Qiakng Kou</name>
+      <email>qkou@umail.iu.edu</email>
+      <typeEntity>Person</typeEntity>
+      <typeRole>Developer</typeRole>
+    </credit>
+    <credit>
+      <name>David Rauh</name>
+      <email>drauh@ipb-halle.de</email>
+      <typeEntity>Person</typeEntity>
+      <typeRole>Contributor</typeRole>
+    </credit>
+    <credit>
+      <name>Sascha Manier</name>
+      <email>sascha.manier@uni-saarland.de</email>
+      <typeEntity>Person</typeEntity>
+      <typeRole>Contributor</typeRole>
+    </credit>
+    <credit>
+      <name>Adriano Rutz</name>
+      <email>adafede@gmail.com</email>
+      <orcidid>https://orcid.org/0000-0003-0443-9902</orcidid>
+      <typeEntity>Person</typeEntity>
+      <typeRole>Contributor</typeRole>
+    </credit>
+    <credit>
+      <name>Johannes Rainer</name>
+      <email>Johannes.Rainer@eurac.edu</email>
+      <orcidid>https://orcid.org/0000-0002-6977-7147</orcidid>
+      <typeEntity>Person</typeEntity>
+      <typeRole>Developer</typeRole>
+    </credit>
+  </tool>
+</tools>
