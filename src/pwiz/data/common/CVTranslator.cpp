@@ -96,13 +96,15 @@ namespace {
 inline char alnum_lower(char c)
 {
     // c -> lower-case, whitespace, or +
-    return isalnum(c) ? static_cast<char>(tolower(c)) : c == '+' ? c : ' ';
+    unsigned char uc = static_cast<unsigned char>(c); // Watch out for unicode etc
+    return isalnum(uc) ? static_cast<char>(tolower(uc)) : c == '+' ? c : ' ';
 }
 
 inline char alnum_lower_regex(char c)
 {
     // c -> lower-case, whitespace, +, or _ for things that appear to be part of a regex
-    return isalnum(c) ? static_cast<char>(tolower(c)) : c == '+' ? c : '_';    
+    unsigned char uc = static_cast<unsigned char>(c); // Watch out for unicode etc
+    return isalnum(uc) ? static_cast<char>(tolower(uc)) : c == '+' ? c : '_';    
 }
 
 string preprocess(const string& s)
@@ -146,6 +148,7 @@ bool shouldIgnore(const string& key, CVID value, CVID cvid)
             key=="pi_" && value==MS_PI && cvid==UO_pi || // MS_PI==photoionization, UO_pi==3.14
             key=="pi_" && value==MS_PI && cvid==MS_pI || // MS_pI==isoelectric point
             key=="de_" && value==MS_DE && cvid==1001274 || // conflict between 1000246 and 1001274
+            key=="hypersil_silica_" && value==MS_Hypersil_Silica && cvid==MS_Hypersil_silica || // PSI-MS 4.2: duplicate column terms 5001639 and 5001640
             cvid == UO_volt_second_per_square_centimeter); // conflict between 1002814 200010007 (volt-second per square centimeter) 
 }
 

@@ -57,7 +57,7 @@ namespace {
 // OBO format has some escape characters that C++ doesn't,
 // so we unescape them when reading in a tag:value pair.
 // http://www.geneontology.org/GO.format.obo-1_2.shtml#S.1.5
-string& unescape(string& str)
+string& unescape(string& str, bool translateLetters = false)
 {
     bal::replace_all(str, "\\!", "!");
     bal::replace_all(str, "\\:", ":");
@@ -68,14 +68,19 @@ string& unescape(string& str)
     bal::replace_all(str, "\\]", "]");
     bal::replace_all(str, "\\{", "{");
     bal::replace_all(str, "\\}", "}");
+
+    // replace alphabetic characters with their number (A=1, Z=26)
+    if (translateLetters)
+        for (int i = 0; i < 26; ++i)
+            bal::ireplace_all(str, string(1, 'A' + i), lexical_cast<string>(i+1));
     return str;
 }
 
 
-string unescape_copy(const string& str)
+string unescape_copy(const string& str, bool translateLetters = false)
 {
     string copy(str);
-    unescape(copy);
+    unescape(copy, translateLetters);
     return copy;
 }
 
@@ -91,7 +96,7 @@ istream& getcleanline(istream& is, string& buffer)
 
 void parse_id(const string& line, Term& term)
 {
-    static const bxp::sregex e = bxp::sregex::compile("id:\\s*(\\w+):(\\d+)\\s*");
+    static const bxp::sregex e = bxp::sregex::compile("id:\\s*(\\w+):(\\S+)\\s*");
 
     bxp::smatch what; 
     if (!bxp::regex_match(line, what, e))
@@ -103,7 +108,7 @@ void parse_id(const string& line, Term& term)
     if(id.empty())
         term.id = 0; // id was all zeros
     else
-        term.id = lexical_cast<Term::id_type>(unescape(id));
+        term.id = lexical_cast<Term::id_type>(unescape(id, true));
 }
 
 
@@ -131,25 +136,56 @@ void parse_def(const string& line, Term& term)
     term.isObsolete = what[1].matched;
 }
 
+void parse_comment_as_def(const string& line, Term& term)
+{
+    // Accept both "def:" and "comment:" as some obo representations use "comment" instead of "def"
+    static const bxp::sregex e = bxp::sregex::compile("comment:\\s*(.*)");
+
+    bxp::smatch what;
+    if (!bxp::regex_match(line, what, e))
+        throw runtime_error("Error matching term comment on line: \"" + line + "\"");
+
+    term.def = what[1];
+    // Set isObsolete if the comment contains the word "obsolete" (case insensitive)
+    string defLower = term.def;
+    bal::to_lower(defLower);
+    term.isObsolete = defLower.find("obsolete") != string::npos;
+}
 
 void parse_relationship(const string& line, Term& term)
 {
-    static const bxp::sregex e = bxp::sregex::compile("relationship:\\s*(\\w+) (\\w+):(\\d+).*");
+    if (line.find("relationship: has:prefix UO:") != string::npos)
+        return; // skip lines like "relationship: has:prefix UO:0000303 ! femto" - not information we currently use
+    static const bxp::sregex e = bxp::sregex::compile("relationship:\\s*(\\w+) (\\S+).*");
+    static const bxp::sregex idRegex = bxp::sregex::compile("(\\w+):(\\S+)");
 
     bxp::smatch what; 
     if (!bxp::regex_match(line, what, e))
         throw runtime_error("Error matching term relationship on line: \"" + line + "\"");
 
+    string relation = unescape_copy(what[2]);
+    if (bal::istarts_with(relation, "xsd:"))
+        return;
+
+    bxp::smatch what2;
+    if (!bxp::regex_match(relation, what2, idRegex))
+        throw runtime_error("Error parsing id from relationship on line: \"" + line + "\"");
+    string id = unescape_copy(what2[2], true);
+
     if (what[1] == "part_of")
     {
-        if (what[2].str() != term.prefix)
-            cerr << "[obo] Ignoring part_of relationship with different prefix:\n  " << line << endl;
+        auto partOfPrefix = what2[1].str();
+        if (partOfPrefix != term.prefix)
+        {
+            if (!isIgnoredRelationship(partOfPrefix))
+                cerr << "[obo] Ignoring part_of relationship with different prefix (" << term.prefix << " vs " << partOfPrefix << "):\n  " << term.id << " " << term.name << endl << line << endl;
+        }
         else
-            term.parentsPartOf.push_back(lexical_cast<Term::id_type>(what[3]));
+            term.parentsPartOf.push_back(lexical_cast<Term::id_type>(id));
         return;
     }
 
-    term.relations.insert(make_pair(unescape_copy(what[1]), make_pair(what[2], lexical_cast<Term::id_type>(what[3]))));
+    term.relations.insert(make_pair(unescape_copy(what[1]), make_pair(what2[1], lexical_cast<Term::id_type>(id))));
 }
 
 
@@ -167,21 +203,69 @@ void parse_is_obsolete(const string& line, Term& term)
 
 void parse_is_a(const string& line, Term& term)
 {
-    static const bxp::sregex e = bxp::sregex::compile("is_a:\\s*(\\w+):(\\d+).*");
+    static const bxp::sregex e = bxp::sregex::compile("is_a:\\s*(\\w+):(\\S+).*");
 
     bxp::smatch what; 
     if (!bxp::regex_match(line, what, e))
-        throw runtime_error("Error matching term is_a on line: \"" + line + "\"");    
+        throw runtime_error("Error matching term is_a on line: \"" + line + "\"");
+
+    string id = unescape_copy(what[2], true);
 
     if (what[1].str() != term.prefix)
     {
-        cerr << "[obo] Ignoring is_a with different prefix:\n  " << line << endl;
+        bool isUnit = line.find("UO:0000000 ! unit") != string::npos; // "Is a unit" is common in unit.obo, and not very useful - ignore it quietly
+        if (!isUnit && !isIgnoredRelationship(term.prefix))
+            cerr << "[obo] Ignoring is_a with different prefix (" << what[1].str() << " != " << term.prefix  << "):\n  " << line << endl;
         return;
     }
 
-    term.parentsIsA.push_back(lexical_cast<Term::id_type>(what[2]));
+    term.parentsIsA.push_back(lexical_cast<Term::id_type>(id));
 }
 
+
+void add_synonym(Term& term, string what)
+{
+    auto synonymName = unescape_copy(what);
+    auto termName = unescape_copy(term.name);
+    // Normalize both names by replacing non-alphanumeric characters with underscores
+    auto normalizeForComparison = [](const string& str) {
+        string normalized;
+        for (unsigned char c : str)
+        {
+            normalized.push_back(isalnum(c) ? c : '_');
+        }
+        return normalized;
+    };
+
+    // Check if the normalized names would be identical (e.g. "foo bar" vs "foo/bar" both normalize to "foo_bar")
+    if (normalizeForComparison(termName) == normalizeForComparison(synonymName))
+    {
+        // Encode differing non-alphanumeric characters in synonym as hex
+        string encodedSynonym;
+        for (size_t i = 0; i < synonymName.length() && i < termName.length(); ++i)
+        {
+            unsigned char sc = synonymName[i];
+            unsigned char tc = termName[i];
+            
+            if (sc == tc)
+            {
+                encodedSynonym.push_back(sc);
+            }
+            else 
+            {
+                // Hex-encode the differing character in the synonym
+                char buf[7];
+                std::snprintf(buf, sizeof(buf), "_x%02X_", sc);
+                encodedSynonym += buf;
+            }
+        }
+        // Add any remaining characters from synonym
+        encodedSynonym += synonymName.substr(min(termName.length(), synonymName.length()));
+        synonymName = encodedSynonym;
+    }
+
+    term.exactSynonyms.push_back(synonymName);
+}
 
 void parse_exact_synonym(const string& line, Term& term)
 {
@@ -191,7 +275,7 @@ void parse_exact_synonym(const string& line, Term& term)
     if (!bxp::regex_match(line, what, e))
         throw runtime_error("Error matching term exact_synonym on line: \"" + line + "\"");    
 
-    term.exactSynonyms.push_back(unescape_copy(what[1]));
+    add_synonym(term, what[1]);
 }
 
 
@@ -204,7 +288,7 @@ void parse_synonym(const string& line, Term& term)
         throw runtime_error("Error matching term synonym on line: \"" + line + "\"");    
 
     if (what[2] == "EXACT")
-        term.exactSynonyms.push_back(unescape_copy(what[1]));
+        add_synonym(term, what[1]);;
 }
 
 
@@ -264,9 +348,13 @@ void parseTagValuePair(const string& line, Term& term)
         parse_property_value(line, term);
     else if (tag == "xref")
         parse_xref(line, term);
+    else if (tag == "comment")
+    {
+        if (term.def.empty())
+            parse_comment_as_def(line, term); // Some obo representations use "comment" instead of "def". If there is a def to follow we ignore the comment.
+    }
     else if (tag == "related_synonym" ||
              tag == "narrow_synonym" ||
-             tag == "comment" ||
              tag == "alt_id" ||
              tag == "namespace" ||
              tag == "xref_analog" ||
@@ -275,6 +363,7 @@ void parseTagValuePair(const string& line, Term& term)
              tag == "has_domain" || // first appeared in psi-ms.obo 3.52.0
              tag == "has_order"  || // first appeared in psi-ms.obo 3.52.0
              tag == "subset"  ||    // first appeared in unit.obo in rev 2755
+             tag == "intersection_of" || // first appeared in unit.obo in "data-version: releases/2026-01-09"
              tag == "creation_date")
         ; // ignore these tags
     else
@@ -303,6 +392,10 @@ void parseStanza(istream& is, OBO& obo)
     {
         Term term = parseTerm(is);
 
+        // ignore UO terms in MS obo
+        if (bal::iends_with(obo.filename, "psi-ms.obo") && term.prefix == "UO")
+            return;
+
         // validate prefix
         if (obo.prefixes.empty())
         {
@@ -311,9 +404,14 @@ void parseStanza(istream& is, OBO& obo)
         else
         {
             if (obo.prefixes.count(term.prefix) == 0)
-                throw runtime_error("[obo] Prefix mismatch: " +
-                                    lexical_cast<string>(obo.prefixes) + ", " + 
-                                    term.prefix + ":" + lexical_cast<string>(term.id));
+            {
+                //throw runtime_error("[obo] Prefix mismatch: " +
+                //                    lexical_cast<string>(obo.prefixes) + ", " + 
+                //                    term.prefix + ":" + lexical_cast<string>(term.id));
+                if (!isIgnoredRelationship(term.prefix))
+                    cerr << "[obo] Prefix was not declared in header: " + term.prefix + ":" + lexical_cast<string>(term.id) << endl;
+                obo.prefixes.insert(term.prefix);
+            }
         }
 
         // add all terms, even obsolete ones

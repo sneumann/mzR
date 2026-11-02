@@ -1,9 +1,13 @@
 format-version: 1.2
-data-version: releases/2026-01-16
+data-version: releases/2026-10-12
 idspace: dc http://purl.org/dc/elements/1.1/ 
+idspace: dcterms http://purl.org/dc/terms/ 
 idspace: oboInOwl http://www.geneontology.org/formats/oboInOwl# 
 ontology: uo
-property_value: owl:versionInfo "2026-01-16" xsd:string
+property_value: dcterms:description "Metrical units for use in conjunction with PATO" xsd:string
+property_value: dcterms:license https://creativecommons.org/licenses/by/4.0/
+property_value: dcterms:title "Units of measurement ontology" xsd:string
+property_value: owl:versionInfo "2026-10-12" xsd:string
 
 [Term]
 id: UO:0000000
@@ -2032,7 +2036,7 @@ id: UO:0000264
 name: siemens
 def: "An electrical conduction unit which is equal to A/V." [NIST:NIST]
 synonym: "A V^-1" EXACT []
-synonym: "mho " EXACT []
+synonym: "mho" EXACT []
 synonym: "S" RELATED []
 is_a: UO:1000264 ! siemens based unit
 
@@ -2056,7 +2060,7 @@ is_a: UO:1000266 ! electronvolt based unit
 id: UO:0000267
 name: electric field strength unit
 def: "The electric field strength is a unit which is a measure of the potential difference between two points some distance apart." [Wikipedia:Electric_field]
-synonym: "E-field strength " EXACT []
+synonym: "E-field strength" EXACT []
 is_a: UO:0000000 ! unit
 
 [Term]
@@ -2288,7 +2292,7 @@ is_a: UO:0000046 ! prefix
 [Term]
 id: UO:0000297
 name: milli
-def: "A prefix in the metric system denoting a factor of one thousand." [UO:GVG]
+def: "A prefix in the metric system denoting a factor of one thousandth." [UO:GVG]
 synonym: "10^[-3]" EXACT []
 synonym: "m" EXACT []
 is_a: UO:0000046 ! prefix
@@ -2296,7 +2300,7 @@ is_a: UO:0000046 ! prefix
 [Term]
 id: UO:0000298
 name: centi
-def: "A prefix in the metric system denoting a factor of one hundred." [UO:GVG]
+def: "A prefix in the metric system denoting a factor of one hundredth." [UO:GVG]
 synonym: "10^[-2]" EXACT []
 synonym: "c" EXACT []
 is_a: UO:0000046 ! prefix
@@ -2496,7 +2500,7 @@ is_a: UO:0000105 ! frequency unit
 [Term]
 id: UO:0000326
 name: centiMorgan
-def: "A unit used to express distances on a genetic map. In genetic mapping, distances between markers are determined by measuring the rate of meoitic recombination between them, which increases proportionately with the distance separating them. A cM is defined as the length of an interval in which there is a 1% probability of recombination. On the average, 1 cM is roughly equivalent to 1 megabase (Mb) of DNA, although this can vary widely due to hot and cold spots of recombination." [http://www.ncbi.nlm.nih.gov/SCIENCE96/Glossary.html]
+def: "A unit used to express distances on a genetic map. In genetic mapping, distances between markers are determined by measuring the rate of meiotic recombination between them, which increases proportionately with the distance separating them. A cM is defined as the length of an interval in which there is a 1% probability of recombination. On the average, 1 cM is roughly equivalent to 1 megabase (Mb) of DNA, although this can vary widely due to hot and cold spots of recombination." [http://www.ncbi.nlm.nih.gov/SCIENCE96/Glossary.html]
 synonym: "cM" EXACT []
 is_a: UO:0000001 ! length unit
 
@@ -2611,11 +2615,10 @@ is_a: UO:0000060 ! speed/velocity unit
 
 [Term]
 id: UO:0010009
-name: milli
-def: "A mass unit which is equal to 1/12 the mass of 12C" [Wikipedia:Wikipedia]
+name: millidalton
+def: "A mass unit which is equal to one thousandth of a dalton, i.e. 1/12000 the mass of 12C" [Wikipedia:Wikipedia]
 synonym: "mDa" EXACT []
 synonym: "milli unified atomic mass unit" EXACT []
-synonym: "millidalton" EXACT []
 synonym: "mmu" EXACT []
 is_a: UO:0000002 ! mass unit
 
@@ -2891,10 +2894,10 @@ is_a: UO:0000095 ! volume unit
 
 [Term]
 id: UO:0010048
-name: micromole
+name: obsolete micromole
 def: "DEPRECATED: Duplicate of http://purl.obolibrary.org/obo/UO_0000039. A substance unit which is equal to one millionth of a mole." [UOB:LTS]
-is_a: UO:0000006 ! substance unit
 is_obsolete: true
+replaced_by: UO:0000039
 
 [Term]
 id: UO:0010049
