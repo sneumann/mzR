@@ -606,7 +606,7 @@ void testMassAnalyzerFilter(SpectrumListPtr sl)
     set<CVID> cvIDs;
     // msconvert mass analyzer filter FTMS option
     cvIDs.insert(MS_orbitrap);
-    cvIDs.insert(MS_fourier_transform_ion_cyclotron_resonance_mass_spectrometer);
+    cvIDs.insert(MS_fourier_transform_ion_cyclotron_resonance);
     SpectrumList_Filter filter(sl, 
                         SpectrumList_FilterPredicate_AnalyzerType(cvIDs));
 
